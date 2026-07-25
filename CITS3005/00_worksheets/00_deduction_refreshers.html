@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Deduction drill — inference rules and derivations</title>
+<title>Deduction drill — CITS2211 notation</title>
 <style>
   :root{
     --proof:#CECBF6; --proof-t:#26215C; --proof-edge:#B6B2EE;
@@ -16,30 +16,51 @@
     margin:0; padding:24px 24px 64px;
     font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
     color:var(--ink); background:var(--paper); line-height:1.5;
-    max-width:820px; margin-inline:auto;
+    max-width:840px; margin-inline:auto;
   }
   h1{font-size:23px; font-weight:600; margin:0 0 4px; letter-spacing:-0.01em;}
   .sub{color:var(--muted); font-size:14px; margin:0 0 20px;}
 
-  .f{
-    font-family:ui-monospace,"SF Mono",Menlo,Consolas,"Liberation Mono",monospace;
-    font-size:0.94em; background:#f0eee7; padding:1px 5px; border-radius:4px; white-space:nowrap;
+  /* ---- maths: serif + italic gives upright operators, italic variables ---- */
+  .m{
+    font-family:Cambria,"Latin Modern Roman",Georgia,"Times New Roman",serif;
+    font-style:italic; font-size:1.06em; white-space:nowrap;
   }
-  .fb{
-    font-family:ui-monospace,"SF Mono",Menlo,Consolas,"Liberation Mono",monospace;
-    font-size:13.5px; display:block; margin:8px 0; padding:9px 12px;
-    background:#f0eee7; border-radius:6px; line-height:1.75; white-space:pre-wrap;
-  }
-  .seq{
-    font-family:ui-monospace,"SF Mono",Menlo,Consolas,"Liberation Mono",monospace;
-    font-size:13.5px; display:block; margin:7px 0 8px; padding:10px 13px;
-    background:#fff; border:1px solid var(--proof-edge); border-radius:7px;
-    line-height:1.6; overflow-x:auto; white-space:pre;
+  .mb{
+    font-family:Cambria,"Latin Modern Roman",Georgia,"Times New Roman",serif;
+    font-style:italic; font-size:16px; display:block; text-align:center;
+    margin:9px 0 10px; padding:9px 12px; background:#fff;
+    border:1px solid var(--proof-edge); border-radius:7px; overflow-x:auto;
   }
 
+  /* ---- derivation table, CITS2211 flat style ---- */
+  .drv{
+    border-collapse:collapse; margin:9px auto 10px; background:#fff;
+    border-top:1.5px solid var(--ink); border-bottom:1.5px solid var(--ink);
+    min-width:min(430px,100%);
+  }
+  .drv td{padding:4px 10px; vertical-align:baseline; font-size:14px;}
+  .drv td.n{
+    font-family:Cambria,Georgia,"Times New Roman",serif; font-style:italic;
+    white-space:nowrap; padding-right:34px;
+  }
+  .drv td.j{color:var(--muted); font-size:13px; white-space:normal;}
+  .ans .drv{background:rgba(255,255,255,.6);}
+
+  /* ---- fraction-bar inference notation ---- */
+  .frac{display:flex; flex-direction:column; align-items:center; margin:12px auto 14px; width:max-content; max-width:100%;}
+  .frac .num{
+    font-family:Cambria,Georgia,"Times New Roman",serif; font-style:italic; font-size:16px;
+    padding:0 16px 4px; border-bottom:1.3px solid var(--ink); text-align:center;
+  }
+  .frac .den{
+    font-family:Cambria,Georgia,"Times New Roman",serif; font-style:italic; font-size:16px;
+    padding:4px 16px 0; text-align:center;
+  }
+  .frac .num .gap{display:inline-block; width:34px;}
+
   .howto{background:var(--proof); color:var(--proof-t); border-radius:9px; padding:14px 16px; font-size:13.5px; margin-bottom:18px;}
-  .howto p{margin:0 0 7px;} .howto p:last-child{margin:0;}
-  .howto b{font-weight:600;}
+  .howto p{margin:0 0 7px;} .howto p:last-child{margin:0;} .howto b{font-weight:600;}
 
   .controls{display:flex; gap:8px; margin-bottom:22px; flex-wrap:wrap;}
   .controls button{font:inherit; font-size:12.5px; padding:6px 12px; border-radius:6px; border:1px solid var(--line); background:#fff; color:var(--muted); cursor:pointer;}
@@ -53,11 +74,9 @@
   .set-time{font-size:12px; color:var(--muted); white-space:nowrap;}
   .tally{font-size:11.5px; color:var(--muted); font-variant-numeric:tabular-nums; white-space:nowrap;}
 
-  .q{margin-bottom:16px;}
-  .qtext{font-size:14.5px; margin:0 0 4px;}
-  .qn{font-weight:600; color:var(--muted); margin-right:5px; font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:13px;}
-  .q ul{margin:6px 0 8px; padding-left:22px;}
-  .q li{margin-bottom:4px; font-size:14px;}
+  .q{margin-bottom:18px;}
+  .qtext{font-size:14.5px; margin:0 0 2px;}
+  .qn{font-weight:600; color:var(--muted); margin-right:6px; font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:13px;}
 
   details{margin-top:6px;}
   summary{display:inline-flex; align-items:center; gap:6px; cursor:pointer; font-size:12.5px; font-weight:600; color:var(--proof-t); background:var(--proof); border-radius:6px; padding:4px 11px; list-style:none; user-select:none;}
@@ -69,27 +88,30 @@
   details[open] summary .caret{transform:rotate(90deg);}
   .ans{background:var(--concrete); color:var(--concrete-t); border-radius:8px; padding:11px 14px; margin-top:7px; font-size:13.5px;}
   .ans p{margin:0 0 7px;} .ans p:last-child{margin:0;}
-  .ans .f, .ans .fb, .ans .seq{background:rgba(255,255,255,.55);}
-  .ans .seq{border-color:var(--concrete-edge);}
+  .ans .mb{background:rgba(255,255,255,.55); border-color:var(--concrete-edge);}
   .ans ul{margin:6px 0; padding-left:20px;} .ans li{margin-bottom:4px;}
 
   .trap{background:var(--trap); color:var(--trap-t); border-left:3px solid var(--trap-edge); border-radius:0 6px 6px 0; padding:9px 12px; margin-top:9px; font-size:13px;}
-  .trap b{font-weight:600;} .trap .f{background:rgba(255,255,255,.55);}
+  .trap b{font-weight:600;}
 
   .rule{background:#fff; border:1px solid var(--line); border-radius:8px; padding:11px 14px; margin:12px 0; font-size:13.5px;}
   .rule b{font-weight:600;} .rule p{margin:0 0 7px;} .rule p:last-child{margin:0;}
-  .rule table{border-collapse:collapse; width:100%; margin:8px 0 4px; font-size:13px;}
-  .rule th{text-align:left; font-weight:600; padding:5px 8px 5px 0; border-bottom:1px solid var(--line); font-size:12.5px;}
-  .rule td{padding:5px 8px 5px 0; border-bottom:1px solid var(--line); vertical-align:top;}
-  .rule tr:last-child td{border-bottom:none;}
+  .rule table.ref{border-collapse:collapse; width:100%; margin:8px 0 4px; font-size:13px;}
+  .rule table.ref th{text-align:left; font-weight:600; padding:5px 10px 5px 0; border-bottom:1px solid var(--line); font-size:12.5px;}
+  .rule table.ref td{padding:5px 10px 5px 0; border-bottom:1px solid var(--line); vertical-align:top;}
+  .rule table.ref tr:last-child td{border-bottom:none;}
+  .rule table.ref td.cond{color:var(--muted); font-size:12.5px; font-style:normal;}
 
   .note{margin-top:30px; font-size:12.5px; color:var(--muted); border-top:1px solid var(--line); padding-top:14px;}
 
-  @media (max-width:620px){ body{padding:16px 16px 48px;} .fb,.seq{font-size:12.5px;} }
+  @media (max-width:620px){
+    body{padding:16px 16px 48px;}
+    .mb{font-size:14.5px;} .drv td{font-size:13px;} .drv td.n{padding-right:20px;}
+  }
   @media (prefers-reduced-motion:reduce){ summary .caret{transition:none;} }
   @media print{
     body{background:#fff; padding:0; max-width:none;}
-    .controls, .howto{display:none;}
+    .controls,.howto{display:none;}
     details{display:block;} details > *{display:block;} summary{display:none;}
     .ans{border:1px solid #ccc; background:#f7f7f7;}
     .set{page-break-inside:avoid;}
@@ -99,12 +121,12 @@
 <body>
 
 <h1>Deduction drill</h1>
-<p class="sub">Sets 7–13 · derivations, counterexamples, resolution, quantifier rules · companion to the logic refresher</p>
+<p class="sub">Sets 7–14 · CITS2211 notation · flat derivation tables, rule names written out</p>
 
 <div class="howto">
-  <p><b>Every question states its full sequent</b> in the boxed line: premises on the left of <span class="f">⊢</span>, conclusion on the right. Read that first — it's the whole problem. The numbered lines below it are just the same premises laid out ready to build on.</p>
-  <p><b>One procedure underneath all of it.</b> Valid iff there is no row where every premise is true and the conclusion is false. Assume the conclusion false, force the premises true, hunt for a contradiction. Contradiction → valid. Row completes → that row is your counterexample.</p>
-  <p><b>Convert every arrow to a disjunction before you start.</b> <span class="f">p → q ≡ ¬p ∨ q</span>. Most rules below collapse into one move once the arrows are gone.</p>
+  <p><b>Every question states its full sequent</b> in the boxed line. Premises left of <span class="m">⊢</span>, conclusion right. Work it on paper, then hit <i>Check</i>.</p>
+  <p><b>Derivations are flat</b> — numbered lines, justification column citing line numbers and the rule in words, exactly as in the week 3 template. No subproof boxes. Conditional proof and reductio are the only rules that open an assumption, and they cite a <i>range</i> (<span class="m">3–6</span>) because that is the only way flat notation can show the assumption closing.</p>
+  <p>Eight sets, 15–30 min each. One per morning block.</p>
 </div>
 
 <div class="controls">
@@ -113,627 +135,645 @@
   <button type="button" onclick="window.print()">Print</button>
 </div>
 
-<!-- ============ SET 7 ============ -->
+<div class="rule">
+  <table class="ref">
+    <tr><th>Rule</th><th>Shape</th><th>Condition</th></tr>
+    <tr><td>modus ponens</td><td class="m">φ → ψ, φ ⊢ ψ</td><td class="cond">—</td></tr>
+    <tr><td>modus tollens</td><td class="m">φ → ψ, ¬ψ ⊢ ¬φ</td><td class="cond">—</td></tr>
+    <tr><td>disjunctive syllogism</td><td class="m">φ ∨ ψ, ¬φ ⊢ ψ</td><td class="cond">—</td></tr>
+    <tr><td>hypothetical syllogism</td><td class="m">φ → ψ, ψ → χ ⊢ φ → χ</td><td class="cond">—</td></tr>
+    <tr><td>simplification</td><td class="m">φ ∧ ψ ⊢ φ</td><td class="cond">—</td></tr>
+    <tr><td>conjunction</td><td class="m">φ, ψ ⊢ φ ∧ ψ</td><td class="cond">—</td></tr>
+    <tr><td>addition</td><td class="m">φ ⊢ φ ∨ ψ</td><td class="cond">—</td></tr>
+    <tr><td>resolution</td><td class="m">φ ∨ x, ψ ∨ ¬x ⊢ φ ∨ ψ</td><td class="cond">one pair only</td></tr>
+    <tr><td>forall elimination</td><td class="m">∀x.φ(x) ⊢ φ(t)</td><td class="cond">any term <span class="m">t</span></td></tr>
+    <tr><td>exists introduction</td><td class="m">φ(t) ⊢ ∃x.φ(x)</td><td class="cond">any term <span class="m">t</span></td></tr>
+    <tr><td>forall introduction</td><td class="m">φ(a) ⊢ ∀x.φ(x)</td><td class="cond"><span class="m">a</span> arbitrary</td></tr>
+    <tr><td>exists elimination</td><td class="m">∃x.φ(x) ⊢ φ(a)</td><td class="cond"><span class="m">a</span> fresh</td></tr>
+  </table>
+  <p style="margin-top:10px;"><b>Going down is free, going up is restricted.</b> Forall elimination and exists introduction both weaken the claim, so neither carries a side condition. Forall introduction and exists elimination do: the name must be <i>arbitrary</i> (occurs in no premise, no open assumption) or <i>fresh</i> (not already used).</p>
+</div>
+
+<!-- ===== SET 7 ===== -->
 <section class="set" data-set>
-  <div class="set-head">
-    <span class="set-n">07</span>
-    <h2 class="set-t">Short derivations</h2>
-    <span class="set-time">~15 min</span>
-    <span class="tally" data-tally></span>
-  </div>
-
-  <div class="rule">
-    <p><b>Rules in play.</b> <span class="f">MP</span> modus ponens · <span class="f">MT</span> modus tollens · <span class="f">DS</span> disjunctive syllogism · <span class="f">HS</span> hypothetical syllogism · <span class="f">Simp</span> simplification (<span class="f">p ∧ q ⊢ p</span>) · <span class="f">Conj</span> conjunction (<span class="f">p, q ⊢ p ∧ q</span>) · <span class="f">Add</span> addition (<span class="f">p ⊢ p ∨ q</span>).</p>
-    <p>Cite a rule and line numbers on every step. "Obvious" earns no marks and hides errors.</p>
-  </div>
+  <div class="set-head"><span class="set-n">07</span><h2 class="set-t">Short derivations</h2><span class="set-time">~15 min</span><span class="tally" data-tally></span></div>
 
   <div class="q">
-    <p class="qtext"><span class="qn">7.1</span> Derive <span class="f">r</span>.</p>
-    <span class="seq">p ∨ q,  ¬q,  p → r   ⊢   r</span>
-    <span class="fb">1.  p ∨ q      premise
-2.  ¬q         premise
-3.  p → r      premise</span>
-    <details><summary><span class="caret">▶</span>Check</summary>
-    <div class="ans">
-      <span class="fb">4.  p          1, 2   DS
-5.  r          3, 4   MP</span>
+    <p class="qtext"><span class="qn">7.1</span> Derive <span class="m">r</span>.</p>
+    <span class="mb">p ∨ q,&nbsp; ¬q,&nbsp; p → r &nbsp;⊢&nbsp; r</span>
+    <details><summary><span class="caret">▶</span>Check</summary><div class="ans">
+      <table class="drv">
+        <tr><td class="n">1. p ∨ q</td><td class="j">premise</td></tr>
+        <tr><td class="n">2. ¬q</td><td class="j">premise</td></tr>
+        <tr><td class="n">3. p → r</td><td class="j">premise</td></tr>
+        <tr><td class="n">4. p</td><td class="j">1,2, disjunctive syllogism</td></tr>
+        <tr><td class="n">5. r</td><td class="j">3,4, modus ponens</td></tr>
+      </table>
     </div></details>
   </div>
 
   <div class="q">
-    <p class="qtext"><span class="qn">7.2</span> Derive <span class="f">r</span>.</p>
-    <span class="seq">(p ∧ q) → r,  p,  q   ⊢   r</span>
-    <span class="fb">1.  (p ∧ q) → r     premise
-2.  p               premise
-3.  q               premise</span>
-    <details><summary><span class="caret">▶</span>Check</summary>
-    <div class="ans">
-      <span class="fb">4.  p ∧ q      2, 3   Conj
-5.  r          1, 4   MP</span>
-      <p>Line 4 is the step people skip. <span class="f">MP</span> needs the antecedent <i>exactly as written</i> — <span class="f">p ∧ q</span>, not two separate facts lying around nearby.</p>
+    <p class="qtext"><span class="qn">7.2</span> Derive <span class="m">r</span>.</p>
+    <span class="mb">(p ∧ q) → r,&nbsp; p,&nbsp; q &nbsp;⊢&nbsp; r</span>
+    <details><summary><span class="caret">▶</span>Check</summary><div class="ans">
+      <table class="drv">
+        <tr><td class="n">1. (p ∧ q) → r</td><td class="j">premise</td></tr>
+        <tr><td class="n">2. p</td><td class="j">premise</td></tr>
+        <tr><td class="n">3. q</td><td class="j">premise</td></tr>
+        <tr><td class="n">4. p ∧ q</td><td class="j">2,3, conjunction</td></tr>
+        <tr><td class="n">5. r</td><td class="j">1,4, modus ponens</td></tr>
+      </table>
+      <p>Line 4 is the step that gets skipped. Modus ponens needs the antecedent <i>exactly as written</i>, not two separate facts lying nearby.</p>
     </div></details>
   </div>
 
   <div class="q">
-    <p class="qtext"><span class="qn">7.3</span> Derive <span class="f">s</span>.</p>
-    <span class="seq">p → q,  q → r,  r → s,  p   ⊢   s</span>
-    <span class="fb">1.  p → q      premise
-2.  q → r      premise
-3.  r → s      premise
-4.  p          premise</span>
-    <details><summary><span class="caret">▶</span>Check</summary>
-    <div class="ans">
-      <span class="fb">5.  q          1, 4   MP
-6.  r          2, 5   MP
-7.  s          3, 6   MP</span>
-      <p>Or chain first: <span class="f">HS</span> on 1,2 gives <span class="f">p → r</span>; <span class="f">HS</span> with 3 gives <span class="f">p → s</span>; then one <span class="f">MP</span>. Same length, neither is more correct.</p>
+    <p class="qtext"><span class="qn">7.3</span> Derive <span class="m">s</span>.</p>
+    <span class="mb">p → q,&nbsp; q → r,&nbsp; r → s,&nbsp; p &nbsp;⊢&nbsp; s</span>
+    <details><summary><span class="caret">▶</span>Check</summary><div class="ans">
+      <table class="drv">
+        <tr><td class="n">1. p → q</td><td class="j">premise</td></tr>
+        <tr><td class="n">2. q → r</td><td class="j">premise</td></tr>
+        <tr><td class="n">3. r → s</td><td class="j">premise</td></tr>
+        <tr><td class="n">4. p</td><td class="j">premise</td></tr>
+        <tr><td class="n">5. q</td><td class="j">1,4, modus ponens</td></tr>
+        <tr><td class="n">6. r</td><td class="j">2,5, modus ponens</td></tr>
+        <tr><td class="n">7. s</td><td class="j">3,6, modus ponens</td></tr>
+      </table>
+      <p>Or chain with hypothetical syllogism on 1,2 then 3, then one modus ponens. Same length, neither is more correct.</p>
     </div></details>
   </div>
 
   <div class="q">
-    <p class="qtext"><span class="qn">7.4</span> Derive <span class="f">q</span>. What is this rule "really"?</p>
-    <span class="seq">¬p ∨ q,  p   ⊢   q</span>
-    <span class="fb">1.  ¬p ∨ q     premise
-2.  p          premise</span>
-    <details><summary><span class="caret">▶</span>Check</summary>
-    <div class="ans">
-      <span class="fb">3.  q          1, 2   DS</span>
-      <p>It's also <b>modus ponens</b>, because <span class="f">¬p ∨ q</span> is just <span class="f">p → q</span> wearing a different hat. MP and DS are one rule applied to one clause written two ways — which is the whole point of set 10.</p>
+    <p class="qtext"><span class="qn">7.4</span> Derive <span class="m">q</span>. Which two rules is this, and why are they the same rule?</p>
+    <span class="mb">¬p ∨ q,&nbsp; p &nbsp;⊢&nbsp; q</span>
+    <details><summary><span class="caret">▶</span>Check</summary><div class="ans">
+      <table class="drv">
+        <tr><td class="n">1. ¬p ∨ q</td><td class="j">premise</td></tr>
+        <tr><td class="n">2. p</td><td class="j">premise</td></tr>
+        <tr><td class="n">3. q</td><td class="j">1,2, disjunctive syllogism</td></tr>
+      </table>
+      <p>It is also modus ponens, because <span class="m">¬p ∨ q</span> is <span class="m">p → q</span> written differently. One rule, one clause, two notations — which is the point of set 10.</p>
     </div></details>
   </div>
 
   <div class="q">
-    <p class="qtext"><span class="qn">7.5</span> Derive <span class="f">¬p ∧ ¬q</span>.</p>
-    <span class="seq">¬(p ∨ q)   ⊢   ¬p ∧ ¬q</span>
-    <span class="fb">1.  ¬(p ∨ q)     premise</span>
-    <details><summary><span class="caret">▶</span>Check</summary>
-    <div class="ans">
-      <span class="fb">2.  ¬p ∧ ¬q     1   De Morgan</span>
-      <p>Equivalences (De Morgan, double negation, <span class="f">p → q ≡ ¬p ∨ q</span>) apply to <i>any subformula</i>, in <i>either</i> direction. Inference rules like MP apply to <i>whole lines</i>, in <i>one</i> direction. Confusing the two is a steady source of invalid steps.</p>
+    <p class="qtext"><span class="qn">7.5</span> Derive <span class="m">¬p ∧ ¬q</span>.</p>
+    <span class="mb">¬(p ∨ q) &nbsp;⊢&nbsp; ¬p ∧ ¬q</span>
+    <details><summary><span class="caret">▶</span>Check</summary><div class="ans">
+      <table class="drv">
+        <tr><td class="n">1. ¬(p ∨ q)</td><td class="j">premise</td></tr>
+        <tr><td class="n">2. ¬p ∧ ¬q</td><td class="j">1, De Morgan</td></tr>
+      </table>
+      <p>Equivalences apply to <i>any subformula</i> in <i>either</i> direction. Inference rules apply to <i>whole lines</i> in <i>one</i> direction. Mixing the two up is a steady source of invalid steps.</p>
     </div></details>
   </div>
 </section>
 
-<!-- ============ SET 8 ============ -->
+<!-- ===== SET 8 ===== -->
 <section class="set" data-set>
-  <div class="set-head">
-    <span class="set-n">08</span>
-    <h2 class="set-t">Break it — find the counterexample</h2>
-    <span class="set-time">~20 min</span>
-    <span class="tally" data-tally></span>
-  </div>
+  <div class="set-head"><span class="set-n">08</span><h2 class="set-t">Find the counterexample</h2><span class="set-time">~20 min</span><span class="tally" data-tally></span></div>
 
-  <div class="rule">
-    Each of these is <b>invalid</b>. Don't just say so — produce the row: an assignment making every premise true and the conclusion false. That row <i>is</i> the proof of invalidity.
-  </div>
+  <div class="rule">Each is <b>invalid</b>. Don't just say so — give the row: an assignment making every premise true and the conclusion false. That row <i>is</i> the proof of invalidity.</div>
 
   <div class="q">
-    <p class="qtext"><span class="qn">8.1</span> Show invalid.</p>
-    <span class="seq">p → q,  q → p   ⊢   p</span>
-    <details><summary><span class="caret">▶</span>Check</summary>
-    <div class="ans">
-      <p><span class="f">p = F, q = F</span>. Both conditionals hold vacuously; the conclusion is false.</p>
-      <p>Knowing <span class="f">p</span> and <span class="f">q</span> stand or fall together tells you nothing about <i>which</i> way they went.</p>
+    <p class="qtext"><span class="qn">8.1</span></p>
+    <span class="mb">p → q,&nbsp; q → p &nbsp;⊢&nbsp; p</span>
+    <details><summary><span class="caret">▶</span>Check</summary><div class="ans">
+      <p><span class="m">p = F, q = F</span>. Both conditionals hold vacuously; the conclusion is false.</p>
+      <p>Knowing <span class="m">p</span> and <span class="m">q</span> stand or fall together says nothing about which way they went.</p>
     </div></details>
   </div>
 
   <div class="q">
-    <p class="qtext"><span class="qn">8.2</span> Show invalid.</p>
-    <span class="seq">p ∨ q,  p   ⊢   ¬q</span>
-    <details><summary><span class="caret">▶</span>Check</summary>
-    <div class="ans">
-      <p><span class="f">p = T, q = T</span>. Premise 1 holds, premise 2 holds, conclusion <span class="f">¬q</span> is false.</p>
+    <p class="qtext"><span class="qn">8.2</span></p>
+    <span class="mb">p ∨ q,&nbsp; p &nbsp;⊢&nbsp; ¬q</span>
+    <details><summary><span class="caret">▶</span>Check</summary><div class="ans">
+      <p><span class="m">p = T, q = T</span>. Both premises hold; <span class="m">¬q</span> is false.</p>
     </div></details>
-    <div class="trap">
-      <b>Trap — <span class="f">∨</span> is inclusive.</b> "p or q" permits both. English "or" often implies exactly one, and that leak is where this fallacy comes from. For exclusive you must write <span class="f">(p ∨ q) ∧ ¬(p ∧ q)</span>.
-    </div>
+    <div class="trap"><b>Trap — <span class="m">∨</span> is inclusive.</b> "<span class="m">p</span> or <span class="m">q</span>" permits both. English "or" often implies exactly one, and that leak is where this fallacy comes from. For exclusive you must write <span class="m">(p ∨ q) ∧ ¬(p ∧ q)</span>.</div>
   </div>
 
   <div class="q">
-    <p class="qtext"><span class="qn">8.3</span> Show invalid.</p>
-    <span class="seq">p → (q ∨ r),  ¬q   ⊢   ¬p</span>
-    <details><summary><span class="caret">▶</span>Check</summary>
-    <div class="ans">
-      <p><span class="f">p = T, q = F, r = T</span>. Premise 1 is <span class="f">T → (F ∨ T) = T</span> ✓, premise 2 ✓, conclusion <span class="f">¬p = F</span>.</p>
-      <p>Modus tollens needs the <i>whole</i> consequent negated. Killing <span class="f">q</span> leaves <span class="f">r</span> holding <span class="f">q ∨ r</span> up on its own. You'd need <span class="f">¬q ∧ ¬r</span>.</p>
+    <p class="qtext"><span class="qn">8.3</span></p>
+    <span class="mb">p → (q ∨ r),&nbsp; ¬q &nbsp;⊢&nbsp; ¬p</span>
+    <details><summary><span class="caret">▶</span>Check</summary><div class="ans">
+      <p><span class="m">p = T, q = F, r = T</span>. Premise 1 is <span class="m">T → (F ∨ T) = T</span>; premise 2 holds; <span class="m">¬p</span> is false.</p>
+      <p>Modus tollens needs the <i>whole</i> consequent negated. Killing <span class="m">q</span> leaves <span class="m">r</span> holding <span class="m">q ∨ r</span> up alone — you would need <span class="m">¬q ∧ ¬r</span>.</p>
     </div></details>
   </div>
 
   <div class="q">
-    <p class="qtext"><span class="qn">8.4</span> Show invalid.</p>
-    <span class="seq">p → q   ⊢   ¬p → ¬q</span>
-    <details><summary><span class="caret">▶</span>Check</summary>
-    <div class="ans">
-      <p><span class="f">p = F, q = T</span>. Premise is <span class="f">F → T = T</span> ✓, conclusion is <span class="f">T → F = F</span>.</p>
-      <p>This is the <b>inverse</b> — question 3.1 in the first worksheet. Only the contrapositive <span class="f">¬q → ¬p</span> is safe.</p>
+    <p class="qtext"><span class="qn">8.4</span></p>
+    <span class="mb">p → q &nbsp;⊢&nbsp; ¬p → ¬q</span>
+    <details><summary><span class="caret">▶</span>Check</summary><div class="ans">
+      <p><span class="m">p = F, q = T</span>. Premise is <span class="m">F → T = T</span>; conclusion is <span class="m">T → F = F</span>.</p>
+      <p>This is the <b>inverse</b>. Only the contrapositive <span class="m">¬q → ¬p</span> is safe.</p>
     </div></details>
   </div>
 
   <div class="q">
-    <p class="qtext"><span class="qn">8.5</span> Show invalid.</p>
-    <span class="seq">∀x (P(x) → Q(x)),  Q(a)   ⊢   P(a)</span>
-    <details><summary><span class="caret">▶</span>Check</summary>
-    <div class="ans">
-      <p>Domain <span class="f">{a}</span>, with <span class="f">P(a)</span> false and <span class="f">Q(a)</span> true. Premise 1 becomes <span class="f">F → T = T</span> ✓, premise 2 ✓, conclusion false.</p>
-      <p>Affirming the consequent wearing a quantifier as a disguise. The counterexample for a quantified argument is a <b>model</b> — a domain plus an interpretation of each predicate — rather than a truth-table row. Keep the domain as small as you can; one element is usually enough.</p>
+    <p class="qtext"><span class="qn">8.5</span> Give an interpretation, not a truth-table row.</p>
+    <span class="mb">∀x.(P(x) → Q(x)),&nbsp; Q(a) &nbsp;⊢&nbsp; P(a)</span>
+    <details><summary><span class="caret">▶</span>Check</summary><div class="ans">
+      <p>Domain <span class="m">{a}</span>, with <span class="m">P(a)</span> false and <span class="m">Q(a)</span> true. Premise 1 is <span class="m">F → T = T</span>; premise 2 holds; the conclusion fails.</p>
+      <p>Affirming the consequent with a quantifier as a disguise. The counterexample here is an <b>interpretation</b> — a domain plus an assignment to each predicate — rather than a row. Keep the domain as small as you can; one element is usually enough.</p>
     </div></details>
   </div>
 </section>
 
-<!-- ============ SET 9 ============ -->
+<!-- ===== SET 9 ===== -->
 <section class="set" data-set>
-  <div class="set-head">
-    <span class="set-n">09</span>
-    <h2 class="set-t">Assumptions — conditional proof and reductio</h2>
-    <span class="set-time">~25 min</span>
-    <span class="tally" data-tally></span>
-  </div>
+  <div class="set-head"><span class="set-n">09</span><h2 class="set-t">Conditional proof and reductio</h2><span class="set-time">~25 min</span><span class="tally" data-tally></span></div>
 
   <div class="rule">
-    <p><b>Conditional proof (CP).</b> To prove <span class="f">A → B</span>: assume <span class="f">A</span>, derive <span class="f">B</span>, then <i>discharge</i> — the assumption goes away and you keep <span class="f">A → B</span>.</p>
-    <p><b>Reductio (RAA).</b> To prove <span class="f">¬A</span>: assume <span class="f">A</span>, derive a contradiction, discharge, keep <span class="f">¬A</span>.</p>
-    <p>Indent assumed lines and mark where the assumption closes. An assumption still open at the end is an error, not a stylistic quirk.</p>
+    <p><b>Conditional proof.</b> To prove <span class="m">A → B</span>: assume <span class="m">A</span>, derive <span class="m">B</span>, discharge — the assumption goes, you keep <span class="m">A → B</span>.</p>
+    <p><b>Reductio.</b> To prove <span class="m">¬A</span>: assume <span class="m">A</span>, derive a contradiction, discharge, keep <span class="m">¬A</span>.</p>
+    <p>Mark the line <i>assumption</i> and cite the closing range. An assumption still open at the end is an error, not a stylistic quirk.</p>
   </div>
 
   <div class="q">
-    <p class="qtext"><span class="qn">9.1</span> Prove using CP rather than HS.</p>
-    <span class="seq">p → q,  q → r   ⊢   p → r</span>
-    <details><summary><span class="caret">▶</span>Check</summary>
-    <div class="ans">
-      <span class="fb">1.  p → q          premise
-2.  q → r          premise
-3.  │ p            assume
-4.  │ q            1, 3   MP
-5.  │ r            2, 4   MP
-6.  p → r          3–5    CP</span>
-      <p>This is <i>why</i> hypothetical syllogism is valid. Every derived rule is a packaged-up proof like this one.</p>
+    <p class="qtext"><span class="qn">9.1</span> Prove using conditional proof rather than hypothetical syllogism.</p>
+    <span class="mb">p → q,&nbsp; q → r &nbsp;⊢&nbsp; p → r</span>
+    <details><summary><span class="caret">▶</span>Check</summary><div class="ans">
+      <table class="drv">
+        <tr><td class="n">1. p → q</td><td class="j">premise</td></tr>
+        <tr><td class="n">2. q → r</td><td class="j">premise</td></tr>
+        <tr><td class="n">3. p</td><td class="j">assumption</td></tr>
+        <tr><td class="n">4. q</td><td class="j">1,3, modus ponens</td></tr>
+        <tr><td class="n">5. r</td><td class="j">2,4, modus ponens</td></tr>
+        <tr><td class="n">6. p → r</td><td class="j">3–5, conditional proof</td></tr>
+      </table>
+      <p>This is <i>why</i> hypothetical syllogism is valid. Every derived rule is a packaged proof like this one.</p>
     </div></details>
   </div>
 
   <div class="q">
     <p class="qtext"><span class="qn">9.2</span> Prove.</p>
-    <span class="seq">p → q,  p → ¬q   ⊢   ¬p</span>
-    <details><summary><span class="caret">▶</span>Check</summary>
-    <div class="ans">
-      <span class="fb">1.  p → q          premise
-2.  p → ¬q         premise
-3.  │ p            assume
-4.  │ q            1, 3   MP
-5.  │ ¬q           2, 3   MP
-6.  │ q ∧ ¬q       4, 5   Conj   ⊥
-7.  ¬p             3–6    RAA</span>
-      <p>If one assumption entails both a thing and its negation, the assumption is dead. This is the engine behind proof by contradiction — question 6.3 in the first worksheet is this exact shape, with "√2 is rational" as line 3.</p>
+    <span class="mb">p → q,&nbsp; p → ¬q &nbsp;⊢&nbsp; ¬p</span>
+    <details><summary><span class="caret">▶</span>Check</summary><div class="ans">
+      <table class="drv">
+        <tr><td class="n">1. p → q</td><td class="j">premise</td></tr>
+        <tr><td class="n">2. p → ¬q</td><td class="j">premise</td></tr>
+        <tr><td class="n">3. p</td><td class="j">assumption</td></tr>
+        <tr><td class="n">4. q</td><td class="j">1,3, modus ponens</td></tr>
+        <tr><td class="n">5. ¬q</td><td class="j">2,3, modus ponens</td></tr>
+        <tr><td class="n">6. q ∧ ¬q</td><td class="j">4,5, conjunction (⊥)</td></tr>
+        <tr><td class="n">7. ¬p</td><td class="j">3–6, reductio</td></tr>
+      </table>
+      <p>If one assumption entails both a thing and its negation, the assumption is dead. This is the engine behind proof by contradiction.</p>
     </div></details>
   </div>
 
   <div class="q">
-    <p class="qtext"><span class="qn">9.3</span> Prove.</p>
-    <span class="seq">p → (q → r)   ⊢   (p ∧ q) → r</span>
-    <details><summary><span class="caret">▶</span>Check</summary>
-    <div class="ans">
-      <span class="fb">1.  p → (q → r)    premise
-2.  │ p ∧ q        assume
-3.  │ p            2   Simp
-4.  │ q            2   Simp
-5.  │ q → r        1, 3   MP
-6.  │ r            5, 4   MP
-7.  (p ∧ q) → r    2–6    CP</span>
-      <p>This is <b>exportation</b>, and it runs both ways: <span class="f">(p ∧ q) → r ≡ p → (q → r)</span>. Compare 2.4 in the first worksheet — that's the equivalence stated, this is it proved.</p>
+    <p class="qtext"><span class="qn">9.3</span> Prove. Name the equivalence this establishes.</p>
+    <span class="mb">p → (q → r) &nbsp;⊢&nbsp; (p ∧ q) → r</span>
+    <details><summary><span class="caret">▶</span>Check</summary><div class="ans">
+      <table class="drv">
+        <tr><td class="n">1. p → (q → r)</td><td class="j">premise</td></tr>
+        <tr><td class="n">2. p ∧ q</td><td class="j">assumption</td></tr>
+        <tr><td class="n">3. p</td><td class="j">2, simplification</td></tr>
+        <tr><td class="n">4. q</td><td class="j">2, simplification</td></tr>
+        <tr><td class="n">5. q → r</td><td class="j">1,3, modus ponens</td></tr>
+        <tr><td class="n">6. r</td><td class="j">5,4, modus ponens</td></tr>
+        <tr><td class="n">7. (p ∧ q) → r</td><td class="j">2–6, conditional proof</td></tr>
+      </table>
+      <p>This is <b>exportation</b>, and it runs both ways: <span class="m">(p ∧ q) → r ≡ p → (q → r)</span>.</p>
     </div></details>
   </div>
 
   <div class="q">
     <p class="qtext"><span class="qn">9.4</span> Prove.</p>
-    <span class="seq">¬p   ⊢   ¬(p ∧ q)</span>
-    <details><summary><span class="caret">▶</span>Check</summary>
-    <div class="ans">
-      <span class="fb">1.  ¬p             premise
-2.  │ p ∧ q        assume
-3.  │ p            2   Simp
-4.  │ p ∧ ¬p       3, 1   Conj   ⊥
-5.  ¬(p ∧ q)       2–4    RAA</span>
+    <span class="mb">¬p &nbsp;⊢&nbsp; ¬(p ∧ q)</span>
+    <details><summary><span class="caret">▶</span>Check</summary><div class="ans">
+      <table class="drv">
+        <tr><td class="n">1. ¬p</td><td class="j">premise</td></tr>
+        <tr><td class="n">2. p ∧ q</td><td class="j">assumption</td></tr>
+        <tr><td class="n">3. p</td><td class="j">2, simplification</td></tr>
+        <tr><td class="n">4. p ∧ ¬p</td><td class="j">3,1, conjunction (⊥)</td></tr>
+        <tr><td class="n">5. ¬(p ∧ q)</td><td class="j">2–4, reductio</td></tr>
+      </table>
     </div></details>
   </div>
 
   <div class="q">
-    <p class="qtext"><span class="qn">9.5</span> Prove from no premises at all.</p>
-    <span class="seq">⊢   p → (q → p)</span>
-    <details><summary><span class="caret">▶</span>Check</summary>
-    <div class="ans">
-      <span class="fb">1.  │ p            assume
-2.  │ │ q         assume
-3.  │ │ p         1   reiteration
-4.  │ q → p       2–3   CP
-5.  p → (q → p)   1–4   CP</span>
-      <p>Nested assumptions, discharged innermost-first. A theorem provable from zero premises is a <b>tautology</b> — a truth table would confirm it too, but the derivation shows <i>why</i> rather than just <i>that</i>.</p>
+    <p class="qtext"><span class="qn">9.5</span> Prove from no premises.</p>
+    <span class="mb">⊢&nbsp; p → (q → p)</span>
+    <details><summary><span class="caret">▶</span>Check</summary><div class="ans">
+      <table class="drv">
+        <tr><td class="n">1. p</td><td class="j">assumption</td></tr>
+        <tr><td class="n">2. q</td><td class="j">assumption</td></tr>
+        <tr><td class="n">3. p</td><td class="j">1, reiteration</td></tr>
+        <tr><td class="n">4. q → p</td><td class="j">2–3, conditional proof</td></tr>
+        <tr><td class="n">5. p → (q → p)</td><td class="j">1–4, conditional proof</td></tr>
+      </table>
+      <p>Nested assumptions, discharged innermost first. A theorem provable from zero premises is a <b>tautology</b>.</p>
     </div></details>
   </div>
 </section>
 
-<!-- ============ SET 10 ============ -->
+<!-- ===== SET 10 ===== -->
 <section class="set" data-set>
-  <div class="set-head">
-    <span class="set-n">10</span>
-    <h2 class="set-t">Resolution</h2>
-    <span class="set-time">~25 min</span>
-    <span class="tally" data-tally></span>
-  </div>
+  <div class="set-head"><span class="set-n">10</span><h2 class="set-t">Resolution</h2><span class="set-time">~25 min</span><span class="tally" data-tally></span></div>
 
   <div class="rule">
-    <p><b>The rule.</b> From <span class="f">A ∨ x</span> and <span class="f">B ∨ ¬x</span>, infer <span class="f">A ∨ B</span>. One complementary pair cancels; everything else survives. Same sign on both sides means <i>no inference</i>.</p>
-    <p><b>Refutation procedure.</b> To show premises <span class="f">⊨</span> conclusion: negate the conclusion, add it to the premises, convert everything to clauses, resolve until you reach the empty clause <span class="f">□</span>. Reaching <span class="f">□</span> means the set is unsatisfiable, which means the original argument was valid.</p>
+    <p><b>The rule.</b> From <span class="m">A ∨ x</span> and <span class="m">B ∨ ¬x</span>, infer <span class="m">A ∨ B</span>. Exactly one complementary pair cancels per step; everything else survives. Same sign on both sides means <i>no inference</i>.</p>
+    <p><b>Refutation.</b> To show premises <span class="m">⊨</span> conclusion: negate the conclusion, add it in, convert to clauses, resolve until you reach the empty clause <span class="m">□</span>.</p>
   </div>
 
   <div class="q">
     <p class="qtext"><span class="qn">10.1</span> Convert each to clause form.</p>
-    <span class="seq">p → q        ¬(p ∧ q)        ¬(p ∨ q)        p ↔ q</span>
-    <details><summary><span class="caret">▶</span>Check</summary>
-    <div class="ans">
-      <span class="fb">p → q      ⇒  {¬p, q}
-¬(p ∧ q)   ⇒  {¬p, ¬q}
-¬(p ∨ q)   ⇒  {¬p} and {¬q}      two separate clauses
-p ↔ q      ⇒  {¬p, q} and {¬q, p}</span>
-      <p>A clause is a disjunction of literals. A conjunction at the top level splits into <i>separate</i> clauses — that's what CNF is for.</p>
+    <span class="mb">p → q &nbsp;&nbsp;&nbsp; ¬(p ∧ q) &nbsp;&nbsp;&nbsp; ¬(p ∨ q) &nbsp;&nbsp;&nbsp; p ↔ q</span>
+    <details><summary><span class="caret">▶</span>Check</summary><div class="ans">
+      <table class="drv">
+        <tr><td class="n">p → q</td><td class="j">{¬p, q}</td></tr>
+        <tr><td class="n">¬(p ∧ q)</td><td class="j">{¬p, ¬q}</td></tr>
+        <tr><td class="n">¬(p ∨ q)</td><td class="j">{¬p} and {¬q} — two separate clauses</td></tr>
+        <tr><td class="n">p ↔ q</td><td class="j">{¬p, q} and {¬q, p}</td></tr>
+      </table>
+      <p>A clause is a disjunction of literals. A top-level conjunction splits into <i>separate</i> clauses — that is what CNF is for.</p>
     </div></details>
   </div>
 
   <div class="q">
     <p class="qtext"><span class="qn">10.2</span> Convert to CNF and list the clauses.</p>
-    <span class="seq">¬(p → q) ∨ (r → s)</span>
-    <details><summary><span class="caret">▶</span>Check</summary>
-    <div class="ans">
-      <span class="fb">¬(p → q) ∨ (r → s)
-= ¬(¬p ∨ q) ∨ (¬r ∨ s)           arrows out
-= (p ∧ ¬q) ∨ (¬r ∨ s)            De Morgan
-= (p ∨ ¬r ∨ s) ∧ (¬q ∨ ¬r ∨ s)   distribute</span>
-      <p>Two clauses: <span class="f">{p, ¬r, s}</span> and <span class="f">{¬q, ¬r, s}</span>.</p>
-      <p>Fixed order every time: <b>arrows out → negations inward → distribute <span class="f">∨</span> over <span class="f">∧</span></b>. A rewriting algorithm, not a puzzle — which is exactly why it's automatable.</p>
+    <span class="mb">¬(p → q) ∨ (r → s)</span>
+    <details><summary><span class="caret">▶</span>Check</summary><div class="ans">
+      <table class="drv">
+        <tr><td class="n">¬(¬p ∨ q) ∨ (¬r ∨ s)</td><td class="j">arrows out</td></tr>
+        <tr><td class="n">(p ∧ ¬q) ∨ (¬r ∨ s)</td><td class="j">De Morgan</td></tr>
+        <tr><td class="n">(p ∨ ¬r ∨ s) ∧ (¬q ∨ ¬r ∨ s)</td><td class="j">distribute</td></tr>
+      </table>
+      <p>Clauses <span class="m">{p, ¬r, s}</span> and <span class="m">{¬q, ¬r, s}</span>.</p>
+      <p>Fixed order every time: <b>arrows out → negations inward → distribute <span class="m">∨</span> over <span class="m">∧</span></b>. A rewriting algorithm, not a puzzle — which is exactly why it is automatable.</p>
     </div></details>
   </div>
 
   <div class="q">
     <p class="qtext"><span class="qn">10.3</span> Show by resolution refutation.</p>
-    <span class="seq">p → q,  q → r   ⊨   p → r</span>
-    <details><summary><span class="caret">▶</span>Check</summary>
-    <div class="ans">
-      <p>Negated conclusion: <span class="f">¬(p → r) = p ∧ ¬r</span>, giving clauses <span class="f">{p}</span> and <span class="f">{¬r}</span>.</p>
-      <span class="fb">1.  {¬p, q}      premise
-2.  {¬q, r}      premise
-3.  {p}          ¬conclusion
-4.  {¬r}         ¬conclusion
-5.  {q}          1, 3   resolve on p
-6.  {r}          2, 5   resolve on q
-7.  □            4, 6   resolve on r</span>
-      <p>Empty clause reached, so the argument is valid.</p>
+    <span class="mb">p → q,&nbsp; q → r &nbsp;⊨&nbsp; p → r</span>
+    <details><summary><span class="caret">▶</span>Check</summary><div class="ans">
+      <p>Negated conclusion <span class="m">¬(p → r) = p ∧ ¬r</span>.</p>
+      <table class="drv">
+        <tr><td class="n">1. {¬p, q}</td><td class="j">premise</td></tr>
+        <tr><td class="n">2. {¬q, r}</td><td class="j">premise</td></tr>
+        <tr><td class="n">3. {p}</td><td class="j">negated conclusion</td></tr>
+        <tr><td class="n">4. {¬r}</td><td class="j">negated conclusion</td></tr>
+        <tr><td class="n">5. {q}</td><td class="j">1,3, resolution on p</td></tr>
+        <tr><td class="n">6. {r}</td><td class="j">2,5, resolution on q</td></tr>
+        <tr><td class="n">7. □</td><td class="j">4,6, resolution on r</td></tr>
+      </table>
     </div></details>
   </div>
 
   <div class="q">
     <p class="qtext"><span class="qn">10.4</span> Show by resolution refutation.</p>
-    <span class="seq">p ∨ q,  ¬p ∨ r,  ¬q ∨ r   ⊨   r</span>
-    <details><summary><span class="caret">▶</span>Check</summary>
-    <div class="ans">
-      <span class="fb">1.  {p, q}        premise
-2.  {¬p, r}       premise
-3.  {¬q, r}       premise
-4.  {¬r}          ¬conclusion
-5.  {q, r}        1, 2   resolve on p
-6.  {r, r} = {r}  5, 3   resolve on q
-7.  □             6, 4   resolve on r</span>
-      <p>Line 6 shows <b>factoring</b> — a clause is a <i>set</i>, so a repeated literal collapses. Worth knowing: a prover that doesn't factor can loop forever producing longer and longer duplicates.</p>
-      <p>This is proof by cases (5.3 in the first worksheet) done mechanically.</p>
+    <span class="mb">p ∨ q,&nbsp; ¬p ∨ r,&nbsp; ¬q ∨ r &nbsp;⊨&nbsp; r</span>
+    <details><summary><span class="caret">▶</span>Check</summary><div class="ans">
+      <table class="drv">
+        <tr><td class="n">1. {p, q}</td><td class="j">premise</td></tr>
+        <tr><td class="n">2. {¬p, r}</td><td class="j">premise</td></tr>
+        <tr><td class="n">3. {¬q, r}</td><td class="j">premise</td></tr>
+        <tr><td class="n">4. {¬r}</td><td class="j">negated conclusion</td></tr>
+        <tr><td class="n">5. {q, r}</td><td class="j">1,2, resolution on p</td></tr>
+        <tr><td class="n">6. {r}</td><td class="j">5,3, resolution on q, factored</td></tr>
+        <tr><td class="n">7. □</td><td class="j">6,4, resolution on r</td></tr>
+      </table>
+      <p>Line 6 shows <b>factoring</b> — a clause is a <i>set</i>, so the repeated <span class="m">r</span> collapses. A prover that does not factor can loop forever producing longer duplicates.</p>
     </div></details>
   </div>
 
   <div class="q">
-    <p class="qtext"><span class="qn">10.5</span> Which of these pairs can be resolved, and on what?</p>
-    <span class="seq">{¬p, q}  with  {¬p, r}          {p, q}  with  {¬p, ¬q}</span>
-    <details><summary><span class="caret">▶</span>Check</summary>
-    <div class="ans">
-      <p><b>First pair: no.</b> <span class="f">¬p</span> appears in both with the <i>same</i> sign, and <span class="f">q</span>, <span class="f">r</span> are unrelated. No complementary pair, no resolvent.</p>
-      <p><b>Second pair: yes, two ways</b> — but on one literal only. On <span class="f">p</span> you get <span class="f">{q, ¬q}</span>; on <span class="f">q</span> you get <span class="f">{p, ¬p}</span>. Both are tautologous and both are useless, which is correct: the two clauses together are perfectly satisfiable.</p>
+    <p class="qtext"><span class="qn">10.5</span> Which pairs can be resolved, and on which literal?</p>
+    <span class="mb">{¬p, q} with {¬p, r} &nbsp;&nbsp;&nbsp;&nbsp; {p, q} with {¬p, ¬q}</span>
+    <details><summary><span class="caret">▶</span>Check</summary><div class="ans">
+      <p><b>First pair: no.</b> <span class="m">¬p</span> appears in both with the <i>same</i> sign, and <span class="m">q</span>, <span class="m">r</span> are unrelated. No complementary pair, no resolvent.</p>
+      <p><b>Second pair: yes, two ways</b> — but on one literal only. On <span class="m">p</span> you get <span class="m">{q, ¬q}</span>; on <span class="m">q</span> you get <span class="m">{p, ¬p}</span>. Both tautologous, both useless — correctly so, since the two clauses together are satisfiable.</p>
     </div></details>
-    <div class="trap">
-      <b>Trap — cancelling two pairs at once.</b> Resolving <span class="f">{p, q}</span> and <span class="f">{¬p, ¬q}</span> on <i>both</i> literals hands you <span class="f">□</span> and claims a contradiction. There isn't one — take <span class="f">p = T, q = F</span> and both clauses hold. <b>Exactly one complementary pair per step.</b>
-    </div>
+    <div class="trap"><b>Trap — cancelling two pairs at once.</b> Resolving <span class="m">{p, q}</span> and <span class="m">{¬p, ¬q}</span> on <i>both</i> literals hands you <span class="m">□</span> and claims a contradiction. There isn't one — <span class="m">p = T, q = F</span> satisfies both clauses. <b>Exactly one complementary pair per step.</b></div>
   </div>
 </section>
 
-<!-- ============ SET 11 ============ -->
+<!-- ===== SET 11 ===== -->
 <section class="set" data-set>
-  <div class="set-head">
-    <span class="set-n">11</span>
-    <h2 class="set-t">Translate, then derive</h2>
-    <span class="set-time">~20 min</span>
-    <span class="tally" data-tally></span>
-  </div>
+  <div class="set-head"><span class="set-n">11</span><h2 class="set-t">Translate, then derive</h2><span class="set-time">~20 min</span><span class="tally" data-tally></span></div>
 
-  <div class="rule">
-    No sequent given — producing it <i>is</i> the first half of the exercise. Choose your letters, write the sequent, then derive or break it.
-  </div>
+  <div class="rule">No sequent given — producing it <i>is</i> the first half of the exercise. Choose your letters, write the sequent, then derive it or break it.</div>
 
   <div class="q">
-    <p class="qtext"><span class="qn">11.1</span> "If the build passes we deploy. We didn't deploy. Either the build passed or the linter failed. So the linter failed."</p>
-    <details><summary><span class="caret">▶</span>Check</summary>
-    <div class="ans">
-      <p><span class="f">b</span> = build passes, <span class="f">d</span> = we deploy, <span class="f">l</span> = linter failed.</p>
-      <span class="seq">b → d,  ¬d,  b ∨ l   ⊢   l</span>
-      <span class="fb">1.  b → d      premise
-2.  ¬d         premise
-3.  b ∨ l      premise
-4.  ¬b         1, 2   MT
-5.  l          3, 4   DS</span>
+    <p class="qtext"><span class="qn">11.1</span> If the build passes we deploy. We did not deploy. Either the build passed or the linter failed. Therefore the linter failed.</p>
+    <details><summary><span class="caret">▶</span>Check</summary><div class="ans">
+      <p><span class="m">b</span> = build passes, <span class="m">d</span> = we deploy, <span class="m">l</span> = linter failed.</p>
+      <span class="mb">b → d,&nbsp; ¬d,&nbsp; b ∨ l &nbsp;⊢&nbsp; l</span>
+      <table class="drv">
+        <tr><td class="n">1. b → d</td><td class="j">premise</td></tr>
+        <tr><td class="n">2. ¬d</td><td class="j">premise</td></tr>
+        <tr><td class="n">3. b ∨ l</td><td class="j">premise</td></tr>
+        <tr><td class="n">4. ¬b</td><td class="j">1,2, modus tollens</td></tr>
+        <tr><td class="n">5. l</td><td class="j">3,4, disjunctive syllogism</td></tr>
+      </table>
       <p><b>Valid.</b></p>
     </div></details>
   </div>
 
   <div class="q">
-    <p class="qtext"><span class="qn">11.2</span> "Either the mutex is held or the queue is empty. The queue isn't empty. If the mutex is held, the worker is waiting. So the worker is waiting."</p>
-    <details><summary><span class="caret">▶</span>Check</summary>
-    <div class="ans">
-      <span class="seq">m ∨ e,  ¬e,  m → w   ⊢   w</span>
-      <span class="fb">1.  m ∨ e      premise
-2.  ¬e         premise
-3.  m → w      premise
-4.  m          1, 2   DS
-5.  w          3, 4   MP</span>
-      <p><b>Valid</b> — and structurally identical to 7.1. Once translated, the subject matter vanishes entirely. That's the point of formalising: two problems that read nothing alike turn out to be the same two lines.</p>
+    <p class="qtext"><span class="qn">11.2</span> Either the mutex is held or the queue is empty. The queue is not empty. If the mutex is held, the worker is waiting. Therefore the worker is waiting.</p>
+    <details><summary><span class="caret">▶</span>Check</summary><div class="ans">
+      <span class="mb">m ∨ e,&nbsp; ¬e,&nbsp; m → w &nbsp;⊢&nbsp; w</span>
+      <table class="drv">
+        <tr><td class="n">1. m ∨ e</td><td class="j">premise</td></tr>
+        <tr><td class="n">2. ¬e</td><td class="j">premise</td></tr>
+        <tr><td class="n">3. m → w</td><td class="j">premise</td></tr>
+        <tr><td class="n">4. m</td><td class="j">1,2, disjunctive syllogism</td></tr>
+        <tr><td class="n">5. w</td><td class="j">3,4, modus ponens</td></tr>
+      </table>
+      <p><b>Valid</b> — and structurally identical to 7.1. Once translated the subject matter vanishes entirely. That is the point of formalising: two problems that read nothing alike turn out to be the same two lines.</p>
     </div></details>
   </div>
 
   <div class="q">
-    <p class="qtext"><span class="qn">11.3</span> "Every process holding a lock is blocked. Process P is not blocked. So P is not holding a lock."</p>
-    <details><summary><span class="caret">▶</span>Check</summary>
-    <div class="ans">
-      <span class="seq">∀x (H(x) → B(x)),  ¬B(p)   ⊢   ¬H(p)</span>
-      <span class="fb">1.  ∀x (H(x) → B(x))    premise
-2.  ¬B(p)               premise
-3.  H(p) → B(p)         1   ∀E
-4.  ¬H(p)               3, 2   MT</span>
-      <p><b>Valid.</b> Line 3 is the new move — universal elimination, covered properly in set 13.</p>
+    <p class="qtext"><span class="qn">11.3</span> Every process holding a lock is blocked. Process <span class="m">p</span> is not blocked. Therefore <span class="m">p</span> is not holding a lock.</p>
+    <details><summary><span class="caret">▶</span>Check</summary><div class="ans">
+      <span class="mb">∀x.(H(x) → B(x)),&nbsp; ¬B(p) &nbsp;⊢&nbsp; ¬H(p)</span>
+      <table class="drv">
+        <tr><td class="n">1. ∀x.(H(x) → B(x))</td><td class="j">premise</td></tr>
+        <tr><td class="n">2. ¬B(p)</td><td class="j">premise</td></tr>
+        <tr><td class="n">3. H(p) → B(p)</td><td class="j">1, forall elimination</td></tr>
+        <tr><td class="n">4. ¬H(p)</td><td class="j">3,2, modus tollens</td></tr>
+      </table>
+      <p><b>Valid.</b></p>
     </div></details>
   </div>
 
   <div class="q">
-    <p class="qtext"><span class="qn">11.4</span> "If the graph has a cycle, DFS finds a back edge. DFS found a back edge. Therefore the graph has a cycle."</p>
-    <details><summary><span class="caret">▶</span>Check</summary>
-    <div class="ans">
-      <span class="seq">c → b,  b   ⊢   c</span>
-      <p><b>Invalid</b> — affirming the consequent. Counterexample: <span class="f">c = F, b = T</span> satisfies both premises and falsifies the conclusion.</p>
-      <p>The awkward part: for directed graphs the conclusion is <i>true</i>, because back edge and cycle really are equivalent. But this argument doesn't establish it — the missing premise is the converse, and without it you arrived by luck.</p>
-      <p>The validity/soundness split from 5.5, running the other direction: a true conclusion reached by an invalid argument.</p>
+    <p class="qtext"><span class="qn">11.4</span> If the graph has a cycle, depth-first search finds a back edge. Depth-first search found a back edge. Therefore the graph has a cycle.</p>
+    <details><summary><span class="caret">▶</span>Check</summary><div class="ans">
+      <span class="mb">c → b,&nbsp; b &nbsp;⊢&nbsp; c</span>
+      <p><b>Invalid</b> — affirming the consequent. Counterexample <span class="m">c = F, b = T</span>.</p>
+      <p>The awkward part: for directed graphs the conclusion happens to be <i>true</i>, because back edge and cycle really are equivalent. This argument does not establish it — the missing premise is the converse, and without it you arrived by luck. A true conclusion reached by an invalid argument.</p>
     </div></details>
   </div>
 </section>
 
-<!-- ============ SET 12 ============ -->
+<!-- ===== SET 12 ===== -->
 <section class="set" data-set>
-  <div class="set-head">
-    <span class="set-n">12</span>
-    <h2 class="set-t">Find the broken step</h2>
-    <span class="set-time">~20 min</span>
-    <span class="tally" data-tally></span>
-  </div>
+  <div class="set-head"><span class="set-n">12</span><h2 class="set-t">Find the broken step</h2><span class="set-time">~20 min</span><span class="tally" data-tally></span></div>
 
-  <div class="rule">
-    Each proof below has at least one invalid line. Name the line, say which rule was misapplied, and say whether the conclusion is salvageable.
-  </div>
+  <div class="rule">Each derivation has at least one invalid line. Name the line, name the rule misapplied, and say whether the conclusion is salvageable.</div>
 
   <div class="q">
     <p class="qtext"><span class="qn">12.1</span></p>
-    <span class="seq">p → q,  q → r,  r   ⊢   p</span>
-    <span class="fb">1.  p → q      premise
-2.  q → r      premise
-3.  r          premise
-4.  q          2, 3   MP
-5.  p          1, 4   MP</span>
-    <details><summary><span class="caret">▶</span>Check</summary>
-    <div class="ans">
-      <p><b>Lines 4 and 5 are both invalid.</b> MP runs antecedent-to-consequent: from <span class="f">q → r</span> and <span class="f">q</span> you get <span class="f">r</span>. Having <span class="f">r</span> tells you nothing about <span class="f">q</span>. Line 5 repeats the mistake.</p>
-      <p><b>Not salvageable</b> — <span class="f">p = F, q = F, r = T</span> satisfies all three premises with <span class="f">p</span> false.</p>
+    <span class="mb">p → q,&nbsp; q → r,&nbsp; r &nbsp;⊢&nbsp; p</span>
+    <table class="drv">
+      <tr><td class="n">1. p → q</td><td class="j">premise</td></tr>
+      <tr><td class="n">2. q → r</td><td class="j">premise</td></tr>
+      <tr><td class="n">3. r</td><td class="j">premise</td></tr>
+      <tr><td class="n">4. q</td><td class="j">2,3, modus ponens</td></tr>
+      <tr><td class="n">5. p</td><td class="j">1,4, modus ponens</td></tr>
+    </table>
+    <details><summary><span class="caret">▶</span>Check</summary><div class="ans">
+      <p><b>Lines 4 and 5 are both invalid.</b> Modus ponens runs antecedent to consequent: from <span class="m">q → r</span> and <span class="m">q</span> you get <span class="m">r</span>. Having <span class="m">r</span> says nothing about <span class="m">q</span>. Line 5 repeats the error.</p>
+      <p><b>Not salvageable</b> — <span class="m">p = F, q = F, r = T</span> satisfies all three premises with <span class="m">p</span> false.</p>
     </div></details>
   </div>
 
   <div class="q">
     <p class="qtext"><span class="qn">12.2</span></p>
-    <span class="seq">p ∨ q,  q   ⊢   ¬p</span>
-    <span class="fb">1.  p ∨ q      premise
-2.  q          premise
-3.  ¬p         1, 2   DS</span>
-    <details><summary><span class="caret">▶</span>Check</summary>
-    <div class="ans">
-      <p><b>Line 3 is invalid.</b> Disjunctive syllogism needs a <i>negated</i> disjunct: from <span class="f">p ∨ q</span> and <span class="f">¬q</span> you get <span class="f">p</span>. An affirmed disjunct yields nothing, because <span class="f">∨</span> is inclusive.</p>
-      <p>Counterexample: <span class="f">p = T, q = T</span>. This is 8.2 in a different costume.</p>
+    <span class="mb">p ∨ q,&nbsp; q &nbsp;⊢&nbsp; ¬p</span>
+    <table class="drv">
+      <tr><td class="n">1. p ∨ q</td><td class="j">premise</td></tr>
+      <tr><td class="n">2. q</td><td class="j">premise</td></tr>
+      <tr><td class="n">3. ¬p</td><td class="j">1,2, disjunctive syllogism</td></tr>
+    </table>
+    <details><summary><span class="caret">▶</span>Check</summary><div class="ans">
+      <p><b>Line 3 is invalid.</b> Disjunctive syllogism needs a <i>negated</i> disjunct: from <span class="m">p ∨ q</span> and <span class="m">¬q</span> you get <span class="m">p</span>. An affirmed disjunct yields nothing, because <span class="m">∨</span> is inclusive.</p>
+      <p>Counterexample <span class="m">p = T, q = T</span>. This is 8.2 in a different costume.</p>
     </div></details>
   </div>
 
   <div class="q">
     <p class="qtext"><span class="qn">12.3</span></p>
-    <span class="seq">(∀x P(x)) → Q,  P(a)   ⊢   Q</span>
-    <span class="fb">1.  (∀x P(x)) → Q     premise
-2.  P(a)              premise
-3.  Q                 1, 2   MP</span>
-    <details><summary><span class="caret">▶</span>Check</summary>
-    <div class="ans">
-      <p><b>Line 3 is invalid.</b> The antecedent of premise 1 is <span class="f">∀x P(x)</span> — <i>every</i> object satisfies <span class="f">P</span>. Premise 2 gives one instance, and one instance is not the universal.</p>
-      <p>Counterexample: domain <span class="f">{a, b}</span> with <span class="f">P(a)</span> true, <span class="f">P(b)</span> false, <span class="f">Q</span> false. Premise 1 holds vacuously, premise 2 holds, <span class="f">Q</span> is false.</p>
-      <p>Instantiation runs <span class="f">∀ → instance</span> only. Going back up needs the instance to be <i>arbitrary</i> — see 13.5.</p>
+    <span class="mb">(∀x.P(x)) → Q,&nbsp; P(a) &nbsp;⊢&nbsp; Q</span>
+    <table class="drv">
+      <tr><td class="n">1. (∀x.P(x)) → Q</td><td class="j">premise</td></tr>
+      <tr><td class="n">2. P(a)</td><td class="j">premise</td></tr>
+      <tr><td class="n">3. Q</td><td class="j">1,2, modus ponens</td></tr>
+    </table>
+    <details><summary><span class="caret">▶</span>Check</summary><div class="ans">
+      <p><b>Line 3 is invalid.</b> The antecedent of premise 1 is <span class="m">∀x.P(x)</span> — <i>every</i> object satisfies <span class="m">P</span>. Premise 2 supplies one instance, and one instance is not the universal.</p>
+      <p>Counterexample: domain <span class="m">{a, b}</span> with <span class="m">P(a)</span> true, <span class="m">P(b)</span> false, <span class="m">Q</span> false. Premise 1 holds vacuously, premise 2 holds, <span class="m">Q</span> is false.</p>
     </div></details>
   </div>
 
   <div class="q">
     <p class="qtext"><span class="qn">12.4</span></p>
-    <span class="seq">p → q,  ¬p ∨ r   ⊢   q ∨ r</span>
-    <span class="fb">1.  p → q          premise
-2.  ¬p ∨ r         premise
-3.  q ∨ r          1, 2   resolution</span>
-    <details><summary><span class="caret">▶</span>Check</summary>
-    <div class="ans">
-      <p><b>Line 3 is invalid.</b> Rewrite premise 1 as the clause <span class="f">{¬p, q}</span>. Premise 2 is <span class="f">{¬p, r}</span>. <span class="f">¬p</span> appears in both with the <b>same sign</b> — no complementary pair, so no resolution step exists.</p>
-      <p>Counterexample: <span class="f">p = F, q = F, r = F</span>. Premise 1 is <span class="f">F → F = T</span> ✓, premise 2 is <span class="f">T ∨ F = T</span> ✓, conclusion <span class="f">F ∨ F = F</span>.</p>
-      <p>Check signs before every resolution step. It's the one place the rule can be misapplied, and it's why 10.5 exists.</p>
+    <span class="mb">p → q,&nbsp; ¬p ∨ r &nbsp;⊢&nbsp; q ∨ r</span>
+    <table class="drv">
+      <tr><td class="n">1. p → q</td><td class="j">premise</td></tr>
+      <tr><td class="n">2. ¬p ∨ r</td><td class="j">premise</td></tr>
+      <tr><td class="n">3. q ∨ r</td><td class="j">1,2, resolution</td></tr>
+    </table>
+    <details><summary><span class="caret">▶</span>Check</summary><div class="ans">
+      <p><b>Line 3 is invalid.</b> Premise 1 as a clause is <span class="m">{¬p, q}</span>; premise 2 is <span class="m">{¬p, r}</span>. The literal <span class="m">¬p</span> appears in both with the <b>same sign</b>, so no resolution step exists.</p>
+      <p>Counterexample <span class="m">p = F, q = F, r = F</span>: premise 1 is <span class="m">F → F = T</span>, premise 2 is <span class="m">T ∨ F = T</span>, conclusion is <span class="m">F</span>.</p>
     </div></details>
   </div>
 
   <div class="q">
     <p class="qtext"><span class="qn">12.5</span></p>
-    <span class="seq">⊢   p ∨ q</span>
-    <span class="fb">1.  │ p            assume
-2.  │ p ∨ q        1   Add
-3.  p ∨ q          2   discharge</span>
-    <details><summary><span class="caret">▶</span>Check</summary>
-    <div class="ans">
-      <p><b>Line 3 is invalid.</b> Discharging an assumption doesn't just delete it — it has to be <i>recorded in the conclusion</i>. What lines 1–2 actually establish is <span class="f">p → (p ∨ q)</span>, by conditional proof.</p>
-      <p>As written, line 3 asserts <span class="f">p ∨ q</span> outright from nothing, which is false whenever both are false.</p>
-      <p>Every assumption you open must be closed by CP or RAA, and closing it always changes the formula. An assumption that quietly evaporates is the most common error in natural-deduction proofs — and it has an exact analogue in 13.6.</p>
+    <span class="mb">⊢&nbsp; p ∨ q</span>
+    <table class="drv">
+      <tr><td class="n">1. p</td><td class="j">assumption</td></tr>
+      <tr><td class="n">2. p ∨ q</td><td class="j">1, addition</td></tr>
+      <tr><td class="n">3. p ∨ q</td><td class="j">2, discharge</td></tr>
+    </table>
+    <details><summary><span class="caret">▶</span>Check</summary><div class="ans">
+      <p><b>Line 3 is invalid.</b> Discharging does not delete an assumption, it <i>records</i> it in the conclusion. Lines 1–2 establish <span class="m">p → (p ∨ q)</span> by conditional proof.</p>
+      <p>As written, line 3 asserts <span class="m">p ∨ q</span> from nothing, which is false when both are false. An assumption that quietly evaporates is the most common error in natural-deduction proofs — and it has an exact analogue in 13.6.</p>
     </div></details>
   </div>
 </section>
 
-<!-- ============ SET 13 ============ -->
+<!-- ===== SET 13 ===== -->
 <section class="set" data-set>
-  <div class="set-head">
-    <span class="set-n">13</span>
-    <h2 class="set-t">Quantifier rules — introduction and elimination</h2>
-    <span class="set-time">~30 min</span>
-    <span class="tally" data-tally></span>
-  </div>
+  <div class="set-head"><span class="set-n">13</span><h2 class="set-t">Quantifier introduction and elimination</h2><span class="set-time">~30 min</span><span class="tally" data-tally></span></div>
 
   <div class="rule">
-    <p>Four rules, and the only thing you have to remember is <b>which two carry a side condition</b>.</p>
-    <table>
-      <tr><th>Rule</th><th>From</th><th>Infer</th><th>Condition</th></tr>
-      <tr><td><b>∀E</b> elim.</td><td><span class="f">∀x φ(x)</span></td><td><span class="f">φ(t)</span></td><td>none — any term <span class="f">t</span></td></tr>
-      <tr><td><b>∃I</b> intro.</td><td><span class="f">φ(t)</span></td><td><span class="f">∃x φ(x)</span></td><td>none — any term <span class="f">t</span></td></tr>
-      <tr><td><b>∀I</b> intro.</td><td><span class="f">φ(a)</span></td><td><span class="f">∀x φ(x)</span></td><td><span class="f">a</span> arbitrary</td></tr>
-      <tr><td><b>∃E</b> elim.</td><td><span class="f">∃x φ(x)</span> + proof of <span class="f">ψ</span> from <span class="f">φ(a)</span></td><td><span class="f">ψ</span></td><td><span class="f">a</span> fresh, not in <span class="f">ψ</span></td></tr>
-    </table>
-    <p><b>"Arbitrary" / "fresh" means: the name appears in no premise and no open assumption.</b> It is a name you invented for this proof and about which you assumed nothing.</p>
-    <p>The pattern to hold onto: <b>going down is free, going up is restricted.</b> Dropping a <span class="f">∀</span> to an instance and lifting an instance to a <span class="f">∃</span> both weaken the claim, so they need no permission. Lifting an instance to a <span class="f">∀</span>, or reasoning from a <span class="f">∃</span> whose witness you can't name, both need the eigenvariable condition.</p>
+    <p><b>Exists elimination is flat here.</b> Unpack <span class="m">∃x.φ(x)</span> to <span class="m">φ(a)</span> for a fresh <span class="m">a</span>, cite "exists elimination", carry on. No box, no discharge line — the freshness condition still applies, it is just enforced by convention rather than displayed.</p>
+    <p><b>"Arbitrary" / "fresh" means:</b> the name appears in no premise and no open assumption. It is a name you invented for this proof and about which you assumed nothing.</p>
   </div>
 
   <div class="q">
-    <p class="qtext"><span class="qn">13.1</span> Derive. (<span class="f">∀E</span> then <span class="f">MP</span>.)</p>
-    <span class="seq">∀x (P(x) → Q(x)),  P(a)   ⊢   Q(a)</span>
-    <details><summary><span class="caret">▶</span>Check</summary>
-    <div class="ans">
-      <span class="fb">1.  ∀x (P(x) → Q(x))    premise
-2.  P(a)                premise
-3.  P(a) → Q(a)         1   ∀E
-4.  Q(a)                3, 2   MP</span>
-      <p><span class="f">∀E</span> is unconditional — you may instantiate at <i>any</i> term, including one already mentioned in the premises. That's why line 3 is fine even though <span class="f">a</span> appears in premise 2.</p>
+    <p class="qtext"><span class="qn">13.1</span> Derive.</p>
+    <span class="mb">∀x.(P(x) → Q(x)),&nbsp; P(a) &nbsp;⊢&nbsp; Q(a)</span>
+    <details><summary><span class="caret">▶</span>Check</summary><div class="ans">
+      <table class="drv">
+        <tr><td class="n">1. ∀x.(P(x) → Q(x))</td><td class="j">premise</td></tr>
+        <tr><td class="n">2. P(a)</td><td class="j">premise</td></tr>
+        <tr><td class="n">3. P(a) → Q(a)</td><td class="j">1, forall elimination</td></tr>
+        <tr><td class="n">4. Q(a)</td><td class="j">3,2, modus ponens</td></tr>
+      </table>
+      <p>Forall elimination is unconditional — you may instantiate at any term, including one already named in the premises. That is why line 3 is fine even though <span class="m">a</span> appears in premise 2.</p>
     </div></details>
   </div>
 
   <div class="q">
     <p class="qtext"><span class="qn">13.2</span> Derive. What background assumption does this rely on?</p>
-    <span class="seq">∀x P(x)   ⊢   ∃x P(x)</span>
-    <details><summary><span class="caret">▶</span>Check</summary>
-    <div class="ans">
-      <span class="fb">1.  ∀x P(x)      premise
-2.  P(a)         1   ∀E
-3.  ∃x P(x)      2   ∃I</span>
-      <p>It relies on the domain being <b>non-empty</b>. Standard first-order logic builds that in as a convention, so the inference is valid — but over an empty domain <span class="f">∀x P(x)</span> is vacuously true while <span class="f">∃x P(x)</span> is false.</p>
-      <p>Worth knowing because some KR formalisms and some database semantics <i>don't</i> assume it.</p>
+    <span class="mb">∀x.P(x) &nbsp;⊢&nbsp; ∃x.P(x)</span>
+    <details><summary><span class="caret">▶</span>Check</summary><div class="ans">
+      <table class="drv">
+        <tr><td class="n">1. ∀x.P(x)</td><td class="j">premise</td></tr>
+        <tr><td class="n">2. P(a)</td><td class="j">1, forall elimination</td></tr>
+        <tr><td class="n">3. ∃x.P(x)</td><td class="j">2, exists introduction</td></tr>
+      </table>
+      <p>It relies on the domain being <b>non-empty</b>. Standard first-order logic builds that in as a convention, so the inference is valid — but over an empty domain <span class="m">∀x.P(x)</span> is vacuously true while <span class="m">∃x.P(x)</span> is false.</p>
+      <p>Worth knowing because some knowledge-representation formalisms and some database semantics do <i>not</i> assume it.</p>
     </div></details>
   </div>
 
   <div class="q">
-    <p class="qtext"><span class="qn">13.3</span> Derive. Justify the <span class="f">∀I</span> step explicitly.</p>
-    <span class="seq">∀x (P(x) → Q(x)),  ∀x P(x)   ⊢   ∀x Q(x)</span>
-    <details><summary><span class="caret">▶</span>Check</summary>
-    <div class="ans">
-      <span class="fb">1.  ∀x (P(x) → Q(x))    premise
-2.  ∀x P(x)             premise
-3.  P(a) → Q(a)         1   ∀E     a arbitrary
-4.  P(a)                2   ∀E
-5.  Q(a)                3, 4   MP
-6.  ∀x Q(x)             5   ∀I     a arbitrary ✓</span>
-      <p>The <span class="f">∀I</span> at line 6 is legal because <span class="f">a</span> appears in no premise and no open assumption — it was a name introduced at line 3 purely to have something to work with, and nothing specific was ever assumed about it.</p>
-      <p>This is the formal version of the everyday "let <span class="f">n</span> be an arbitrary integer… therefore it holds for all integers." Set 6 of the first worksheet used that move constantly without naming it.</p>
+    <p class="qtext"><span class="qn">13.3</span> Derive. Justify the forall introduction step explicitly.</p>
+    <span class="mb">∀x.(P(x) → Q(x)),&nbsp; ∀x.P(x) &nbsp;⊢&nbsp; ∀x.Q(x)</span>
+    <details><summary><span class="caret">▶</span>Check</summary><div class="ans">
+      <table class="drv">
+        <tr><td class="n">1. ∀x.(P(x) → Q(x))</td><td class="j">premise</td></tr>
+        <tr><td class="n">2. ∀x.P(x)</td><td class="j">premise</td></tr>
+        <tr><td class="n">3. P(a) → Q(a)</td><td class="j">1, forall elimination (a arbitrary)</td></tr>
+        <tr><td class="n">4. P(a)</td><td class="j">2, forall elimination</td></tr>
+        <tr><td class="n">5. Q(a)</td><td class="j">3,4, modus ponens</td></tr>
+        <tr><td class="n">6. ∀x.Q(x)</td><td class="j">5, forall introduction (a arbitrary)</td></tr>
+      </table>
+      <p>Line 6 is legal because <span class="m">a</span> occurs in no premise and no open assumption — it was introduced at line 3 purely to have something to work with, and nothing specific was ever assumed about it.</p>
+      <p>This is the formal version of "let <span class="m">n</span> be an arbitrary integer … therefore it holds for all integers".</p>
     </div></details>
   </div>
 
   <div class="q">
-    <p class="qtext"><span class="qn">13.4</span> Derive. This one needs <span class="f">∃E</span>.</p>
-    <span class="seq">∃x P(x),  ∀x (P(x) → Q(x))   ⊢   ∃x Q(x)</span>
-    <details><summary><span class="caret">▶</span>Check</summary>
-    <div class="ans">
-      <span class="fb">1.  ∃x P(x)                premise
-2.  ∀x (P(x) → Q(x))       premise
-3.  │ P(a)                 assume, a fresh
-4.  │ P(a) → Q(a)          2   ∀E
-5.  │ Q(a)                 4, 3   MP
-6.  │ ∃x Q(x)              5   ∃I
-7.  ∃x Q(x)                1, 3–6   ∃E</span>
-      <p>The shape of every <span class="f">∃E</span>: <i>something</i> satisfies <span class="f">P</span> — give it a fresh name, reason with it, and make sure your final conclusion no longer mentions the name.</p>
-      <p>Line 6 matters. Without it the subproof would end at <span class="f">Q(a)</span>, and you can't discharge to <span class="f">Q(a)</span> because <span class="f">a</span> was never a real object — just a placeholder for whichever witness premise 1 promised.</p>
+    <p class="qtext"><span class="qn">13.4</span> Derive.</p>
+    <span class="mb">∃x.P(x),&nbsp; ∀x.(P(x) → Q(x)) &nbsp;⊢&nbsp; ∃x.Q(x)</span>
+    <details><summary><span class="caret">▶</span>Check</summary><div class="ans">
+      <table class="drv">
+        <tr><td class="n">1. ∃x.P(x)</td><td class="j">premise</td></tr>
+        <tr><td class="n">2. ∀x.(P(x) → Q(x))</td><td class="j">premise</td></tr>
+        <tr><td class="n">3. P(a)</td><td class="j">1, exists elimination (a fresh)</td></tr>
+        <tr><td class="n">4. P(a) → Q(a)</td><td class="j">2, forall elimination</td></tr>
+        <tr><td class="n">5. Q(a)</td><td class="j">4,3, modus ponens</td></tr>
+        <tr><td class="n">6. ∃x.Q(x)</td><td class="j">5, exists introduction</td></tr>
+      </table>
+      <p>The shape of every exists elimination: something satisfies <span class="m">P</span>, so give it a fresh name, reason with it, and make sure the final conclusion no longer mentions the name.</p>
+      <p>Line 6 matters. You could not stop at <span class="m">Q(a)</span>, because <span class="m">a</span> was never a real object — only a placeholder for whichever witness premise 1 promised. This is exactly the shape of the week 3 question 4 template.</p>
     </div></details>
   </div>
 
   <div class="q">
-    <p class="qtext"><span class="qn">13.5</span> Find the broken step and give a counter-model.</p>
-    <span class="seq">P(a)   ⊢   ∀x P(x)</span>
-    <span class="fb">1.  P(a)          premise
-2.  ∀x P(x)       1   ∀I</span>
-    <details><summary><span class="caret">▶</span>Check</summary>
-    <div class="ans">
-      <p><b>Line 2 violates the arbitrariness condition.</b> <span class="f">a</span> occurs in premise 1, so it is <i>not</i> an arbitrary name — it's a specific object you were handed information about.</p>
-      <p>Counter-model: domain <span class="f">{a, b}</span> with <span class="f">P(a)</span> true and <span class="f">P(b)</span> false. Premise holds, conclusion fails.</p>
-      <p>The everyday version: "this array is sorted, therefore every array is sorted."</p>
+    <p class="qtext"><span class="qn">13.5</span> Find the broken step and give an interpretation that refutes it.</p>
+    <span class="mb">P(a) &nbsp;⊢&nbsp; ∀x.P(x)</span>
+    <table class="drv">
+      <tr><td class="n">1. P(a)</td><td class="j">premise</td></tr>
+      <tr><td class="n">2. ∀x.P(x)</td><td class="j">1, forall introduction</td></tr>
+    </table>
+    <details><summary><span class="caret">▶</span>Check</summary><div class="ans">
+      <p><b>Line 2 violates the arbitrariness condition.</b> The name <span class="m">a</span> occurs in premise 1, so it is <i>not</i> arbitrary — it is a specific object you were handed information about.</p>
+      <p>Interpretation: domain <span class="m">{a, b}</span> with <span class="m">P(a)</span> true and <span class="m">P(b)</span> false. Premise holds, conclusion fails.</p>
+      <p>The everyday version: "this array is sorted, therefore every array is sorted".</p>
     </div></details>
   </div>
 
   <div class="q">
-    <p class="qtext"><span class="qn">13.6</span> Find the broken step and give a counter-model.</p>
-    <span class="seq">∃x P(x),  ∃x ¬P(x)   ⊢   ⊥</span>
-    <span class="fb">1.  ∃x P(x)        premise
-2.  ∃x ¬P(x)       premise
-3.  │ P(a)         assume from 1, a fresh
-4.  │ ¬P(a)        assume from 2
-5.  │ ⊥            3, 4</span>
-    <details><summary><span class="caret">▶</span>Check</summary>
-    <div class="ans">
-      <p><b>Line 4 violates the freshness condition.</b> Line 3 already used <span class="f">a</span>, so <span class="f">a</span> is no longer fresh when premise 2 is unpacked. Premise 2's witness must get a <i>different</i> name — say <span class="f">b</span>.</p>
-      <p>Counter-model: domain <span class="f">{a, b}</span> with <span class="f">P(a)</span> true, <span class="f">P(b)</span> false. Both premises hold and there is no contradiction whatsoever.</p>
-      <p>Done correctly you get <span class="f">P(a)</span> and <span class="f">¬P(b)</span> — two different objects, perfectly consistent.</p>
+    <p class="qtext"><span class="qn">13.6</span> Find the broken step and give an interpretation that refutes it.</p>
+    <span class="mb">∃x.P(x),&nbsp; ∃x.¬P(x) &nbsp;⊢&nbsp; ⊥</span>
+    <table class="drv">
+      <tr><td class="n">1. ∃x.P(x)</td><td class="j">premise</td></tr>
+      <tr><td class="n">2. ∃x.¬P(x)</td><td class="j">premise</td></tr>
+      <tr><td class="n">3. P(a)</td><td class="j">1, exists elimination</td></tr>
+      <tr><td class="n">4. ¬P(a)</td><td class="j">2, exists elimination</td></tr>
+      <tr><td class="n">5. ⊥</td><td class="j">3,4</td></tr>
+    </table>
+    <details><summary><span class="caret">▶</span>Check</summary><div class="ans">
+      <p><b>Line 4 violates the freshness condition.</b> Line 3 already used <span class="m">a</span>, so premise 2's witness must get a <i>different</i> name — say <span class="m">b</span>.</p>
+      <p>Interpretation: domain <span class="m">{a, b}</span> with <span class="m">P(a)</span> true and <span class="m">P(b)</span> false. Both premises hold and there is no contradiction whatsoever. Done correctly you obtain <span class="m">P(a)</span> and <span class="m">¬P(b)</span> — two different objects, perfectly consistent.</p>
     </div></details>
-    <div class="trap">
-      <b>Trap — reusing a witness name.</b> Two separate <span class="f">∃</span> statements almost never promise the <i>same</i> witness. Every <span class="f">∃E</span> gets its own new letter. This is the most common quantifier error after <span class="f">∀I</span> on a non-arbitrary name, and it's the direct analogue of 12.5: an assumption used as though it were a fact.
-    </div>
+    <div class="trap"><b>Trap — reusing a witness name.</b> Two separate existential statements almost never promise the <i>same</i> witness. Every exists elimination gets its own new letter. This is the most common quantifier error after forall introduction on a non-arbitrary name, and it is the direct analogue of 12.5: an assumption used as though it were a fact.</div>
   </div>
 
   <div class="q">
     <p class="qtext"><span class="qn">13.7</span> Derive. All four quantifier rules appear.</p>
-    <span class="seq">∃x ∀y F(x,y)   ⊢   ∀y ∃x F(x,y)</span>
-    <details><summary><span class="caret">▶</span>Check</summary>
-    <div class="ans">
-      <span class="fb">1.  ∃x ∀y F(x,y)          premise
-2.  │ ∀y F(a,y)           assume, a fresh
-3.  │ F(a,b)              2   ∀E     b arbitrary
-4.  │ ∃x F(x,b)           3   ∃I
-5.  │ ∀y ∃x F(x,y)        4   ∀I     b arbitrary ✓
-6.  ∀y ∃x F(x,y)          1, 2–5   ∃E</span>
-      <p>Line 5 is legal because <span class="f">b</span> is arbitrary — note that <span class="f">a</span> is <i>not</i> arbitrary at that point (it's the assumed witness), which is exactly why the conclusion generalises over <span class="f">y</span> and not over <span class="f">x</span>.</p>
-      <p>Line 6 is legal because the conclusion contains no <span class="f">a</span>.</p>
+    <span class="mb">∃x.∀y.F(x,y) &nbsp;⊢&nbsp; ∀y.∃x.F(x,y)</span>
+    <details><summary><span class="caret">▶</span>Check</summary><div class="ans">
+      <table class="drv">
+        <tr><td class="n">1. ∃x.∀y.F(x,y)</td><td class="j">premise</td></tr>
+        <tr><td class="n">2. ∀y.F(a,y)</td><td class="j">1, exists elimination (a fresh)</td></tr>
+        <tr><td class="n">3. F(a,b)</td><td class="j">2, forall elimination (b arbitrary)</td></tr>
+        <tr><td class="n">4. ∃x.F(x,b)</td><td class="j">3, exists introduction</td></tr>
+        <tr><td class="n">5. ∀y.∃x.F(x,y)</td><td class="j">4, forall introduction (b arbitrary)</td></tr>
+      </table>
+      <p>Line 5 is legal because <span class="m">b</span> is arbitrary. Note <span class="m">a</span> is <i>not</i> arbitrary at that point — it is the assumed witness — which is exactly why the conclusion generalises over <span class="m">y</span> and not over <span class="m">x</span>.</p>
     </div></details>
   </div>
 
   <div class="q">
-    <p class="qtext"><span class="qn">13.8</span> Show the converse of 13.7 is <b>invalid</b>, and say exactly which rule application fails.</p>
-    <span class="seq">∀y ∃x F(x,y)   ⊢   ∃x ∀y F(x,y)</span>
-    <details><summary><span class="caret">▶</span>Check</summary>
-    <div class="ans">
-      <p><b>Counter-model.</b> Domain <span class="f">ℕ</span>, <span class="f">F(x,y)</span> = "<span class="f">x &gt; y</span>". Every <span class="f">y</span> has some larger <span class="f">x</span>, so the premise holds. But no single <span class="f">x</span> exceeds every natural number, so the conclusion fails.</p>
-      <p><b>Where a proof attempt breaks:</b> you'd instantiate the premise at an arbitrary <span class="f">b</span> to get <span class="f">∃x F(x,b)</span>, then <span class="f">∃E</span> gives you a witness <span class="f">a</span> with <span class="f">F(a,b)</span>. To reach the goal you now need <span class="f">∀I</span> on <span class="f">b</span> — but <span class="f">b</span> is no longer arbitrary, because <span class="f">a</span> was chosen <i>after</i> seeing <span class="f">b</span> and the open assumption <span class="f">F(a,b)</span> mentions it.</p>
-      <p>That failed side condition <b>is</b> the <span class="f">∀∃</span> / <span class="f">∃∀</span> asymmetry, stated as a rule violation rather than as intuition: the witness was allowed to depend on <span class="f">b</span>, so it can't be lifted out front. Question 4.3 in the first worksheet, from the proof-theoretic side.</p>
+    <p class="qtext"><span class="qn">13.8</span> Show the converse is <b>invalid</b>, and say exactly which rule application fails.</p>
+    <span class="mb">∀y.∃x.F(x,y) &nbsp;⊢&nbsp; ∃x.∀y.F(x,y)</span>
+    <details><summary><span class="caret">▶</span>Check</summary><div class="ans">
+      <p><b>Interpretation.</b> Domain <span class="m">ℕ</span>, with <span class="m">F(x,y)</span> reading <span class="m">x &gt; y</span>. Every <span class="m">y</span> has some larger <span class="m">x</span>, so the premise holds. No single <span class="m">x</span> exceeds every natural number, so the conclusion fails.</p>
+      <p><b>Where a proof attempt breaks:</b> instantiate the premise at an arbitrary <span class="m">b</span> to get <span class="m">∃x.F(x,b)</span>, then exists elimination gives a witness <span class="m">a</span> with <span class="m">F(a,b)</span>. Reaching the goal now needs forall introduction on <span class="m">b</span> — but <span class="m">b</span> is no longer arbitrary, because <span class="m">a</span> was chosen <i>after</i> seeing <span class="m">b</span> and the open assumption <span class="m">F(a,b)</span> mentions it.</p>
+      <p>That failed side condition <b>is</b> the <span class="m">∀∃</span> versus <span class="m">∃∀</span> asymmetry, stated as a rule violation rather than as intuition: the witness was allowed to depend on <span class="m">b</span>, so it cannot be lifted out in front.</p>
+    </div></details>
+  </div>
+</section>
+
+<!-- ===== SET 14 ===== -->
+<section class="set" data-set>
+  <div class="set-head"><span class="set-n">14</span><h2 class="set-t">Name the rule</h2><span class="set-time">~15 min</span><span class="tally" data-tally></span></div>
+
+  <div class="rule">Premises above the bar, conclusion below — the notation your week 3 sheet uses in question 5. Name the rule being applied.</div>
+
+  <div class="q">
+    <p class="qtext"><span class="qn">14.1</span></p>
+    <div class="frac"><div class="num">p ∧ q<span class="gap"></span>(p ∧ q) → (r ∨ s)</div><div class="den">r ∨ s</div></div>
+    <details><summary><span class="caret">▶</span>Check</summary><div class="ans">
+      <p><b>Modus ponens</b>, with <span class="m">p ∧ q</span> as a single compound antecedent. The conjunction is not being decomposed at all — it is just the shape of the antecedent.</p>
+    </div></details>
+  </div>
+
+  <div class="q">
+    <p class="qtext"><span class="qn">14.2</span></p>
+    <div class="frac"><div class="num">¬(¬(p ∧ (q ∨ r)))</div><div class="den">p ∧ (q ∨ r)</div></div>
+    <details><summary><span class="caret">▶</span>Check</summary><div class="ans">
+      <p><b>Double negation elimination.</b> An equivalence, not an inference rule — which is why it can be applied to a subformula and run in either direction.</p>
+    </div></details>
+  </div>
+
+  <div class="q">
+    <p class="qtext"><span class="qn">14.3</span></p>
+    <div class="frac"><div class="num">∀x.(P(x) → Q(x))<span class="gap"></span>P(a)</div><div class="den">Q(a)</div></div>
+    <details><summary><span class="caret">▶</span>Check</summary><div class="ans">
+      <p><b>Two steps compressed under one bar:</b> forall elimination to get <span class="m">P(a) → Q(a)</span>, then modus ponens.</p>
+      <p>Worth spotting — a single bar does not have to mean a single rule.</p>
+    </div></details>
+  </div>
+
+  <div class="q">
+    <p class="qtext"><span class="qn">14.4</span></p>
+    <div class="frac"><div class="num">p ∧ q ∧ r<span class="gap"></span>¬(p ∧ q ∧ r)</div><div class="den">s</div></div>
+    <details><summary><span class="caret">▶</span>Check</summary><div class="ans">
+      <p><b>From a contradiction, anything follows</b> — <i>ex falso quodlibet</i>.</p>
+      <p>The giveaway is that <span class="m">s</span> shares no letters with the premises. Any rule that produces a conclusion unrelated to its inputs is either this or a mistake.</p>
+    </div></details>
+  </div>
+
+  <div class="q">
+    <p class="qtext"><span class="qn">14.5</span></p>
+    <div class="frac"><div class="num">F(a,b)</div><div class="den">∃x.F(x,b)</div></div>
+    <details><summary><span class="caret">▶</span>Check</summary><div class="ans">
+      <p><b>Exists introduction.</b> Note <span class="m">b</span> stays free — only <span class="m">a</span> was generalised. You may generalise on one argument position and leave the others alone.</p>
     </div></details>
   </div>
 </section>
 
 <p class="note">
   Sets 7 and 11 are ordinary derivation practice. Sets 8 and 12 move the needle most — producing a counterexample and diagnosing a broken step are harder than writing a correct proof, and closer to what mid-sem questions ask.
-  Set 10 is the machinery CITS3005 is built on. Set 13 is the one to do slowly: the two side conditions on <span class="f">∀I</span> and <span class="f">∃E</span> are the entire difficulty, and 13.8 is where the <span class="f">∃∀</span> versus <span class="f">∀∃</span> distinction finally becomes mechanical rather than a matter of squinting at it.
+  Set 10 is the machinery CITS3005 is built on. Set 13 is the one to do slowly: the two side conditions are the entire difficulty, and 13.8 is where the <span class="m">∃∀</span> versus <span class="m">∀∃</span> distinction becomes mechanical rather than a matter of squinting at it.
 </p>
 
 <script>

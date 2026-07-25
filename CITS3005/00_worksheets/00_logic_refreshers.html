@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Logic refresher — propositions, predicates, proofs</title>
+<style>
+  :root{
+    --proof:#CECBF6; --proof-t:#26215C; --proof-edge:#B6B2EE;
+    --concrete:#DCEEC3; --concrete-t:#173404; --concrete-edge:#C0DD97;
+    --trap:#F5E2B8; --trap-t:#5C3D06; --trap-edge:#E8CE93;
+    --off:#E3E1D9; --off-t:#44443F;
+    --ink:#2c2c2a; --muted:#6b6b64; --line:#e0ded6; --paper:#faf9f5;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; padding:24px 24px 64px;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    color:var(--ink); background:var(--paper); line-height:1.5;
+    max-width:820px; margin-inline:auto;
+  }
+  h1{font-size:23px; font-weight:600; margin:0 0 4px; letter-spacing:-0.01em;}
+  .sub{color:var(--muted); font-size:14px; margin:0 0 20px;}
+
+  /* formal notation gets its own face — object language vs prose */
+  .f{
+    font-family:ui-monospace,"SF Mono",Menlo,Consolas,"Liberation Mono",monospace;
+    font-size:0.94em; background:#f0eee7; padding:1px 5px; border-radius:4px;
+    white-space:nowrap;
+  }
+  .fb{
+    font-family:ui-monospace,"SF Mono",Menlo,Consolas,"Liberation Mono",monospace;
+    font-size:13.5px; display:block; margin:8px 0; padding:9px 12px;
+    background:#f0eee7; border-radius:6px; line-height:1.75; white-space:pre-wrap;
+  }
+
+  .howto{
+    background:var(--proof); color:var(--proof-t);
+    border-radius:9px; padding:14px 16px; font-size:13.5px; margin-bottom:18px;
+  }
+  .howto b{font-weight:600;}
+  .howto p{margin:0 0 7px;} .howto p:last-child{margin:0;}
+
+  .controls{display:flex; gap:8px; margin-bottom:22px; flex-wrap:wrap;}
+  .controls button{
+    font:inherit; font-size:12.5px; padding:6px 12px; border-radius:6px;
+    border:1px solid var(--line); background:#fff; color:var(--muted); cursor:pointer;
+  }
+  .controls button:hover{background:#f4f2ec; color:var(--ink);}
+  .controls button:focus-visible{outline:2px solid var(--proof-t); outline-offset:2px;}
+
+  .set{margin-bottom:34px;}
+  .set-head{
+    display:flex; align-items:baseline; gap:10px; flex-wrap:wrap;
+    border-bottom:2px solid var(--proof-edge); padding-bottom:7px; margin-bottom:14px;
+  }
+  .set-n{
+    font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+    font-size:12px; color:var(--proof-t); background:var(--proof);
+    padding:2px 7px; border-radius:4px; font-weight:600;
+  }
+  .set-t{font-size:16.5px; font-weight:600; margin:0; flex:1;}
+  .set-time{font-size:12px; color:var(--muted); white-space:nowrap;}
+  .tally{font-size:11.5px; color:var(--muted); font-variant-numeric:tabular-nums; white-space:nowrap;}
+
+  .q{margin-bottom:14px; padding-left:2px;}
+  .qtext{font-size:14.5px; margin:0 0 7px;}
+  .qn{font-weight:600; color:var(--muted); margin-right:5px;
+      font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:13px;}
+  .q ul{margin:6px 0 8px; padding-left:22px;}
+  .q li{margin-bottom:4px; font-size:14px;}
+
+  details{margin-top:6px;}
+  summary{
+    display:inline-flex; align-items:center; gap:6px; cursor:pointer;
+    font-size:12.5px; font-weight:600; color:var(--proof-t);
+    background:var(--proof); border-radius:6px; padding:4px 11px;
+    list-style:none; user-select:none;
+  }
+  summary::-webkit-details-marker{display:none;}
+  summary:hover{background:var(--proof-edge);}
+  summary:focus-visible{outline:2px solid var(--proof-t); outline-offset:2px;}
+  summary .caret{font-size:10px; transition:transform .15s ease;}
+  details[open] summary{background:var(--concrete-edge); color:var(--concrete-t);}
+  details[open] summary .caret{transform:rotate(90deg);}
+  .ans{
+    background:var(--concrete); color:var(--concrete-t);
+    border-radius:8px; padding:11px 14px; margin-top:7px; font-size:13.5px;
+  }
+  .ans p{margin:0 0 7px;} .ans p:last-child{margin:0;}
+  .ans .f, .ans .fb{background:rgba(255,255,255,.55);}
+  .ans ul{margin:6px 0; padding-left:20px;}
+  .ans li{margin-bottom:4px;}
+
+  .trap{
+    background:var(--trap); color:var(--trap-t); border-left:3px solid var(--trap-edge);
+    border-radius:0 6px 6px 0; padding:9px 12px; margin-top:9px; font-size:13px;
+  }
+  .trap b{font-weight:600;}
+  .trap .f{background:rgba(255,255,255,.55);}
+
+  .rule{
+    background:#fff; border:1px solid var(--line); border-radius:8px;
+    padding:11px 14px; margin:12px 0; font-size:13.5px;
+  }
+  .rule b{font-weight:600;}
+
+  .note{
+    margin-top:30px; font-size:12.5px; color:var(--muted);
+    border-top:1px solid var(--line); padding-top:14px;
+  }
+
+  @media (max-width:620px){
+    body{padding:16px 16px 48px;}
+    .fb{font-size:12.5px;}
+  }
+  @media (prefers-reduced-motion:reduce){
+    summary .caret{transition:none;}
+  }
+  @media print{
+    body{background:#fff; padding:0; max-width:none;}
+    .controls, .howto{display:none;}
+    details{display:block;} details > *{display:block;}
+    summary{display:none;}
+    .ans{border:1px solid #ccc; background:#f7f7f7;}
+    .set{page-break-inside:avoid;}
+  }
+</style>
+</head>
+<body>
+
+<h1>Logic refresher</h1>
+<p class="sub">Propositions · predicates · deductive proof · built for CITS3001 proof work now, CITS3005 later</p>
+
+<div class="howto">
+  <p><b>How to use this.</b> Every question has its answer attached to it, not at the back. Attempt it on paper first, then hit <i>Check</i> — the point is a tight write&nbsp;→&nbsp;verify loop, the same feedback rhythm that works for you on lab code.</p>
+  <p>Six sets, 15–30 min each. <b>One set per morning block.</b> Don't do the whole thing in a sitting — that's the pattern that burns.</p>
+  <p>Amber boxes are traps: places where the wrong answer is the tempting one. Read those even when you got the question right.</p>
+</div>
+
+<div class="controls">
+  <button type="button" id="openAll">Show all answers</button>
+  <button type="button" id="closeAll">Hide all answers</button>
+  <button type="button" onclick="window.print()">Print</button>
+</div>
+
+<!-- ============ SET 1 ============ -->
+<section class="set" data-set>
+  <div class="set-head">
+    <span class="set-n">01</span>
+    <h2 class="set-t">Propositions and translation</h2>
+    <span class="set-time">~15 min</span>
+    <span class="tally" data-tally></span>
+  </div>
+
+  <div class="q">
+    <p class="qtext"><span class="qn">1.1</span> Which of these are propositions? For any that aren't, say why not.</p>
+    <ul>
+      <li>(a) <span class="f">x + 3 = 7</span></li>
+      <li>(b) Perth is the capital of Western Australia.</li>
+      <li>(c) Sort the array.</li>
+      <li>(d) This sentence is false.</li>
+      <li>(e) Every even integer greater than 2 is a sum of two primes.</li>
+    </ul>
+    <details><summary><span class="caret">▶</span>Check</summary>
+    <div class="ans">
+      <ul>
+        <li><b>(a) No.</b> Open sentence — truth depends on <span class="f">x</span>. It's a <i>predicate</i>, and becomes a proposition once <span class="f">x</span> is assigned or quantified.</li>
+        <li><b>(b) Yes</b>, and true.</li>
+        <li><b>(c) No.</b> Imperative — commands have no truth value.</li>
+        <li><b>(d) No.</b> Paradoxical; no consistent truth value can be assigned.</li>
+        <li><b>(e) Yes.</b> This is Goldbach's conjecture — nobody knows whether it's true, but it <i>has</i> a truth value. Unknown ≠ undefined.</li>
+      </ul>
+    </div></details>
+  </div>
+
+  <div class="q">
+    <p class="qtext"><span class="qn">1.2</span> Let <span class="f">p</span> = "the algorithm terminates", <span class="f">q</span> = "the input is sorted", <span class="f">r</span> = "the array is non-empty". Translate:</p>
+    <ul>
+      <li>(a) The algorithm terminates <i>only if</i> the input is sorted.</li>
+      <li>(b) The algorithm terminates <i>if</i> the input is sorted.</li>
+      <li>(c) The algorithm terminates <i>unless</i> the array is empty.</li>
+      <li>(d) A non-empty array is <i>necessary</i> for termination.</li>
+      <li>(e) A sorted input is <i>sufficient</i> for termination.</li>
+      <li>(f) Neither is the input sorted, nor is the array empty.</li>
+      <li>(g) The algorithm terminates if and only if the array is non-empty.</li>
+    </ul>
+    <details><summary><span class="caret">▶</span>Check</summary>
+    <div class="ans">
+      <span class="fb">(a)  p → q
+(b)  q → p
+(c)  r → p        ["A unless B" ≡ ¬B → A; here B = ¬r]
+(d)  p → r
+(e)  q → p
+(f)  ¬q ∧ r
+(g)  p ↔ r</span>
+      <p>Sanity check on (c): <span class="f">¬B → A ≡ B ∨ A</span>, so <span class="f">r → p ≡ ¬r ∨ p</span> — "either the array is empty, or it terminates". Matches the English.</p>
+    </div></details>
+    <div class="trap">
+      <b>Trap — "only if" vs "if".</b> <i>Only if</i> introduces the <b>consequent</b>: "p only if q" is <span class="f">p → q</span>. Plain <i>if</i> introduces the <b>antecedent</b>: "p if q" is <span class="f">q → p</span>. Same two letters, opposite arrows. Same rule powers (d) and (e): a <b>necessary</b> condition sits on the right of the arrow, a <b>sufficient</b> condition on the left.
+    </div>
+  </div>
+</section>
+
+<!-- ============ SET 2 ============ -->
+<section class="set" data-set>
+  <div class="set-head">
+    <span class="set-n">02</span>
+    <h2 class="set-t">Truth tables and equivalence</h2>
+    <span class="set-time">~20 min</span>
+    <span class="tally" data-tally></span>
+  </div>
+
+  <div class="q">
+    <p class="qtext"><span class="qn">2.1</span> Build the full truth table for <span class="f">((p → q) ∧ (q → r)) → (p → r)</span> and classify it as a tautology, contradiction, or contingency.</p>
+    <details><summary><span class="caret">▶</span>Check</summary>
+    <div class="ans">
+      <p><b>Tautology</b> — all 8 rows come out true. This is hypothetical syllogism written as a single formula.</p>
+      <p>Shortcut worth internalising: the whole thing is false only if the antecedent is true and <span class="f">p → r</span> is false. That needs <span class="f">p = T, r = F</span>. Then <span class="f">p → q</span> forces <span class="f">q = T</span>, and <span class="f">q → r</span> forces <span class="f">r = T</span>. Contradiction — so no falsifying row exists.</p>
+    </div></details>
+  </div>
+
+  <div class="q">
+    <p class="qtext"><span class="qn">2.2</span> Verify by truth table: <span class="f">¬(p ∧ q) ≡ ¬p ∨ ¬q</span>, and <span class="f">p → q ≡ ¬p ∨ q</span>.</p>
+    <details><summary><span class="caret">▶</span>Check</summary>
+    <div class="ans">
+      <span class="fb">p  q │ ¬(p∧q)   ¬p∨¬q  │  p→q   ¬p∨q
+─────┼─────────────────┼─────────────
+T  T │   F        F    │   T      T
+T  F │   T        T    │   F      F
+F  T │   T        T    │   T      T
+F  F │   T        T    │   T      T</span>
+      <p>Both columns match. The second one — <b>implication is just a disjunction in disguise</b> — is the single most useful rewrite you have. It's how you get rid of arrows before applying De Morgan, and it's the first step of converting to CNF.</p>
+    </div></details>
+  </div>
+
+  <div class="q">
+    <p class="qtext"><span class="qn">2.3</span> True or false: <span class="f">(p ∨ q) → r ≡ (p → r) ∧ (q → r)</span></p>
+    <details><summary><span class="caret">▶</span>Check</summary>
+    <div class="ans">
+      <p><b>True.</b> The left side fails exactly when <span class="f">p ∨ q</span> holds and <span class="f">r</span> doesn't. The right side fails exactly when <span class="f">r</span> is false and at least one of <span class="f">p, q</span> is true. Same condition.</p>
+      <p>Read it as: to prove <span class="f">r</span> follows from "p or q", handle each case separately. That <i>is</i> proof by cases.</p>
+    </div></details>
+  </div>
+
+  <div class="q">
+    <p class="qtext"><span class="qn">2.4</span> True or false: <span class="f">(p ∧ q) → r ≡ (p → r) ∧ (q → r)</span></p>
+    <details><summary><span class="caret">▶</span>Check</summary>
+    <div class="ans">
+      <p><b>False.</b> Counterexample: <span class="f">p = T, q = F, r = F</span>.</p>
+      <span class="fb">LHS:  (T ∧ F) → F  =  F → F  =  T
+RHS:  (T → F) ∧ (F → F)  =  F ∧ T  =  F</span>
+      <p>The correct distribution is <span class="f">(p ∧ q) → r ≡ p → (q → r)</span> — exporting a conjunctive hypothesis into nested arrows.</p>
+    </div></details>
+    <div class="trap">
+      <b>Trap — 2.3 and 2.4 look symmetric and aren't.</b> <span class="f">∨</span> in the antecedent distributes over the arrow; <span class="f">∧</span> in the antecedent does not. If you find yourself reasoning "well the other one worked", stop and test a row instead. One counterexample row settles it faster than any intuition.
+    </div>
+  </div>
+
+  <div class="q">
+    <p class="qtext"><span class="qn">2.5</span> Classify <span class="f">(p → q) ∨ (q → p)</span>.</p>
+    <details><summary><span class="caret">▶</span>Check</summary>
+    <div class="ans">
+      <p><b>Tautology</b> — which feels wrong the first time you see it.</p>
+      <p>For it to be false, both disjuncts must be false. <span class="f">p → q</span> false needs <span class="f">p = T, q = F</span>. <span class="f">q → p</span> false needs <span class="f">q = T, p = F</span>. Can't have both, so it's never false.</p>
+      <p>This is the material conditional showing its teeth: it doesn't track relevance or causation, only truth values.</p>
+    </div></details>
+  </div>
+
+  <div class="q">
+    <p class="qtext"><span class="qn">2.6</span> Express exclusive-or <span class="f">p ⊕ q</span> using only <span class="f">∧</span>, <span class="f">∨</span>, <span class="f">¬</span>. Give two different forms.</p>
+    <details><summary><span class="caret">▶</span>Check</summary>
+    <div class="ans">
+      <span class="fb">(p ∨ q) ∧ ¬(p ∧ q)      "at least one, but not both"
+(p ∧ ¬q) ∨ (¬p ∧ q)     "exactly this case, or exactly that one"</span>
+      <p>The first mirrors the English definition; the second is the disjunctive normal form you'd read straight off the true rows of the truth table. Being able to produce DNF from a truth table by inspection is a genuinely reusable trick.</p>
+    </div></details>
+  </div>
+</section>
+
+<!-- ============ SET 3 ============ -->
+<section class="set" data-set>
+  <div class="set-head">
+    <span class="set-n">03</span>
+    <h2 class="set-t">Converse, inverse, contrapositive</h2>
+    <span class="set-time">~15 min</span>
+    <span class="tally" data-tally></span>
+  </div>
+
+  <div class="q">
+    <p class="qtext"><span class="qn">3.1</span> Take the true statement <b>S</b>: "If a graph on <span class="f">n</span> vertices is connected, then it has at least <span class="f">n − 1</span> edges." Write the converse, the inverse, and the contrapositive, and say whether each is true.</p>
+    <details><summary><span class="caret">▶</span>Check</summary>
+    <div class="ans">
+      <ul>
+        <li><b>Converse</b> — if it has at least <span class="f">n − 1</span> edges, it's connected. <b>False.</b> Take <span class="f">n = 4</span>: a triangle on three vertices (3 edges = <span class="f">n − 1</span>) plus one isolated vertex. Edge count satisfied, still disconnected.</li>
+        <li><b>Inverse</b> — if it's not connected, it has fewer than <span class="f">n − 1</span> edges. <b>False</b>, same counterexample.</li>
+        <li><b>Contrapositive</b> — if it has fewer than <span class="f">n − 1</span> edges, it's not connected. <b>True</b>, necessarily, because it's logically equivalent to S.</li>
+      </ul>
+      <p>The pattern: <span class="f">S ≡ contrapositive</span>, and <span class="f">converse ≡ inverse</span>. Two equivalence classes, and one counterexample kills a whole class at once.</p>
+    </div></details>
+  </div>
+
+  <div class="q">
+    <p class="qtext"><span class="qn">3.2</span> Is "every element of the empty set is prime" true or false?</p>
+    <details><summary><span class="caret">▶</span>Check</summary>
+    <div class="ans">
+      <p><b>True</b>, vacuously. Unpacked, it's <span class="f">∀x (x ∈ ∅ → prime(x))</span>, and the antecedent is false for every <span class="f">x</span>, so every instance of the conditional is true.</p>
+      <p>This matters in induction base cases and in loop invariants for an empty input — the invariant usually holds vacuously before the first iteration, and that's a legitimate base case, not a cheat.</p>
+    </div></details>
+  </div>
+
+  <div class="q">
+    <p class="qtext"><span class="qn">3.3</span> True or false: "If <span class="f">2 + 2 = 5</span>, then I am the Queen of England."</p>
+    <details><summary><span class="caret">▶</span>Check</summary>
+    <div class="ans">
+      <p><b>True.</b> False antecedent, so the material conditional is satisfied regardless of the consequent.</p>
+      <p>The lesson isn't the party trick — it's that <span class="f">→</span> carries no notion of relevance, causation, or temporal order. Everyday "if...then" does. When a translation feels wrong, it's usually this mismatch.</p>
+    </div></details>
+  </div>
+
+  <div class="q">
+    <p class="qtext"><span class="qn">3.4</span> You know <span class="f">P → Q</span> is true and <span class="f">Q</span> is true. What can you conclude about <span class="f">P</span>?</p>
+    <details><summary><span class="caret">▶</span>Check</summary>
+    <div class="ans">
+      <p><b>Nothing at all.</b> Both <span class="f">P = T</span> and <span class="f">P = F</span> are consistent with those two facts.</p>
+      <p>Concluding <span class="f">P</span> here is <i>affirming the consequent</i> — the single most common invalid step in student proofs, and it's coming up again in Set 5.</p>
+    </div></details>
+  </div>
+</section>
+
+<!-- ============ SET 4 ============ -->
+<section class="set" data-set>
+  <div class="set-head">
+    <span class="set-n">04</span>
+    <h2 class="set-t">Predicates and quantifiers</h2>
+    <span class="set-time">~25 min</span>
+    <span class="tally" data-tally></span>
+  </div>
+
+  <div class="rule">
+    Domain for 4.1–4.2: all algorithms. <span class="f">S(x)</span> = "<span class="f">x</span> is a sorting algorithm", <span class="f">P(x)</span> = "<span class="f">x</span> runs in polynomial time", <span class="f">F(x,y)</span> = "<span class="f">x</span> is faster than <span class="f">y</span>".
+  </div>
+
+  <div class="q">
+    <p class="qtext"><span class="qn">4.1</span> Translate into predicate logic:</p>
+    <ul>
+      <li>(a) Some sorting algorithm runs in polynomial time.</li>
+      <li>(b) Every sorting algorithm runs in polynomial time.</li>
+      <li>(c) No sorting algorithm runs in polynomial time.</li>
+      <li>(d) There is an algorithm faster than every other algorithm.</li>
+      <li>(e) Every algorithm has something faster than it.</li>
+    </ul>
+    <details><summary><span class="caret">▶</span>Check</summary>
+    <div class="ans">
+      <span class="fb">(a)  ∃x (S(x) ∧ P(x))
+(b)  ∀x (S(x) → P(x))
+(c)  ∀x (S(x) → ¬P(x))      ≡  ¬∃x (S(x) ∧ P(x))
+(d)  ∃x ∀y (x ≠ y → F(x,y))
+(e)  ∀x ∃y (x ≠ y ∧ F(y,x))</span>
+      <p>The <span class="f">x ≠ y</span> guard in (e) is strictly speaking redundant if you assume "faster than" is irreflexive — but state it anyway. A reasoner doesn't share your background assumptions about the relation unless you axiomatise them.</p>
+      <p>(d) and (e) are not variations on one claim — they are close to opposites. (d) says a fastest algorithm exists; (e) says every algorithm is beaten by something, i.e. there is no fastest. Under a strict order they can't both hold. See 4.3.</p>
+    </div></details>
+    <div class="trap">
+      <b>Trap — the connective that pairs with each quantifier.</b> <span class="f">∃</span> takes <span class="f">∧</span>; <span class="f">∀</span> takes <span class="f">→</span>. Writing (a) as <span class="f">∃x (S(x) → P(x))</span> is satisfied by <i>any non-sorting algorithm at all</i>, since the antecedent is false — so it claims almost nothing. Writing (b) as <span class="f">∀x (S(x) ∧ P(x))</span> claims every object in the domain is a sorting algorithm. Both are much more common than you'd expect under exam pressure.
+    </div>
+  </div>
+
+  <div class="q">
+    <p class="qtext"><span class="qn">4.2</span> Negate each of these and push the <span class="f">¬</span> all the way inward:</p>
+    <span class="fb">(a)  ¬ ∀x (S(x) → P(x))
+(b)  ¬ ∃x ∀y F(x,y)
+(c)  ¬ [ ∀ε &gt; 0  ∃N  ∀n &gt; N  ( |aₙ − L| &lt; ε ) ]</span>
+    <details><summary><span class="caret">▶</span>Check</summary>
+    <div class="ans">
+      <span class="fb">(a)  ∃x (S(x) ∧ ¬P(x))
+(b)  ∀x ∃y ¬F(x,y)
+(c)  ∃ε > 0  ∀N  ∃n > N  ( |aₙ − L| ≥ ε )</span>
+      <p>Mechanical rule: each quantifier flips (<span class="f">∀ ↔ ∃</span>) as the negation moves past it, and the innermost body gets negated. For (a) you also need <span class="f">¬(A → B) ≡ A ∧ ¬B</span>.</p>
+      <p>(c) is the definition of "the sequence does not converge to L" — and this exact shape reappears in STAT2062 and in any convergence or bound argument. Being able to negate a three-quantifier statement without thinking is worth real marks.</p>
+    </div></details>
+  </div>
+
+  <div class="q">
+    <p class="qtext"><span class="qn">4.3</span> Domain is <span class="f">ℝ</span>. Which of these is true?</p>
+    <span class="fb">(a)  ∀x ∃y (x + y = 0)
+(b)  ∃y ∀x (x + y = 0)</span>
+    <details><summary><span class="caret">▶</span>Check</summary>
+    <div class="ans">
+      <p><b>(a) is true</b> — for each <span class="f">x</span>, pick <span class="f">y = −x</span>. The choice of <span class="f">y</span> is allowed to depend on <span class="f">x</span>.</p>
+      <p><b>(b) is false</b> — it demands a <i>single</i> <span class="f">y</span> that works for every <span class="f">x</span> simultaneously. No such real number.</p>
+    </div></details>
+    <div class="trap">
+      <b>Trap — quantifier order is not decoration.</b> <span class="f">∃∀</span> is strictly stronger than <span class="f">∀∃</span>: it asserts one witness covers everything. Whenever you see nested quantifiers, ask "is the inner witness allowed to depend on the outer variable?" That's the whole distinction, and it's exactly the difference between pointwise and uniform convergence, and between "each input has a fast algorithm" and "one algorithm is fast on all inputs".
+    </div>
+  </div>
+
+  <div class="q">
+    <p class="qtext"><span class="qn">4.4</span> In <span class="f">∀x (P(x) ∧ Q(y))</span>, which variables are bound and which are free? Is this a proposition?</p>
+    <details><summary><span class="caret">▶</span>Check</summary>
+    <div class="ans">
+      <p><span class="f">x</span> is <b>bound</b> by the quantifier; <span class="f">y</span> is <b>free</b>.</p>
+      <p><b>Not a proposition</b> — it has no truth value until <span class="f">y</span> is assigned or quantified. A formula with a free variable is a predicate, exactly like <span class="f">x + 3 = 7</span> back in 1.1.</p>
+    </div></details>
+  </div>
+</section>
+
+<!-- ============ SET 5 ============ -->
+<section class="set" data-set>
+  <div class="set-head">
+    <span class="set-n">05</span>
+    <h2 class="set-t">Inference rules and fallacies</h2>
+    <span class="set-time">~20 min</span>
+    <span class="tally" data-tally></span>
+  </div>
+
+  <div class="q">
+    <p class="qtext"><span class="qn">5.1</span> Name each form, and mark it valid or invalid.</p>
+    <span class="fb">(a)  p → q,  p        ⊢  q
+(b)  p → q,  ¬q       ⊢  ¬p
+(c)  p → q,  q        ⊢  p
+(d)  p → q,  ¬p       ⊢  ¬q
+(e)  p ∨ q,  ¬p       ⊢  q
+(f)  p → q,  q → r    ⊢  p → r
+(g)  p ∨ q,  ¬p ∨ r   ⊢  q ∨ r</span>
+    <details><summary><span class="caret">▶</span>Check</summary>
+    <div class="ans">
+      <ul>
+        <li>(a) <b>Modus ponens</b> — valid</li>
+        <li>(b) <b>Modus tollens</b> — valid</li>
+        <li>(c) <b>Affirming the consequent</b> — <b>invalid</b></li>
+        <li>(d) <b>Denying the antecedent</b> — <b>invalid</b></li>
+        <li>(e) <b>Disjunctive syllogism</b> — valid</li>
+        <li>(f) <b>Hypothetical syllogism</b> — valid</li>
+        <li>(g) <b>Resolution</b> — valid</li>
+      </ul>
+      <p>(g) is the one everything in automated reasoning is built on — it's the sole inference rule a resolution prover needs, and it's why CNF conversion matters. Worth knowing cold before KR.</p>
+    </div></details>
+  </div>
+
+  <div class="q">
+    <p class="qtext"><span class="qn">5.2</span> Derive <span class="f">¬p</span>. Cite a rule at every line.</p>
+    <span class="fb">1.  p → q      premise
+2.  q → r      premise
+3.  ¬r         premise
+    ⊢  ¬p</span>
+    <details><summary><span class="caret">▶</span>Check</summary>
+    <div class="ans">
+      <span class="fb">4.  p → r      1, 2   hypothetical syllogism
+5.  ¬p         4, 3   modus tollens</span>
+      <p>Alternative route, same length: <span class="f">¬q</span> from 2 and 3 by modus tollens, then <span class="f">¬p</span> from 1 and that, again by modus tollens. Both are fine — there's rarely a unique proof.</p>
+    </div></details>
+  </div>
+
+  <div class="q">
+    <p class="qtext"><span class="qn">5.3</span> Derive <span class="f">r</span> from <span class="f">p ∨ q</span>, <span class="f">p → r</span>, <span class="f">q → r</span>.</p>
+    <details><summary><span class="caret">▶</span>Check</summary>
+    <div class="ans">
+      <p>This is <b>proof by cases</b> (constructive dilemma). Case <span class="f">p</span>: modus ponens on <span class="f">p → r</span> gives <span class="f">r</span>. Case <span class="f">q</span>: modus ponens on <span class="f">q → r</span> gives <span class="f">r</span>. The disjunction guarantees one case holds, and both deliver <span class="f">r</span>.</p>
+      <p>Compare 2.3 — this is that equivalence used as a proof strategy rather than stated as a formula.</p>
+    </div></details>
+  </div>
+
+  <div class="q">
+    <p class="qtext"><span class="qn">5.4</span> Is this valid? "If the program has a memory leak it slows down. The program slowed down. Therefore it has a memory leak."</p>
+    <details><summary><span class="caret">▶</span>Check</summary>
+    <div class="ans">
+      <p><b>Invalid</b> — affirming the consequent. Slowdown has plenty of other causes: swapping, lock contention, a cold cache.</p>
+      <p>This is what debugging by assumption looks like formally, and it's why the symptom-to-cause direction always needs evidence rather than inference.</p>
+    </div></details>
+  </div>
+
+  <div class="q">
+    <p class="qtext"><span class="qn">5.5</span> Give an argument that is <i>valid</i> but not <i>sound</i>.</p>
+    <details><summary><span class="caret">▶</span>Check</summary>
+    <div class="ans">
+      <span class="fb">All prime numbers are even.
+7 is prime.
+∴ 7 is even.</span>
+      <p><b>Valid</b>: the conclusion follows necessarily from the premises. <b>Unsound</b>: the first premise is false.</p>
+      <p><b>Validity is about form only.</b> Soundness = validity + all premises actually true. A marker checking your proof is checking validity; whether your assumptions were right is a separate question.</p>
+    </div></details>
+  </div>
+</section>
+
+<!-- ============ SET 6 ============ -->
+<section class="set" data-set>
+  <div class="set-head">
+    <span class="set-n">06</span>
+    <h2 class="set-t">Proof strategies</h2>
+    <span class="set-time">~30 min</span>
+    <span class="tally" data-tally></span>
+  </div>
+
+  <div class="q">
+    <p class="qtext"><span class="qn">6.1</span> <b>Direct.</b> Prove: if <span class="f">n</span> is odd then <span class="f">n²</span> is odd.</p>
+    <details><summary><span class="caret">▶</span>Check</summary>
+    <div class="ans">
+      <p>Let <span class="f">n = 2k + 1</span> for some integer <span class="f">k</span>. Then</p>
+      <span class="fb">n² = 4k² + 4k + 1 = 2(2k² + 2k) + 1</span>
+      <p>which is of the form <span class="f">2m + 1</span>, hence odd. ∎</p>
+      <p>The move that does all the work is turning the <i>word</i> "odd" into the <i>algebraic form</i> <span class="f">2k + 1</span> immediately. Unfold definitions first, then compute.</p>
+    </div></details>
+  </div>
+
+  <div class="q">
+    <p class="qtext"><span class="qn">6.2</span> <b>Contraposition.</b> Prove: if <span class="f">n²</span> is even then <span class="f">n</span> is even.</p>
+    <details><summary><span class="caret">▶</span>Check</summary>
+    <div class="ans">
+      <p>The contrapositive is: if <span class="f">n</span> is odd then <span class="f">n²</span> is odd — which is exactly 6.1, already proved. ∎</p>
+      <p>Direct attack here is painful: "<span class="f">n²</span> is even" gives you <span class="f">n² = 2k</span>, and extracting information about <span class="f">n</span> from that requires unique factorisation. <b>When the hypothesis is a weak or awkward starting point, try flipping to the contrapositive</b> — you often get a much more usable hypothesis.</p>
+    </div></details>
+  </div>
+
+  <div class="q">
+    <p class="qtext"><span class="qn">6.3</span> <b>Contradiction.</b> Prove <span class="f">√2</span> is irrational.</p>
+    <details><summary><span class="caret">▶</span>Check</summary>
+    <div class="ans">
+      <p>Suppose not: <span class="f">√2 = a/b</span> with <span class="f">a, b</span> integers sharing no common factor.</p>
+      <span class="fb">2b² = a²           →  a² is even
+                   →  a is even        [by 6.2]
+a = 2c  ⟹  2b² = 4c²  ⟹  b² = 2c²
+                   →  b is even        [by 6.2 again]</span>
+      <p>So <span class="f">a</span> and <span class="f">b</span> share a factor of 2, contradicting the assumption that the fraction was in lowest terms. Hence no such <span class="f">a, b</span> exist. ∎</p>
+      <p>Note how 6.2 gets used twice as a lemma. Building small results and reusing them is most of what proof-writing actually is.</p>
+    </div></details>
+  </div>
+
+  <div class="q">
+    <p class="qtext"><span class="qn">6.4</span> <b>Cases.</b> Prove <span class="f">n² + n</span> is even for every integer <span class="f">n</span>.</p>
+    <details><summary><span class="caret">▶</span>Check</summary>
+    <div class="ans">
+      <p><i>Case n even</i>: <span class="f">n = 2k</span>, so <span class="f">n² + n = 4k² + 2k = 2(2k² + k)</span>. Even.</p>
+      <p><i>Case n odd</i>: <span class="f">n = 2k + 1</span>, so <span class="f">n² + n = n(n + 1) = (2k+1)(2k+2) = 2(2k+1)(k+1)</span>. Even.</p>
+      <p>Cases are exhaustive, so the claim holds for all <span class="f">n</span>. ∎</p>
+      <p>Slicker: <span class="f">n² + n = n(n + 1)</span> is a product of consecutive integers, one of which must be even. Worth noticing that factoring first can collapse a case analysis entirely.</p>
+    </div></details>
+  </div>
+
+  <div class="q">
+    <p class="qtext"><span class="qn">6.5</span> <b>Induction.</b> Prove <span class="f">1 + 3 + 5 + ⋯ + (2n − 1) = n²</span> for all <span class="f">n ≥ 1</span>.</p>
+    <details><summary><span class="caret">▶</span>Check</summary>
+    <div class="ans">
+      <p><i>Base</i> <span class="f">n = 1</span>: left side is <span class="f">1</span>, right side is <span class="f">1² = 1</span>. ✓</p>
+      <p><i>Step</i>: assume the sum to <span class="f">(2k − 1)</span> equals <span class="f">k²</span>. Then</p>
+      <span class="fb">k² + (2k + 1) = (k + 1)²</span>
+      <p>which is the claim at <span class="f">k + 1</span>. By induction it holds for all <span class="f">n ≥ 1</span>. ∎</p>
+      <p>Write the inductive hypothesis out explicitly every time, and say where you use it. Markers look for that sentence specifically.</p>
+    </div></details>
+  </div>
+
+  <div class="q">
+    <p class="qtext"><span class="qn">6.6</span> <b>Induction, algorithmic flavour.</b> Prove a binary tree of height <span class="f">h</span> has at most <span class="f">2^(h+1) − 1</span> nodes.</p>
+    <details><summary><span class="caret">▶</span>Check</summary>
+    <div class="ans">
+      <p><i>Base</i> <span class="f">h = 0</span>: a single node, and <span class="f">2¹ − 1 = 1</span>. ✓</p>
+      <p><i>Step</i>: a tree of height <span class="f">h + 1</span> is a root plus two subtrees each of height at most <span class="f">h</span>. By the hypothesis each has at most <span class="f">2^(h+1) − 1</span> nodes, so the total is at most</p>
+      <span class="fb">1 + 2(2^(h+1) − 1) = 2^(h+2) − 1</span>
+      <p>which is the bound at <span class="f">h + 1</span>. ∎</p>
+      <p>This is the shape most CITS3001 correctness and complexity proofs take: induct on a structural parameter (height, size, iteration count) rather than on a plain integer.</p>
+    </div></details>
+  </div>
+
+  <div class="q">
+    <p class="qtext"><span class="qn">6.7</span> <b>Strong induction.</b> Prove every integer <span class="f">n &gt; 1</span> has a prime factorisation. Why won't ordinary induction do?</p>
+    <details><summary><span class="caret">▶</span>Check</summary>
+    <div class="ans">
+      <p>Assume every integer from <span class="f">2</span> up to <span class="f">n − 1</span> factors into primes. If <span class="f">n</span> is prime, it's its own factorisation. Otherwise <span class="f">n = ab</span> with <span class="f">1 &lt; a, b &lt; n</span>; both are covered by the hypothesis, so concatenating their factorisations factors <span class="f">n</span>. ∎</p>
+      <p><b>Ordinary induction fails</b> because it only hands you the case <span class="f">n − 1</span>, and the factors <span class="f">a</span> and <span class="f">b</span> are nowhere near <span class="f">n − 1</span>. You need <i>all</i> smaller cases available.</p>
+      <p>The tell: reach for strong induction whenever the recursive step jumps by an unpredictable amount — divide-and-conquer recurrences, most tree and interval arguments.</p>
+    </div></details>
+  </div>
+
+  <div class="q">
+    <p class="qtext"><span class="qn">6.8</span> <b>Strategy selection.</b> Which technique would you reach for first?</p>
+    <ul>
+      <li>(a) There are infinitely many primes.</li>
+      <li>(b) <span class="f">2ⁿ ≥ n + 1</span> for all <span class="f">n ≥ 1</span>.</li>
+      <li>(c) If <span class="f">x</span> is irrational then <span class="f">1/x</span> is irrational.</li>
+      <li>(d) <span class="f">n³ − n</span> is divisible by <span class="f">6</span> for every integer <span class="f">n</span>.</li>
+    </ul>
+    <details><summary><span class="caret">▶</span>Check</summary>
+    <div class="ans">
+      <ul>
+        <li><b>(a) Contradiction.</b> Assume finitely many, form <span class="f">p₁p₂⋯pₖ + 1</span>, derive a contradiction.</li>
+        <li><b>(b) Induction.</b> A claim indexed by <span class="f">n</span> with an obvious base case.</li>
+        <li><b>(c) Contraposition.</b> "If <span class="f">1/x</span> is rational then <span class="f">x</span> is rational" gives you an actual fraction to manipulate; the original hypothesis gives you only a negative fact.</li>
+        <li><b>(d) Cases</b> (or factor first: <span class="f">n³ − n = (n−1)n(n+1)</span>, three consecutive integers, so divisible by both 2 and 3).</li>
+      </ul>
+      <p>Rough heuristic: <b>indexed by n</b> → induction. <b>Hypothesis is a negative or an irrationality</b> → contraposition or contradiction. <b>Conclusion is "no such thing exists"</b> → contradiction. <b>Domain splits naturally</b> → cases.</p>
+    </div></details>
+  </div>
+
+  <div class="q">
+    <p class="qtext"><span class="qn">6.9</span> Is checking that a claim holds for <span class="f">n = 0, 1, 2, …, 39</span> a proof?</p>
+    <details><summary><span class="caret">▶</span>Check</summary>
+    <div class="ans">
+      <p><b>No.</b> The standard cautionary example: <span class="f">n² + n + 41</span> is prime for every <span class="f">n</span> from <span class="f">0</span> to <span class="f">39</span>, and then at <span class="f">n = 40</span> it gives <span class="f">1681 = 41²</span>.</p>
+      <p>Examples build confidence and suggest what to try. Only a general argument closes it. The reverse does hold though — <b>a single counterexample is a complete disproof</b>, which is why hunting for one is always worth ten minutes before you commit to proving something.</p>
+    </div></details>
+  </div>
+</section>
+
+<p class="note">
+  Six sets, roughly two hours total if you did it in one go — so don't. One set per morning block covers it inside a week, which is the pace this material actually sticks at.
+  Sets 1–3 and 5 are the ones CITS3005 assumes you already have from CITS2211; sets 4 and 6 are the ones CITS3001 will lean on hardest between now and the 8 September mid-sem.
+</p>
+
+<script>
+(function(){
+  var all = Array.prototype.slice.call(document.querySelectorAll('details'));
+
+  function updateTallies(){
+    document.querySelectorAll('[data-set]').forEach(function(set){
+      var ds = set.querySelectorAll('details');
+      var open = set.querySelectorAll('details[open]').length;
+      var el = set.querySelector('[data-tally]');
+      if (el) el.textContent = open + ' / ' + ds.length + ' checked';
+    });
+  }
+
+  all.forEach(function(d){ d.addEventListener('toggle', updateTallies); });
+
+  document.getElementById('openAll').addEventListener('click', function(){
+    all.forEach(function(d){ d.open = true; });
+    updateTallies();
+  });
+  document.getElementById('closeAll').addEventListener('click', function(){
+    all.forEach(function(d){ d.open = false; });
+    updateTallies();
+  });
+
+  updateTallies();
+})();
+</script>
+
+</body>
+</html>

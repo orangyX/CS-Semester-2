@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CITS3005 Lecture 2 — propositional logic and formal reasoning</title>
+<style>
+  :root{
+    --proof:#CECBF6; --proof-t:#26215C; --proof-edge:#B6B2EE;
+    --concrete:#DCEEC3; --concrete-t:#173404; --concrete-edge:#C0DD97;
+    --trap:#F5E2B8; --trap-t:#5C3D06; --trap-edge:#E8CE93;
+    --ink:#2c2c2a; --muted:#6b6b64; --line:#e0ded6; --paper:#faf9f5;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; padding:24px 24px 64px;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    color:var(--ink); background:var(--paper); line-height:1.5;
+    max-width:840px; margin-inline:auto;
+  }
+  h1{font-size:23px; font-weight:600; margin:0 0 4px; letter-spacing:-0.01em;}
+  .sub{color:var(--muted); font-size:14px; margin:0 0 20px;}
+
+  .m{font-family:Cambria,"Latin Modern Roman",Georgia,"Times New Roman",serif;
+     font-style:italic; font-size:1.06em; white-space:nowrap;}
+  .mb{font-family:Cambria,"Latin Modern Roman",Georgia,"Times New Roman",serif;
+      font-style:italic; font-size:16px; display:block; text-align:center;
+      margin:9px 0 10px; padding:9px 12px; background:#fff;
+      border:1px solid var(--proof-edge); border-radius:7px; overflow-x:auto;}
+  .rl{font-family:Cambria,Georgia,"Times New Roman",serif; font-style:normal;
+      font-size:0.95em; white-space:nowrap;}
+  sup{font-size:0.72em; font-style:normal;}
+
+  .drv{border-collapse:collapse; margin:9px auto 10px; background:#fff;
+       border-top:1.5px solid var(--ink); border-bottom:1.5px solid var(--ink);
+       min-width:min(420px,100%);}
+  .drv td{padding:4px 10px; vertical-align:baseline; font-size:14px;}
+  .drv td.ln{color:var(--muted); text-align:right; padding-right:14px;
+             font-family:Cambria,Georgia,serif; width:1%;}
+  .drv td.fm{font-family:Cambria,Georgia,"Times New Roman",serif; font-style:italic;
+             white-space:nowrap; padding-right:34px;}
+  .drv td.j{color:var(--muted); font-size:13px;
+            font-family:Cambria,Georgia,serif; white-space:nowrap;}
+  .ans .drv{background:rgba(255,255,255,.6);}
+
+  .tree{display:flex; flex-direction:column; align-items:center;
+        margin:12px auto; width:max-content; max-width:100%;
+        font-family:Cambria,Georgia,"Times New Roman",serif; font-style:italic; font-size:15px;}
+  .tr{display:flex; align-items:flex-end; gap:22px;}
+  .bar{border-top:1.1px solid var(--ink); padding-top:3px; margin-top:3px;
+       text-align:center; position:relative;}
+  .bar .lab{font-style:normal; font-size:11px; color:var(--muted);
+            position:absolute; right:-30px; top:4px;}
+  .up{padding:0 6px 3px; text-align:center;}
+
+  pre.code{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+           font-size:13px; background:#f0eee7; border:1px solid var(--line);
+           border-radius:6px; padding:10px 13px; margin:9px 0; overflow-x:auto;
+           line-height:1.55;}
+  code{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+       font-size:0.9em; background:#f0eee7; padding:1px 5px; border-radius:4px;}
+  .ans pre.code, .ans code{background:rgba(255,255,255,.6);}
+
+  .howto{background:var(--proof); color:var(--proof-t); border-radius:9px;
+         padding:14px 16px; font-size:13.5px; margin-bottom:18px;}
+  .howto p{margin:0 0 7px;} .howto p:last-child{margin:0;} .howto b{font-weight:600;}
+  .howto ol{margin:6px 0; padding-left:20px;} .howto li{margin-bottom:4px;}
+
+  .controls{display:flex; gap:8px; margin-bottom:22px; flex-wrap:wrap;}
+  .controls button{font:inherit; font-size:12.5px; padding:6px 12px; border-radius:6px;
+                   border:1px solid var(--line); background:#fff; color:var(--muted); cursor:pointer;}
+  .controls button:hover{background:#f4f2ec; color:var(--ink);}
+  .controls button:focus-visible{outline:2px solid var(--proof-t); outline-offset:2px;}
+
+  .set{margin-bottom:34px;}
+  .set-head{display:flex; align-items:baseline; gap:10px; flex-wrap:wrap;
+            border-bottom:2px solid var(--proof-edge); padding-bottom:7px; margin-bottom:14px;}
+  .set-n{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:12px;
+         color:var(--proof-t); background:var(--proof); padding:2px 7px;
+         border-radius:4px; font-weight:600;}
+  .set-t{font-size:16.5px; font-weight:600; margin:0; flex:1;}
+  .set-time{font-size:12px; color:var(--muted); white-space:nowrap;}
+  .tally{font-size:11.5px; color:var(--muted); font-variant-numeric:tabular-nums; white-space:nowrap;}
+
+  .q{margin-bottom:18px;}
+  .qtext{font-size:14.5px; margin:0 0 4px;}
+  .qn{font-weight:600; color:var(--muted); margin-right:6px;
+      font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:13px;}
+  .q ol.sub{margin:6px 0 8px; padding-left:24px;}
+  .q ol.sub li{margin-bottom:4px; font-size:14px;}
+
+  details{margin-top:6px;}
+  summary{display:inline-flex; align-items:center; gap:6px; cursor:pointer;
+          font-size:12.5px; font-weight:600; color:var(--proof-t); background:var(--proof);
+          border-radius:6px; padding:4px 11px; list-style:none; user-select:none;}
+  summary::-webkit-details-marker{display:none;}
+  summary:hover{background:var(--proof-edge);}
+  summary:focus-visible{outline:2px solid var(--proof-t); outline-offset:2px;}
+  summary .caret{font-size:10px; transition:transform .15s ease;}
+  details[open] summary{background:var(--concrete-edge); color:var(--concrete-t);}
+  details[open] summary .caret{transform:rotate(90deg);}
+  .ans{background:var(--concrete); color:var(--concrete-t); border-radius:8px;
+       padding:11px 14px; margin-top:7px; font-size:13.5px;}
+  .ans p{margin:0 0 7px;} .ans p:last-child{margin:0;}
+  .ans .mb{background:rgba(255,255,255,.55); border-color:var(--concrete-edge);}
+  .ans ul,.ans ol{margin:6px 0; padding-left:20px;} .ans li{margin-bottom:5px;}
+
+  .trap{background:var(--trap); color:var(--trap-t); border-left:3px solid var(--trap-edge);
+        border-radius:0 6px 6px 0; padding:9px 12px; margin-top:9px; font-size:13px;}
+  .trap b{font-weight:600;}
+
+  .rule{background:#fff; border:1px solid var(--line); border-radius:8px;
+        padding:11px 14px; margin:12px 0; font-size:13.5px;}
+  .rule b{font-weight:600;} .rule p{margin:0 0 7px;} .rule p:last-child{margin:0;}
+  table.ref{border-collapse:collapse; width:100%; margin:8px 0 4px; font-size:13px;}
+  table.ref th{text-align:left; font-weight:600; padding:6px 10px 6px 0;
+               border-bottom:1px solid var(--line); font-size:12.5px;}
+  table.ref td{padding:5px 10px 5px 0; border-bottom:1px solid var(--line); vertical-align:top;}
+  table.ref tr:last-child td{border-bottom:none;}
+  table.ref td.k{white-space:nowrap; font-family:Cambria,Georgia,serif; width:1%;}
+
+  .note{margin-top:30px; font-size:12.5px; color:var(--muted);
+        border-top:1px solid var(--line); padding-top:14px;}
+
+  @media (max-width:620px){
+    body{padding:16px 16px 48px;}
+    .mb{font-size:14.5px;} .drv td{font-size:13px;} .drv td.fm{padding-right:18px;}
+  }
+  @media (prefers-reduced-motion:reduce){ summary .caret{transition:none;} }
+  @media print{
+    body{background:#fff; padding:0; max-width:none;}
+    .controls,.howto{display:none;}
+    details{display:block;} details > *{display:block;} summary{display:none;}
+    .ans{border:1px solid #ccc; background:#f7f7f7;}
+    .set{page-break-inside:avoid;}
+  }
+</style>
+</head>
+<body>
+
+<h1>Lecture 2 — propositional logic and formal reasoning</h1>
+<p class="sub">CITS3005 Knowledge Representation · syntax, semantics, natural deduction, Prolog</p>
+
+<div class="howto">
+  <p><b>This lecture's notation is not CITS2211's.</b> Three differences to fix before you start:</p>
+  <ol>
+    <li><b>Compact rule labels</b> — <span class="rl">(∧E<sub>l</sub>)</span>, <span class="rl">(→E)</span>, <span class="rl">(¬I)</span> — not "forall elimination" spelled out.</li>
+    <li><b>Assumptions carry a numeric label</b> in square brackets: <span class="m">[α]<sup>1</sup></span>. The label reappears on the rule that discharges it: <span class="rl">(→I)<sup>1</sup>(3–5)</span>.</li>
+    <li><b>Two presentations</b> — proof trees and line-by-line derivations. Questions 4.1 and 4.2 ask for both.</li>
+  </ol>
+  <p>Eight sections. Work on paper, then hit <i>Check</i>.</p>
+</div>
+
+<div class="controls">
+  <button type="button" id="openAll">Show all answers</button>
+  <button type="button" id="closeAll">Hide all answers</button>
+  <button type="button" onclick="window.print()">Print</button>
+</div>
+
+<div class="rule">
+  <table class="ref">
+    <tr><th colspan="2">Introduction</th><th colspan="2">Elimination</th></tr>
+    <tr>
+      <td class="k rl">(∧I)</td><td class="m">α, β ⊢ α ∧ β</td>
+      <td class="k rl">(∧E<sub>l</sub>)</td><td class="m">α ∧ β ⊢ α</td>
+    </tr>
+    <tr>
+      <td class="k rl">(∨I<sub>l</sub>)</td><td class="m">α ⊢ α ∨ β</td>
+      <td class="k rl">(∧E<sub>r</sub>)</td><td class="m">α ∧ β ⊢ β</td>
+    </tr>
+    <tr>
+      <td class="k rl">(∨I<sub>r</sub>)</td><td class="m">β ⊢ α ∨ β</td>
+      <td class="k rl">(∨E)</td><td class="m">α ∨ β, [α]<sup>1</sup>→γ, [β]<sup>2</sup>→γ ⊢ γ</td>
+    </tr>
+    <tr>
+      <td class="k rl">(→I)</td><td class="m">from [α]<sup>1</sup>→β infer α → β</td>
+      <td class="k rl">(→E)</td><td class="m">α, α → β ⊢ β</td>
+    </tr>
+    <tr>
+      <td class="k rl">(¬I)</td><td class="m">from [α]<sup>1</sup>→⊥ infer ¬α</td>
+      <td class="k rl">(¬E)</td><td class="m">α, ¬α ⊢ ⊥</td>
+    </tr>
+    <tr>
+      <td class="k rl">(⊤I)</td><td class="m">⊢ ⊤</td>
+      <td class="k rl">(⊥E)</td><td class="m">⊥ ⊢ α</td>
+    </tr>
+  </table>
+  <p style="margin-top:10px;"><b>Classical only.</b> <span class="rl">(PBC)</span> from <span class="m">[¬α]<sup>1</sup>→⊥</span> infer <span class="m">α</span> &nbsp;·&nbsp; <span class="rl">(LEM)</span> <span class="m">⊢ α ∨ ¬α</span> &nbsp;·&nbsp; <span class="rl">(DNE)</span> <span class="m">¬¬α ⊢ α</span></p>
+</div>
+
+<!-- ===== 1 ===== -->
+<section class="set" data-set>
+  <div class="set-head"><span class="set-n">01</span><h2 class="set-t">Syntax and well-formed formulae</h2><span class="set-time">~15 min</span><span class="tally" data-tally></span></div>
+
+  <div class="rule">
+    <span class="m">L = α ::= ⊤ | ⊥ | x | ¬α | α ∧ α | α ∨ α | α → α | α ↔ α</span> &nbsp;&nbsp; where <span class="m">x ∈ P</span>
+  </div>
+
+  <div class="q">
+    <p class="qtext"><span class="qn">1.1</span> Which are well-formed formulae of <span class="m">L</span>? For any that are not, say which production fails.</p>
+    <ol class="sub" type="a">
+      <li><span class="m">¬ ∧ x</span></li>
+      <li><span class="m">x → ¬y ∧ z</span></li>
+      <li><span class="m">(x ∨) ∧ y</span></li>
+      <li><span class="m">¬¬¬⊤</span></li>
+      <li><span class="m">x ↔ (y → (z ∨ ⊥))</span></li>
+    </ol>
+    <details><summary><span class="caret">▶</span>Check</summary><div class="ans">
+      <ul>
+        <li><b>(a) No.</b> <span class="m">∧</span> is binary and needs two <span class="m">α</span> operands; <span class="m">¬</span> has nothing to negate.</li>
+        <li><b>(b) Yes.</b></li>
+        <li><b>(c) No.</b> <span class="m">α ∨ α</span> requires a second operand.</li>
+        <li><b>(d) Yes</b> — <span class="m">¬α</span> applies repeatedly, and <span class="m">⊤</span> is a production.</li>
+        <li><b>(e) Yes.</b></li>
+      </ul>
+    </div></details>
+  </div>
+
+  <div class="q">
+    <p class="qtext"><span class="qn">1.2</span> Draw the parse tree imposed by the BNF.</p>
+    <ol class="sub" type="a">
+      <li><span class="m">¬(x → (y ∧ ¬z))</span></li>
+      <li><span class="m">(x ∨ y) ↔ ¬(z ∧ x)</span></li>
+    </ol>
+    <details><summary><span class="caret">▶</span>Check</summary><div class="ans">
+      <p><b>(a)</b> Root <span class="m">¬</span>, one child <span class="m">→</span>, whose children are <span class="m">x</span> and <span class="m">∧</span>. That <span class="m">∧</span> has children <span class="m">y</span> and <span class="m">¬</span>, and that <span class="m">¬</span> has child <span class="m">z</span>.</p>
+      <p><b>(b)</b> Root <span class="m">↔</span>; left child <span class="m">∨</span> over <span class="m">x, y</span>; right child <span class="m">¬</span> over <span class="m">∧</span>, which has children <span class="m">z, x</span>.</p>
+    </div></details>
+  </div>
+
+  <div class="q">
+    <p class="qtext"><span class="qn">1.3</span> The lecture says BNF makes brackets unnecessary in the formal syntax, yet we still write them. Explain the distinction, and give a formula whose <i>string</i> is ambiguous but whose <i>tree</i> is not.</p>
+    <details><summary><span class="caret">▶</span>Check</summary><div class="ans">
+      <p>The BNF generates <b>trees</b>. Brackets are an artefact of writing a tree as a linear string — they recover the structure the string loses.</p>
+      <p><span class="m">x ∧ y ∨ z</span> is ambiguous as a string, since two distinct trees flatten to it. Each tree is itself a perfectly unambiguous object.</p>
+    </div></details>
+  </div>
+
+  <div class="q">
+    <p class="qtext"><span class="qn">1.4</span> The lecture separates a logic into <i>syntax</i> and <i>semantics</i>, and separately says a logic requires <i>propositions</i> and <i>consequence</i>. Match the pairs up. Which of syntax/semantics does "consequence" belong to, and why is the answer not clean?</p>
+    <details><summary><span class="caret">▶</span>Check</summary><div class="ans">
+      <p>Propositions map to syntax. Consequence maps to semantics — <b>but only loosely, and that is the point.</b></p>
+      <p>Consequence has two distinct formalisations: semantic entailment <span class="m">⊨</span>, defined over interpretations, and syntactic derivability <span class="m">⊢</span>, defined by inference rules with no reference to meaning at all. Section 7 is about when the two agree.</p>
+    </div></details>
+  </div>
+</section>
+
+<!-- ===== 2 ===== -->
+<section class="set" data-set>
+  <div class="set-head"><span class="set-n">02</span><h2 class="set-t">Interpretations and formal semantics</h2><span class="set-time">~25 min</span><span class="tally" data-tally></span></div>
+
+  <div class="rule">An interpretation is a map <span class="m">I : P → {T, F}</span>, equivalently the set <span class="m">I ⊆ P</span> where <span class="m">I = {p ∈ P | I(p) = T}</span>.</div>
+
+  <div class="q">
+    <p class="qtext"><span class="qn">2.1</span> Let <span class="m">P = {x, y, z}</span> and <span class="m">I(x) = T, I(y) = F, I(z) = T</span>. Write <span class="m">I</span> in set form. Then convert <span class="m">I = {y}</span> back into function form.</p>
+    <details><summary><span class="caret">▶</span>Check</summary><div class="ans">
+      <p><span class="m">I = {x, z}</span>. And <span class="m">I = {y}</span> means <span class="m">I(x) = F, I(y) = T, I(z) = F</span>.</p>
+    </div></details>
+    <div class="trap">
+      <b>Check this against the recording.</b> Slide 13 sets <span class="m">I(x)=T, I(y)=F, I(z)=F</span> and then states <span class="m">I = {x, y}</span>. By that slide's own definition it should be <span class="m">{x}</span> — <span class="m">y</span> is assigned <span class="m">F</span>, so it doesn't belong in the set. Either the assignment or the set is a typo.
+    </div>
+  </div>
+
+  <div class="q">
+    <p class="qtext"><span class="qn">2.2</span> Let <span class="m">P = {x,y,z}</span> and <span class="m">I = {x, z}</span>. Using the recursive definition of <span class="m">⊨</span> — not a truth table — determine whether <span class="m">I ⊨ α</span>. Show the unfolding.</p>
+    <ol class="sub" type="a">
+      <li><span class="m">x ∧ ¬y</span></li>
+      <li><span class="m">x → y</span></li>
+      <li><span class="m">¬(y ∨ ¬z)</span></li>
+      <li><span class="m">x ↔ z</span></li>
+      <li><span class="m">(x → y) → (y → x)</span></li>
+    </ol>
+    <details><summary><span class="caret">▶</span>Check</summary><div class="ans">
+      <p>Throughout, <span class="m">I ⊨ p ⇔ p ∈ I</span>, with <span class="m">I = {x,z}</span>.</p>
+      <ul>
+        <li><b>(a) Yes.</b> <span class="m">I ⊨ x ∧ ¬y ⇔ I ⊨ x</span> and <span class="m">I ⊨ ¬y ⇔ x ∈ I</span> and <span class="m">I ⊭ y</span>. Both hold.</li>
+        <li><b>(b) No.</b> <span class="m">I ⊨ x → y ⇔ I ⊨ y</span> or <span class="m">I ⊭ x</span>. But <span class="m">y ∉ I</span> and <span class="m">x ∈ I</span>, so both disjuncts fail.</li>
+        <li><b>(c) Yes.</b> <span class="m">y ∉ I</span>, and <span class="m">I ⊨ ¬z ⇔ I ⊭ z</span> fails since <span class="m">z ∈ I</span>. So <span class="m">I ⊭ y ∨ ¬z</span>, hence <span class="m">I ⊨ ¬(y ∨ ¬z)</span>.</li>
+        <li><b>(d) Yes.</b> Both <span class="m">x → z</span> and <span class="m">z → x</span> hold since <span class="m">x, z ∈ I</span>.</li>
+        <li><b>(e) Yes</b>, vacuously — the antecedent <span class="m">x → y</span> fails by (b).</li>
+      </ul>
+    </div></details>
+  </div>
+
+  <div class="q">
+    <p class="qtext"><span class="qn">2.3</span> The semantic clause for implication is <span class="m">I ⊨ α → β ⇔ I ⊨ β or I ⊭ α</span>. Check it against all four combinations of <span class="m">I ⊨ α</span> and <span class="m">I ⊨ β</span>.</p>
+    <details><summary><span class="caret">▶</span>Check</summary><div class="ans">
+      <ul>
+        <li><span class="m">I ⊨ α, I ⊨ β</span> → first disjunct holds → true. Correct.</li>
+        <li><span class="m">I ⊨ α, I ⊭ β</span> → both fail → false. Correct — the only row where implication should fail.</li>
+        <li><span class="m">I ⊭ α</span> (either <span class="m">β</span>) → second disjunct holds → true. Correct, vacuous truth.</li>
+      </ul>
+    </div></details>
+  </div>
+
+  <div class="q">
+    <p class="qtext"><span class="qn">2.4</span> Slide 15 asks: why might we not need a semantic rule for <span class="m">α → β</span> at all? Answer it, then identify a <i>smallest</i> set of operators from <span class="m">{¬, ∧, ∨, →, ↔}</span> sufficient to define the rest.</p>
+    <details><summary><span class="caret">▶</span>Check</summary><div class="ans">
+      <p>Because <span class="m">α → β ≡ ¬α ∨ β</span>, so the clause for <span class="m">→</span> is derivable from those for <span class="m">¬</span> and <span class="m">∨</span>.</p>
+      <p>Any of <span class="m">{¬, ∧}</span>, <span class="m">{¬, ∨}</span>, or <span class="m">{¬, →}</span> suffices — <b>two</b> is the minimum among this set. (A single operator suffices if you allow NAND or NOR, but neither is in the BNF.)</p>
+    </div></details>
+  </div>
+</section>
+
+<!-- ===== 3 ===== -->
+<section class="set" data-set>
+  <div class="set-head"><span class="set-n">03</span><h2 class="set-t">Entailment, validity, satisfiability</h2><span class="set-time">~25 min</span><span class="tally" data-tally></span></div>
+
+  <div class="q">
+    <p class="qtext"><span class="qn">3.1</span> Classify as valid, satisfiable-but-not-valid, or unsatisfiable. Justify with an interpretation.</p>
+    <ol class="sub" type="a">
+      <li><span class="m">(x ∧ y) → z</span></li>
+      <li><span class="m">x → y</span></li>
+      <li><span class="m">x ∧ ¬x</span></li>
+      <li><span class="m">(x → y) ∨ (y → x)</span></li>
+      <li><span class="m">¬(x → x)</span></li>
+    </ol>
+    <details><summary><span class="caret">▶</span>Check</summary><div class="ans">
+      <ul>
+        <li><b>(a)</b> Satisfiable, not valid. True under <span class="m">I = ∅</span>; false under <span class="m">I = {x,y}</span>.</li>
+        <li><b>(b)</b> Satisfiable, not valid. True under <span class="m">I = ∅</span>; false under <span class="m">I = {x}</span>.</li>
+        <li><b>(c)</b> Unsatisfiable — <span class="m">I ⊨ x</span> and <span class="m">I ⊨ ¬x</span> cannot both hold.</li>
+        <li><b>(d) Valid.</b> Falsifying needs <span class="m">x ∈ I, y ∉ I</span> for the first disjunct and <span class="m">y ∈ I, x ∉ I</span> for the second. Both cannot hold.</li>
+        <li><b>(e)</b> Unsatisfiable — <span class="m">x → x</span> is valid, so its negation is never true.</li>
+      </ul>
+    </div></details>
+  </div>
+
+  <div class="q">
+    <p class="qtext"><span class="qn">3.2</span> Slide 16 asks you to label formulae "valid, satisfiable, or unsatisfiable" as though the three were mutually exclusive. They are not. State the actual relationship, and say which two partition the set of all formulae.</p>
+    <details><summary><span class="caret">▶</span>Check</summary><div class="ans">
+      <p>Every valid formula is <i>also</i> satisfiable, so the three labels overlap. The clean partition is <b>satisfiable versus unsatisfiable</b>.</p>
+      <p>Validity is a strictly stronger condition sitting inside satisfiable: <span class="m">valid ⊊ satisfiable</span>. And the bridge worth memorising: <span class="m">α is valid ⇔ ¬α is unsatisfiable</span>.</p>
+    </div></details>
+  </div>
+
+  <div class="q">
+    <p class="qtext"><span class="qn">3.3</span> Decide each entailment. If it holds, argue semantically; if not, give a refuting interpretation.</p>
+    <ol class="sub" type="a">
+      <li><span class="m">{x → y, y → z} ⊨ x → z</span></li>
+      <li><span class="m">{x ∨ y} ⊨ x</span></li>
+      <li><span class="m">{x, ¬x} ⊨ y</span></li>
+      <li><span class="m">{x → y} ⊨ ¬x → ¬y</span></li>
+      <li><span class="m">∅ ⊨ x ∨ ¬x</span></li>
+    </ol>
+    <details><summary><span class="caret">▶</span>Check</summary><div class="ans">
+      <ul>
+        <li><b>(a) Holds.</b> Take any <span class="m">I</span> satisfying both. If <span class="m">I ⊨ x</span> then <span class="m">I ⊨ y</span> then <span class="m">I ⊨ z</span>. If <span class="m">I ⊭ x</span> the conclusion is vacuous.</li>
+        <li><b>(b) Fails.</b> <span class="m">I = {y}</span> satisfies <span class="m">x ∨ y</span> but not <span class="m">x</span>.</li>
+        <li><b>(c) Holds</b>, vacuously — no interpretation satisfies both <span class="m">x</span> and <span class="m">¬x</span>, so there is nothing to check. This is <span class="rl">(⊥E)</span> on the semantic side.</li>
+        <li><b>(d) Fails.</b> <span class="m">I = {y}</span>: premise is <span class="m">F → T</span>, holds; conclusion is <span class="m">T → F</span>, fails.</li>
+        <li><b>(e) Holds</b> — <span class="m">x ∨ ¬x</span> is valid, so every interpretation satisfies it.</li>
+      </ul>
+    </div></details>
+  </div>
+
+  <div class="q">
+    <p class="qtext"><span class="qn">3.4</span> Prove: <span class="m">S ⊨ α</span> if and only if <span class="m">S ∪ {¬α}</span> is unsatisfiable. Why does this matter for a machine implementation?</p>
+    <details><summary><span class="caret">▶</span>Check</summary><div class="ans">
+      <p><b>(⇒)</b> Suppose <span class="m">S ⊨ α</span> and take any <span class="m">I</span> satisfying <span class="m">S ∪ {¬α}</span>. Then <span class="m">I</span> satisfies <span class="m">S</span>, so <span class="m">I ⊨ α</span>; but <span class="m">I ⊨ ¬α</span> means <span class="m">I ⊭ α</span>. Contradiction, so no such <span class="m">I</span> exists.</p>
+      <p><b>(⇐)</b> Suppose <span class="m">S ∪ {¬α}</span> is unsatisfiable and take <span class="m">I</span> satisfying <span class="m">S</span>. Then <span class="m">I ⊭ ¬α</span>, so <span class="m">I ⊨ α</span>.</p>
+      <p><b>Why it matters:</b> it converts an entailment question — quantified over <i>all</i> interpretations — into a single satisfiability question. A machine can search for one model and fail, rather than enumerate every interpretation. This is the foundation of every refutation-based prover.</p>
+    </div></details>
+  </div>
+</section>
+
+<!-- ===== 4 ===== -->
+<section class="set" data-set>
+  <div class="set-head"><span class="set-n">04</span><h2 class="set-t">Natural deduction — intuitionistic rules</h2><span class="set-time">~35 min</span><span class="tally" data-tally></span></div>
+
+  <div class="rule">Give both a proof tree and a line-by-line derivation for 4.1 and 4.2. Line-by-line alone is fine for the rest.</div>
+
+  <div class="q">
+    <p class="qtext"><span class="qn">4.1</span></p>
+    <span class="mb">(α ∧ β) ∧ γ &nbsp;⊢&nbsp; α ∧ (β ∧ γ)</span>
+    <details><summary><span class="caret">▶</span>Check</summary><div class="ans">
+      <div class="tree">
+        <div class="tr">
+          <div class="up">
+            <div class="tr"><div class="up">
+              <div class="tr"><div class="up">(α ∧ β) ∧ γ</div></div>
+              <div class="bar">α ∧ β<span class="lab">(∧E<sub>l</sub>)</span></div>
+            </div></div>
+            <div class="bar">α<span class="lab">(∧E<sub>l</sub>)</span></div>
+          </div>
+          <div class="up">
+            <div class="tr">
+              <div class="up">
+                <div class="tr"><div class="up">
+                  <div class="tr"><div class="up">(α ∧ β) ∧ γ</div></div>
+                  <div class="bar">α ∧ β<span class="lab">(∧E<sub>l</sub>)</span></div>
+                </div></div>
+                <div class="bar">β<span class="lab">(∧E<sub>r</sub>)</span></div>
+              </div>
+              <div class="up">
+                <div class="tr"><div class="up">(α ∧ β) ∧ γ</div></div>
+                <div class="bar">γ<span class="lab">(∧E<sub>r</sub>)</span></div>
+              </div>
+            </div>
+            <div class="bar">β ∧ γ<span class="lab">(∧I)</span></div>
+          </div>
+        </div>
+        <div class="bar">α ∧ (β ∧ γ)<span class="lab">(∧I)</span></div>
+      </div>
+      <table class="drv">
+        <tr><td class="ln">1.</td><td class="fm">(α ∧ β) ∧ γ</td><td class="j">hyp</td></tr>
+        <tr><td class="ln">2.</td><td class="fm">α ∧ β</td><td class="j">(∧E<sub>l</sub>)(1)</td></tr>
+        <tr><td class="ln">3.</td><td class="fm">γ</td><td class="j">(∧E<sub>r</sub>)(1)</td></tr>
+        <tr><td class="ln">4.</td><td class="fm">α</td><td class="j">(∧E<sub>l</sub>)(2)</td></tr>
+        <tr><td class="ln">5.</td><td class="fm">β</td><td class="j">(∧E<sub>r</sub>)(2)</td></tr>
+        <tr><td class="ln">6.</td><td class="fm">β ∧ γ</td><td class="j">(∧I)(5,3)</td></tr>
+        <tr><td class="ln">7.</td><td class="fm">α ∧ (β ∧ γ)</td><td class="j">(∧I)(4,6)</td></tr>
+      </table>
+    </div></details>
+  </div>
+
+  <div class="q">
+    <p class="qtext"><span class="qn">4.2</span> Derive modus tollens — it is not a primitive rule here.</p>
+    <span class="mb">α → β,&nbsp; ¬β &nbsp;⊢&nbsp; ¬α</span>
+    <details><summary><span class="caret">▶</span>Check</summary><div class="ans">
+      <div class="tree">
+        <div class="tr">
+          <div class="up">
+            <div class="tr">
+              <div class="up">[α]<sup>1</sup></div>
+              <div class="up">α → β</div>
+            </div>
+            <div class="bar">β<span class="lab">(→E)</span></div>
+          </div>
+          <div class="up">¬β</div>
+        </div>
+        <div class="bar">⊥<span class="lab">(¬E)</span></div>
+        <div class="bar">¬α<span class="lab">(¬I)<sup>1</sup></span></div>
+      </div>
+      <table class="drv">
+        <tr><td class="ln">1.</td><td class="fm">α → β</td><td class="j">hyp</td></tr>
+        <tr><td class="ln">2.</td><td class="fm">¬β</td><td class="j">hyp</td></tr>
+        <tr><td class="ln">3.</td><td class="fm">[α]<sup>1</sup></td><td class="j">assump</td></tr>
+        <tr><td class="ln">4.</td><td class="fm">β</td><td class="j">(→E)(3,1)</td></tr>
+        <tr><td class="ln">5.</td><td class="fm">⊥</td><td class="j">(¬E)(4,2)</td></tr>
+        <tr><td class="ln">6.</td><td class="fm">¬α</td><td class="j">(¬I)<sup>1</sup>(3–5)</td></tr>
+      </table>
+      <p>Modus tollens is <b>derived</b> here, not primitive — and this derivation is intuitionistically valid, unlike its converse.</p>
+    </div></details>
+  </div>
+
+  <div class="q">
+    <p class="qtext"><span class="qn">4.3</span> From no hypotheses.</p>
+    <span class="mb">⊢&nbsp; α → (β → α)</span>
+    <details><summary><span class="caret">▶</span>Check</summary><div class="ans">
+      <table class="drv">
+        <tr><td class="ln">1.</td><td class="fm">[α]<sup>1</sup></td><td class="j">assump</td></tr>
+        <tr><td class="ln">2.</td><td class="fm">[β]<sup>2</sup></td><td class="j">assump</td></tr>
+        <tr><td class="ln">3.</td><td class="fm">α</td><td class="j">1</td></tr>
+        <tr><td class="ln">4.</td><td class="fm">β → α</td><td class="j">(→I)<sup>2</sup>(2–3)</td></tr>
+        <tr><td class="ln">5.</td><td class="fm">α → (β → α)</td><td class="j">(→I)<sup>1</sup>(1–4)</td></tr>
+      </table>
+      <p>Assumptions discharge innermost-first. Nothing is ever done with <span class="m">β</span> — it is assumed purely so <span class="rl">(→I)</span> has something to discharge.</p>
+    </div></details>
+  </div>
+
+  <div class="q">
+    <p class="qtext"><span class="qn">4.4</span></p>
+    <span class="mb">α → (β → γ) &nbsp;⊢&nbsp; (α ∧ β) → γ</span>
+    <details><summary><span class="caret">▶</span>Check</summary><div class="ans">
+      <table class="drv">
+        <tr><td class="ln">1.</td><td class="fm">α → (β → γ)</td><td class="j">hyp</td></tr>
+        <tr><td class="ln">2.</td><td class="fm">[α ∧ β]<sup>1</sup></td><td class="j">assump</td></tr>
+        <tr><td class="ln">3.</td><td class="fm">α</td><td class="j">(∧E<sub>l</sub>)(2)</td></tr>
+        <tr><td class="ln">4.</td><td class="fm">β</td><td class="j">(∧E<sub>r</sub>)(2)</td></tr>
+        <tr><td class="ln">5.</td><td class="fm">β → γ</td><td class="j">(→E)(3,1)</td></tr>
+        <tr><td class="ln">6.</td><td class="fm">γ</td><td class="j">(→E)(4,5)</td></tr>
+        <tr><td class="ln">7.</td><td class="fm">(α ∧ β) → γ</td><td class="j">(→I)<sup>1</sup>(2–6)</td></tr>
+      </table>
+    </div></details>
+  </div>
+
+  <div class="q">
+    <p class="qtext"><span class="qn">4.5</span></p>
+    <span class="mb">⊢&nbsp; ¬(α ∧ ¬α)</span>
+    <details><summary><span class="caret">▶</span>Check</summary><div class="ans">
+      <table class="drv">
+        <tr><td class="ln">1.</td><td class="fm">[α ∧ ¬α]<sup>1</sup></td><td class="j">assump</td></tr>
+        <tr><td class="ln">2.</td><td class="fm">α</td><td class="j">(∧E<sub>l</sub>)(1)</td></tr>
+        <tr><td class="ln">3.</td><td class="fm">¬α</td><td class="j">(∧E<sub>r</sub>)(1)</td></tr>
+        <tr><td class="ln">4.</td><td class="fm">⊥</td><td class="j">(¬E)(2,3)</td></tr>
+        <tr><td class="ln">5.</td><td class="fm">¬(α ∧ ¬α)</td><td class="j">(¬I)<sup>1</sup>(1–4)</td></tr>
+      </table>
+    </div></details>
+  </div>
+
+  <div class="q">
+    <p class="qtext"><span class="qn">4.6</span> One direction of De Morgan. You will need <span class="rl">(∨E)</span> with <span class="m">γ = ⊥</span>.</p>
+    <span class="mb">¬α ∧ ¬β &nbsp;⊢&nbsp; ¬(α ∨ β)</span>
+    <details><summary><span class="caret">▶</span>Check</summary><div class="ans">
+      <table class="drv">
+        <tr><td class="ln">1.</td><td class="fm">¬α ∧ ¬β</td><td class="j">hyp</td></tr>
+        <tr><td class="ln">2.</td><td class="fm">¬α</td><td class="j">(∧E<sub>l</sub>)(1)</td></tr>
+        <tr><td class="ln">3.</td><td class="fm">¬β</td><td class="j">(∧E<sub>r</sub>)(1)</td></tr>
+        <tr><td class="ln">4.</td><td class="fm">[α ∨ β]<sup>1</sup></td><td class="j">assump</td></tr>
+        <tr><td class="ln">5.</td><td class="fm">[α]<sup>2</sup></td><td class="j">assump</td></tr>
+        <tr><td class="ln">6.</td><td class="fm">⊥</td><td class="j">(¬E)(5,2)</td></tr>
+        <tr><td class="ln">7.</td><td class="fm">[β]<sup>3</sup></td><td class="j">assump</td></tr>
+        <tr><td class="ln">8.</td><td class="fm">⊥</td><td class="j">(¬E)(7,3)</td></tr>
+        <tr><td class="ln">9.</td><td class="fm">⊥</td><td class="j">(∨E)<sup>2,3</sup>(4, 5–6, 7–8)</td></tr>
+        <tr><td class="ln">10.</td><td class="fm">¬(α ∨ β)</td><td class="j">(¬I)<sup>1</sup>(4–9)</td></tr>
+      </table>
+      <p>The trick is taking <span class="m">γ = ⊥</span> in the <span class="rl">(∨E)</span> rule. Nothing in the rule requires <span class="m">γ</span> to be an ordinary formula.</p>
+    </div></details>
+  </div>
+
+  <div class="q">
+    <p class="qtext"><span class="qn">4.7</span> Which rule makes an unrelated <span class="m">β</span> appear, and why is that sound?</p>
+    <span class="mb">α ∧ ¬α &nbsp;⊢&nbsp; β</span>
+    <details><summary><span class="caret">▶</span>Check</summary><div class="ans">
+      <table class="drv">
+        <tr><td class="ln">1.</td><td class="fm">α ∧ ¬α</td><td class="j">hyp</td></tr>
+        <tr><td class="ln">2.</td><td class="fm">α</td><td class="j">(∧E<sub>l</sub>)(1)</td></tr>
+        <tr><td class="ln">3.</td><td class="fm">¬α</td><td class="j">(∧E<sub>r</sub>)(1)</td></tr>
+        <tr><td class="ln">4.</td><td class="fm">⊥</td><td class="j">(¬E)(2,3)</td></tr>
+        <tr><td class="ln">5.</td><td class="fm">β</td><td class="j">(⊥E)(4)</td></tr>
+      </table>
+      <p><span class="rl">(⊥E)</span> makes the unrelated <span class="m">β</span> appear. It is sound because the premise is unsatisfiable: no interpretation satisfies <span class="m">α ∧ ¬α</span>, so "every interpretation satisfying the premises satisfies <span class="m">β</span>" holds vacuously. Compare 3.3(c) — same fact, semantic side.</p>
+    </div></details>
+  </div>
+
+  <div class="q">
+    <p class="qtext"><span class="qn">4.8</span> Slide 23 recommends working backwards from the conclusion using introduction rules, then forwards using elimination rules. For 4.6, which rule would you apply first under backward reasoning, and why does the shape of the goal determine it?</p>
+    <details><summary><span class="caret">▶</span>Check</summary><div class="ans">
+      <p>The goal <span class="m">¬(α ∨ β)</span> is a negation, and the only introduction rule producing a negation is <span class="rl">(¬I)</span>. So backward reasoning starts by assuming <span class="m">α ∨ β</span> and setting the new goal to <span class="m">⊥</span>.</p>
+      <p>Only then do you run out of introduction rules and switch to forward reasoning with <span class="rl">(∧E<sub>l</sub>)</span>/<span class="rl">(∧E<sub>r</sub>)</span> on the hypothesis. <b>The shape of the goal picks the rule</b> — that is the whole heuristic.</p>
+    </div></details>
+  </div>
+</section>
+
+<!-- ===== 5 ===== -->
+<section class="set" data-set>
+  <div class="set-head"><span class="set-n">05</span><h2 class="set-t">Classical reasoning</h2><span class="set-time">~25 min</span><span class="tally" data-tally></span></div>
+
+  <div class="q">
+    <p class="qtext"><span class="qn">5.1</span> Derive the law of the excluded middle from <span class="rl">(PBC)</span>. <i>Hint: assume <span class="m">¬(α ∨ ¬α)</span> and derive <span class="m">⊥</span> twice.</i></p>
+    <span class="mb">⊢&nbsp; α ∨ ¬α</span>
+    <details><summary><span class="caret">▶</span>Check</summary><div class="ans">
+      <table class="drv">
+        <tr><td class="ln">1.</td><td class="fm">[¬(α ∨ ¬α)]<sup>1</sup></td><td class="j">assump</td></tr>
+        <tr><td class="ln">2.</td><td class="fm">[α]<sup>2</sup></td><td class="j">assump</td></tr>
+        <tr><td class="ln">3.</td><td class="fm">α ∨ ¬α</td><td class="j">(∨I<sub>l</sub>)(2)</td></tr>
+        <tr><td class="ln">4.</td><td class="fm">⊥</td><td class="j">(¬E)(3,1)</td></tr>
+        <tr><td class="ln">5.</td><td class="fm">¬α</td><td class="j">(¬I)<sup>2</sup>(2–4)</td></tr>
+        <tr><td class="ln">6.</td><td class="fm">α ∨ ¬α</td><td class="j">(∨I<sub>r</sub>)(5)</td></tr>
+        <tr><td class="ln">7.</td><td class="fm">⊥</td><td class="j">(¬E)(6,1)</td></tr>
+        <tr><td class="ln">8.</td><td class="fm">α ∨ ¬α</td><td class="j">(PBC)<sup>1</sup>(1–7)</td></tr>
+      </table>
+      <p><span class="m">⊥</span> is derived twice from the same outer assumption — once via <span class="m">α</span>, once via <span class="m">¬α</span>. The second derivation is what makes the first one useful.</p>
+    </div></details>
+  </div>
+
+  <div class="q">
+    <p class="qtext"><span class="qn">5.2</span> Derive double negation elimination from <span class="rl">(PBC)</span>.</p>
+    <span class="mb">¬¬α &nbsp;⊢&nbsp; α</span>
+    <details><summary><span class="caret">▶</span>Check</summary><div class="ans">
+      <table class="drv">
+        <tr><td class="ln">1.</td><td class="fm">¬¬α</td><td class="j">hyp</td></tr>
+        <tr><td class="ln">2.</td><td class="fm">[¬α]<sup>1</sup></td><td class="j">assump</td></tr>
+        <tr><td class="ln">3.</td><td class="fm">⊥</td><td class="j">(¬E)(2,1)</td></tr>
+        <tr><td class="ln">4.</td><td class="fm">α</td><td class="j">(PBC)<sup>1</sup>(2–3)</td></tr>
+      </table>
+    </div></details>
+  </div>
+
+  <div class="q">
+    <p class="qtext"><span class="qn">5.3</span> Prove this <i>without</i> any classical rule. What does the asymmetry between this and 5.2 tell you about intuitionistic logic?</p>
+    <span class="mb">α &nbsp;⊢&nbsp; ¬¬α</span>
+    <details><summary><span class="caret">▶</span>Check</summary><div class="ans">
+      <table class="drv">
+        <tr><td class="ln">1.</td><td class="fm">α</td><td class="j">hyp</td></tr>
+        <tr><td class="ln">2.</td><td class="fm">[¬α]<sup>1</sup></td><td class="j">assump</td></tr>
+        <tr><td class="ln">3.</td><td class="fm">⊥</td><td class="j">(¬E)(1,2)</td></tr>
+        <tr><td class="ln">4.</td><td class="fm">¬¬α</td><td class="j">(¬I)<sup>1</sup>(2–3)</td></tr>
+      </table>
+      <p>This direction needs only <span class="rl">(¬I)</span> and <span class="rl">(¬E)</span>, both intuitionistic. The converse needed <span class="rl">(PBC)</span>.</p>
+      <p>So intuitionistically <span class="m">α ⊢ ¬¬α</span> but <span class="m">¬¬α ⊬ α</span>. <b>Double negation is a strictly weaker statement</b>, and the two become equivalent only classically.</p>
+    </div></details>
+  </div>
+
+  <div class="q">
+    <p class="qtext"><span class="qn">5.4</span> Using the "proofs as programs" reading on slide 25, explain why <span class="rl">(LEM)</span> is the rule an intuitionist objects to. What computational content would a proof of <span class="m">α ∨ ¬α</span> have to carry?</p>
+    <details><summary><span class="caret">▶</span>Check</summary><div class="ans">
+      <p>Under proofs-as-programs, a proof of <span class="m">α ∨ β</span> is evidence for one disjunct <i>together with a tag saying which</i>.</p>
+      <p>So a proof of <span class="m">α ∨ ¬α</span> would have to decide, for arbitrary <span class="m">α</span>, whether <span class="m">α</span> or <span class="m">¬α</span> holds — a universal decision procedure. No such procedure exists in general, so <span class="rl">(LEM)</span> asserts the existence of something with no computational content.</p>
+      <p><span class="rl">(PBC)</span> has the same flaw: it produces evidence for <span class="m">α</span> out of the mere <i>failure</i> of <span class="m">¬α</span>, without ever constructing it.</p>
+    </div></details>
+  </div>
+</section>
+
+<!-- ===== 6 ===== -->
+<section class="set" data-set>
+  <div class="set-head"><span class="set-n">06</span><h2 class="set-t">Broken derivations</h2><span class="set-time">~20 min</span><span class="tally" data-tally></span></div>
+
+  <div class="q">
+    <p class="qtext"><span class="qn">6.1</span> The motivating example from slide 29. Is it correct? Name the offending line and the rule condition it violates, then give an interpretation showing the sequent itself does not hold.</p>
+    <span class="mb">(P → Q),&nbsp; (Q → R) &nbsp;⊢&nbsp; R</span>
+    <table class="drv">
+      <tr><td class="ln">1.</td><td class="fm">P → Q</td><td class="j">hyp</td></tr>
+      <tr><td class="ln">2.</td><td class="fm">Q → R</td><td class="j">hyp</td></tr>
+      <tr><td class="ln">3.</td><td class="fm">[P]<sup>1</sup></td><td class="j">assump</td></tr>
+      <tr><td class="ln">4.</td><td class="fm">Q</td><td class="j">(→E)(1,3)</td></tr>
+      <tr><td class="ln">5.</td><td class="fm">R</td><td class="j">(→E)(2,4)</td></tr>
+      <tr><td class="ln">6.</td><td class="fm">P → R</td><td class="j">(→I)<sup>1</sup>(3–5)</td></tr>
+      <tr><td class="ln">7.</td><td class="fm">R</td><td class="j">(→E)(6,3)</td></tr>
+    </table>
+    <details><summary><span class="caret">▶</span>Check</summary><div class="ans">
+      <p><b>Line 7 is invalid.</b> Assumption <span class="m">[P]<sup>1</sup></span> was opened at line 3 and <i>discharged</i> at line 6 by <span class="rl">(→I)<sup>1</sup></span>. Once discharged it is out of scope — lines after 6 may not cite it. Line 7 reuses it as though it were still available.</p>
+      <p><b>The sequent itself does not hold.</b> Take <span class="m">I = ∅</span>, so <span class="m">P, Q, R</span> are all false. Then <span class="m">P → Q</span> holds vacuously, <span class="m">Q → R</span> holds vacuously, but <span class="m">R</span> is false.</p>
+      <p>So <span class="m">{P → Q, Q → R} ⊭ R</span> — meaning no correct derivation could exist, and the flaw had to be in the proof rather than in its presentation.</p>
+    </div></details>
+  </div>
+
+  <div class="q">
+    <p class="qtext"><span class="qn">6.2</span> Find the error.</p>
+    <span class="mb">α ∨ β &nbsp;⊢&nbsp; α</span>
+    <table class="drv">
+      <tr><td class="ln">1.</td><td class="fm">α ∨ β</td><td class="j">hyp</td></tr>
+      <tr><td class="ln">2.</td><td class="fm">[α]<sup>1</sup></td><td class="j">assump</td></tr>
+      <tr><td class="ln">3.</td><td class="fm">α</td><td class="j">2</td></tr>
+      <tr><td class="ln">4.</td><td class="fm">α</td><td class="j">(∨E)<sup>1</sup>(1, 2–3)</td></tr>
+    </table>
+    <details><summary><span class="caret">▶</span>Check</summary><div class="ans">
+      <p><b>Line 4 is invalid</b> — two separate problems. <span class="rl">(∨E)</span> requires <i>both</i> disjuncts to lead to the same <span class="m">γ</span>; here only the <span class="m">α</span> branch was done, and no <span class="m">[β]<sup>2</sup></span> subproof exists. Second, a <span class="m">β</span> branch could not reach <span class="m">α</span> anyway.</p>
+      <p>Counterexample: <span class="m">I = {β}</span> satisfies <span class="m">α ∨ β</span> but not <span class="m">α</span>.</p>
+    </div></details>
+  </div>
+
+  <div class="q">
+    <p class="qtext"><span class="qn">6.3</span> Find the error.</p>
+    <span class="mb">α → β &nbsp;⊢&nbsp; β</span>
+    <table class="drv">
+      <tr><td class="ln">1.</td><td class="fm">α → β</td><td class="j">hyp</td></tr>
+      <tr><td class="ln">2.</td><td class="fm">α</td><td class="j">(∧E<sub>l</sub>)(1)</td></tr>
+      <tr><td class="ln">3.</td><td class="fm">β</td><td class="j">(→E)(2,1)</td></tr>
+    </table>
+    <details><summary><span class="caret">▶</span>Check</summary><div class="ans">
+      <p><b>Line 2 is invalid.</b> <span class="rl">(∧E<sub>l</sub>)</span> applies to a formula whose principal connective is <span class="m">∧</span>. Line 1's principal connective is <span class="m">→</span>.</p>
+      <p>The rule simply does not match the shape of the line — there is no conjunction anywhere to eliminate.</p>
+    </div></details>
+  </div>
+
+  <div class="q">
+    <p class="qtext"><span class="qn">6.4</span> State the general rule that 6.1 and 6.2 both violate, in one sentence, and say why a proof assistant would reject both automatically.</p>
+    <details><summary><span class="caret">▶</span>Check</summary><div class="ans">
+      <p><b>An inference rule may only be applied to formulae currently in scope and matching the rule's stated shape.</b></p>
+      <p>6.1 breaks scope (a discharged assumption); 6.2 breaks shape (an incomplete <span class="rl">(∨E)</span>).</p>
+      <p>A proof assistant rejects both mechanically because scope is tracked by the context and shape by the type of the rule — neither check requires understanding what the formulae <i>mean</i>, which is exactly why the process can be automated.</p>
+    </div></details>
+    <div class="trap"><b>This is the point of slide 29.</b> The proof looks fine line by line, and every individual rule name is spelled correctly. What fails is a bookkeeping condition — precisely the kind of thing a human skims past and a checker never does.</div>
+  </div>
+</section>
+
+<!-- ===== 7 ===== -->
+<section class="set" data-set>
+  <div class="set-head"><span class="set-n">07</span><h2 class="set-t">Metatheory</h2><span class="set-time">~15 min</span><span class="tally" data-tally></span></div>
+
+  <div class="q">
+    <p class="qtext"><span class="qn">7.1</span> Define <i>sound</i> and <i>complete</i> for a deductive system, each as a one-line implication between <span class="m">⊢</span> and <span class="m">⊨</span>.</p>
+    <details><summary><span class="caret">▶</span>Check</summary><div class="ans">
+      <p><b>Sound:</b> if <span class="m">Θ ⊢ α</span> then <span class="m">Θ ⊨ α</span>. Anything derivable is genuinely entailed — the rules never lie.</p>
+      <p><b>Complete:</b> if <span class="m">Θ ⊨ α</span> then <span class="m">Θ ⊢ α</span>. Anything entailed can be derived — the rules miss nothing.</p>
+    </div></details>
+  </div>
+
+  <div class="q">
+    <p class="qtext"><span class="qn">7.2</span> Describe concretely what a counterexample to soundness would look like. What would you have to exhibit?</p>
+    <details><summary><span class="caret">▶</span>Check</summary><div class="ans">
+      <p>A set <span class="m">Θ</span>, a formula <span class="m">α</span>, a derivation of <span class="m">Θ ⊢ α</span>, <b>and</b> an interpretation <span class="m">I</span> with <span class="m">I ⊨ Θ</span> but <span class="m">I ⊭ α</span>.</p>
+      <p>The interpretation is the essential part — a suspicious-looking derivation on its own proves nothing.</p>
+    </div></details>
+  </div>
+
+  <div class="q">
+    <p class="qtext"><span class="qn">7.3</span> Slide 16 says determining validity is "generally computationally intractable". For propositional logic specifically, what is the complexity of checking satisfiability, and why does that make truth tables impractical for a knowledge base with 200 atoms?</p>
+    <details><summary><span class="caret">▶</span>Check</summary><div class="ans">
+      <p>Propositional satisfiability is <b>NP-complete</b> (SAT). Validity is the co-NP-complete dual.</p>
+      <p>A truth table over <span class="m">n</span> atoms has <span class="m">2<sup>n</sup></span> rows, so 200 atoms gives <span class="m">2<sup>200</sup></span> — vastly more rows than there are atoms in the observable universe.</p>
+      <p>Hence the shift to derivation and to refutation-based search, which often terminates after exploring a tiny fraction of the space even though the worst case stays exponential.</p>
+    </div></details>
+  </div>
+
+  <div class="q">
+    <p class="qtext"><span class="qn">7.4</span> Slide 29 quotes Dijkstra: testing shows the presence of bugs but never their absence. Relate this to the difference between <i>satisfiability checking</i> and <i>validity checking</i> on slide 27.</p>
+    <details><summary><span class="caret">▶</span>Check</summary><div class="ans">
+      <p>Testing samples individual interpretations. Finding one where the system misbehaves proves a bug exists, exactly as finding one satisfying interpretation proves satisfiability. Neither can establish a universal claim by sampling.</p>
+      <p>Validity checking <i>is</i> the universal claim — true in <b>every</b> interpretation — which is why it needs proof rather than enumeration, and why Dijkstra's remark is the same observation stated for programs.</p>
+    </div></details>
+  </div>
+</section>
+
+<!-- ===== 8 ===== -->
+<section class="set" data-set>
+  <div class="set-head"><span class="set-n">08</span><h2 class="set-t">Logic programming</h2><span class="set-time">~20 min</span><span class="tally" data-tally></span></div>
+
+  <div class="q">
+    <p class="qtext"><span class="qn">8.1</span> Encode the knowledge base <span class="m">{C, S, C ∧ S → P}</span> in Prolog, and give the query that asks whether <span class="m">P</span> follows.</p>
+    <details><summary><span class="caret">▶</span>Check</summary><div class="ans">
+<pre class="code">studies_hard.
+course_is_easy.
+passes :-
+    studies_hard,
+    course_is_easy.</pre>
+      <p>Query: <code>?- passes.</code></p>
+    </div></details>
+  </div>
+
+  <div class="q">
+    <p class="qtext"><span class="qn">8.2</span> Explain why this is not a legal Prolog clause, and rewrite the information legally.</p>
+<pre class="code">passes, studies_hard :- course_is_easy.</pre>
+    <details><summary><span class="caret">▶</span>Check</summary><div class="ans">
+      <p>A Prolog clause permits exactly <b>one literal in the head</b>. <code>passes, studies_hard</code> is two, so this is not a Horn clause. Split it:</p>
+<pre class="code">passes :- course_is_easy.
+studies_hard :- course_is_easy.</pre>
+      <p>This is a genuine restriction, not a syntactic inconvenience: Horn clauses cannot express disjunctive conclusions, which is precisely what buys Prolog its efficient resolution strategy.</p>
+    </div></details>
+  </div>
+
+  <div class="q">
+    <p class="qtext"><span class="qn">8.3</span> Translate each into Prolog, or say why it cannot be a single clause.</p>
+    <ol class="sub" type="a">
+      <li><span class="m">α ∧ β → γ</span></li>
+      <li><span class="m">α ∨ β → γ</span></li>
+      <li><span class="m">α → β ∧ γ</span></li>
+      <li><span class="m">α → β ∨ γ</span></li>
+    </ol>
+    <details><summary><span class="caret">▶</span>Check</summary><div class="ans">
+      <ul>
+        <li><b>(a)</b> <code>g :- a, b.</code> — fine, conjunction in the body.</li>
+        <li><b>(b)</b> <code>g :- a ; b.</code> — fine; equivalently two clauses <code>g :- a.</code> and <code>g :- b.</code></li>
+        <li><b>(c)</b> Not a single clause — two heads. Split into <code>b :- a.</code> and <code>c :- a.</code>, which is logically equivalent.</li>
+        <li><b>(d) Not expressible.</b> A disjunctive conclusion is not a Horn clause and has no equivalent set of Horn clauses.</li>
+      </ul>
+    </div></details>
+  </div>
+
+  <div class="q">
+    <p class="qtext"><span class="qn">8.4</span> Given this knowledge base, state the answer to each query.</p>
+<pre class="code">red(apple).
+green(apple).
+red(tomato).
+fruit(apple).
+redFruit(X) :- fruit(X), red(X).</pre>
+    <ol class="sub" type="a">
+      <li><code>?- redFruit(apple).</code></li>
+      <li><code>?- redFruit(tomato).</code></li>
+      <li><code>?- redFruit(X).</code></li>
+      <li><code>?- green(tomato).</code></li>
+    </ol>
+    <details><summary><span class="caret">▶</span>Check</summary><div class="ans">
+      <ul>
+        <li><b>(a)</b> <code>true</code></li>
+        <li><b>(b)</b> <code>false</code> — <code>red(tomato)</code> holds but <code>fruit(tomato)</code> does not.</li>
+        <li><b>(c)</b> <code>X = apple</code></li>
+        <li><b>(d)</b> <code>false</code></li>
+      </ul>
+    </div></details>
+  </div>
+
+  <div class="q">
+    <p class="qtext"><span class="qn">8.5</span> Query 8.4(d) returns <code>false</code>, but the knowledge base never says a tomato is not green. What assumption is Prolog making, and what is it called?</p>
+    <details><summary><span class="caret">▶</span>Check</summary><div class="ans">
+      <p>The <b>closed world assumption</b>: anything not derivable from the knowledge base is taken to be false.</p>
+      <p>Prolog's negation is <b>negation as failure</b> rather than classical negation — it reports <code>false</code> for "I could not prove this", not for "I proved the negation". For a knowledge base this is a significant modelling commitment, and it is why the lecture defers negation to later.</p>
+    </div></details>
+  </div>
+
+  <div class="q">
+    <p class="qtext"><span class="qn">8.6</span> Identify which line is the fact and which is the rule, and say what plays the role of the base case of an induction.</p>
+<pre class="code">sum([], 0).
+sum([H|T], N) :- sum(T,M), N is M+H.</pre>
+    <details><summary><span class="caret">▶</span>Check</summary><div class="ans">
+      <p><code>sum([], 0).</code> is the fact; the second clause is the rule.</p>
+      <p>The fact plays the role of the <b>base case</b> — the empty list sums to zero — and the rule is the inductive step, defining the sum of <code>[H|T]</code> in terms of the sum of the strictly shorter <code>T</code>.</p>
+      <p>A recursive Prolog predicate and a proof by induction have the same shape, which is not a coincidence.</p>
+    </div></details>
+  </div>
+</section>
+
+<p class="note">
+  Sections 4 and 5 are the ones to do slowly — this lecture's rule set has no derived rules, so modus tollens and De Morgan have to be built from intro/elim pairs.
+  Section 6 is where slide 29 lives, and 6.1 is worth more than its length suggests: the derivation is wrong <i>and</i> the sequent is underivable, and the second fact is how you know the first without hunting.
+  Section 8 is assessable via the labs; 8.5 is the concept that most often gets skipped.
+</p>
+
+<script>
+(function(){
+  var all = Array.prototype.slice.call(document.querySelectorAll('details'));
+  function updateTallies(){
+    document.querySelectorAll('[data-set]').forEach(function(set){
+      var ds = set.querySelectorAll('details');
+      var open = set.querySelectorAll('details[open]').length;
+      var el = set.querySelector('[data-tally]');
+      if (el) el.textContent = open + ' / ' + ds.length + ' checked';
+    });
+  }
+  all.forEach(function(d){ d.addEventListener('toggle', updateTallies); });
+  document.getElementById('openAll').addEventListener('click', function(){
+    all.forEach(function(d){ d.open = true; }); updateTallies();
+  });
+  document.getElementById('closeAll').addEventListener('click', function(){
+    all.forEach(function(d){ d.open = false; }); updateTallies();
+  });
+  updateTallies();
+})();
+</script>
+
+</body>
+</html>

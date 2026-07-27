@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>STAT2062 — Worksheet 1: Probability and Counting</title>
+<script>
+window.MathJax = {
+  tex: {
+    inlineMath: [['\\(', '\\)'], ['$', '$']],
+    displayMath: [['\\[', '\\]']],
+    macros: {
+      Prob: ['\\operatorname{P}', 0]
+    }
+  },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre'] },
+  startup: {
+    ready: function () {
+      MathJax.startup.defaultReady();
+      MathJax.startup.promise.then(function () {
+        document.body.classList.add('math-ready');
+      });
+    }
+  }
+};
+</script>
+<script id="MathJax-script" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js"></script>
+<style>
+  :root{
+    --proof:#CECBF6; --proof-t:#26215C; --proof-soft:#F0EFFC;
+    --concrete:#C0DD97; --concrete-t:#173404;
+    --amber:#E8C86A; --amber-bg:#F5E3AE; --amber-t:#5A4308;
+    --red:#D98A8A; --red-bg:#F3D0D0; --red-t:#6B1F1F;
+    --off:#E3E1D9; --off-t:#44443F;
+    --ink:#2c2c2a; --muted:#6b6b64; --line:#e0ded6; --paper:#faf9f5;
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,"Times New Roman",serif;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0 auto; padding:28px 24px 60px; max-width:880px; background:var(--paper); color:var(--ink);
+    font-family:var(--sans); font-size:15px; line-height:1.55;}
+
+  header{border-bottom:2px solid var(--proof); padding-bottom:16px; margin-bottom:22px;}
+  .eyebrow{font-size:11.5px; letter-spacing:.09em; text-transform:uppercase; color:var(--muted); font-weight:600;}
+  h1{font-family:var(--serif); font-size:29px; font-weight:600; margin:6px 0; letter-spacing:-.01em;}
+  .sub{color:var(--muted); font-size:14px; margin:0;}
+
+  .howto{background:var(--proof-soft); border-radius:10px; padding:14px 16px; margin:20px 0 24px;
+    font-size:13.5px; color:var(--proof-t);}
+  .howto ol{margin:8px 0 0; padding-left:18px;}
+  .howto li{margin-bottom:4px;}
+
+  .toolbar{display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-bottom:26px;}
+  button{font-family:var(--sans); font-size:13px; font-weight:600; cursor:pointer; background:#fff;
+    color:var(--ink); border:1px solid var(--line); border-radius:7px; padding:7px 13px;}
+  button:hover{background:var(--proof-soft); border-color:var(--proof);}
+  button:focus-visible{outline:2px solid var(--proof-t); outline-offset:2px;}
+  .tally{font-size:12.5px; color:var(--muted); margin-left:auto;}
+  .tally b{color:var(--ink);}
+
+  section{margin-bottom:38px;}
+  .set-head{display:flex; align-items:center; gap:12px; flex-wrap:wrap;
+    border-bottom:1px solid var(--line); padding-bottom:8px; margin-bottom:6px;}
+  .set-id{font-family:var(--serif); font-size:21px; font-weight:600; color:var(--proof-t);
+    background:var(--proof); border-radius:6px; width:34px; height:34px; flex:none;
+    display:flex; align-items:center; justify-content:center;}
+  .set-title{font-family:var(--serif); font-size:20px; font-weight:600; margin:0;}
+  .set-meta{font-size:12px; color:var(--muted); margin-left:auto; white-space:nowrap;}
+  .set-note{font-size:13px; color:var(--muted); margin:8px 0 18px;}
+
+  .q{border-left:2px solid var(--line); padding-left:14px; margin:0 0 22px;}
+  .q.done{border-left-color:var(--concrete);}
+  .q.shaky{border-left-color:var(--amber);}
+  .q.stuck{border-left-color:var(--red);}
+  .qnum{font-size:12px; font-weight:700; color:var(--muted); letter-spacing:.04em;}
+  .qbody p{margin:4px 0 7px;}
+  ol.parts{margin:7px 0 0; padding-left:22px;}
+  ol.parts li{margin-bottom:4px;}
+
+  .conf{display:flex; gap:6px; align-items:center; margin-top:9px; font-size:11.5px; flex-wrap:wrap;}
+  .conf .lab{color:var(--muted); margin-right:2px;}
+  .conf button{padding:3px 9px; font-size:11.5px; border-radius:20px; color:var(--muted);}
+  .conf button[aria-pressed="true"]{border-color:transparent;}
+  .conf button.g[aria-pressed="true"]{background:var(--concrete); color:var(--concrete-t);}
+  .conf button.y[aria-pressed="true"]{background:var(--amber-bg); color:var(--amber-t);}
+  .conf button.r[aria-pressed="true"]{background:var(--red-bg); color:var(--red-t);}
+
+  details{margin-top:10px; background:#fff; border:1px solid var(--line); border-radius:8px;}
+  details[open]{border-color:var(--proof);}
+  summary{cursor:pointer; padding:8px 12px; font-size:12.5px; font-weight:600; color:var(--proof-t);
+    list-style:none; user-select:none;}
+  summary::-webkit-details-marker{display:none;}
+  summary::before{content:"▸ ";}
+  details[open] summary::before{content:"▾ ";}
+  summary:focus-visible{outline:2px solid var(--proof-t); outline-offset:-2px;}
+  .sol{padding:10px 14px 12px; font-size:13.5px; border-top:1px solid var(--line);}
+  .sol p{margin:0 0 7px;}
+  .sol ol{margin:0; padding-left:20px;}
+  .sol li{margin-bottom:6px;}
+  .why{color:var(--muted); font-style:italic;}
+  .trap{background:#FFF8E8; border-left:2px solid var(--amber); padding:7px 10px; border-radius:0 6px 6px 0;
+    margin:8px 0 0; font-size:12.5px; color:#5A4308;}
+  .trap b{font-weight:600;}
+
+  footer{border-top:1px solid var(--line); padding-top:16px; margin-top:44px; font-size:13px; color:var(--muted);}
+  footer b{color:var(--ink);}
+
+  /* maths: display blocks left-aligned to sit with the prose, not floating centred */
+  mjx-container{overflow-x:auto; overflow-y:hidden; max-width:100%; padding-bottom:1px;}
+  mjx-container[display="true"]{margin:.8em 0 !important; text-align:left !important;}
+  li > mjx-container[display="true"]:first-child{margin-top:.2em !important;}
+  .sol mjx-container[display="true"]{margin:.7em 0 !important;}
+  /* until MathJax has typeset, raw \(...\) source would flash; hide the flash */
+  body:not(.math-ready) .qbody, body:not(.math-ready) .sol, body:not(.math-ready) .set-note{opacity:0;}
+  body.math-ready .qbody, body.math-ready .sol, body.math-ready .set-note{opacity:1; transition:opacity .12s;}
+  #mathwarn{background:#FFF8E8; border-left:2px solid var(--amber); color:#5A4308;
+    padding:9px 12px; border-radius:0 6px 6px 0; font-size:12.5px; margin:0 0 20px;}
+
+  @media(max-width:620px){
+    body{padding:20px 15px 50px; font-size:14.5px;}
+    h1{font-size:23px;}
+    .set-meta{margin-left:0; width:100%;}
+  }
+  @media print{
+    body{background:#fff; max-width:none; padding:0;}
+    .toolbar,.conf{display:none;}
+    .q,details{break-inside:avoid;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="eyebrow">STAT2062 · Worksheet 1 · Lecture 1</div>
+  <h1>Probability and Counting</h1>
+  <p class="sub">Sample spaces · naive probability · counting rules · binomial coefficients · story proofs · axioms · inclusion–exclusion</p>
+</header>
+
+<div class="howto">
+  <b>How to run this</b>
+  <ol>
+    <li>One set per sitting, solutions closed. Six sets, roughly 30–40 min each.</li>
+    <li>Open the solution the moment you finish a question — not at the end of the set.</li>
+    <li>Mark each question <b>got it / shaky / stuck</b>. Only amber and red go to the Saturday block.</li>
+  </ol>
+</div>
+
+<div id="mathwarn" hidden>Maths isn't rendering. This page pulls MathJax from a CDN — if you're offline or it's blocked, the formulas stay as LaTeX source, which is still readable.</div>
+
+<div class="toolbar">
+  <button type="button" id="showAll">Show all solutions</button>
+  <button type="button" id="hideAll">Hide all solutions</button>
+  <button type="button" id="clearMarks">Clear my marks</button>
+  <span class="tally" id="tally">Nothing marked yet</span>
+</div>
+
+<!-- ============ SET A ============ -->
+<section>
+  <div class="set-head">
+    <div class="set-id">A</div>
+    <h2 class="set-title">Sample spaces and events</h2>
+    <div class="set-meta">≈30 min · translation drill</div>
+  </div>
+  <p class="set-note">Everything later rests on moving between an English sentence and a set expression without thinking. Fast and often, not slow and once.</p>
+
+  <div class="q" id="qA1">
+    <div class="qnum">A1</div>
+    <div class="qbody">
+      <p>Write the sample space for each experiment, then classify it as finite, countably infinite, or uncountably infinite.</p>
+      <ol class="parts" type="a">
+        <li>Roll two distinguishable dice and record the pair.</li>
+        <li>Toss a coin until the first head appears; record how many tosses it took.</li>
+        <li>Measure the time in seconds until a radioactive particle decays.</li>
+        <li>Draw one card from a 52-card deck.</li>
+      </ol>
+    </div>
+    <div class="conf" data-q="A1"></div>
+    <details><summary>Solution</summary><div class="sol">
+      <ol type="a">
+        <li>\(S=\{(i,j): i,j\in\{1,\dots,6\}\}\), so \(|S|=36\). Finite.</li>
+        <li>\(S=\{1,2,3,\dots\}\). Countably infinite. <span class="why">Appending a "no head ever" outcome leaves it countable.</span></li>
+        <li>\(S=[0,\infty)\). Uncountably infinite (continuous).</li>
+        <li>52 outcomes. Finite.</li>
+      </ol>
+      <div class="trap"><b>Countability depends on what you record, not on the experiment.</b> Record the <em>index</em> of the first head and \(S\) is countable. Record the whole infinite flip sequence and \(S\) becomes the set of infinite binary strings — uncountable, by Cantor's diagonal argument.</div>
+    </div></details>
+  </div>
+
+  <div class="q" id="qA2">
+    <div class="qnum">A2</div>
+    <div class="qbody">
+      <p>A coin is flipped 6 times. Let \(A_j\) be the event that flip \(j\) is heads. Write each event using \(A_j\), unions, intersections and complements.</p>
+      <ol class="parts" type="a">
+        <li>The first three flips are heads and the last three are tails.</li>
+        <li>At least one of the last two flips is a tail.</li>
+        <li>No two consecutive flips are heads.</li>
+        <li>Rewrite \((A_1\cup A_2\cup A_3)^c\) using intersections, and say in English what it means.</li>
+      </ol>
+    </div>
+    <div class="conf" data-q="A2"></div>
+    <details><summary>Solution</summary><div class="sol">
+      <ol type="a">
+        <li>\(A_1\cap A_2\cap A_3\cap A_4^c\cap A_5^c\cap A_6^c\). A singleton: only HHHTTT.</li>
+        <li>\(A_5^c\cup A_6^c=(A_5\cap A_6)^c\) — "not both heads."</li>
+        <li>Let \(D=\bigcup_{j=1}^{5}\left(A_j\cap A_{j+1}\right)\) be "two consecutive heads somewhere." The answer is
+          \[D^c=\bigcap_{j=1}^{5}\left(A_j^c\cup A_{j+1}^c\right).\]</li>
+        <li>\(A_1^c\cap A_2^c\cap A_3^c\) — none of the first three is heads.</li>
+      </ol>
+      <div class="trap"><b>\(\cup\) is OR, \(\cap\) is AND.</b> "At least one" is a union, "all" is an intersection, and De Morgan swaps them under complement. In (a) every flip is pinned, so you write all six terms — the indexed form only earns its place when a range genuinely varies, as in (c).</div>
+    </div></details>
+  </div>
+
+  <div class="q" id="qA3">
+    <div class="qnum">A3</div>
+    <div class="qbody">
+      <p>Let \(A,B,C\subseteq S\). Write each in set notation.</p>
+      <ol class="parts" type="a">
+        <li>Exactly one of \(A,B\) occurs.</li>
+        <li>At least two of \(A,B,C\) occur.</li>
+        <li>None of the three occurs.</li>
+        <li>Exactly two of the three occur.</li>
+        <li>\(A\) occurs but neither \(B\) nor \(C\) does.</li>
+      </ol>
+    </div>
+    <div class="conf" data-q="A3"></div>
+    <details><summary>Solution</summary><div class="sol">
+      <ol type="a">
+        <li>\((A\cap B^c)\cup(A^c\cap B)\)</li>
+        <li>\((A\cap B)\cup(A\cap C)\cup(B\cap C)\) — these overlap, which is fine for describing the event but matters when computing its probability.</li>
+        <li>\(A^c\cap B^c\cap C^c=(A\cup B\cup C)^c\)</li>
+        <li>\((A\cap B\cap C^c)\cup(A\cap B^c\cap C)\cup(A^c\cap B\cap C)\) — these three <em>are</em> disjoint.</li>
+        <li>\(A\cap B^c\cap C^c\)</li>
+      </ol>
+      <div class="trap"><b>Test every expression against the awkward case.</b> For "exactly one," check the both-case: does your expression wrongly accept it? For "at least one," check the both-case too: does it wrongly reject it? Over- and under-constraining are the two failure modes, and both are caught in seconds this way.</div>
+    </div></details>
+  </div>
+
+  <div class="q" id="qA4">
+    <div class="qnum">A4</div>
+    <div class="qbody">
+      <p>True or false? Justify, with a counterexample where the claim fails.</p>
+      <ol class="parts" type="a">
+        <li>If \(A\subseteq B\), then \(A\) and \(B\) cannot be mutually exclusive.</li>
+        <li>There exist mutually exclusive events with \(\Prob(A)=0.6\) and \(\Prob(B)=0.5\).</li>
+        <li>If \(A_1,\dots,A_n\) partition \(S\), they are pairwise disjoint and their union is \(S\).</li>
+        <li>\(A\cup B=S\) implies \(A\) and \(B\) are complements.</li>
+      </ol>
+    </div>
+    <div class="conf" data-q="A4"></div>
+    <details><summary>Solution</summary><div class="sol">
+      <ol type="a">
+        <li><b>False.</b> \(A\subseteq B\Rightarrow A\cap B=A\), so they are disjoint exactly when \(A=\varnothing\). Counterexample: \(A=\varnothing, B=S\).</li>
+        <li><b>False.</b> Disjointness forces \(\Prob(A\cup B)=1.1\gt 1\), violating the first axiom.</li>
+        <li><b>True</b> — that is the definition.</li>
+        <li><b>False.</b> Complements also require \(A\cap B=\varnothing\). Counterexample: \(A=B=S\).</li>
+      </ol>
+    </div></details>
+  </div>
+</section>
+
+<!-- ============ SET B ============ -->
+<section>
+  <div class="set-head">
+    <div class="set-id">B</div>
+    <h2 class="set-title">Counting foundations</h2>
+    <div class="set-meta">≈35 min · mechanical, then applied</div>
+  </div>
+  <p class="set-note">Before each answer, say out loud whether order matters and whether replacement is allowed. Most errors here are picking the wrong one of the four combinations.</p>
+
+  <div class="q" id="qB1">
+    <div class="qnum">B1</div>
+    <div class="qbody">
+      <p>A lab passcode is 5 characters long, each drawn from 26 lowercase letters plus 10 digits (36 characters).</p>
+      <ol class="parts" type="a">
+        <li>How many passcodes are there?</li>
+        <li>How many have no repeated character?</li>
+        <li>How many contain at least one digit?</li>
+        <li>If a passcode is chosen uniformly at random, what is the probability all five characters are distinct?</li>
+      </ol>
+    </div>
+    <div class="conf" data-q="B1"></div>
+    <details><summary>Solution</summary><div class="sol">
+      <ol type="a">
+        <li>With replacement, order matters: \(36^5=60{,}466{,}176\).</li>
+        <li>Without replacement: \(\frac{36!}{31!}=36\cdot35\cdot34\cdot33\cdot32=45{,}239{,}040\).</li>
+        <li>Complement: \(36^5-26^5=48{,}584{,}800\).</li>
+        <li>\(45{,}239{,}040/60{,}466{,}176\approx0.7482\).</li>
+      </ol>
+      <div class="trap"><b>Fencepost check.</b> \(k\) slots means \(k\) factors, and \(n\) is the <em>first</em> of them, not a freebie sitting before them. The formula \(n(n-1)\cdots(n-k+1)\) tells you where the product stops: \(36-5+1=32\). Compare that against your last factor every time.</div>
+    </div></details>
+  </div>
+
+  <div class="q" id="qB2">
+    <div class="qnum">B2</div>
+    <div class="qbody">
+      <p>A set has 10 elements.</p>
+      <ol class="parts" type="a">
+        <li>How many subsets does it have?</li>
+        <li>How many subsets of size exactly 4?</li>
+        <li>How many subsets have an even number of elements?</li>
+        <li>Justify (c) using the binomial theorem with a well-chosen \(x\) and \(y\).</li>
+      </ol>
+    </div>
+    <div class="conf" data-q="B2"></div>
+    <details><summary>Solution</summary><div class="sol">
+      <ol type="a">
+        <li>\(2^{10}=1024\) — each element is independently in or out.</li>
+        <li>\(\binom{10}{4}=\frac{10\cdot9\cdot8\cdot7}{4!}=210\).</li>
+        <li>\(2^{9}=512\).</li>
+        <li>Put \(x=-1,\ y=1\) in \((x+y)^n=\sum_k\binom{n}{k}x^ky^{n-k}\). The left side is \(0^n=0\) for \(n\ge1\), so
+          \[\sum_{k=0}^{n}(-1)^k\binom{n}{k}=0,\]
+          meaning even- and odd-sized subsets are equal in number. They total \(2^n\), so each group has \(2^{n-1}\).</li>
+      </ol>
+      <div class="trap"><b>Why \(r!(n-r)!\) appears.</b> \(n!\) lines everyone up. The \((n-r)!\) kills the order among the rejects; the \(r!\) kills the order among the chosen. Two rounds of adjusting for overcounting. But compute with \(\binom{n}{r}=\frac{n(n-1)\cdots(n-r+1)}{r!}\), never with factorials.</div>
+    </div></details>
+  </div>
+
+  <div class="q" id="qB3">
+    <div class="qnum">B3</div>
+    <div class="qbody">
+      <p>Ten people line up in a random order, all orderings equally likely. Call two of them X and Y.</p>
+      <ol class="parts" type="a">
+        <li>How many orderings are there?</li>
+        <li>How many have X and Y adjacent?</li>
+        <li>What is the probability X and Y are adjacent?</li>
+        <li>What is the probability X stands somewhere ahead of Y? Answer <em>without</em> counting.</li>
+      </ol>
+    </div>
+    <div class="conf" data-q="B3"></div>
+    <details><summary>Solution</summary><div class="sol">
+      <ol type="a">
+        <li>\(10!=3{,}628{,}800\).</li>
+        <li>Handcuff X and Y into one object: 9 objects to arrange, 2 internal orders. \(9!\cdot2=725{,}760\).</li>
+        <li>\(\frac{9!\cdot 2}{10!}=\frac{2}{10}=\frac15\). Cross-check by positions: 9 adjacent position-pairs out of \(\binom{10}{2}=45\), and \(9/45=1/5\).</li>
+        <li>\(\tfrac12\), by symmetry — swapping X and Y maps the two cases one-to-one, so the piles are equal.</li>
+      </ol>
+      <div class="trap"><b>Look for symmetry before grinding.</b> (d) needs no factorials at all, and the same argument works for 10 people or 10,000. Three people who must stay together would give \(8!\cdot3!\) — same handcuff move.</div>
+    </div></details>
+  </div>
+
+  <div class="q" id="qB4">
+    <div class="qnum">B4</div>
+    <div class="qbody">
+      <p>A tutorial has 25 students. Assume 365 equally likely birthdays and no twins.</p>
+      <ol class="parts" type="a">
+        <li>Write an expression for the probability that at least two students share a birthday.</li>
+        <li>Without computing it, is that above or below \(0.5\)? Why?</li>
+        <li>Compute the probability that at least one of the <em>other</em> 24 students shares <em>your</em> birthday.</li>
+        <li>(c) is far smaller than (a). Explain the gap in one sentence.</li>
+      </ol>
+    </div>
+    <div class="conf" data-q="B4"></div>
+    <details><summary>Solution</summary><div class="sol">
+      <ol type="a">
+        <li>\[\begin{aligned}
+\Prob(\text{match})&=1-\frac{365\cdot364\cdots341}{365^{25}}\\[2pt]
+&=1-\frac{365!}{340!\cdot 365^{25}}\ \approx\ 0.5687.
+\end{aligned}\]</li>
+        <li>Above. The lecture's plot crosses \(0.5\) at \(k=23\), and the probability increases in \(k\).</li>
+        <li>Each of the 24 misses yours with probability \(364/365\), independently, so \(1-\left(\frac{364}{365}\right)^{24}\approx0.064\).</li>
+        <li>(a) has \(\binom{25}{2}=300\) pairs that could match; (c) has only the 24 pairs involving you.</li>
+      </ol>
+      <div class="trap"><b>Never build a huge number you're about to divide away.</b> \(365!\approx10^{778}\) overflows any calculator. Use <code>nPr</code>, or interleave: \(\frac{365}{365}\cdot\frac{364}{365}\cdots\frac{341}{365}\), where the running product never exceeds 1. In Python: <code>1 - math.perm(365,25)/365**25</code>.</div>
+    </div></details>
+  </div>
+</section>
+
+<!-- ============ SET C ============ -->
+<section>
+  <div class="set-head">
+    <div class="set-id">C</div>
+    <h2 class="set-title">Binomial coefficients and overcounting</h2>
+    <div class="set-meta">≈40 min · the workhorse</div>
+  </div>
+  <p class="set-note">Use \(\binom{n}{k}=\frac{n(n-1)\cdots(n-k+1)}{k!}\) for hand computation. Faster, and it won't overflow in an exam.</p>
+
+  <div class="q" id="qC1">
+    <div class="qnum">C1</div>
+    <div class="qbody">
+      <p>Evaluate by hand, without computing any factorial larger than \(6!\).</p>
+      <ol class="parts" type="a">
+        <li>\(\binom{50}{2}\)</li>
+        <li>\(\binom{12}{3}\)</li>
+        <li>\(\binom{100}{98}\)</li>
+        <li>\(\binom{9}{0}+\binom{9}{9}\)</li>
+        <li>\(\binom{7}{10}\)</li>
+      </ol>
+    </div>
+    <div class="conf" data-q="C1"></div>
+    <details><summary>Solution</summary><div class="sol">
+      <ol type="a">
+        <li>\(\frac{50\cdot49}{2}=1225\)</li>
+        <li>\(\frac{12\cdot11\cdot10}{6}=220\)</li>
+        <li>Flip it: \(\binom{100}{98}=\binom{100}{2}=4950\)</li>
+        <li>\(1+1=2\)</li>
+        <li>\(0\), since \(k\gt n\). This is a definition — the factorial formula would need \((-3)!\), which is undefined.</li>
+      </ol>
+    </div></details>
+  </div>
+
+  <div class="q" id="qC2">
+    <div class="qnum">C2</div>
+    <div class="qbody">
+      <p>A shelf holds 15 books: 5 red, 5 blue, 5 green, all individually distinct. You pull 5 at random, so there are \(\binom{15}{5}=3003\) equally likely selections.</p>
+      <ol class="parts" type="a">
+        <li>Find the probability of shape \(2{+}2{+}1\): two colours appearing twice each, plus one book of the third colour.</li>
+        <li>Find the probability of shape \(3{+}1{+}1\): three books of one colour, one each of the others.</li>
+        <li>Rank your two answers and explain the ordering in words.</li>
+      </ol>
+    </div>
+    <div class="conf" data-q="C2"></div>
+    <details><summary>Solution</summary><div class="sol">
+      <ol type="a">
+        <li>Choose which two colours get doubled — \(\binom{3}{2}=3\), unordered — then the books inside each:
+          \[\begin{aligned}
+\binom{3}{2}\binom{5}{2}\binom{5}{2}\binom{5}{1}&=3\cdot10\cdot10\cdot5=1500,\\[2pt]
+\Prob&=\tfrac{1500}{3003}\approx0.4995.
+\end{aligned}\]</li>
+        <li>Choose which colour is tripled — \(\binom{3}{1}=3\):
+          \[\begin{aligned}
+\binom{3}{1}\binom{5}{3}\binom{5}{1}\binom{5}{1}&=3\cdot10\cdot5\cdot5=750,\\[2pt]
+\Prob&=\tfrac{750}{3003}\approx0.2498.
+\end{aligned}\]</li>
+        <li>\(2{+}2{+}1\) is twice as likely. Three matching books is a stricter demand than two plus two, and \(2{+}2{+}1\) is the most evenly spread shape available — with only 3 colours for 5 slots, spread-out shapes dominate.</li>
+      </ol>
+      <div class="trap"><b>The role decides the coefficient, not the number of categories.</b> In (a) two colours <em>share</em> the doubled role, so it's \(\binom{3}{2}\). In (b) one colour <em>uniquely</em> holds the tripled role, so it's \(\binom{3}{1}\). Both equal 3 here by coincidence; with 13 categories they'd be 78 and 13. Using \(3\times2\) in (a) counts every selection twice — that's the Ann-and-Beth versus Beth-and-Ann error.</div>
+      <div class="trap"><b>Why the denominator is \(\binom{15}{5}\) and not a count of colour patterns.</b> Colour patterns are <em>not</em> equally likely, so the naive definition doesn't apply to them. Only individual books are equally likely. Colour is a property you read off a selection, not the thing you count.</div>
+    </div></details>
+  </div>
+
+  <div class="q" id="qC3">
+    <div class="qnum">C3</div>
+    <div class="qbody">
+      <p>A club has 12 members: 7 women and 5 men.</p>
+      <ol class="parts" type="a">
+        <li>How many committees of 4 are there?</li>
+        <li>How many contain exactly 2 women?</li>
+        <li>If chosen uniformly at random, what is the probability of exactly 2 women?</li>
+        <li>How many committees of 4 with a designated chair are there? Compute two ways and check they agree.</li>
+      </ol>
+    </div>
+    <div class="conf" data-q="C3"></div>
+    <details><summary>Solution</summary><div class="sol">
+      <ol type="a">
+        <li>\(\binom{12}{4}=495\). The 7/5 split is irrelevant here.</li>
+        <li>\(\binom{7}{2}\binom{5}{2}=21\cdot10=210\).</li>
+        <li>\(\frac{210}{495}=\frac{14}{33}\approx0.424\).</li>
+        <li>Committee then chair: \(\binom{12}{4}\cdot4=1980\). Chair then the rest: \(12\cdot\binom{11}{3}=12\cdot165=1980\). ✓</li>
+      </ol>
+      <div class="trap"><b>Add for OR, multiply for AND.</b> \(\binom{7}{2}+\binom{5}{2}\) would say the committee is <em>either</em> two women <em>or</em> two men. It's both at once, so multiply. Concretely: lock in one pair of women, and there are 10 committees containing exactly them; there are 21 such pairs, each with its own 10.</div>
+      <div class="why">Part (d) is the team-captain identity \(k\binom{n}{k}=n\binom{n-1}{k-1}\) at \(n=12,k=4\) — and it is a story proof in disguise. See D4.</div>
+    </div></details>
+  </div>
+
+  <div class="q" id="qC4">
+    <div class="qnum">C4</div>
+    <div class="qbody">
+      <ol class="parts" type="a">
+        <li>Expand \((2x-3)^4\) using the binomial theorem.</li>
+        <li>Find the coefficient of \(x^3\) in \((1+x)^{10}\).</li>
+        <li>Find the coefficient of \(x^2y^5\) in \((3x+y)^7\).</li>
+      </ol>
+    </div>
+    <div class="conf" data-q="C4"></div>
+    <details><summary>Solution</summary><div class="sol">
+      <ol type="a">
+        <li>Read it as \(\left((2x)+(-3)\right)^4\), so every term is \(\binom{4}{k}(2x)^k(-3)^{4-k}\):
+          \[(2x-3)^4=16x^4-96x^3+216x^2-216x+81.\]</li>
+        <li>\(\binom{10}{3}=120\).</li>
+        <li>\(\binom{7}{2}\cdot3^2=21\cdot9=189\).</li>
+      </ol>
+      <div class="trap"><b>Three failure points, all in (a).</b> (i) The whole bracket is the term — \((2x)^3=8x^3\), the coefficient gets raised too. (ii) Every term carries its \(\binom{n}{k}\); dropping it leaves the two end terms correct and everything in the middle wrong, because \(\binom{4}{0}=\binom{4}{4}=1\). (iii) The sign rides along inside \((-3)^{4-k}\).</div>
+      <div class="trap"><b>Free check.</b> Substitute \(x=1\): the original gives \((2-3)^4=1\), so your expansion must sum to 1. Here \(16-96+216-216+81=1\) ✓. And \(x=0\) isolates the constant term. Five seconds, catches nearly everything.</div>
+      <div class="why">Where \(\binom{n}{k}\) comes from: expanding \((2x-3)^4\) means multiplying four brackets. An \(x^3\) term takes \(2x\) from three brackets and \(-3\) from one — and there are \(\binom{4}{3}\) ways to choose <em>which</em> three. The binomial theorem is a counting result in algebraic costume.</div>
+    </div></details>
+  </div>
+</section>
+
+<!-- ============ SET D ============ -->
+<section>
+  <div class="set-head">
+    <div class="set-id">D</div>
+    <h2 class="set-title">Story proofs</h2>
+    <div class="set-meta">≈40 min · do this set first, while sharp</div>
+  </div>
+  <p class="set-note">Fixed shape: <em>name a thing being counted, count it one way, count it a second way, conclude the counts are equal.</em> Write "Both sides count the number of ways to …" before anything else. If you can't finish that sentence, you don't have the story yet.</p>
+
+  <div class="q" id="qD1">
+    <div class="qnum">D1</div>
+    <div class="qbody"><p>Give a story proof that \[\sum_{k=0}^{n}\binom{n}{k}=2^{n}.\]</p></div>
+    <div class="conf" data-q="D1"></div>
+    <details><summary>Solution</summary><div class="sol">
+      <p>Both sides count the subsets of a set of \(n\) people.</p>
+      <p><b>Right.</b> Decide independently for each person: in or out. Two choices each, \(2^n\) total, by the multiplication rule.</p>
+      <p><b>Left.</b> Sort subsets by size. There are \(\binom{n}{k}\) of size \(k\), and every subset has exactly one size, so summing over \(k\) counts each once.</p>
+      <p>Same collection, two counts. \(\blacksquare\)</p>
+      <div class="why">Check the edges: all-out gives \(\varnothing\), all-in gives the whole set. Both are legitimate subsets and both are in the \(2^n\).</div>
+    </div></details>
+  </div>
+
+  <div class="q" id="qD2">
+    <div class="qnum">D2</div>
+    <div class="qbody"><p>Give a story proof that for \(j\le k\le n\), \[\binom{n}{k}\binom{k}{j}=\binom{n}{j}\binom{n-j}{k-j}.\]</p></div>
+    <div class="conf" data-q="D2"></div>
+    <details><summary>Solution</summary><div class="sol">
+      <p>Both sides count ways to choose, from \(n\) people, a committee of size \(k\) together with a subcommittee of size \(j\) drawn from it.</p>
+      <p><b>Left.</b> Committee first \(\binom{n}{k}\), then subcommittee from within \(\binom{k}{j}\).</p>
+      <p><b>Right.</b> Subcommittee first, straight from all \(n\) people \(\binom{n}{j}\) — legitimate because every subcommittee member is a committee member. Then fill the remaining \(k-j\) seats from the \(n-j\) unchosen. \(\blacksquare\)</p>
+      <div class="why">Sanity check at \(n=5,k=3,j=2\): \(10\cdot3=30\) and \(10\cdot3=30\).</div>
+    </div></details>
+  </div>
+
+  <div class="q" id="qD3">
+    <div class="qnum">D3</div>
+    <div class="qbody"><p>Show that \[\sum_{k=0}^{n}\binom{n}{k}^{2}=\binom{2n}{n}.\] Do it twice: once as a story proof from scratch, once as a one-line consequence of Vandermonde's identity.</p></div>
+    <div class="conf" data-q="D3"></div>
+    <details><summary>Solution</summary><div class="sol">
+      <p><b>Story.</b> Both sides count committees of size \(n\) from \(n\) men and \(n\) women. Right: choose \(n\) from \(2n\). Left: split by the number of men \(k\); then \(\binom{n}{k}\) ways for the men and \(\binom{n}{n-k}\) for the women, and \(\binom{n}{n-k}=\binom{n}{k}\).</p>
+      <p><b>From Vandermonde.</b> Set \(m=n\) and \(k=n\) in \(\binom{m+n}{k}=\sum_j\binom{m}{j}\binom{n}{k-j}\), then apply the complement identity. \(\blacksquare\)</p>
+      <div class="why">Check at \(n=2\): \(1+4+1=6=\binom{4}{2}\).</div>
+    </div></details>
+  </div>
+
+  <div class="q" id="qD4">
+    <div class="qnum">D4</div>
+    <div class="qbody"><p>Give a story proof that \[\sum_{k=1}^{n}k\binom{n}{k}=n\,2^{\,n-1}.\]</p></div>
+    <div class="conf" data-q="D4"></div>
+    <details><summary>Solution</summary><div class="sol">
+      <p>Both sides count pairs: a non-empty committee of any size from \(n\) people, plus a captain from that committee.</p>
+      <p><b>Left.</b> Fix the size \(k\), choose the committee \(\binom{n}{k}\), choose the captain from its \(k\) members. Sum over \(k\).</p>
+      <p><b>Right.</b> Choose the captain first — any of \(n\) people — then decide independently for each of the remaining \(n-1\) whether they join: \(2^{n-1}\). \(\blacksquare\)</p>
+      <div class="why">Check at \(n=3\): \(3+6+3=12=3\cdot4\). This is C3(d) with the committee size left free instead of fixed at 4 — you have already built this argument concretely.</div>
+    </div></details>
+  </div>
+
+  <div class="q" id="qD5">
+    <div class="qnum">D5 · stretch</div>
+    <div class="qbody">
+      <p>Prove that \[\sum_{j=k}^{n}\binom{j}{k}=\binom{n+1}{k+1}.\]</p>
+      <p class="why">Hint: choose \(k+1\) numbers from \(\{1,\dots,n+1\}\) and condition on the largest.</p>
+    </div>
+    <div class="conf" data-q="D5"></div>
+    <details><summary>Solution</summary><div class="sol">
+      <p>Both sides count the \((k+1)\)-element subsets of \(\{1,\dots,n+1\}\).</p>
+      <p><b>Right.</b> Directly, \(\binom{n+1}{k+1}\).</p>
+      <p><b>Left.</b> Every such subset has a unique largest element. If it is \(j+1\), the other \(k\) elements come from \(\{1,\dots,j\}\), giving \(\binom{j}{k}\) ways. As the maximum ranges over its possible values, \(j\) runs from \(k\) to \(n\). Uniqueness of the maximum means each subset is counted exactly once. \(\blacksquare\)</p>
+      <div class="why">Check at \(k=1,n=3\): \(1+2+3=6=\binom{4}{2}\). "Partition by the largest element" recurs constantly in later probability arguments.</div>
+    </div></details>
+  </div>
+</section>
+
+<!-- ============ SET E ============ -->
+<section>
+  <div class="set-head">
+    <div class="set-id">E</div>
+    <h2 class="set-title">Axioms, properties, interpretation</h2>
+    <div class="set-meta">≈30 min · short proofs plus arithmetic</div>
+  </div>
+  <p class="set-note">In E1 use <em>only</em> the three axioms and results already proved from them. Naming which axiom you invoke at each step is the skill being assessed.</p>
+
+  <div class="q" id="qE1">
+    <div class="qnum">E1</div>
+    <div class="qbody">
+      <p>Prove each from the axioms.</p>
+      <ol class="parts" type="a">
+        <li>\(\Prob(A^c)=1-\Prob(A)\)</li>
+        <li>If \(A\subseteq B\), then \(\Prob(B\cap A^c)=\Prob(B)-\Prob(A)\)</li>
+        <li>\(\Prob(A\cup B)\le \Prob(A)+\Prob(B)\)</li>
+      </ol>
+    </div>
+    <div class="conf" data-q="E1"></div>
+    <details><summary>Solution</summary><div class="sol">
+      <ol type="a">
+        <li>\(A\) and \(A^c\) are disjoint with union \(S\), so additivity and \(\Prob(S)=1\) give \(1=\Prob(A)+\Prob(A^c)\).</li>
+        <li>\(B=(B\cap A)\cup(B\cap A^c)\) is a disjoint union, so \(\Prob(B)=\Prob(B\cap A)+\Prob(B\cap A^c)\). Since \(A\subseteq B\), \(B\cap A=A\). Non-negativity then also gives monotonicity, \(\Prob(A)\le\Prob(B)\).</li>
+        <li>\(\Prob(A\cup B)=\Prob(A)+\Prob(B)-\Prob(A\cap B)\) and \(\Prob(A\cap B)\ge0\). <span class="why">Boole's inequality, or the union bound.</span></li>
+      </ol>
+    </div></details>
+  </div>
+
+  <div class="q" id="qE2">
+    <div class="qnum">E2</div>
+    <div class="qbody">
+      <p>Suppose \(\Prob(A)=0.4\), \(\Prob(B)=0.5\), \(\Prob(A\cap B)=0.2\). Find:</p>
+      <ol class="parts" type="a">
+        <li>\(\Prob(A\cup B)\)</li>
+        <li>\(\Prob(A^c\cap B^c)\)</li>
+        <li>\(\Prob(A\cap B^c)\)</li>
+        <li>\(\Prob(A^c\cup B)\)</li>
+        <li>the probability that exactly one of \(A,B\) occurs</li>
+      </ol>
+    </div>
+    <div class="conf" data-q="E2"></div>
+    <details><summary>Solution</summary><div class="sol">
+      <ol type="a">
+        <li>\(0.4+0.5-0.2=0.7\)</li>
+        <li>\(\Prob\!\left((A\cup B)^c\right)=0.3\)</li>
+        <li>\(\Prob(A)-\Prob(A\cap B)=0.2\)</li>
+        <li>\(\Prob\!\left((A\cap B^c)^c\right)=1-0.2=0.8\)</li>
+        <li>\(\Prob(A)+\Prob(B)-2\Prob(A\cap B)=0.5\)</li>
+      </ol>
+      <div class="trap"><b>Draw the Venn diagram once.</b> Fill the four regions with 0.2 / 0.2 / 0.3 / 0.3 and every part becomes reading off regions — much harder to get wrong than manipulating formulas.</div>
+    </div></details>
+  </div>
+
+  <div class="q" id="qE3">
+    <div class="qnum">E3</div>
+    <div class="qbody">
+      <ol class="parts" type="a">
+        <li>An event has probability \(0.2\). State the odds on it and against it.</li>
+        <li>The odds against an event are 3 to 2. What is its probability?</li>
+        <li>A classmate says "odds of 3 to 1 means the probability is \(1/3\)." Correct them.</li>
+      </ol>
+    </div>
+    <div class="conf" data-q="E3"></div>
+    <details><summary>Solution</summary><div class="sol">
+      <ol type="a">
+        <li>Odds on \(=\frac{0.2}{0.8}=\frac14\) (1 to 4); odds against \(=4\) (4 to 1).</li>
+        <li>Odds against 3 to 2 means \(o=\frac23\), so \(p=o/(1+o)=(2/3)/(5/3)=\tfrac25=0.4\).</li>
+        <li>Odds on 3 to 1 gives \(p=\frac{3}{1+3}=\frac34\). They treated the second number as the total. Odds compare an event to its complement; probability compares it to everything.</li>
+      </ol>
+    </div></details>
+  </div>
+
+  <div class="q" id="qE4">
+    <div class="qnum">E4</div>
+    <div class="qbody">
+      <p>A forecast gives tomorrow a rain probability of \(0.25\). Two students respond:</p>
+      <ol class="parts" type="a">
+        <li>"Then over the next 4 days it must rain exactly once."</li>
+        <li>"It only rained 20 times in the last 100 comparable days, so it's due — it should rain more than 25 times in the next 100."</li>
+      </ol>
+      <p>Explain what is wrong with each, in terms of the frequentist interpretation.</p>
+    </div>
+    <div class="conf" data-q="E4"></div>
+    <details><summary>Solution</summary><div class="sol">
+      <ol type="a">
+        <li>The frequentist reading concerns the <em>limiting</em> proportion over many repetitions, not a guarantee inside any block. Four days could easily give zero or three.</li>
+        <li>The gambler's fallacy. A shortfall is never repaid — the next 100 days have no memory. The long-run proportion converges because early deviations are <em>diluted</em> by a growing number of trials, not corrected.</li>
+      </ol>
+    </div></details>
+  </div>
+</section>
+
+<!-- ============ SET F ============ -->
+<section>
+  <div class="set-head">
+    <div class="set-id">F</div>
+    <h2 class="set-title">Inclusion–exclusion and Bonferroni bounds</h2>
+    <div class="set-meta">≈40 min · hardest set</div>
+  </div>
+  <p class="set-note">Inclusion–exclusion is bookkeeping: add singles, subtract pairs, add triples, alternating. Bonferroni bounds are the fallback when higher terms can't be computed.</p>
+
+  <div class="q" id="qF1">
+    <div class="qnum">F1</div>
+    <div class="qbody">
+      <p>Of 200 surveyed students: 120 take a CITS unit, 90 a STAT unit, 70 an ELEC unit; 50 take both CITS and STAT, 30 both CITS and ELEC, 25 both STAT and ELEC; 15 take all three. One student is chosen at random.</p>
+      <ol class="parts" type="a">
+        <li>Probability they take at least one of the three.</li>
+        <li>Probability they take none.</li>
+        <li>Probability they take exactly one.</li>
+        <li>Probability they take exactly two.</li>
+      </ol>
+    </div>
+    <div class="conf" data-q="F1"></div>
+    <details><summary>Solution</summary><div class="sol">
+      <ol type="a">
+        <li>\(\frac{120+90+70-50-30-25+15}{200}=\frac{190}{200}=0.95\)</li>
+        <li>\(1-0.95=0.05\)</li>
+        <li>Exactly one \(=S_1-2S_2+3S_3=280-210+45=115\), so \(0.575\).</li>
+        <li>Exactly two \(=S_2-3S_3=105-45=60\), so \(0.30\).</li>
+      </ol>
+      <div class="why">Check: \(115+60+15=190\), matching (a). Always run it — it catches sign errors instantly.</div>
+    </div></details>
+  </div>
+
+  <div class="q" id="qF2">
+    <div class="qnum">F2</div>
+    <div class="qbody">
+      <p>Play de Montmort's matching game with \(n=4\) cards labelled 1–4 (no suits, no deck knowledge needed — you flip them one at a time saying "one, two, three, four" and win if a label ever matches what you said).</p>
+      <ol class="parts" type="a">
+        <li>Compute the exact winning probability using inclusion–exclusion.</li>
+        <li>Verify by counting the permutations of 4 with no match at all.</li>
+        <li>Compare with \(1-1/e\). Is \(n=4\) already close?</li>
+      </ol>
+    </div>
+    <div class="conf" data-q="F2"></div>
+    <details><summary>Solution</summary><div class="sol">
+      <ol type="a">
+        <li>\(1-\frac{1}{2!}+\frac{1}{3!}-\frac{1}{4!}=1-0.5+0.1\overline{6}-0.041\overline{6}=0.625=\frac58\).</li>
+        <li>Of the \(4!=24\) permutations, 9 have no fixed point (derangements), so \(\Prob(\text{win})=1-\frac{9}{24}=\frac58\) ✓</li>
+        <li>\(1-1/e\approx0.6321\) against \(0.625\) — within \(0.007\). The alternating series converges fast because the terms are \(1/k!\).</li>
+      </ol>
+      <div class="why">The striking part: the answer barely depends on \(n\). Four cards and fifty-two cards give essentially the same winning probability.</div>
+    </div></details>
+  </div>
+
+  <div class="q" id="qF3">
+    <div class="qnum">F3</div>
+    <div class="qbody">
+      <p>A statistician reports 20 confidence intervals, each individually correct with probability \(0.99\). Let \(A_i\) be the event that the \(i\)th is correct.</p>
+      <ol class="parts" type="a">
+        <li>Using De Morgan and the union bound, show \(\Prob\!\left(\bigcap_i A_i\right)\ \ge\ 1-\sum_i \Prob(A_i^c)\).</li>
+        <li>Apply it: what can you guarantee about all 20 being correct?</li>
+        <li>What does the first Bonferroni bound \(\Prob\!\left(\bigcup_i A_i\right)\le\sum_i\Prob(A_i)\) tell you here?</li>
+        <li>How many intervals could be reported while still guaranteeing 90% confidence that all are correct?</li>
+      </ol>
+    </div>
+    <div class="conf" data-q="F3"></div>
+    <details><summary>Solution</summary><div class="sol">
+      <ol type="a">
+        <li>\[\begin{aligned}
+\Prob\!\left(\bigcap_i A_i\right)
+&=1-\Prob\!\left(\left(\bigcap_i A_i\right)^{\!c}\right)\\
+&=1-\Prob\!\left(\bigcup_i A_i^{c}\right)\\
+&\ge\ 1-\sum_i\Prob\!\left(A_i^{c}\right).
+\end{aligned}\]</li>
+        <li>\(1-20(0.01)=0.80\). Note what it does <em>not</em> require: nothing about dependence between the intervals.</li>
+        <li>Nothing useful. \(\sum_i\Prob(A_i)=19.8\), and every probability is at most 1 anyway, so the bound is vacuous. Bounds can be valid and worthless.</li>
+        <li>Need \(1-0.01n\ge0.9\), so \(n\le10\).</li>
+      </ol>
+      <div class="why">The multiple-comparisons problem in miniature, and the reason Bonferroni corrections exist: the guarantee erodes linearly in the number of statements you make.</div>
+    </div></details>
+  </div>
+
+  <div class="q" id="qF4">
+    <div class="qnum">F4</div>
+    <div class="qbody">
+      <p>Three events satisfy \(\Prob(A_i)=0.4\) for each \(i\), \(\Prob(A_i\cap A_j)=0.1\) for each pair, and \(\Prob(A_1\cap A_2\cap A_3)=0.05\).</p>
+      <ol class="parts" type="a">
+        <li>Compute \(\Prob(A_1\cup A_2\cup A_3)\) exactly.</li>
+        <li>Compute the successive Bonferroni bounds \(P_1\), \(P_1-P_2\), \(P_1-P_2+P_3\), and check each has the direction the theorem claims.</li>
+        <li>Why does the third bound land exactly on the true value?</li>
+      </ol>
+    </div>
+    <div class="conf" data-q="F4"></div>
+    <details><summary>Solution</summary><div class="sol">
+      <ol type="a">
+        <li>\(1.2-0.3+0.05=0.95\)</li>
+        <li>\(P_1=1.2\ge0.95\) ✓ (upper, and useless since it exceeds 1). \(P_1-P_2=0.9\le0.95\) ✓ (lower). \(P_1-P_2+P_3=0.95\) ✓ (upper, met with equality).</li>
+        <li>With \(n=3\) there are no further terms — the alternating series terminates, so the third partial sum <em>is</em> inclusion–exclusion. Bonferroni bounds are truncations of the exact formula, which is why they alternate between over- and under-shooting.</li>
+      </ol>
+    </div></details>
+  </div>
+</section>
+
+<footer>
+  <p><b>After each set:</b> anything amber or red is the only thing worth revisiting. Re-attempt those from a blank page days later — rereading a solution feels productive and isn't.</p>
+  <p><b>Likely quiz territory:</b> the complement trick (B1c, B4), overcounting in selection problems (C2, C3), one story proof written out properly (D1–D4). Inclusion–exclusion arithmetic (F1) is the most mechanical marks on offer.</p>
+</footer>
+
+<script>
+(function () {
+  var STATES = [{k:'g',l:'Got it'},{k:'y',l:'Shaky'},{k:'r',l:'Stuck'}];
+  var CLS = {g:'done', y:'shaky', r:'stuck'};
+  var KEY = 'stat2062:ws01';
+  var marks = {};
+
+  function load(){
+    if(!window.storage||!window.storage.get) return Promise.resolve();
+    return window.storage.get(KEY)
+      .then(function(r){ if(r&&r.value) marks = JSON.parse(r.value); })
+      .catch(function(){});
+  }
+  function save(){
+    if(!window.storage||!window.storage.set) return;
+    try{ window.storage.set(KEY, JSON.stringify(marks)); }catch(e){}
+  }
+
+  var rows = [].slice.call(document.querySelectorAll('.conf'));
+  rows.forEach(function(row){
+    var id = row.getAttribute('data-q');
+    var lab = document.createElement('span');
+    lab.className = 'lab'; lab.textContent = 'Mark:';
+    row.appendChild(lab);
+    STATES.forEach(function(s){
+      var b = document.createElement('button');
+      b.type='button'; b.className=s.k; b.textContent=s.l;
+      b.setAttribute('aria-pressed','false');
+      b.setAttribute('aria-label', s.l+' — question '+id);
+      b.addEventListener('click', function(){
+        marks[id] = (marks[id]===s.k) ? null : s.k;
+        render(); save();
+      });
+      row.appendChild(b);
+    });
+  });
+
+  function render(){
+    rows.forEach(function(row){
+      var id = row.getAttribute('data-q');
+      var st = marks[id] || null;
+      var q = document.getElementById('q'+id);
+      if(q) q.className = 'q' + (st ? ' '+CLS[st] : '');
+      [].forEach.call(row.querySelectorAll('button'), function(b){
+        b.setAttribute('aria-pressed', b.className===st ? 'true' : 'false');
+      });
+    });
+    var c={g:0,y:0,r:0};
+    Object.keys(marks).forEach(function(k){ if(marks[k]) c[marks[k]]++; });
+    var t=c.g+c.y+c.r;
+    document.getElementById('tally').innerHTML = t===0 ? 'Nothing marked yet'
+      : '<b>'+c.g+'</b> got it · <b>'+c.y+'</b> shaky · <b>'+c.r+'</b> stuck · '+t+' of '+rows.length+' marked';
+  }
+
+  var all = [].slice.call(document.querySelectorAll('details'));
+  document.getElementById('showAll').onclick = function(){ all.forEach(function(d){d.open=true;}); };
+  document.getElementById('hideAll').onclick = function(){ all.forEach(function(d){d.open=false;}); };
+  document.getElementById('clearMarks').onclick = function(){ marks={}; render(); save(); };
+
+  load().then(render);
+})();
+</script>
+<script>
+// reveal content once typesetting finishes; warn (and reveal anyway) if MathJax never arrives
+(function(){
+  function ready(){ document.body.classList.add('math-ready'); }
+  setTimeout(function(){
+    if(!document.body.classList.contains('math-ready')){
+      ready();
+      if(!document.querySelector('mjx-container')){
+        var w=document.getElementById('mathwarn'); if(w) w.hidden=false;
+      }
+    }
+  }, 3500);
+})();
+</script>
+</body>
+</html>

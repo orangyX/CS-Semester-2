@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CITS3005 — Prolog programming drill</title>
+<style>
+  :root{
+    --proof:#CECBF6; --proof-t:#26215C; --proof-edge:#B6B2EE; --proof-soft:#F0EFFC;
+    --concrete:#DCEEC3; --concrete-t:#173404; --concrete-edge:#9CC466;
+    --trap:#F5E2B8; --trap-t:#5C3D06; --trap-edge:#E8CE93;
+    --ink:#2c2c2a; --muted:#6b6b64; --line:#e0ded6; --paper:#faf9f5;
+    --mono:ui-monospace,"SF Mono",Menlo,Consolas,"Liberation Mono",monospace;
+    --serif:Cambria,"Latin Modern Roman",Georgia,"Times New Roman",serif;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; padding:24px 24px 64px;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    color:var(--ink); background:var(--paper); line-height:1.5;
+    max-width:840px; margin-inline:auto;}
+  .eyebrow{font-size:11.5px; letter-spacing:.09em; text-transform:uppercase;
+    color:var(--muted); font-weight:600;}
+  h1{font-size:23px; font-weight:600; margin:5px 0 4px; letter-spacing:-0.01em;}
+  .sub{color:var(--muted); font-size:14px; margin:0 0 20px;}
+
+  .m{font-family:var(--serif); font-style:italic; font-size:1.06em; white-space:nowrap;}
+  .mb{font-family:var(--serif); font-style:italic; font-size:16px; display:block;
+      text-align:center; margin:9px 0 10px; padding:9px 12px; background:#fff;
+      border:1px solid var(--proof-edge); border-radius:7px; overflow-x:auto;}
+  .f{font-family:var(--mono); font-size:0.88em; background:#fff;
+     border:1px solid var(--line); border-radius:4px; padding:1px 5px; white-space:nowrap;}
+
+  pre{font-family:var(--mono); font-size:12.5px; line-height:1.55;
+      background:#fff; border:1px solid var(--line);
+      border-left:3px solid var(--concrete-edge);
+      border-radius:0 7px 7px 0; padding:11px 13px; margin:11px 0; overflow-x:auto;
+      tab-size:2;}
+  pre.tr{border-left-color:var(--proof-edge); background:#fdfdfc; color:#333;}
+  pre .c{color:var(--muted);}
+
+  .howto{background:var(--proof-soft); border-radius:10px; padding:14px 16px;
+    margin:18px 0 20px; font-size:13.5px; color:var(--proof-t);}
+  .howto b{font-weight:600;} .howto p{margin:0 0 8px;} .howto p:last-child{margin:0;}
+  .howto ol{margin:8px 0 0; padding-left:18px;} .howto li{margin-bottom:4px;}
+
+  .controls{display:flex; gap:9px; flex-wrap:wrap; align-items:center; margin:0 0 26px;}
+  button{font-size:13px; font-weight:600; cursor:pointer; background:#fff; color:var(--ink);
+    border:1px solid var(--line); border-radius:7px; padding:7px 13px; font-family:inherit;}
+  button:hover{background:var(--proof-soft); border-color:var(--proof-edge);}
+  button:focus-visible{outline:2px solid var(--proof-t); outline-offset:2px;}
+
+  section.set{margin:0 0 34px;}
+  .sh{display:flex; justify-content:space-between; align-items:baseline; gap:12px;
+    border-bottom:2px solid var(--concrete); padding-bottom:6px; margin-bottom:6px;}
+  .sh h2{font-size:16.5px; font-weight:600; margin:0;}
+  .sh .tally{font-size:11.5px; color:var(--muted); white-space:nowrap;}
+  .slides{font-size:12px; color:var(--muted); margin:0 0 14px;}
+
+  .q{margin:0 0 18px; padding-left:12px; border-left:3px solid var(--line);}
+  .qtext{margin:0 0 4px;}
+  .qn{display:inline-block; font-weight:600; font-size:12.5px; color:var(--concrete-t);
+    background:#EDF6E0; border-radius:4px; padding:1px 6px; margin-right:8px;}
+
+  details{margin-top:10px;}
+  summary{cursor:pointer; font-size:12.5px; font-weight:600; color:var(--concrete-t);
+    list-style:none; display:inline-flex; align-items:center; gap:5px;}
+  summary::-webkit-details-marker{display:none;}
+  summary:focus-visible{outline:2px solid var(--concrete-t); outline-offset:2px; border-radius:4px;}
+  summary .caret{display:inline-block; font-size:9px; transition:transform .15s ease;}
+  details[open] summary .caret{transform:rotate(90deg);}
+  .ans{background:#F4F9EC; border-radius:0 8px 8px 0;
+    border-left:3px solid var(--concrete-edge); padding:10px 13px; margin-top:7px; font-size:13.5px;}
+  .ans p{margin:0 0 8px;} .ans p:last-child{margin:0;}
+  .ans ul,.ans ol{margin:6px 0 8px; padding-left:19px;} .ans li{margin-bottom:4px;}
+  .ans pre{background:#fff;}
+
+  .trap{background:var(--trap); color:var(--trap-t); border-left:3px solid var(--trap-edge);
+    border-radius:0 6px 6px 0; padding:9px 12px; margin-top:9px; font-size:13px;}
+  .trap b{font-weight:600;}
+  .rule{background:#fff; border:1px solid var(--line); border-radius:8px;
+    padding:11px 14px; margin:12px 0; font-size:13.5px;}
+  .rule b{font-weight:600;} .rule p{margin:0 0 7px;} .rule p:last-child{margin:0;}
+
+  table.ref{border-collapse:collapse; width:100%; margin:8px 0 4px; font-size:13px;}
+  table.ref th{text-align:left; font-weight:600; padding:6px 10px 6px 0;
+    border-bottom:1px solid var(--line); font-size:12.5px;}
+  table.ref td{padding:6px 10px 6px 0; border-bottom:1px solid var(--line); vertical-align:top;}
+  table.ref tr:last-child td{border-bottom:none;}
+  table.ref td.k{white-space:nowrap; font-family:var(--mono); font-size:12px; width:1%;}
+
+  .note{margin-top:30px; font-size:12.5px; color:var(--muted);
+    border-top:1px solid var(--line); padding-top:14px;}
+
+  @media (max-width:620px){
+    body{padding:16px 16px 48px;}
+    pre{font-size:11.5px;}
+  }
+  @media (prefers-reduced-motion:reduce){ summary .caret{transition:none;} }
+  @media print{
+    body{background:#fff; padding:0; max-width:none;}
+    .controls,.howto{display:none;}
+    details{display:block;} details > *{display:block;} summary{display:none;}
+    .ans{border:1px solid #ccc; background:#f7f7f7;}
+    section.set{page-break-inside:avoid;}
+  }
+</style>
+</head>
+<body>
+
+<p class="eyebrow">CITS3005 Knowledge Representation · drill</p>
+<h1>Prolog programming</h1>
+<p class="sub">Writing knowledge bases · unification · lists · recursion · negation as failure</p>
+
+<div class="howto">
+  <p><b>Write the programs, don't read them.</b> The Lecture 3 sheet asked you to explain Prolog; this one asks you to produce it. Sets are labelled P1–P8 so nothing collides with the other sheets.</p>
+  <ol>
+    <li><b>P1–P2</b> are the basics: knowledge bases you write from a description, and unification predicted by hand.</li>
+    <li><b>P3–P5</b> are the standard machinery — lists, recursion over a graph, arithmetic on successor terms.</li>
+    <li><b>P6–P8</b> are where knowledge representation actually bites: negation as failure, a full knowledge base, and debugging.</li>
+  </ol>
+  <p><b>Every program and every transcript in the answers was run in SWI-Prolog before being written down</b>, including the ones that misbehave — where an answer says a query loops or returns something surprising, that is observed, not predicted. Run them yourself anyway: <span class="f">swipl kb.pl</span>, then <span class="f">trace.</span> when something is not doing what you expect.</p>
+</div>
+
+<div class="controls">
+  <button id="openAll" type="button">Open all answers</button>
+  <button id="closeAll" type="button">Close all</button>
+</div>
+<section class="set" data-set><div class="sh"><h2>P1 · Facts, rules, queries</h2><span class="tally" data-tally></span></div><p class="slides">Slides 23–25. Build a knowledge base from a description, then define relations over it.</p><div class="q"><p class="qtext"><span class="qn">P1.1</span> John and Susan have two children, Mary and Tom. Mary and Bob have a child, Alice. Write the facts, then define <span class="f">father/2</span> and <span class="f">mother/2</span>.</p><details><summary><span class="caret">▶</span>Check</summary><div class="ans"><pre>parent(john, mary).    parent(john, tom).
+parent(susan, mary).   parent(susan, tom).
+parent(mary, alice).   parent(bob, alice).
+
+male(john).    male(tom).    male(bob).
+female(susan). female(mary). female(alice).
+
+father(X, Y) :- parent(X, Y), male(X).
+mother(X, Y) :- parent(X, Y), female(X).</pre></div></details></div><div class="q"><p class="qtext"><span class="qn">P1.2</span> Define <span class="f">sibling/2</span>. Write the obvious version first, then query <span class="f">?- sibling(mary, X).</span> and fix what you find.</p><details><summary><span class="caret">▶</span>Check</summary><div class="ans"><p>The obvious version:</p><pre>sibling(X, Y) :- parent(P, X), parent(P, Y).</pre><p>It makes everyone their own sibling, since <span class="f">X</span> and <span class="f">Y</span> can bind to the same person. Add the inequality:</p><pre>sibling(X, Y) :- parent(P, X), parent(P, Y), X \= Y.</pre><p>Now a second problem shows up. Actual output:</p><pre class="tr">?- findall(X-Y, sibling(X,Y), L).
+L = [mary-tom, tom-mary, mary-tom, tom-mary].</pre><p><b>Each pair appears twice</b> — once via John, once via Susan. Prolog is not returning wrong answers; it is returning one solution <i>per proof</i>, and there are two proofs. That is what a resolution engine does.</p><div class="trap"><b>Duplicate solutions are a fact of life in Prolog, not a bug to be stamped out.</b> If you need them gone, wrap the query — <span class="f">setof/3</span> deduplicates and sorts — rather than contorting the rule. Contorting the rule usually means adding a cut, and a cut changes what the program <i>means</i>, not just what it prints.</div></div></details></div><div class="q"><p class="qtext"><span class="qn">P1.3</span> Define <span class="f">grandparent/2</span> and <span class="f">aunt_uncle/2</span>, reusing what you already have.</p><details><summary><span class="caret">▶</span>Check</summary><div class="ans"><pre>grandparent(X, Z) :- parent(X, Y), parent(Y, Z).
+
+aunt_uncle(X, Y) :- sibling(X, P), parent(P, Y).</pre><pre class="tr">?- findall(X, aunt_uncle(X, alice), L).
+L = [tom, tom].</pre><p>Tom twice, inheriting the duplication from <span class="f">sibling/2</span> — the reason to notice it in P1.2.</p><p><b>Build relations out of relations.</b> <span class="f">aunt_uncle/2</span> never mentions <span class="f">parent</span> twice or <span class="f">male</span> at all; it is defined against <span class="f">sibling/2</span>, so improving <span class="f">sibling/2</span> improves it too. That layering is what a knowledge base <i>is</i> — the alternative is restating the same conditions in twelve places and having eleven of them go stale.</p></div></details></div><div class="q"><p class="qtext"><span class="qn">P1.4</span> Define <span class="f">ancestor/2</span>. What are the two clauses, and does their order matter?</p><details><summary><span class="caret">▶</span>Check</summary><div class="ans"><pre>ancestor(X, Y) :- parent(X, Y).
+ancestor(X, Z) :- parent(X, Y), ancestor(Y, Z).</pre><pre class="tr">?- findall(X, ancestor(X, alice), L).
+L = [mary, bob, john, susan].</pre><p><b>Base case first, recursive case second.</b> Declaratively the order is irrelevant — a program is a set of clauses. Operationally it decides the order solutions come back in, and it can decide whether the program terminates at all: see P8.1, where putting the recursive clause first turns this exact predicate into an infinite loop.</p><p>Note the recursive call is on <span class="f">ancestor(Y, Z)</span>, with <span class="f">parent(X, Y)</span> first. Each step consumes one <span class="f">parent</span> fact, so the recursion is guaranteed to shrink. That is the property to check every time you write a recursive rule: <b>something must get smaller.</b></p></div></details></div><div class="q"><p class="qtext"><span class="qn">P1.5</span> <span class="f">father(X,Y) :- parent(X,Y), male(X).</span> versus <span class="f">father(X,Y) :- male(X), parent(X,Y).</span> — same answers? Same work?</p><details><summary><span class="caret">▶</span>Check</summary><div class="ans"><p><b>Same answers, different work.</b> Both are the conjunction <span class="m">parent(X,Y) ∧ male(X)</span>, and conjunction commutes, so the set of solutions is identical.</p><p>Operationally they differ. The first generates parent pairs and filters by sex; the second generates males and then looks up their children. With many parents and few males, the second does less work; with the reverse, the first does.</p><p><b>The general heuristic: put the most constraining goal first.</b> If one goal has a bound argument and another does not, the bound one narrows the search immediately and the unbound one enumerates. Ordering is the main tuning knob you have in Prolog — and it is one more place where the declarative reading and the operational behaviour come apart.</p></div></details></div></section><section class="set" data-set><div class="sh"><h2>P2 · Unification</h2><span class="tally" data-tally></span></div><p class="slides">Slides 26–29, 33. The one operation everything else is built on. Predict each of these before running it.</p><div class="q"><p class="qtext"><span class="qn">P2.1</span> For each pair, say whether the two terms unify and give the bindings.<pre>f(X, b)          =  f(a, Y)
+f(X, X)          =  f(a, b)
+p(X)             =  q(X)
+f(a, X)          =  f(Y, g(Y))
+[H|T]            =  [1, 2, 3]
+[X|Y]            =  [1]
+date(D, M, 2026) =  date(11, 8, Y)
+foo              =  Foo</pre></p><details><summary><span class="caret">▶</span>Check</summary><div class="ans"><table class="ref"><tr><th>terms</th><th>result</th></tr><tr><td class="k">f(X,b) = f(a,Y)</td><td><b>unifies</b> — X = a, Y = b</td></tr><tr><td class="k">f(X,X) = f(a,b)</td><td><b>fails</b> — X cannot be both a and b</td></tr><tr><td class="k">p(X) = q(X)</td><td><b>fails</b> — different functors, checked before arguments</td></tr><tr><td class="k">f(a,X) = f(Y,g(Y))</td><td><b>unifies</b> — Y = a, then X = g(a). <b>Bindings propagate.</b></td></tr><tr><td class="k">[H|T] = [1,2,3]</td><td><b>unifies</b> — H = 1, T = [2,3]</td></tr><tr><td class="k">[X|Y] = [1]</td><td><b>unifies</b> — X = 1, Y = []. A one-element list is head 1, tail empty.</td></tr><tr><td class="k">date(D,M,2026) = date(11,8,Y)</td><td><b>unifies</b> — D = 11, M = 8, Y = 2026. Information flows both ways.</td></tr><tr><td class="k">foo = Foo</td><td><b>unifies</b> — Foo is a <i>variable</i> (capital initial); it binds to the atom foo</td></tr></table><p><b>The algorithm, in one line:</b> same functor and arity, then recursively unify arguments left to right, with a variable absorbing whatever sits opposite it — and once bound it stays bound for the rest of the match. Row four is the one people get wrong: by the time <span class="f">X</span> is matched, <span class="f">Y</span> is already <span class="f">a</span>.</p><p>Row three is worth its own note: unification is <b>structural</b>, not semantic. It never asks what <span class="f">p</span> and <span class="f">q</span> mean.</p></div></details></div><div class="q"><p class="qtext"><span class="qn">P2.2</span> What does <span class="f">?- X = f(X).</span> do? Should it succeed?</p><details><summary><span class="caret">▶</span>Check</summary><div class="ans"><pre class="tr">?- X = f(X).
+X = f(X).                            % succeeds — a cyclic term
+
+?- unify_with_occurs_check(Y, f(Y)).
+false.</pre><p><b>Logically it should fail.</b> No finite term is a proper subterm of itself, so there is no substitution making both sides equal. Checking for this is the <b>occurs check</b>.</p><p>SWI-Prolog omits it by default and builds a cyclic term instead, because the check costs time on every single unification and the situation almost never arises in real programs. Use <span class="f">unify_with_occurs_check/2</span> when you need the logically correct behaviour.</p><div class="trap"><b>This is a gap between Prolog and the logic, like the ones in the Lecture 3 sheet.</b> Standard resolution is defined with the occurs check; the default implementation is unsound without it. Worth knowing exists, not worth worrying about weekly — but it is exactly the kind of thing a knowledge representation exam likes to ask, because it shows whether you know the difference between a proof procedure and its implementation.</div></div></details></div><div class="q"><p class="qtext"><span class="qn">P2.3</span> Predict both: <span class="f">?- X = 1+2.</span> and <span class="f">?- X is 1+2.</span>. Then explain why <span class="f">?- 3 = 1+2.</span> fails.</p><details><summary><span class="caret">▶</span>Check</summary><div class="ans"><pre class="tr">?- X = 1+2.
+X = 1+2.
+
+?- X is 1+2.
+X = 3.
+
+?- 3 = 1+2.
+false.</pre><p><span class="f">=</span> is <b>unification</b>, and <span class="f">1+2</span> is just the compound term <span class="f">+(1,2)</span> — slide 28's point that functions are not evaluated. So <span class="f">X</span> binds to the expression itself.</p><p><span class="f">is/2</span> is <b>arithmetic evaluation</b>: it evaluates its right side as an arithmetic expression and unifies the result with the left. It is one of the non-logical operators — it fails or errors if the right side has unbound variables, so it works in one direction only.</p><p><span class="f">3 = 1+2</span> fails because an integer and a compound term have different shapes. Nothing is being computed for them to agree about. <b>Structure, not value.</b></p></div></details></div><div class="q"><p class="qtext"><span class="qn">P2.4</span> What kind of term is <span class="f">[a, b, c]</span> really? Show it has the same status as <span class="f">date(11, 8, 2026)</span>.</p><details><summary><span class="caret">▶</span>Check</summary><div class="ans"><pre class="tr">?- X = [a,b,c], X = [H|T].
+X = [a,b,c], H = a, T = [b,c].
+
+?- [a,b,c] =.. L.
+L = ['[|]', a, [b,c]].</pre><p>A list is a <b>compound term</b> like any other — slide 28 lists it as a special case. <span class="f">[a,b,c]</span> is a two-argument term (head and tail) whose functor SWI writes as <span class="f">'[|]'</span>, nested three deep and ending in the atom <span class="f">[]</span>:</p><pre>'[|]'(a, '[|]'(b, '[|]'(c, [])))</pre><p>The bracket notation is sugar. Everything about lists — <span class="f">member</span>, <span class="f">append</span>, all of P3 — is just unification against that nested structure, which is why the definitions are so short.</p><p><span class="f">=..</span> ("univ") takes any term apart into functor and arguments, and is worth knowing for exactly this kind of check.</p></div></details></div><div class="q"><p class="qtext"><span class="qn">P2.5</span> You load a program and SWI warns: <i>Singleton variables: [L]</i>. What does that mean, and when is it a real bug?</p><details><summary><span class="caret">▶</span>Check</summary><div class="ans"><p>A variable occurring <b>once</b> in a clause. Since a variable only does work by appearing twice — once to be bound, once to be used — a single occurrence is usually either a typo or a variable you meant to ignore.</p><pre>nearby(X, Y) :- connected(X, Y, L).     <span class="c">% warns: singleton L</span>
+nearby(X, Y) :- connected(X, Y, _).     <span class="c">% no warning, no documentation</span>
+nearby(X, Y) :- connected(X, Y, _L).    <span class="c">% no warning, still says "line"</span></pre><p><b>The real bug it catches is a misspelling.</b> Write <span class="f">connected(X, Y, Line)</span> in one goal and <span class="f">Lien</span> in the next and the clause silently stops working — both are now singletons, and the warning is the only sign.</p><p>The leading-underscore form is what the lecture uses in the transport knowledge base, and it is the right habit: it silences the warning while keeping the name for whoever reads the clause next.</p></div></details></div></section><section class="set" data-set><div class="sh"><h2>P3 · Lists</h2><span class="tally" data-tally></span></div><p class="slides">Slide 28 mentions lists as a special case of compound terms. Here is what you actually do with them.</p><div class="q"><p class="qtext"><span class="qn">P3.1</span> Write <span class="f">mem/2</span> — true when the first argument is an element of the second. Two clauses, no arithmetic.</p><details><summary><span class="caret">▶</span>Check</summary><div class="ans"><pre>mem(X, [X|_]).
+mem(X, [_|T]) :- mem(X, T).</pre><pre class="tr">?- findall(X, mem(X, [a,b,c]), L).
+L = [a, b, c].</pre><p>Read the clauses as knowledge, not as a loop: <b>X is a member if it is the head; or if it is a member of the tail.</b> The base case is the first clause — no arithmetic, no index, no counter.</p><p>Because the first argument may be unbound, the same predicate <i>generates</i> members as well as testing them. One definition, two modes, for free. That is the payoff of relations over functions.</p></div></details></div><div class="q"><p class="qtext"><span class="qn">P3.2</span> Write <span class="f">app/3</span> (append). Then predict <span class="f">?- app(X, Y, [1,2]).</span> — this is the one to think about.</p><details><summary><span class="caret">▶</span>Check</summary><div class="ans"><pre>app([], L, L).
+app([H|T], L, [H|R]) :- app(T, L, R).</pre><pre class="tr">?- findall(X-Y, app(X, Y, [1,2]), L).
+L = [[]-[1,2], [1]-[2], [1,2]-[]].</pre><p><b>Every way of splitting the list.</b> You wrote a predicate for joining two lists and got list-splitting at no extra cost, because <span class="f">app/3</span> is a <i>relation</i> among three lists rather than a function of two.</p><p>The recursive clause is worth reading slowly: it says the head of the first list is also the head of the result, and the rest follows by recursion. There is no code that "copies" anything — <b>the copying is unification building the answer term.</b></p><div class="trap">This reversibility is the thing Prolog does that other languages do not, and it is why the unit cares. But it is not universal: <span class="f">len/2</span> below stops being reversible the moment you use <span class="f">is/2</span>, because arithmetic evaluation only runs one way. <b>Every non-logical operator you add costs you a mode.</b></div></div></details></div><div class="q"><p class="qtext"><span class="qn">P3.3</span> Write <span class="f">len/2</span>. Why does this one need <span class="f">is/2</span>, and what does it cost?</p><details><summary><span class="caret">▶</span>Check</summary><div class="ans"><pre>len([], 0).
+len([_|T], N) :- len(T, M), N is M+1.</pre><p>You need <span class="f">is/2</span> because the length is a <i>number to be computed</i>, and Prolog does not evaluate terms (P2.3). Without it, <span class="f">len([a,b], N)</span> would bind <span class="f">N</span> to <span class="f">0+1+1</span>.</p><pre class="tr">?- len(L, 3).
+L = [_A, _B, _C] ;
+<span class="c">% ... hangs — never returns from the search for a second solution</span></pre><p><b>The cost is reversibility</b>, and this is one to run rather than assume. Backwards you do get an answer — a list of three unbound variables — but asking for the next one never terminates: the recursion keeps generating longer and longer lists, and <span class="f">is/2</span> can only <i>test</i> each candidate rather than solve for the length. Compare P5.1, where the successor version terminates in both directions.</p><p>Note also that the recursive call comes <i>before</i> the arithmetic. It has to — <span class="f">M</span> must be bound by the time <span class="f">N is M+1</span> runs, or <span class="f">is/2</span> raises an instantiation error.</p><p>A fully relational version uses successor terms instead of integers — which is exactly what P5 is about, and exactly why the lecture's arithmetic example is built that way.</p></div></details></div><div class="q"><p class="qtext"><span class="qn">P3.4</span> Write <span class="f">rev/2</span> twice: the naive version using <span class="f">app/3</span>, and an accumulator version. What changes?</p><details><summary><span class="caret">▶</span>Check</summary><div class="ans"><pre><span class="c">% naive — quadratic</span>
+rev([], []).
+rev([H|T], R) :- rev(T, S), app(S, [H], R).
+
+<span class="c">% accumulator — linear</span>
+revacc(L, R) :- revacc(L, [], R).
+revacc([], A, A).
+revacc([H|T], A, R) :- revacc(T, [H|A], R).</pre><pre class="tr">?- rev([1,2,3], R).
+R = [3, 2, 1].
+
+?- revacc([1,2,3], R).
+R = [3, 2, 1].</pre><p>The naive version walks the whole accumulated list on every step to stick one element on the end, so an n-element list costs about n²/2 steps. The accumulator version pushes each element onto the front of a growing second list — <b>front-insertion is one unification, back-insertion is a traversal</b> — and finishes in n.</p><p>The accumulator idiom is worth having in your hands: <b>a helper with one extra argument carrying the answer-so-far, and a base case that hands the accumulator back.</b> It reappears in P4 as the visited-list, which is the same trick used for a different purpose.</p></div></details></div><div class="q"><p class="qtext"><span class="qn">P3.5</span> Write <span class="f">last_/2</span> (the last element) and <span class="f">nth/3</span> (the Nth element, counting from 1). Underscore in the name to avoid clashing with the built-ins.</p><details><summary><span class="caret">▶</span>Check</summary><div class="ans"><pre>last_([X], X).
+last_([_|T], X) :- last_(T, X).
+
+nth(1, [X|_], X).
+nth(N, [_|T], X) :- N > 1, M is N-1, nth(M, T, X).</pre><pre class="tr">?- last_([a,b,c], X).
+X = c.
+
+?- nth(2, [a,b,c], X).
+X = b.</pre><p><span class="f">last_/2</span>'s base case is <span class="f">[X]</span>, not <span class="f">[]</span> — the last element of an empty list does not exist, so there should be no clause for it. <b>Failure is the right answer to a question with no answer</b>, and adding a clause to "handle" it would be wrong.</p><p><span class="f">nth/3</span>'s <span class="f">N &gt; 1</span> guard is worth testing rather than assuming. Drop it and the answers do not change — <span class="f">nth(1, [a,b,c], X)</span> still gives only <span class="f">X = a</span>, because the second clause descends with N going negative and runs off the end of the list, failing. What the guard buys is <b>mutually exclusive clauses</b>: exactly one can apply, so no pointless descent happens and the predicate is deterministic.</p><p>The habit worth forming: <b>check whether two clauses can both fire, and check it by running it.</b> Overlapping clauses sometimes cost a spurious solution and sometimes only wasted work — P5.3 is a case where the cost is real — and guessing which is not reliable.</p></div></details></div></section><section class="set" data-set><div class="sh"><h2>P4 · Recursion over a graph</h2><span class="tally" data-tally></span></div><p class="slides">Slides 31–32, extended. The transport knowledge base, made to do what you actually wanted.</p><div class="rule"><p><b>The facts, for reference.</b> Save these with your work — P4 and P6 both build on them.</p><pre>connected(bond_street, oxford_circus, central).
+connected(oxford_circus, tottenham_court_road, central).
+connected(bond_street, green_park, jubilee).
+connected(green_park, charing_cross, jubilee).
+connected(green_park, piccadilly_circus, piccadilly).
+connected(piccadilly_circus, leicester_square, piccadilly).
+connected(green_park, oxford_circus, victoria).
+connected(oxford_circus, piccadilly_circus, bakerloo).
+connected(piccadilly_circus, charing_cross, bakerloo).
+connected(tottenham_court_road, leicester_square, northern).
+connected(leicester_square, charing_cross, northern).</pre><p>Plus the lecture's two rules: <span class="f">nearby(X,Y) :- connected(X,Y,_L).</span> and <span class="f">nearby(X,Y) :- connected(X,Z,L), connected(Z,Y,L).</span></p></div><div class="q"><p class="qtext"><span class="qn">P4.1</span> The lecture's <span class="f">connected/3</span> facts are directional. Write <span class="f">link/3</span> so travel works both ways, without editing any facts.</p><details><summary><span class="caret">▶</span>Check</summary><div class="ans"><pre>link(X, Y, L) :- connected(X, Y, L).
+link(X, Y, L) :- connected(Y, X, L).</pre><p>Two clauses, and every fact now reads in both directions. <b>Never edit facts to fix a rule.</b> The facts record what the survey said; the rules record what you want to conclude from it. Duplicating eleven reversed facts would double the maintenance and guarantee they drift apart.</p><p>This is also the general shape for any symmetric closure of a stored relation, and the same idea covers reflexive and transitive closure — P4.2 does transitive.</p></div></details></div><div class="q"><p class="qtext"><span class="qn">P4.2</span> Write <span class="f">reachable/2</span> — any number of stops, any lines. Try the obvious version first and say what happens.</p><details><summary><span class="caret">▶</span>Check</summary><div class="ans"><p>The obvious version:</p><pre>reachable(X, Y) :- link(X, Y, _).
+reachable(X, Z) :- link(X, Y, _), reachable(Y, Z).</pre><p>Because <span class="f">link/3</span> is symmetric the graph has cycles, so this walks Bond Street → Oxford Circus → Bond Street → … forever. Prolog's depth-first search never notices the repeat. It <i>may</i> find an answer first by luck; it will not terminate on a query with no answer.</p><p>Carry the stations already visited:</p><pre>reachable(X, Y) :- reachable(X, Y, [X]).
+
+reachable(X, Y, _) :- link(X, Y, _).
+reachable(X, Y, V) :- link(X, Z, _), \+ mem(Z, V), reachable(Z, Y, [Z|V]).</pre><pre class="tr">?- reachable(bond_street, leicester_square).
+true.</pre><p>Same accumulator idiom as P3.4, doing a different job: the extra argument now <b>rules moves out</b> rather than building an answer. The two-clause wrapper hides it so callers still see <span class="f">reachable/2</span>.</p><div class="trap"><b>The declarative reading of the broken version is perfectly correct.</b> "X reaches Z if X links to some Y that reaches Z" is true. It fails only because of <i>how</i> Prolog searches — depth first, no memory. That gap between what a program means and what it does is the recurring theme of this half of the unit, and it is why slide 42's "clear systematic way to apply resolution" is doing real work.</div></div></details></div><div class="q"><p class="qtext"><span class="qn">P4.3</span> Extend it to <span class="f">route/3</span>, returning the actual list of stations travelled.</p><details><summary><span class="caret">▶</span>Check</summary><div class="ans"><pre>route(X, Y, P) :- route(X, Y, [X], P).
+
+route(X, Y, V, P) :- link(X, Y, _), revacc([Y|V], P).
+route(X, Y, V, P) :- link(X, Z, _), Z \== Y, \+ mem(Z, V),
+                     route(Z, Y, [Z|V], P).</pre><pre class="tr">?- route(bond_street, charing_cross, P).
+P = [bond_street, oxford_circus, tottenham_court_road,
+     leicester_square, charing_cross].</pre><p>The visited list is already the path — <b>in reverse</b>, since each new station was pushed on the front. So the base case reverses it (P3.4) and hands it back. One accumulator, two jobs.</p><p><span class="f">Z \== Y</span> stops the recursive clause from stepping onto the destination and then looking for it again, which would produce longer duplicate routes.</p></div></details></div><div class="q"><p class="qtext"><span class="qn">P4.4</span> That first route has four hops, but Bond Street → Green Park → Charing Cross has two. Why did Prolog not find the short one first, and what would you do about it?</p><details><summary><span class="caret">▶</span>Check</summary><div class="ans"><p><b>Because search is depth-first, not breadth-first.</b> At Bond Street the first matching fact is the Oxford Circus one, so Prolog commits to that branch and drives it all the way to a solution before ever trying Green Park. It returns the first route it <i>completes</i>, which has nothing to do with length.</p><pre class="tr">?- findall(P, route(bond_street, leicester_square, P), L), length(L, N).
+N = 17.</pre><p>All seventeen routes are there, in depth-first order. So one fix is to collect them and pick:</p><pre>shortest(X, Y, P) :-
+    findall(L-Q, (route(X, Y, Q), len(Q, L)), All),
+    sort(All, [_-P|_]).</pre><p>This is a genuine limitation, not a mistake in your program. Prolog's strategy is fixed, so <b>anything requiring a different search order has to be built on top</b> — collect all solutions and sort, or carry a depth bound and iterate. It is the same lesson as P4.2 from the other side: the logic is fine, the search is what you have to manage.</p></div></details></div></section><section class="set" data-set><div class="sh"><h2>P5 · Arithmetic on successor terms</h2><span class="tally" data-tally></span></div><p class="slides">Slide 36, taken apart and rebuilt. Numbers as structures, so everything stays relational.</p><div class="q"><p class="qtext"><span class="qn">P5.1</span> Using <span class="f">zero</span> and <span class="f">f/1</span> as on slide 36, write <span class="f">add/3</span>. Then try it backwards.</p><details><summary><span class="caret">▶</span>Check</summary><div class="ans"><pre>add(zero, Y, Y).
+add(f(X), Y, f(Z)) :- add(X, Y, Z).</pre><pre class="tr">?- add(f(zero), f(f(zero)), S).       % 1 + 2
+S = f(f(f(zero))).                       % 3
+
+?- findall(X-Y, add(X, Y, f(f(zero))), L).
+L = [zero-f(f(zero)), f(zero)-f(zero), f(f(zero))-zero].</pre><p>Two clauses and no arithmetic at all — the recursion peels one <span class="f">f</span> off the first argument and adds one to the result. <b>The structure does the counting.</b></p><p>And it runs backwards: asking for all pairs summing to 2 enumerates them, because nothing here is evaluated in a fixed direction. Compare <span class="f">len/2</span> in P3.3, which loses that the moment <span class="f">is/2</span> appears. This is the whole reason slide 36 uses successor terms rather than integers.</p></div></details></div><div class="q"><p class="qtext"><span class="qn">P5.2</span> Write <span class="f">mult/3</span>, <span class="f">lt/2</span> (strictly less than) and <span class="f">sub/3</span>.</p><details><summary><span class="caret">▶</span>Check</summary><div class="ans"><pre>mult(zero, _, zero).
+mult(f(X), Y, Z) :- mult(X, Y, W), add(Y, W, Z).
+
+lt(zero, f(_)).
+lt(f(X), f(Y)) :- lt(X, Y).
+
+sub(X, zero, X).
+sub(f(X), f(Y), Z) :- sub(X, Y, Z).</pre><pre class="tr">?- mult(f(f(zero)), f(f(f(zero))), Z).     % 2 * 3
+Z = f(f(f(f(f(f(zero)))))).                  % 6</pre><p><span class="f">mult/3</span> is repeated addition, defined against <span class="f">add/3</span> — layering again.</p><p><span class="f">lt/2</span>'s base case says <b>zero is less than any successor</b>, which is also what makes it false everywhere it should be: <span class="f">lt(zero, zero)</span> matches no clause. <span class="f">sub/3</span> peels one from each side until the subtrahend runs out, so it simply fails when the answer would be negative — correct behaviour over the naturals, and you did not have to write a check for it.</p></div></details></div><div class="q"><p class="qtext"><span class="qn">P5.3</span> Slide 36's <span class="f">reduce/2</span> is claimed to do arithmetic modulo 3. Test it on 3 and on 6. Is it a normaliser?</p><details><summary><span class="caret">▶</span>Check</summary><div class="ans"><pre>limit(f(f(f(zero)))).
+reduce(zero, zero).
+reduce(X, zero) :- limit(X).
+reduce(f(X), f(Y)) :- reduce(X, Y).</pre><pre class="tr">?- findall(R, reduce(f(f(f(zero))), R), L).        % 3
+L = [zero, f(f(f(zero)))].                          % 0, then 3
+
+?- findall(R, reduce(f(f(f(f(f(f(zero)))))), R), L).  % 6
+L = [f(f(f(zero))), f(f(f(f(f(f(zero))))))].          % 3, then 6 — never 0</pre><p><b>No.</b> Two things are wrong, and only the first is a matter of ordering.</p><ul><li><b>It is non-deterministic.</b> On 3, the second clause collapses to <span class="f">zero</span> and the third peels instead, giving 3 back unreduced. The right answer comes first only because <span class="f">reduce(X,zero) :- limit(X)</span> is written above the peeling clause. Swap them and the first solution changes.</li><li><b>It does not reduce far enough.</b> On 6 it never produces 0 at all. The <span class="f">limit</span> clause fires at most once per solution, so it removes one multiple of 3, not all of them — 6 becomes 3 and stops.</li></ul><p>So the slide's program works for inputs up to about twice the modulus and quietly stops working after that. Worth raising in the workshop; slide 36 says the example is explored further there.</p></div></details></div><div class="q"><p class="qtext"><span class="qn">P5.4</span> Write a correct normaliser <span class="f">norm/2</span> — repeatedly subtract the modulus until what is left is below it.</p><details><summary><span class="caret">▶</span>Check</summary><div class="ans"><pre>norm(X, X) :- limit(M), lt(X, M).
+norm(X, R) :- limit(M), \+ lt(X, M), sub(X, M, Y), norm(Y, R).</pre><pre class="tr">?- norm(f(f(f(f(zero)))), R).             % 4
+R = f(zero).                                % 1
+
+?- norm(f(f(f(f(f(f(zero)))))), R).         % 6
+R = zero.                                   % 0  — correct</pre><p>Built from P5.2's <span class="f">lt/2</span> and <span class="f">sub/3</span>. The two clauses are mutually exclusive by construction — one requires <span class="f">lt(X,M)</span>, the other its negation — so there is exactly one solution and no clause-order dependence. Contrast P5.3, where the two <span class="f">reduce</span> clauses overlap.</p><p><b>That is the general repair for a non-deterministic predicate:</b> make the clause guards exclusive, rather than relying on which clause you wrote first. The cut would also silence the extra solution, but it would hide the overlap rather than remove it.</p></div></details></div><div class="q"><p class="qtext"><span class="qn">P5.5</span> Slide 36's <span class="f">equals/2</span> fails on 3 versus 0, even though 3 ≡ 0 (mod 3). Write a version that does not.</p><details><summary><span class="caret">▶</span>Check</summary><div class="ans"><pre>eq3(X, Y) :- norm(X, A), norm(Y, A).</pre><pre class="tr">?- eq3(f(f(f(zero))), zero).                 % 3 =:= 0
+true.
+
+?- eq3(f(f(f(zero))), f(zero)).              % 3 =:= 1
+false.</pre><p>Two things are equal modulo 3 exactly when they normalise to the <b>same</b> term — and writing <span class="f">A</span> twice is how you say "the same" in Prolog. Unification does the comparison; there is no equality test to write.</p><p>The original failed because both its clauses required the two arguments to have matching top-level shape — both <span class="f">zero</span>, or both <span class="f">f(…)</span> — so <span class="f">f(f(f(zero)))</span> against <span class="f">zero</span> matched no clause head and failed before any reduction happened. <b>Normalise first, compare after</b>, and the problem disappears.</p><p>Note it also matters that <span class="f">norm/2</span> is deterministic. Built on the original <span class="f">reduce/2</span>, this same one-line definition gets the right answer for 3 and the wrong one for 6.</p></div></details></div></section><section class="set" data-set><div class="sh"><h2>P6 · Negation as failure</h2><span class="tally" data-tally></span></div><p class="slides">Slide 32's closed-world question, made operational. The single biggest gap between Prolog and the FOL semantics.</p><div class="q"><p class="qtext"><span class="qn">P6.1</span> What does <span class="f">\+ Goal</span> mean, exactly? State it in terms of the proof, not the world.</p><details><summary><span class="caret">▶</span>Check</summary><div class="ans"><p><b><span class="f">\+ Goal</span> succeeds if Prolog fails to prove <span class="f">Goal</span>, and fails if it proves it.</b> That is all. It says nothing about truth or falsity in any domain — it is a statement about what this knowledge base can derive.</p><p>Two consequences that follow immediately:</p><ul><li><b>It binds nothing.</b> A successful <span class="f">\+ G</span> leaves every variable in <span class="f">G</span> exactly as it found them, since the only way it succeeds is by <span class="f">G</span> failing, and failure undoes bindings.</li><li><b>It is not the <span class="m">¬</span> of section 16.</b> Definite clauses have no negative literals; <span class="f">\+</span> is a control construct bolted on, in the same family as the non-logical operators of slide 30.</li></ul></div></details></div><div class="q"><p class="qtext"><span class="qn">P6.2</span> Predict <span class="f">?- \+ nearby(X, Y).</span> with both variables unbound. Then run it.</p><details><summary><span class="caret">▶</span>Check</summary><div class="ans"><pre class="tr">?- \+ nearby(X, Y).
+false.</pre><p><b>It fails</b> — and once you read <span class="f">\+</span> correctly that is obvious. It asks Prolog to prove <span class="f">nearby(X, Y)</span>; Prolog succeeds immediately with the first pair it finds; so the negation fails.</p><p>What it did <i>not</i> ask is "find me an X and Y that are not nearby." <span class="f">\+</span> cannot do that, because it never binds anything. Read aloud, <span class="f">\+ nearby(X,Y)</span> with unbound variables means <b>"no pair of stations anywhere is nearby"</b> — which is false, and correctly reported as such.</p><div class="trap"><b>This is called floundering, and it is the classic negation bug.</b> The rule is: <span class="f">\+</span> is only meaningful on a <b>ground</b> goal — one with no unbound variables. Anything else is asking a question you did not mean. Bind first, negate second; P6.3 is what that looks like.</div></div></details></div><div class="q"><p class="qtext"><span class="qn">P6.3</span> Now write <span class="f">not_nearby/2</span> properly. You will need a way to enumerate stations.</p><details><summary><span class="caret">▶</span>Check</summary><div class="ans"><pre>station(S) :- connected(S, _, _).
+station(S) :- connected(_, S, _).
+
+not_nearby(X, Y) :- station(X), station(Y), X \== Y, \+ nearby(X, Y).</pre><pre class="tr">?- not_nearby(bond_street, leicester_square).
+true.
+
+?- setof(X-Y, not_nearby(X,Y), L), length(L, N).
+N = 26.</pre><p><b>The generators come first.</b> <span class="f">station(X), station(Y)</span> bind both variables before <span class="f">\+</span> ever runs, so by the time the negation is reached the goal is ground and the question is the one you meant. This is the <b>generate-and-test</b> pattern, and with <span class="f">\+</span> the order is not a preference — it is correctness.</p><p><span class="f">station/1</span> has two clauses because a station may appear in either argument position, and it will report duplicates. <span class="f">setof/3</span> above deduplicates; if you needed <span class="f">station/1</span> itself clean you would use <span class="f">setof</span> inside it.</p></div></details></div><div class="q"><p class="qtext"><span class="qn">P6.4</span> Slide 32 asks why we can conclude two London stations are not nearby, but not that Subiaco and Leederville are not. Your <span class="f">not_nearby/2</span> returns 26 pairs. What are those 26 pairs actually evidence of?</p><details><summary><span class="caret">▶</span>Check</summary><div class="ans"><p><b>They are pairs Prolog could not prove nearby.</b> Nothing more. Turning that into a claim about the world requires an extra assumption you supply from outside: that <span class="f">connected/3</span> records <i>every</i> connection there is — the <b>closed-world assumption</b>.</p><p>For this knowledge base that assumption is reasonable: the eleven facts are the whole map. Ask about Subiaco and the assumption is plainly false — the knowledge base has never heard of Perth, so failure records <b>ignorance, not absence</b>. Same query, same output, completely different epistemic status, and Prolog cannot tell them apart.</p><p>Note your <span class="f">station/1</span> guard is doing quiet work here: <span class="f">not_nearby(subiaco, leederville)</span> <i>fails</i> rather than succeeding, because neither is a known station. That is a better answer than <span class="f">true</span> — but only because you chose to require it.</p><div class="trap"><b>This is the practical face of the open-world/closed-world distinction that runs through the rest of the unit.</b> Section 16.5 of the Lecture 3 sheet has the contrast: a clausal program with two models leaves a proposition genuinely undecided, whereas Prolog reports <span class="f">false</span> and gives you no way to tell "known false" from "not known". When you move to ontologies and description logics later, the semantics goes open-world by default, and this is the assumption being dropped.</div></div></details></div></section><section class="set" data-set><div class="sh"><h2>P7 · A knowledge base end to end</h2><span class="tally" data-tally></span></div><p class="slides">Slide 12's university domain, built for real. Facts, derived relations, and a query that needs "for all".</p><div class="q"><p class="qtext"><span class="qn">P7.1</span> Write facts for four units, their prerequisites, and what two students have completed.</p><details><summary><span class="caret">▶</span>Check</summary><div class="ans"><pre>unit(cits1001).  unit(cits2211).  unit(cits3005).  unit(cits3011).
+
+prereq(cits1001, cits2211).      <span class="c">% cits1001 is a prereq of cits2211</span>
+prereq(cits2211, cits3005).
+prereq(cits1001, cits3011).
+
+completed(maria, cits1001).
+completed(maria, cits2211).
+completed(tom, cits1001).</pre><p><b>Fix the argument order and write it down.</b> <span class="f">prereq(P, U)</span> reading "P is a prerequisite of U" is a choice; the reverse is equally defensible. Slide 12 does not settle it, and every rule you write afterwards depends on it. A comment on the first fact costs nothing and prevents the bug where half your rules read it one way.</p></div></details></div><div class="q"><p class="qtext"><span class="qn">P7.2</span> Write <span class="f">can_enrol/2</span>: the student has completed <i>every</i> prerequisite of the unit. Prolog has no universal quantifier — how do you say "for all"?</p><details><summary><span class="caret">▶</span>Check</summary><div class="ans"><pre>can_enrol(S, U) :- unit(U), \+ ( prereq(P, U), \+ completed(S, P) ).</pre><pre class="tr">?- can_enrol(maria, cits3005).
+true.
+
+?- can_enrol(tom, cits3005).
+false.
+
+?- can_enrol(maria, cits1001).
+true.</pre><p><b>Double negation is how you get "for all".</b> "Every prerequisite is completed" becomes "there is <i>no</i> prerequisite that is <i>not</i> completed" — which is the quantifier equivalence <span class="m">∀X.α ≡ ¬∃X.¬α</span> from set D of the proof drill, written in the only vocabulary Prolog has.</p><p>The inner <span class="f">prereq(P, U)</span> is the generator, and it runs <i>inside</i> the negation, so the floundering problem of P6.2 does not arise: <span class="f">P</span> is bound by the time the inner <span class="f">\+</span> is reached. <span class="f">unit(U)</span> is outside to make <span class="f">U</span> ground first.</p><p>Note <span class="f">can_enrol(maria, cits1001)</span> is true because cits1001 has no prerequisites, so there is trivially none uncompleted. <b>The vacuous case falls out for free</b>, which is exactly what you want and exactly what a hand-rolled counting version would get wrong.</p></div></details></div><div class="q"><p class="qtext"><span class="qn">P7.3</span> <span class="f">can_enrol/2</span> says no but not why. Write <span class="f">missing/3</span>.</p><details><summary><span class="caret">▶</span>Check</summary><div class="ans"><pre>missing(S, U, P) :- prereq(P, U), \+ completed(S, P).</pre><pre class="tr">?- findall(P, missing(tom, cits3005, P), L).
+L = [cits2211].</pre><p>The inside of the double negation, exposed as its own relation. <b>The failing subgoal is the explanation</b> — which is a nice property of writing knowledge bases this way, and one reason expert systems were built in Prolog: you can usually ask "why not" by naming the part that failed.</p><p>You could now define <span class="f">can_enrol(S,U) :- unit(U), \+ missing(S,U,_).</span>, which reads better and behaves identically.</p></div></details></div><div class="q"><p class="qtext"><span class="qn">P7.4</span> Prerequisites chain: cits1001 → cits2211 → cits3005. Write <span class="f">all_prereq/2</span> for the transitive closure, then <span class="f">ready/2</span> requiring all of them.</p><details><summary><span class="caret">▶</span>Check</summary><div class="ans"><pre>all_prereq(U, P) :- prereq(P, U).
+all_prereq(U, P) :- prereq(Q, U), all_prereq(Q, P).
+
+ready(S, U) :- unit(U), \+ ( all_prereq(U, P), \+ completed(S, P) ).</pre><pre class="tr">?- setof(P, all_prereq(cits3005, P), L).
+L = [cits1001, cits2211].
+
+?- ready(maria, cits3005).
+true.
+
+?- ready(tom, cits3005).
+false.</pre><p>Same closure shape as <span class="f">ancestor/2</span> in P1.4 and <span class="f">reachable/2</span> in P4.2 — base case, then one step plus recursion. <b>It terminates here without a visited list</b> because the prerequisite graph is acyclic and directed; add a cycle and it loops, exactly as P4.2 does.</p><p><span class="f">ready/2</span> is <span class="f">can_enrol/2</span> with the transitive relation swapped in, and nothing else changed. That substitutability is the point of building in layers.</p><div class="trap"><b>Worth asking whether <span class="f">ready/2</span> is the rule a university actually wants.</b> Real prerequisites are usually satisfied by the immediate ones alone — you cannot have completed cits2211 without cits1001 anyway. The two rules agree on well-formed data and disagree on messy data, which is precisely when you find out which one you meant. Deciding that <i>before</i> writing the rule is knowledge representation; discovering it afterwards is debugging.</div></div></details></div></section><section class="set" data-set><div class="sh"><h2>P8 · Debugging</h2><span class="tally" data-tally></span></div><p class="slides">Slides 33–35. Three programs that are wrong, and how you would find out.</p><div class="q"><p class="qtext"><span class="qn">P8.1</span> This is P1.4 with the clauses swapped. What happens, and why?<pre>ancestor(X, Z) :- ancestor(X, Y), parent(Y, Z).
+ancestor(X, Y) :- parent(X, Y).</pre></p><details><summary><span class="caret">▶</span>Check</summary><div class="ans"><pre class="tr">?- ancestor(john, alice).
+ERROR: Stack limit (1.0Gb) exceeded
+ERROR:   Stack depth: 6,340,655, ... Choice points: 6,340,649
+ERROR:   Probable infinite recursion (cycle):</pre><p><b>Left recursion.</b> The first clause's leftmost goal is <span class="f">ancestor</span> itself, with the same first argument. Prolog tries clauses top to bottom and goals left to right, so it calls <span class="f">ancestor(john, _)</span>, which calls <span class="f">ancestor(john, _)</span>, forever. It never reaches the base case, because the base case is written second and nothing ever backtracks that far.</p><p><b>The declarative reading is unchanged</b> — the two clauses say exactly what they said before, and a set has no order. This is purely an artefact of depth-first, top-to-bottom search.</p><p><b>The rules that prevent it:</b> base case first, and make sure the recursive goal is not the leftmost one with unchanged arguments. In P1.4, <span class="f">parent(X, Y)</span> comes before the recursive call and consumes a fact each time, so the recursion is guaranteed to shrink.</p></div></details></div><div class="q"><p class="qtext"><span class="qn">P8.2</span> This loads with a warning and then quietly returns nothing. Find the bug.<pre>nearby_line(X, Y, Line) :- connected(X, Y, Line).
+nearby_line(X, Y, Line) :- connected(X, Z, Line), connected(Z, Y, Lien).</pre></p><details><summary><span class="caret">▶</span>Check</summary><div class="ans"><p><span class="f">Lien</span> in the last goal — a typo for <span class="f">Line</span>. SWI warns:</p><pre class="tr">Warning: Singleton variables: [Lien]</pre><p><b>The second clause is now wrong in two ways at once.</b> The two legs no longer have to be on the same line, since <span class="f">Lien</span> is a fresh variable unrelated to anything; and the <span class="f">Line</span> returned in the head is only the <i>first</i> leg's line, so the answer is misleading rather than merely permissive.</p><p><b>The singleton warning is the whole diagnosis</b>, and it is why you should never let warnings accumulate — a program with fifteen deliberate singletons has nowhere for the sixteenth, real one to show up. This is the concrete reason for the <span class="f">_L</span> convention of P2.5.</p><p>Note also how the bug presents: no error, no crash, just fewer or stranger answers than you expected. <b>In Prolog, wrong programs usually fail silently rather than complaining</b> — which is why P8.3 matters.</p></div></details></div><div class="q"><p class="qtext"><span class="qn">P8.3</span> A query returns <span class="f">false</span> and you are certain it should not. What do you actually do?</p><details><summary><span class="caret">▶</span>Check</summary><div class="ans"><p><b>Take the rule apart and run the goals one at a time at the prompt.</b> A conjunction failing means <i>some</i> goal failed, and the fastest way to find which is to paste them in yourself:</p><pre class="tr">?- station(bond_street).
+true.
+?- station(leicester_square).
+true.
+?- nearby(bond_street, leicester_square).
+false.                              <span class="c">% so \+ nearby(...) succeeds — this is not the problem</span></pre><p>Then, when the failure is not in one goal but in how they interact, use the trace and read the ports from P4 and slide 35 — <span class="f">Call</span>, <span class="f">Exit</span>, <span class="f">Fail</span>, <span class="f">Redo</span>:</p><pre class="tr">?- trace, nearby(bond_street, charing_cross).
+   Call: (12) nearby(bond_street, charing_cross) ? creep
+   Call: (13) connected(bond_street, charing_cross, _10700) ? creep
+   Fail: (13) connected(bond_street, charing_cross, _11590) ? creep
+   Redo: (12) nearby(bond_street, charing_cross) ? creep
+   ...
+?- notrace.</pre><p><b>The port to watch is the first unexpected <span class="f">Fail</span></b> — everything above it worked, so the bug is at that goal or in what bound its arguments. Note the variable names change between Call and Fail; that is just Prolog renaming on backtracking, not a clue.</p><p>Two checks worth doing before reaching for the trace at all, because they catch most of it: <b>read the warnings</b> (P8.2), and <b>check your argument order</b> against the comment you wrote on the first fact (P7.1). Backwards <span class="f">prereq/2</span> produces exactly this symptom — a confident, silent <span class="f">false</span>.</p></div></details></div></section><p class="note">
+  <b>Do P6 and P7 if you do nothing else.</b> Lists and recursion you will pick up from any Prolog tutorial; negation as failure and the closed-world assumption are what this unit is actually about, and P7.2's double negation is the idiom you will reach for constantly once you start writing real knowledge bases.<br><br>
+  <b>Run everything.</b> P3.3, P5.3 and P8.1 are all cases where the program does something other than what it looks like it does — a list length that finds an answer and then never stops, a modular reduction that never reaches zero, two clauses that loop when swapped. None of those are visible by reading. Keep a scratch <span class="f">kb.pl</span> open and paste as you go.<br><br>
+  Homework 1 is out this week and covers logic programming alongside the proof material. P1, P3 and P7 are the closest to what a "represent this domain in Prolog" question looks like.
+</p>
+
+<script>
+(function(){
+  var all = Array.prototype.slice.call(document.querySelectorAll('details'));
+  function updateTallies(){
+    document.querySelectorAll('[data-set]').forEach(function(set){
+      var ds = set.querySelectorAll('details');
+      var open = set.querySelectorAll('details[open]').length;
+      var el = set.querySelector('[data-tally]');
+      if (el) el.textContent = open + ' / ' + ds.length + ' checked';
+    });
+  }
+  all.forEach(function(d){ d.addEventListener('toggle', updateTallies); });
+  document.getElementById('openAll').addEventListener('click', function(){
+    all.forEach(function(d){ d.open = true; }); updateTallies();
+  });
+  document.getElementById('closeAll').addEventListener('click', function(){
+    all.forEach(function(d){ d.open = false; }); updateTallies();
+  });
+  updateTallies();
+})();
+</script>
+
+</body>
+</html>

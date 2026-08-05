@@ -13,8 +13,9 @@ def counting_sort(arr: list) -> list:
     for item in arr:
         prefix_arr[item] += 1
 
-    # Compute the prefix sums
+    # Compute the prefix sums; start at length 1, due to i - 1
     for i in range(1, len(prefix_arr)):
+        # Sum the previous entry with the current entry
         prefix_arr[i] += prefix_arr[i - 1]
 
     for i in range(len(arr), 0, -1):
@@ -36,6 +37,7 @@ def get_arr(arr_size: int) -> list:
 
 def test_random(arr: list) -> None:
     start_time = time.perf_counter()
+    counting_sort(arr)
     end_time = time.perf_counter()
 
     final_time = end_time - start_time

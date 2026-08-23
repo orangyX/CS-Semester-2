@@ -1,0 +1,2 @@
+class EdgeNotFoundError(Exception):
+    pass

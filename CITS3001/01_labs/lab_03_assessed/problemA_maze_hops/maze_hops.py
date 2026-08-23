@@ -1,38 +1,43 @@
 from collections import deque
+import sys
 
-def maze_hop(matrix: list[list[str]], starting_pos: tuple[int], ending_pos: tuple[int]) -> list[tuple[int]] | int:
+def maze_hop(matrix, starting_pos, ending_pos):
     solution = []
     queue = deque()
     visited = set()
-    visited.add(starting_pos)
+    visited.add((starting_pos[0], starting_pos[1]))
     queue.append(starting_pos)
 
     # First issue of note: storing characters in the queue is pointless; when we dequeue, "." is of no help at all; store the coordinates instead
     # Why is it looping forever?
+    # Because we were checking if something like (2, 3, 4) was in visited; no, cool, but then (2, 3, 5) would not be in visited either; infinite loop
     while queue:
-        row_coord, col_coord = queue.popleft()
-        solution.append((row_coord, col_coord))
+        row_coord, col_coord, distance = queue.popleft()
+
+        # Only save the final ending coordinate, along with the popped distance
+        if (row_coord, col_coord) == (ending_pos[0], ending_pos[1]):
+            solution.append((row_coord, col_coord, distance))
 
         # Compute neighbours, up, down, left, and right
         # Out of bounds cells are not treated as neighbours
         # "#" is never treated as a neighbour
-        down_neighbour = (row_coord + 1, col_coord)
-        up_neighbour = (row_coord - 1, col_coord)
-        right_neighbour = (row_coord, col_coord + 1)
-        left_neighbour = (row_coord, col_coord - 1)
+        down_neighbour = (row_coord + 1, col_coord, distance + 1)
+        up_neighbour = (row_coord - 1, col_coord, distance + 1)
+        right_neighbour = (row_coord, col_coord + 1, distance + 1)
+        left_neighbour = (row_coord, col_coord - 1, distance + 1)
 
-        process_neighbour(down_neighbour, matrix, que
-                          ue, visited)
+        # Is the neighbour:
+            # In invalid bounds?
+            # In "#" state?
+            # Visited?
+        process_neighbour(down_neighbour, matrix, queue, visited)
         process_neighbour(up_neighbour, matrix, queue, visited)
         process_neighbour(right_neighbour, matrix, queue, visited)
         process_neighbour(left_neighbour, matrix, queue, visited)
 
-    if len(solution) == 0:
-        return -1
-
     return solution
 
-def process_neighbour(coord: tuple[int], matrix: list[list[str]], queue: deque[tuple[int]], visited: set[tuple[int]]) -> None:
+def process_neighbour(coord, matrix, queue, visited):
     # Bounds checking was a big issue; in this implementation, the computations in the while queue sometimes forces an invalid bound
     # Checked for strictly g.t. relationship, must be >=
     if (coord[0] >= rows or coord[1] >= cols) or (coord[0] < 0 or coord[1] < 0):
@@ -42,32 +47,39 @@ def process_neighbour(coord: tuple[int], matrix: list[list[str]], queue: deque[t
         return
     # All cases pass, all good
     else:
-        if coord not in visited:
-            visited.add(coord)
+        if (coord[0], coord[1]) not in visited: # We need to test coordinate components only; having distance in this means that (2, 3, 4) and (2, 3, 5) are distinct
+            visited.add((coord[0], coord[1]))
             queue.append(coord)
-        
 
-input_1 = list(map(int, input().split(" ")))
-rows = input_1[0]
-cols = input_1[1]
-current_row = 0
+inputs = sys.stdin.read().split()
+rows = int(inputs[0])
+cols = int(inputs[1])
+
 # Matrix instantiation
 matrix = [[0 for _ in range(cols)] for _ in range(rows)]
 
-while current_row != rows:
-    input_row = input()
-    for i in range(len(input_row)):
-        matrix[current_row][i] = input_row[i]
+curr_row = 0
 
-        if matrix[current_row][i] == "S":
-            starting_pos = (current_row, i)
-        elif matrix[current_row][i] == "E":
-            ending_pos = (current_row, i)
-    current_row += 1
+for i in range(2, len(inputs)):
+    curr_input = inputs[i]
 
-for i in matrix:
-    print(i)
+    for j in range(len(curr_input)):
+        matrix[curr_row][j] = curr_input[j]
 
-fucking_bullshit = maze_hop(matrix, starting_pos, ending_pos)
-print(fucking_bullshit)
-    
+        if matrix[curr_row][j] == "S":
+            starting_pos = (curr_row, j, 0)
+        elif matrix[curr_row][j] == "E":
+            ending_pos = (curr_row, j, None)
+
+    curr_row += 1
+
+solution = maze_hop(matrix, starting_pos, ending_pos)
+
+min_distance = float('inf')
+for _, _, distance in solution:
+    if distance < min_distance:
+        min_distance = distance
+
+min_distance = -1 if min_distance == float('inf') else min_distance
+
+print(min_distance)

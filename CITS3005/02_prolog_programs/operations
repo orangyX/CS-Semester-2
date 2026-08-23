@@ -1,0 +1,10 @@
+% a. f(X) -> denotes the next number (i.e., f(2) = 3, f(n) = f(n+1))
+% b. modulus(X) -> ??
+% c. sum(X, Y, Z), s.t. X + Y = Z emits trye
+% d. mult(X, Y, Z), s.t. X * Y = Z emits true
+% e. equals(X, Y), s.t. X == Y emits true
+% f. notEquals(X, Y), s.t. X != Y emits true
+
+zero.
+
+equals(zero, zero).

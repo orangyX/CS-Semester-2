@@ -1,0 +1,1470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark light">
+<title>CITS3005 Lecture 4 worksheet — Resolution and Logic Programming Theory</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<style>
+  :root{
+    color-scheme:dark;
+    --bg:#1a1211; --bg-fade:rgba(26,18,17,.94); --card:#241917; --ans-bg:#1e1514;
+    --ink:#ecdfd2; --muted:#a4948a; --line:#3c2a26; --line-2:#553a34; --rule:#a3574c;
+    --track:#33231f;
+    --prove:#e5493c; --prove-bg:#82231d; --prove-fg:#ffc0b0;
+    --compute:#c96a3f; --compute-bg:#552b15; --compute-fg:#f7bc8a;
+    --recall:#a98170; --recall-bg:#2e211c; --recall-fg:#d6b0a0;
+    --accent:#e2705e;
+    --btn-bg:#2b1f1c; --btn-hover:#372623;
+    --ansbtn-bd:#853b31; --ansbtn-fg:#ffb3a3; --ansbtn-hover:#3d1e1a;
+    --hint-bg:#2b211c; --th-bg:#2f2220; --code-bg:#2f2220;
+    --warn-bd:#c99a3f; --warn-bg:#2c2317;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif;
+  }
+  html[data-theme="light"]{
+    color-scheme:light;
+    --bg:#faf2e4; --bg-fade:rgba(250,242,228,.95); --card:#fffbf2; --ans-bg:#f4e9d5;
+    --ink:#2f221c; --muted:#7b6156; --line:#e6d6be; --line-2:#cdb99c; --rule:#8f2e21;
+    --track:#ecdcc2;
+    --prove:#9e2318; --prove-bg:#f0bcac; --prove-fg:#7d1d12;
+    --compute:#bd6531; --compute-bg:#f7dab9; --compute-fg:#8a3f0d;
+    --recall:#a97a61; --recall-bg:#faeee1; --recall-fg:#7a5540;
+    --accent:#a63125;
+    --btn-bg:#fffdf7; --btn-hover:#f6ecd9;
+    --ansbtn-bd:#e0b5a9; --ansbtn-fg:#8b2c1e; --ansbtn-hover:#fbeae4;
+    --hint-bg:#fdf0e3; --th-bg:#efe2c9; --code-bg:#f0e4cd;
+    --warn-bd:#c7952f; --warn-bg:#fbf2dd;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth; background:var(--bg);}
+  body{margin:0; background:var(--bg); color:var(--ink); font-family:var(--serif); font-size:16.5px; line-height:1.55;}
+  .wrap{max-width:900px; margin:0 auto; padding:0 22px 100px;}
+
+  /* progress bar */
+  .bar{position:sticky; top:0; z-index:30; background:var(--bg-fade); border-bottom:1px solid var(--line); backdrop-filter:blur(8px);}
+  .bar-in{max-width:900px; margin:0 auto; padding:9px 22px; display:flex; flex-wrap:wrap; align-items:center; gap:10px 14px; font-family:var(--sans); font-size:12.5px; color:var(--muted);}
+  .track{flex:1; height:6px; min-width:90px; background:var(--track); border-radius:99px; overflow:hidden;}
+  .fill{height:100%; width:0; background:var(--accent); transition:width .25s ease;}
+  #count{white-space:nowrap; font-weight:600; color:var(--ink);}
+  .bar .btn{padding:4px 9px; font-size:11.5px;}
+
+  /* header */
+  header.top{padding:34px 0 6px;}
+  .eyebrow{font-family:var(--sans); font-size:11.5px; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:var(--accent); margin:0 0 8px;}
+  h1{font-size:31px; line-height:1.18; font-weight:600; margin:0 0 6px; letter-spacing:-.01em;}
+  .sub{color:var(--muted); font-size:15px; margin:0 0 22px;}
+
+  .howto{background:var(--card); border:1px solid var(--line); border-radius:12px; padding:16px 18px; margin:0 0 10px;}
+  .howto h3{font-family:var(--sans); font-size:12px; letter-spacing:.09em; text-transform:uppercase; color:var(--muted); margin:0 0 10px; font-weight:700;}
+  .howto p{margin:0 0 9px; font-size:15.5px;}
+  .howto p:last-child{margin-bottom:0;}
+  .key{display:flex; flex-wrap:wrap; gap:16px; margin:12px 0 4px; font-size:14.5px;}
+  .key div{display:flex; align-items:baseline; gap:7px;}
+  .flag{border-left:3px solid var(--prove); padding-left:12px; margin-top:14px; font-size:14.5px; color:var(--muted);}
+
+  /* parts */
+  section.part{margin:44px 0 0; scroll-margin-top:56px;}
+  .parthead{display:flex; align-items:baseline; gap:12px; border-bottom:2px solid var(--rule); padding-bottom:7px; margin-bottom:4px;}
+  .parthead h2{font-size:22px; font-weight:600; margin:0; letter-spacing:-.005em;}
+  .parthead .meta{margin-left:auto; font-family:var(--sans); font-size:12px; color:var(--muted); white-space:nowrap;}
+  .partcount{font-weight:700; color:var(--ink);}
+  .lead{color:var(--muted); font-size:15px; margin:10px 0 4px;}
+
+  /* question cards */
+  .q{background:var(--card); border:1px solid var(--line); border-left:4px solid var(--line); border-radius:10px; padding:15px 17px; margin:16px 0;}
+  .q[data-t="prove"]{border-left-color:var(--prove);}
+  .q[data-t="compute"]{border-left-color:var(--compute);}
+  .q[data-t="recall"]{border-left-color:var(--recall);}
+  .q.done{opacity:.42;}
+  .qtop{display:flex; align-items:center; gap:9px; margin-bottom:9px;}
+  .qid{font-family:var(--sans); font-size:13px; font-weight:700; letter-spacing:.05em;}
+  .tag{font-family:var(--sans); font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.09em; padding:2.5px 8px; border-radius:99px;}
+  .tag.prove{background:var(--prove-bg); color:var(--prove-fg);}
+  .tag.compute{background:var(--compute-bg); color:var(--compute-fg);}
+  .tag.recall{background:var(--recall-bg); color:var(--recall-fg);}
+  .donebox{margin-left:auto; display:inline-flex; align-items:center; gap:6px; font-family:var(--sans); font-size:12px; color:var(--muted); cursor:pointer; user-select:none;}
+  .donebox input{width:15px; height:15px; accent-color:var(--accent); cursor:pointer; margin:0;}
+  .q p{margin:0 0 9px;}
+  .q ol,.q ul{margin:6px 0 9px; padding-left:22px;}
+  .q li{margin:4px 0;}
+  ol.parts{list-style:none; padding-left:0; counter-reset:pp;}
+  ol.parts > li{counter-increment:pp; position:relative; padding-left:28px; margin:6px 0;}
+  ol.parts > li::before{content:"(" counter(pp,lower-alpha) ")"; position:absolute; left:0; color:var(--muted); font-family:var(--sans); font-size:13px; top:1px;}
+
+  .btns{display:flex; gap:8px; margin-top:11px; flex-wrap:wrap;}
+  .btn{font-family:var(--sans); font-size:12.5px; font-weight:600; border:1px solid var(--line-2); background:var(--btn-bg); color:var(--ink); padding:6px 12px; border-radius:7px; cursor:pointer; transition:background .12s, border-color .12s;}
+  .btn:hover{background:var(--btn-hover); border-color:var(--rule);}
+  .btn:focus-visible{outline:2px solid var(--accent); outline-offset:2px;}
+  .btn.ansbtn{border-color:var(--ansbtn-bd); color:var(--ansbtn-fg);}
+  .btn.ansbtn:hover{background:var(--ansbtn-hover); border-color:var(--prove);}
+
+  .hint{margin-top:11px; padding:10px 13px; border-left:3px solid var(--recall); background:var(--hint-bg); border-radius:0 7px 7px 0; font-size:15.5px;}
+  .ans{margin-top:11px; padding:13px 15px; background:var(--ans-bg); border:1px solid var(--line); border-radius:9px; font-size:15.5px;}
+  .ans p{margin:0 0 9px;}
+  .ans p:last-child{margin-bottom:0;}
+  .ans .step{font-family:var(--sans); font-size:11px; font-weight:700; letter-spacing:.07em; text-transform:uppercase; color:var(--muted); display:block; margin:12px 0 4px;}
+  .ans .step:first-child{margin-top:0;}
+  .ans table{border-collapse:collapse; margin:8px 0 10px; font-size:14.5px;}
+  .ans th,.ans td{border:1px solid var(--line); padding:4px 10px; text-align:center;}
+  .ans th{background:var(--th-bg); font-family:var(--sans); font-size:12px; font-weight:600;}
+  .warn{border-left:3px solid var(--warn-bd); background:var(--warn-bg); padding:9px 12px; border-radius:0 7px 7px 0; margin:10px 0;}
+  code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:14px; background:var(--code-bg); padding:1px 5px; border-radius:4px;}
+  .katex{font-size:1.02em;}
+  footer.end{margin-top:52px; padding-top:16px; border-top:1px solid var(--line); font-size:13.5px; color:var(--muted);}
+
+  @media(max-width:640px){
+    body{font-size:16px;} .wrap{padding:0 15px 80px;} h1{font-size:25px;}
+    .bar-in{padding:8px 15px;} .qtop{flex-wrap:wrap;} .donebox{margin-left:0;}
+  }
+  @media print{
+    html, html[data-theme="light"]{
+      --bg:#fff; --card:#fff; --ans-bg:#fff; --hint-bg:#fff; --ink:#1a120e; --muted:#5a4c44;
+      --line:#cfc4b4; --line-2:#cfc4b4; --rule:#8f2e21; --th-bg:#efe6d6; --code-bg:#efe6d6;
+      --prove:#9e2318; --prove-bg:#f0bcac; --prove-fg:#7d1d12;
+      --compute:#bd6531; --compute-bg:#f7dab9; --compute-fg:#8a3f0d;
+      --recall:#a97a61; --recall-bg:#faeee1; --recall-fg:#7a5540;
+      --warn-bd:#c7952f; --warn-bg:#fbf2dd;
+    }
+    body{-webkit-print-color-adjust:exact; print-color-adjust:exact;}
+    .bar,.btns{display:none !important;}
+    .ans,.hint{display:block !important;}
+    .q{break-inside:avoid; opacity:1 !important;}
+  }
+  @media (prefers-reduced-motion:reduce){ *{transition:none !important; scroll-behavior:auto !important;} }
+</style>
+</head>
+<body>
+
+<div class="bar">
+  <div class="bar-in">
+    <span id="count">0 / 0 done</span>
+    <span class="track"><span class="fill" id="fill"></span></span>
+    <button class="btn" id="theme" title="Switch between the dark and light palette">Light</button>
+    <button class="btn" id="hideall">Hide all answers</button>
+    <button class="btn" id="reset">Reset ticks</button>
+  </div>
+</div>
+
+<div class="wrap">
+<header class="top">
+  <p class="eyebrow">CITS3005 · Lecture 4 · Homework 1</p>
+  <h1>Resolution and Logic Programming Theory</h1>
+  <p class="sub">42 problems on Lecture 4, in lecture order. Every answer is a full worked solution, not just a final answer.</p>
+
+  <div class="howto">
+    <h3>How to use this</h3>
+    <p>Do a part, not the sheet. Seven parts, thirty-five to fifty-five minutes each, about five hours in total — built for four to six sittings and it will not go well in one. A to E are conversion and proof work and belong in a morning block; F and G are concrete, run them with <code>swipl</code> open in an afternoon.</p>
+    <p>This lecture <em>is</em> the homework. Parts A–C are task 1(b), turning first order statements into conjunctive normal form. Parts D–E are task 2(c), resolution. Parts F–G are the theory behind task 3, and G is where the marks for explaining your Prolog will come from at the week 7 demonstration. If you worked the Lecture 3 sheet, its parts D and E ran ahead of the slides — this covers the same ground properly, from the lecture's own procedure and examples.</p>
+    <p>Every problem is built from the lecture's own material, including all six of its in-lecture exercises: the normal-form classification of slide 6, the Skolemisation puzzle of slide 15, the unifier questions of slides 26 and 28, the cut question of slide 41 and the negation query of slide 42. Write each derivation out before opening the answer. Ticks save automatically.</p>
+    <div class="key">
+      <div><span class="tag recall">recall</span> <span>state a rule or procedure</span></div>
+      <div><span class="tag compute">compute</span> <span>a definite answer, checkable</span></div>
+      <div><span class="tag prove">prove</span> <span>write the derivation properly</span></div>
+    </div>
+    <p class="flag"><strong>Erratum, slide 46.</strong> The program shown there does not parse. <code>supp(X,Y):-\+pass(X,Y),sat(X,Y).</code> fails to load, because <code>:-</code> and <code>\+</code> are both built from symbol characters and Prolog reads <code>:-\+</code> as a <em>single</em> token; SWI reports <span class="f">Syntax error: Operator expected</span>. A space fixes it. Separately, switching <code>not(P)</code> to <code>\+P</code> does not change what the program does — both versions of <code>?- supp(X,Y)</code> return nothing, and the reason is the goal <em>order</em>, not the operator. Both flagged again at G5, where they are the point of the question.</p>
+  </div>
+</header>
+
+<main>
+<section class="part" id="partA">
+  <div class="parthead">
+    <h2>Part A · Normal forms</h2>
+    <div class="meta"><span class="partcount">0 / 5</span> · ~35 min</div>
+  </div>
+  <p class="lead">Slides 4–7. The one idea to hold onto: a normal form removes redundancy by <em>eliminating</em> some connectives and <em>restricting</em> where the rest may appear — and each of the three forms restricts a different thing. A2 is the lecture's own classification exercise and A5 is the observation on slide 11 that most people read past.</p>
+
+<div class="q" data-id="A1" data-t="recall">
+  <div class="qtop"><span class="qid">A1</span><span class="tag recall">recall</span><label class="donebox"><input type="checkbox" class="cb"> done</label></div>
+  <p>Define negation normal form, conjunctive normal form and disjunctive normal form. Then write the BNF that specifies CNF, and say which of the three forms the other two are special cases of.</p>
+  <div class="btns"><button class="btn ansbtn">Show answer</button></div>
+  <div class="ans" hidden>
+    <span class="step">Definitions</span>
+    <table>
+      <tr><th>form</th><th>condition</th></tr>
+      <tr><td><strong>NNF</strong></td><td>the only connectives are $\wedge$, $\vee$ and $\neg$, and $\neg$ is applied only to atomic formulas</td></tr>
+      <tr><td><strong>CNF</strong></td><td>of the form $A_1 \wedge \cdots \wedge A_m$, where each $A_i$ is a disjunction of one or more literals</td></tr>
+      <tr><td><strong>DNF</strong></td><td>of the form $A_1 \vee \cdots \vee A_m$, where each $A_i$ is a conjunction of one or more literals</td></tr>
+    </table>
+    <span class="step">The BNF</span>
+    <p>With $L$ any atomic formula:</p>
+    $$ \texttt{lit} ::= L \mid \neg L \mid \top \mid \bot \qquad \texttt{disj} ::= \texttt{lit} \mid \texttt{disj} \vee \texttt{lit} \qquad \texttt{conj} ::= \texttt{disj} \mid \texttt{conj} \wedge \texttt{disj} $$
+    <p>Read it bottom up: literals build disjunctions, disjunctions build conjunctions, and nothing goes the other way. <strong>That one-way structure is what "normal" means</strong> — there is no production letting a $\wedge$ appear inside a $\vee$.</p>
+    <span class="step">Checks</span>
+    <p><strong>CNF and DNF are both special cases of NNF.</strong> Both admit only $\wedge$, $\vee$ and $\neg$-on-atoms, so anything in CNF or DNF is automatically in NNF. The converse fails — A3 has the counterexample. ✓</p>
+    <span class="step">Why this matters</span>
+    <p><strong>The moral:</strong> slide 5's reason for normal forms is <em>mechanisation</em>. Every extra connective is another case in every procedure, so reasoning is easier over a language with fewer of them. The price is that the formula gets longer, sometimes a great deal longer — B4.</p>
+  </div>
+</div>
+
+<div class="q" data-id="A2" data-t="compute">
+  <div class="qtop"><span class="qid">A2</span><span class="tag compute">compute</span><label class="donebox"><input type="checkbox" class="cb"> done</label></div>
+  <p>Slide 6's exercise. Which of these are in normal form, and which type — NNF, CNF or DNF? Some are in more than one.</p>
+  <ol class="parts">
+    <li>$(P \vee Q) \wedge (\neg P \vee S) \wedge (R \vee P)$</li>
+    <li>$P \to Q \wedge Q \to P$</li>
+    <li>$((P \wedge Q) \vee R) \wedge \neg(P \vee R)$</li>
+    <li>$((P \wedge Q) \vee R) \wedge \neg P \wedge \neg R$</li>
+    <li>$(P \wedge Q) \vee (\neg P \wedge Q)$</li>
+  </ol>
+  <div class="btns"><button class="btn ansbtn">Show answer</button></div>
+  <div class="ans" hidden>
+    <span class="step">Answers</span>
+    <table>
+      <tr><th></th><th>form</th><th>reason</th></tr>
+      <tr><td>(a)</td><td><strong>NNF and CNF</strong></td><td>a conjunction of three disjunctions, each of literals</td></tr>
+      <tr><td>(b)</td><td><strong>none</strong></td><td>contains $\to$, which NNF forbids outright</td></tr>
+      <tr><td>(c)</td><td><strong>none</strong></td><td>$\neg$ applied to $(P \vee R)$, not to an atom — so not even NNF</td></tr>
+      <tr><td>(d)</td><td><strong>NNF only</strong></td><td>negations are on atoms, but the first conjunct $((P \wedge Q) \vee R)$ has a $\wedge$ inside a $\vee$</td></tr>
+      <tr><td>(e)</td><td><strong>NNF and DNF</strong></td><td>a disjunction of two conjunctions, each of literals</td></tr>
+    </table>
+    <span class="step">Checks</span>
+    <p><strong>(d) is the instructive one.</strong> It passes the NNF test — every $\neg$ is on an atom — and fails CNF for a completely separate reason: CNF also constrains where $\wedge$ and $\vee$ may sit relative to each other. Test it against A1's BNF: <code>disj</code> can only be built from <code>lit</code>, and $(P \wedge Q)$ is not a <code>lit</code>. It fails DNF too, since the top-level connective is $\wedge$ and $(P \wedge Q) \vee R$ is not a conjunction of literals. ✓</p>
+    <p><strong>(b) is ambiguously bracketed as printed.</strong> With $\wedge$ binding tighter than $\to$ it reads $P \to ((Q \wedge Q) \to P)$; the intended sentence is almost certainly $(P \to Q) \wedge (Q \to P)$. It does not matter for this question — either parse contains $\to$, so the answer is the same — but bracket your own formulae, because B3 shows the two parses have different CNFs. ✓</p>
+    <span class="step">Why this matters</span>
+    <p><strong>The method:</strong> check in order. Any $\to$ or $\leftrightarrow$ rules out all three. Then a $\neg$ on anything but an atom rules out all three. Only then ask which of $\wedge$ and $\vee$ is on the outside.</p>
+  </div>
+</div>
+
+<div class="q" data-id="A3" data-t="compute">
+  <div class="qtop"><span class="qid">A3</span><span class="tag compute">compute</span><label class="donebox"><input type="checkbox" class="cb"> done</label></div>
+  <p>Which normal forms is each of these in? Two of them are in all three.</p>
+  <ol class="parts">
+    <li>$P$</li>
+    <li>$\neg P$</li>
+    <li>$P \wedge Q$</li>
+    <li>$P \vee (Q \wedge R)$</li>
+    <li>$(P \vee Q) \wedge R$</li>
+  </ol>
+  <div class="btns"><button class="btn ansbtn">Show answer</button></div>
+  <div class="ans" hidden>
+    <span class="step">Answers</span>
+    <table>
+      <tr><th></th><th>NNF</th><th>CNF</th><th>DNF</th></tr>
+      <tr><td>(a) $P$</td><td>✓</td><td>✓</td><td>✓</td></tr>
+      <tr><td>(b) $\neg P$</td><td>✓</td><td>✓</td><td>✓</td></tr>
+      <tr><td>(c) $P \wedge Q$</td><td>✓</td><td>✓</td><td>✗</td></tr>
+      <tr><td>(d) $P \vee (Q \wedge R)$</td><td>✓</td><td>✗</td><td>✓</td></tr>
+      <tr><td>(e) $(P \vee Q) \wedge R$</td><td>✓</td><td>✓</td><td>✗</td></tr>
+    </table>
+    <span class="step">Why (a) and (b) are in all three</span>
+    <p>Both definitions say "one or more". A single literal is a conjunction of <strong>one</strong> disjunction of <strong>one</strong> literal, so it is in CNF; and a disjunction of <strong>one</strong> conjunction of <strong>one</strong> literal, so it is in DNF. The degenerate cases are not an oversight — they are what makes A1's BNF work, since <code>conj ::= disj</code> and <code>disj ::= lit</code> are both base productions.</p>
+    <span class="step">Checks</span>
+    <p>(c) is CNF but not DNF, and (d) is DNF but not CNF — so neither form contains the other, and being in one tells you nothing about the other. ✓</p>
+    <p>(e) looks like it might be DNF because $R$ is a lone literal, but DNF needs the <em>whole</em> formula to be a disjunction of conjunctions, and its top-level connective is $\wedge$. Reading the top-level connective first settles most of these. ✓</p>
+  </div>
+</div>
+
+<div class="q" data-id="A4" data-t="compute">
+  <div class="qtop"><span class="qid">A4</span><span class="tag compute">compute</span><label class="donebox"><input type="checkbox" class="cb"> done</label></div>
+  <p>For each, say which normal forms it is in, and if none, name the single feature that disqualifies it.</p>
+  <ol class="parts">
+    <li>$\neg\neg P \vee Q$</li>
+    <li>$\forall X.(p(X) \vee \neg q(X))$</li>
+    <li>$p(X) \vee \neg q(X)$</li>
+    <li>$(P \vee \bot) \wedge Q$</li>
+    <li>$\neg(P \to Q)$</li>
+  </ol>
+  <div class="btns"><button class="btn ansbtn">Show answer</button></div>
+  <div class="ans" hidden>
+    <span class="step">Answers</span>
+    <table>
+      <tr><th></th><th>verdict</th><th>reason</th></tr>
+      <tr><td>(a)</td><td><strong>none</strong></td><td>$\neg$ applied to $\neg P$, which is not an atom. Push it in — $\neg\neg P \equiv P$ — and it becomes $P \vee Q$, which is in all three.</td></tr>
+      <tr><td>(b)</td><td><strong>none</strong></td><td>a quantifier. NNF admits only $\wedge$, $\vee$ and $\neg$, so no quantified formula is in any of the three propositional normal forms.</td></tr>
+      <tr><td>(c)</td><td><strong>NNF, CNF, DNF</strong></td><td>with the quantifier gone this is a disjunction of two literals — and predicates applied to terms are perfectly good atoms.</td></tr>
+      <tr><td>(d)</td><td><strong>NNF and CNF</strong></td><td>$\top$ and $\bot$ are admitted by A1's <code>lit</code> production. Step 4 would simplify it to $P \wedge Q$.</td></tr>
+      <tr><td>(e)</td><td><strong>none</strong></td><td>contains $\to$, and the $\neg$ is on a non-atom. Two faults, either one sufficient.</td></tr>
+    </table>
+    <span class="step">Checks</span>
+    <p>(b) and (c) together are the whole reason slide 12 exists. The propositional procedure has nothing to say about quantifiers, so first order logic needs <strong>two extra steps</strong> — Skolemisation and generalisation — to get from (b) to (c). That is Part C. ✓</p>
+    <p>(d) is in CNF as written, which is why simplification is step <em>4</em> and not a precondition. The form is defined by the grammar; simplification is tidying. ✓</p>
+    <span class="step">Why this matters</span>
+    <p><strong>The common error</strong> is calling (a) NNF because "the negations are near the atoms". They must be <em>on</em> atoms — one $\neg$ deep, no more.</p>
+  </div>
+</div>
+
+<div class="q" data-id="A5" data-t="prove">
+  <div class="qtop"><span class="qid">A5</span><span class="tag prove">prove</span><label class="donebox"><input type="checkbox" class="cb"> done</label></div>
+  <p>Slide 11 remarks that if a formula is valid, its CNF should reduce to $\top$. Explain why, then demonstrate it on $P \vee \neg P$ and on $(P \to Q) \vee (Q \to P)$.</p>
+  <div class="btns"><button class="btn hintbtn">Hint</button><button class="btn ansbtn">Show answer</button></div>
+  <div class="hint" hidden><p>Step 4 removes a disjunction containing both $P$ and $\neg P$. What must a valid CNF formula look like, clause by clause?</p></div>
+  <div class="ans" hidden>
+    <span class="step">Why</span>
+    <p>A formula in CNF is a conjunction $A_1 \wedge \cdots \wedge A_m$, so it is valid exactly when <strong>every</strong> $A_i$ is valid. Each $A_i$ is a disjunction of literals, and a disjunction of literals is valid exactly when it contains some atom together with its negation — otherwise you can falsify it by making every literal in it false, which is always possible because the literals in a clause without a complementary pair impose no conflicting demands.</p>
+    <p>Step 4 deletes precisely those clauses, since they are $\top$. So a valid formula loses every clause and what remains is the empty conjunction, $\top$. ∎</p>
+    <span class="step">$P \vee \neg P$</span>
+    <p>Already in CNF, one clause. It contains $P$ and $\neg P$, so step 4 removes it, leaving $\top$. ✓</p>
+    <span class="step">$(P \to Q) \vee (Q \to P)$</span>
+    <p><em>Step 1</em>, eliminate $\to$: &nbsp; $(\neg P \vee Q) \vee (\neg Q \vee P)$</p>
+    <p><em>Steps 2 and 3</em>: nothing to do — the negations are already on atoms, and there is no $\wedge$ to push a $\vee$ past. Flattening the associativity gives one clause, $\neg P \vee Q \vee \neg Q \vee P$.</p>
+    <p><em>Step 4</em>: the clause contains $Q$ and $\neg Q$ — and separately $P$ and $\neg P$ — so it is $\top$. Nothing remains. ✓</p>
+    <span class="step">Checks</span>
+    <p>Independent check on the second: it says "either $P$ implies $Q$ or $Q$ implies $P$", which is true under all four valuations, since at most one of $P$, $Q$ can be true-without-the-other. Valid, as the CNF reported. ✓</p>
+    <span class="step">Why this matters</span>
+    <p><strong>How to use this:</strong> this is a free correctness check on any conversion. If you were converting something you believe valid and the clauses do not all vanish, you have made a mistake — and if you were converting something you believe <em>satisfiable but not</em> valid and everything vanishes, likewise. It also connects forward: <strong>a valid formula reduces to nothing, and a contradiction reduces to $\square$</strong>, which is what all of Part E is built on.</p>
+  </div>
+</div>
+
+</section>
+<section class="part" id="partB">
+  <div class="parthead">
+    <h2>Part B · Converting to propositional CNF</h2>
+    <div class="meta"><span class="partcount">0 / 5</span> · ~40 min</div>
+  </div>
+  <p class="lead">Slides 7–11, the four-step procedure. B1 is the lecture's own worked example carried through all four steps; B5 produces the clause set that Part E then refutes. B4 is the one that tells you something you would not guess — how large the output can get, and why that is unavoidable.</p>
+
+<div class="q" data-id="B1" data-t="compute">
+  <div class="qtop"><span class="qid">B1</span><span class="tag compute">compute</span><label class="donebox"><input type="checkbox" class="cb"> done</label></div>
+  <p>State the four steps of slide 7, then apply them to the lecture's own example, $(P \vee Q) \to (Q \vee R)$, showing the formula after each step.</p>
+  <div class="btns"><button class="btn ansbtn">Show answer</button></div>
+  <div class="ans" hidden>
+    <span class="step">The four steps</span>
+    <table>
+      <tr><td>1</td><td>Eliminate $\to$ and $\leftrightarrow$</td></tr>
+      <tr><td>2</td><td>Push all the negations down to the literals</td></tr>
+      <tr><td>3</td><td>Move all the conjunctions to the outside — push disjunctions in until they apply only to literals</td></tr>
+      <tr><td>4</td><td>Remove the remaining $\top$ and $\bot$ constants, and any clause containing both $L$ and $\neg L$</td></tr>
+    </table>
+    <span class="step">The conversion</span>
+    <p><em>Start</em>: &nbsp; $(P \vee Q) \to (Q \vee R)$</p>
+    <p><em>Step 1</em>, by $\alpha \to \beta \equiv \neg\alpha \vee \beta$: &nbsp; $\neg(P \vee Q) \vee (Q \vee R)$</p>
+    <p><em>Step 2</em>, by De Morgan: &nbsp; $(\neg P \wedge \neg Q) \vee (Q \vee R)$</p>
+    <p><em>Step 3</em>, distributing the $\vee$ over the $\wedge$: &nbsp; $(\neg P \vee Q \vee R) \wedge (\neg Q \vee Q \vee R)$</p>
+    <p><em>Step 4</em>: the second clause contains $Q$ and $\neg Q$, so it is $\top$ and drops out: &nbsp; $\neg P \vee Q \vee R$</p>
+    <p>One clause: $\{\neg P, Q, R\}$.</p>
+    <span class="step">Checks</span>
+    <p>Read the answer back as an implication: $\neg P \vee Q \vee R \equiv P \to (Q \vee R)$. So the conversion has quietly discovered that the $Q$ in the antecedent was redundant — if $Q$ holds then $Q \vee R$ holds anyway. Confirm on a truth table: the original and $P \to (Q \vee R)$ agree on all eight valuations. ✓</p>
+    <p>Slide 5's point, made concrete: <strong>step 2 is guaranteed to terminate</strong> because each equivalence it uses moves the negation strictly inward, so the negated subformula gets smaller every time. There is no way to loop. ✓</p>
+    <span class="step">Why this matters</span>
+    <p><strong>The moral:</strong> step 4 is not cosmetic. Dropping tautologous clauses is what lets a valid formula vanish entirely (A5), and it keeps the clause set small enough to resolve on.</p>
+  </div>
+</div>
+
+<div class="q" data-id="B2" data-t="compute">
+  <div class="qtop"><span class="qid">B2</span><span class="tag compute">compute</span><label class="donebox"><input type="checkbox" class="cb"> done</label></div>
+  <p>Convert each to CNF and give the clause set, showing the step numbers.</p>
+  <ol class="parts">
+    <li>$\neg\bigl(P \to (Q \wedge R)\bigr)$</li>
+    <li>$(P \wedge Q) \vee (\neg P \wedge R)$</li>
+    <li>$P \to (Q \to R)$</li>
+  </ol>
+  <div class="btns"><button class="btn ansbtn">Show answer</button></div>
+  <div class="ans" hidden>
+    <span class="step">(a)</span>
+    <p><em>1</em>: $\neg(\neg P \vee (Q \wedge R))$. &nbsp; <em>2</em>, De Morgan twice: $P \wedge \neg(Q \wedge R)$, then $P \wedge (\neg Q \vee \neg R)$. &nbsp; <em>3</em>: already CNF.</p>
+    <p>Clauses: $\{P\}$, $\{\neg Q, \neg R\}$.</p>
+    <span class="step">(b)</span>
+    <p>Already NNF, so start at <em>3</em>. Distributing gives four clauses:</p>
+    $$ (P \vee \neg P) \wedge (P \vee R) \wedge (Q \vee \neg P) \wedge (Q \vee R) $$
+    <p><em>4</em>: the first contains $P$ and $\neg P$, so it drops. Clauses: $\{P, R\}$, $\{\neg P, Q\}$, $\{Q, R\}$.</p>
+    <span class="step">(c)</span>
+    <p><em>1</em>, twice: $\neg P \vee (\neg Q \vee R)$. Flatten: one clause, $\{\neg P, \neg Q, R\}$.</p>
+    <span class="step">Checks</span>
+    <p>Spot-check (b) at $P$ true, $Q$ false, $R$ true. Original: $(P \wedge Q)$ is false, $(\neg P \wedge R)$ is false, so the whole thing is false. Clauses: $\{P,R\}$ ✓, $\{\neg P, Q\}$ — $P$ true and $Q$ false, so this clause is false. The set fails too. Agreement. ✓</p>
+    <p>Note (c) shows why $P \to (Q \to R)$ and $(P \wedge Q) \to R$ have the <em>same</em> clause set — both give $\{\neg P, \neg Q, R\}$. Converting to CNF collapses formulas that are equivalent but look different, which is exactly the redundancy slide 5 wants removed. ✓</p>
+  </div>
+</div>
+
+<div class="q" data-id="B3" data-t="compute">
+  <div class="qtop"><span class="qid">B3</span><span class="tag compute">compute</span><label class="donebox"><input type="checkbox" class="cb"> done</label></div>
+  <p>Convert both, and compare the results.</p>
+  <ol class="parts">
+    <li>$P \leftrightarrow Q$</li>
+    <li>$\neg(P \leftrightarrow Q)$</li>
+  </ol>
+  <div class="btns"><button class="btn ansbtn">Show answer</button></div>
+  <div class="ans" hidden>
+    <span class="step">(a)</span>
+    <p><em>1</em>, by $\alpha \leftrightarrow \beta \equiv (\alpha \to \beta) \wedge (\beta \to \alpha)$ and then $\to$ elimination:</p>
+    $$ (\neg P \vee Q) \wedge (\neg Q \vee P) $$
+    <p>Clauses: $\{\neg P, Q\}$, $\{\neg Q, P\}$.</p>
+    <span class="step">(b)</span>
+    <p><em>1</em>: $\neg\bigl((\neg P \vee Q) \wedge (\neg Q \vee P)\bigr)$. &nbsp; <em>2</em>, De Morgan: $\neg(\neg P \vee Q) \vee \neg(\neg Q \vee P)$, then $(P \wedge \neg Q) \vee (Q \wedge \neg P)$.</p>
+    <p><em>3</em>, distribute — four clauses:</p>
+    $$ (P \vee Q) \wedge (P \vee \neg P) \wedge (\neg Q \vee Q) \wedge (\neg Q \vee \neg P) $$
+    <p><em>4</em>: two of them are tautologies and drop. Clauses: $\{P, Q\}$, $\{\neg P, \neg Q\}$.</p>
+    <span class="step">Checks</span>
+    <p>Read (b) back: "at least one of them, and not both" — which is exclusive or, correctly the negation of biconditional. ✓</p>
+    <p>Both results have <strong>two</strong> clauses of length two, and between them they use all four sign combinations of $P$ and $Q$. Together the four clauses are unsatisfiable, as they must be, since (a) and (b) are each other's negations. ✓</p>
+    <span class="step">Why this matters</span>
+    <p><strong>The common error</strong> is trying to eliminate $\leftrightarrow$ with a single equivalence. There is no one-step rule; it splits into two implications first, and a negated biconditional therefore needs step 4 to clear up the two tautologies the split creates. If you finished (b) with four clauses, you skipped step 4.</p>
+  </div>
+</div>
+
+<div class="q" data-id="B4" data-t="prove">
+  <div class="qtop"><span class="qid">B4</span><span class="tag prove">prove</span><label class="donebox"><input type="checkbox" class="cb"> done</label></div>
+  <p>Convert $(P_1 \wedge Q_1) \vee (P_2 \wedge Q_2) \vee (P_3 \wedge Q_3)$ to CNF.</p>
+  <ol class="parts">
+    <li>How many clauses, and what does a general clause look like?</li>
+    <li>Generalise: $n$ disjuncts of $k$ literals each gives how many clauses?</li>
+    <li>Slide 11 says the CNF is satisfiable if and only if the original is. Does that mean they are equivalent?</li>
+  </ol>
+  <div class="btns"><button class="btn ansbtn">Show answer</button></div>
+  <div class="ans" hidden>
+    <span class="step">(a)</span>
+    <p>The formula is already in DNF, so only step 3 applies. Distributing produces one clause for every way of choosing <strong>one literal from each disjunct</strong>:</p>
+    $$ \{P_1, P_2, P_3\},\ \{P_1, P_2, Q_3\},\ \{P_1, Q_2, P_3\},\ \{P_1, Q_2, Q_3\},\ \{Q_1, P_2, P_3\},\ \{Q_1, P_2, Q_3\},\ \{Q_1, Q_2, P_3\},\ \{Q_1, Q_2, Q_3\} $$
+    <p><strong>Eight clauses of three literals each</strong>, from an input of six literals. None is a tautology, so step 4 removes nothing.</p>
+    <span class="step">(b)</span>
+    <p>$k^n$ clauses, each of length $n$. Here $2^3 = 8$. <strong>The blow-up is exponential in the number of disjuncts</strong>, and it is not an artefact of a clumsy procedure — for some formulas every CNF equivalent really is that large.</p>
+    <span class="step">(c)</span>
+    <p><strong>Here, yes — they are equivalent</strong>, because every step used in this conversion is a logical equivalence: De Morgan, $\to$ elimination and distribution all preserve meaning, not merely satisfiability.</p>
+    <p>Slide 11's careful phrasing is for what comes later. <strong>Skolemisation, added in step 3 of the first order procedure, is <em>not</em> an equivalence</strong> — it preserves satisfiability only (C4). Slide 11 states the weaker guarantee because that is the one that survives into slide 12's procedure, and it is all a refutation method needs.</p>
+    <span class="step">Checks</span>
+    <p>Sanity-check the count on a smaller case: $(P_1 \wedge Q_1) \vee (P_2 \wedge Q_2)$ should give $2^2 = 4$ clauses, and distributing by hand gives $\{P_1,P_2\}, \{P_1,Q_2\}, \{Q_1,P_2\}, \{Q_1,Q_2\}$. Four. ✓</p>
+    <span class="step">Why this matters</span>
+    <p><strong>How to use this:</strong> if a conversion is producing dozens of clauses, that may be correct rather than a mistake — count $k^n$ first and see whether the number you have matches. And notice that <strong>the worst case is converting DNF to CNF</strong>, which is exactly what negating a goal does when the goal is a conjunction.</p>
+  </div>
+</div>
+
+<div class="q" data-id="B5" data-t="compute">
+  <div class="qtop"><span class="qid">B5</span><span class="tag compute">compute</span><label class="donebox"><input type="checkbox" class="cb"> done</label></div>
+  <p>Slide 23's example. To prove $P \wedge Q \to Q \wedge P$ by resolution you first negate it and convert. Do the conversion and give the clause set. Then say why negating comes <em>before</em> converting rather than after.</p>
+  <div class="btns"><button class="btn ansbtn">Show answer</button></div>
+  <div class="ans" hidden>
+    <span class="step">The conversion</span>
+    <p><em>Negate</em>: &nbsp; $\neg\bigl(P \wedge Q \to Q \wedge P\bigr)$</p>
+    <p><em>Step 1</em>: &nbsp; $\neg\bigl(\neg(P \wedge Q) \vee (Q \wedge P)\bigr)$</p>
+    <p><em>Step 2</em>, De Morgan: &nbsp; $(P \wedge Q) \wedge \neg(Q \wedge P)$, then $(P \wedge Q) \wedge (\neg Q \vee \neg P)$</p>
+    <p><em>Step 3</em>: already CNF — a conjunction of $P$, $Q$ and $(\neg Q \vee \neg P)$.</p>
+    <p>Clauses: &nbsp; $\{P\}$, &nbsp; $\{Q\}$, &nbsp; $\{\neg Q, \neg P\}$</p>
+    <span class="step">Why negate first</span>
+    <p>Because resolution is a <strong>refutation</strong> procedure: it derives $\square$ from an unsatisfiable set, and the thing you want to be unsatisfiable is $\neg\alpha$. Converting $\alpha$ first and then negating would leave you negating a conjunction of clauses, which is not in clause form and would need converting all over again.</p>
+    <p>There is also a practical reason. <strong>Negating a valid formula turns it into a contradiction, and contradictions have short clause sets</strong> — here, three clauses from a formula that would itself have converted to $\top$ and given you nothing to work with (A5).</p>
+    <span class="step">Checks</span>
+    <p>Verify the set really is unsatisfiable before resolving: $\{P\}$ forces $P$ true, $\{Q\}$ forces $Q$ true, and then $\{\neg Q, \neg P\}$ has both literals false. No valuation survives. ✓ E2 derives $\square$ from exactly these three.</p>
+    <span class="step">Why this matters</span>
+    <p><strong>The moral:</strong> the four-step procedure and resolution are two halves of one method. Slide 21 states it as four numbered steps — negate, convert, resolve, conclude — and Part B is the second of them.</p>
+  </div>
+</div>
+
+</section>
+<section class="part" id="partC">
+  <div class="parthead">
+    <h2>Part C · Clausal normal form</h2>
+    <div class="meta"><span class="partcount">0 / 7</span> · ~55 min</div>
+  </div>
+  <p class="lead">Slides 12–19. This is homework task 1(b) exactly. The propositional four steps become six, and the two new ones — Skolemisation and generalisation — are the only genuinely first order content. C4 is the highest-value question: it is slide 15's parenthetical example, and it is the whole reason the guarantee is about satisfiability rather than meaning.</p>
+
+<div class="q" data-id="C1" data-t="recall">
+  <div class="qtop"><span class="qid">C1</span><span class="tag recall">recall</span><label class="donebox"><input type="checkbox" class="cb"> done</label></div>
+  <p>State slide 12's six steps in order, say which two are new relative to the propositional procedure, and say what the guarantee at the end is.</p>
+  <div class="btns"><button class="btn ansbtn">Show answer</button></div>
+  <div class="ans" hidden>
+    <span class="step">The six steps</span>
+    <table>
+      <tr><td>1</td><td>Eliminate $\to$ and $\leftrightarrow$</td><td>as before</td></tr>
+      <tr><td>2</td><td>Push all negations down to the literals</td><td>as before, but with <strong>extra equivalences for quantifiers</strong> (slide 13)</td></tr>
+      <tr><td>3</td><td>Eliminate all existential quantifiers — <strong>Skolemisation</strong></td><td><strong>new</strong></td></tr>
+      <tr><td>4</td><td>Eliminate all universal quantifiers, leaving variables unbound — <strong>Generalisation</strong></td><td><strong>new</strong></td></tr>
+      <tr><td>5</td><td>Move all conjunctions to the outside</td><td>as before</td></tr>
+      <tr><td>6</td><td>Remove the true and false constants</td><td>as before</td></tr>
+    </table>
+    <span class="step">The guarantee</span>
+    <p>A formula in clausal normal form is <strong>satisfiable if and only if the original formula is satisfiable</strong>. Not equivalent — see C4.</p>
+    <span class="step">Checks</span>
+    <p>Note the order of 3 and 4. Skolemisation must come <em>before</em> generalisation, because the Skolem term's arguments are exactly the universally quantified variables still in scope — remove the $\forall$s first and you no longer know which those were. ✓</p>
+    <p>Note also what is <strong>not</strong> in the list: a step for renaming variables apart. Some textbook presentations put one between steps 2 and 3. This lecture handles clashes later instead, at resolution time — slide 30 says you may rename the variables within one clause to prevent clashes when resolving with another. Follow the six steps as given for the homework, and rename at resolution. ✓</p>
+  </div>
+</div>
+
+<div class="q" data-id="C2" data-t="compute">
+  <div class="qtop"><span class="qid">C2</span><span class="tag compute">compute</span><label class="donebox"><input type="checkbox" class="cb"> done</label></div>
+  <p>Slide 13 extends step 2 with equivalences for quantifiers. State them, then carry out steps 1 and 2 on each of these — stopping when every $\neg$ is on a predicate.</p>
+  <ol class="parts">
+    <li>$\neg \forall X. \exists Y.\bigl(p(X,Y) \to q(Y)\bigr)$</li>
+    <li>$\neg \exists X.\bigl(p(X) \wedge \forall Y.\, q(X,Y)\bigr)$</li>
+    <li>$\neg \forall X. \neg \exists Y.\, r(X,Y)$</li>
+  </ol>
+  <div class="btns"><button class="btn ansbtn">Show answer</button></div>
+  <div class="ans" hidden>
+    <span class="step">The equivalences</span>
+    $$ \neg \forall X.\alpha \equiv \exists X. \neg\alpha \qquad\qquad \neg \exists X.\alpha \equiv \forall X. \neg\alpha $$
+    <p>together with the propositional ones — De Morgan and $\neg\neg\alpha \equiv \alpha$. <strong>A negation crossing a quantifier flips it.</strong></p>
+    <span class="step">(a)</span>
+    <p><em>1</em>: $\neg \forall X. \exists Y.(\neg p(X,Y) \vee q(Y))$</p>
+    <p><em>2</em>, flipping both quantifiers then De Morgan: $\exists X. \forall Y.\, \neg(\neg p(X,Y) \vee q(Y))$, then</p>
+    $$ \exists X. \forall Y.\bigl(p(X,Y) \wedge \neg q(Y)\bigr) $$
+    <span class="step">(b)</span>
+    <p><em>2</em>: $\forall X. \neg(p(X) \wedge \forall Y.\, q(X,Y))$, then $\forall X.(\neg p(X) \vee \neg \forall Y.\, q(X,Y))$, then</p>
+    $$ \forall X.\bigl(\neg p(X) \vee \exists Y.\, \neg q(X,Y)\bigr) $$
+    <span class="step">(c)</span>
+    <p><em>2</em>: $\exists X. \neg\neg \exists Y.\, r(X,Y)$, then</p>
+    $$ \exists X. \exists Y.\, r(X,Y) $$
+    <span class="step">Checks</span>
+    <p>Read (a) back: the original said "not every $X$ has a $Y$ with $p \to q$", and the result says "some $X$ has, for every $Y$, $p(X,Y)$ and not $q(Y)$" — the same claim, with the counterexample made explicit. ✓</p>
+    <p>Count the quantifier flips in each: (a) two, (b) two, (c) two. <strong>Each $\neg$ flips every quantifier it passes</strong>, and in (c) the two negations cancel, leaving both quantifiers as they were. ✓</p>
+    <p>Note (b) still has an $\exists$ <em>inside</em> a $\forall$ after step 2 — which is precisely the configuration Skolemisation turns into a function rather than a constant. ✓</p>
+  </div>
+</div>
+
+<div class="q" data-id="C3" data-t="compute">
+  <div class="qtop"><span class="qid">C3</span><span class="tag compute">compute</span><label class="donebox"><input type="checkbox" class="cb"> done</label></div>
+  <p>Slide 15's example. Skolemise $\exists X \forall Y \exists Z.\ R(X,Y,Z)$, one existential at a time, saying which rule you are using and why each Skolem term has the arguments it does.</p>
+  <p>Then Skolemise $\forall Y \exists X \forall W \exists Z.\ S(X,Y,W,Z)$.</p>
+  <div class="btns"><button class="btn ansbtn">Show answer</button></div>
+  <div class="ans" hidden>
+    <span class="step">The rule</span>
+    <p>For $\forall t_1 \dots \forall t_n. \exists X\, \alpha(t_1,\dots,t_n,X)$, the value of $X$ <em>depends</em> on $t_1,\dots,t_n$, so introduce a new function symbol to represent that dependency and drop the quantifier. With no universals in scope, use a Skolem <strong>constant</strong>. Slide 15: <strong>always start with the left-most existential quantifier.</strong></p>
+    <span class="step">First example</span>
+    <p><em>Start</em>: &nbsp; $\exists X \forall Y \exists Z.\ R(X,Y,Z)$</p>
+    <p>Left-most existential is $\exists X$, and <strong>no universal is in scope</strong> — nothing stands to its left. So $X$ becomes a Skolem constant $a$:</p>
+    <p>$\forall Y \exists Z.\ R(a,Y,Z)$</p>
+    <p>Next existential is $\exists Z$, and it sits inside $\forall Y$, so $Z$ depends on $Y$ and becomes a one-place Skolem function $f$:</p>
+    <p>$\forall Y.\ R(a,Y,f(Y))$</p>
+    <span class="step">Second example</span>
+    <p>$\exists X$ is inside $\forall Y$ only, so $X \mapsto g(Y)$. Then $\exists Z$ is inside both $\forall Y$ and $\forall W$, so $Z \mapsto h(Y,W)$:</p>
+    $$ \forall Y \forall W.\ S\bigl(g(Y),\, Y,\, W,\, h(Y,W)\bigr) $$
+    <span class="step">Checks</span>
+    <p><strong>Count the arguments, do not guess them.</strong> Each Skolem term takes exactly the universally quantified variables to its <em>left</em>. In the second example $g$ takes one and $h$ takes two, and $h$ takes $Y$ as well as $W$ even though $W$ is nearer — everything to the left counts. ✓</p>
+    <p>Why left to right: if you Skolemised $\exists Z$ first you would correctly get $h(Y,W)$, but then Skolemising $\exists X$ afterwards you might forget that $h$ already mentions $Y$. Left to right keeps the dependencies straight without bookkeeping. ✓</p>
+    <p>Each Skolem symbol must be <strong>fresh</strong> — not used elsewhere in the formula or the clause set. Reusing $f$ for two different existentials silently identifies two unrelated witnesses. ✓</p>
+  </div>
+</div>
+
+<div class="q" data-id="C4" data-t="prove">
+  <div class="qtop"><span class="qid">C4</span><span class="tag prove">prove</span><label class="donebox"><input type="checkbox" class="cb"> done</label></div>
+  <p>Slide 15 says Skolemisation is not an axiom, does not preserve validity, but does preserve satisfiability — and offers $\exists X.\bigl(P(a) \to P(X)\bigr)$ to think about. Work it out.</p>
+  <ol class="parts">
+    <li>Is the original valid? Prove your answer.</li>
+    <li>Skolemise it. Is the result valid?</li>
+    <li>What does this show, and why is it enough for resolution?</li>
+  </ol>
+  <div class="btns"><button class="btn hintbtn">Hint</button><button class="btn ansbtn">Show answer</button></div>
+  <div class="hint" hidden><p>For (a), you get to choose the witness, and one particular choice makes the implication trivially true. For (b), the Skolem constant is a <em>new</em> symbol, so nothing constrains what it denotes.</p></div>
+  <div class="ans" hidden>
+    <span class="step">(a) The original is valid</span>
+    <p>Take any interpretation $I$. Domains are non-empty, and $a^{I} \in D^{I}$. Choose the witness $X = a$. Then the body is $P(a) \to P(a)$, which holds in every interpretation. So $\exists X.(P(a) \to P(X))$ is satisfied by $I$. Since $I$ was arbitrary, the sentence is <strong>valid</strong>. ∎</p>
+    <p>It looks like it should say something — "there is something such that if $a$ is $P$, so is it" — and it says nothing, because you may always take that something to be $a$ itself.</p>
+    <span class="step">(b) The Skolemisation is not valid</span>
+    <p>The $\exists X$ has no universal in scope, so it becomes a fresh constant $c$:</p>
+    $$ P(a) \to P(c) $$
+    <p><strong>Not valid.</strong> Counterexample: $D^{I} = \{1,2\}$, $a^{I} = 1$, $c^{I} = 2$, $P^{I}(1) = \top$, $P^{I}(2) = \bot$. Then the antecedent holds and the consequent fails, so the implication is false. ∎</p>
+    <p><strong>This step is exactly where the freshness of $c$ is used:</strong> because $c$ is a new symbol, an interpretation is free to send it anywhere, including somewhere $P$ fails.</p>
+    <span class="step">(c) What it shows</span>
+    <p>A valid formula has become an invalid one, so <strong>Skolemisation does not preserve validity, and is therefore not an axiom.</strong> What it does preserve is <em>satisfiability</em>: $P(a) \to P(c)$ is still satisfiable — send $c$ to $a^{I}$, or make $P^{I}$ true everywhere.</p>
+    <p>Slide 15's justification is that although the transformation assumes the function exists, <strong>given any interpretation you can always add such a function</strong>. If the original is satisfiable there is a witness for each combination of universally quantified values, and defining the Skolem function to pick those witnesses extends the interpretation without disturbing anything else.</p>
+    <p>That is enough for resolution because resolution asks only one question: <strong>is this clause set unsatisfiable?</strong> Satisfiability is preserved in both directions, so the answer is the same before and after.</p>
+    <span class="step">Checks</span>
+    <p>Confirm the direction of the loss. Skolemisation makes formulas <em>logically stronger</em> — it names a witness that was merely claimed to exist — so a satisfiable formula stays satisfiable but a valid one can stop being valid. It can never turn an unsatisfiable formula into a satisfiable one, which is the direction that would break refutation. ✓</p>
+    <span class="step">Why this matters</span>
+    <p><strong>The moral:</strong> this is why you must <em>negate the goal</em> and hunt for a contradiction rather than converting the goal and trying to derive it. Skolemisation is only safe inside a satisfiability question.</p>
+  </div>
+</div>
+
+<div class="q" data-id="C5" data-t="prove">
+  <div class="qtop"><span class="qid">C5</span><span class="tag prove">prove</span><label class="donebox"><input type="checkbox" class="cb"> done</label></div>
+  <p>Slide 17's example, over the natural numbers, with $eq$ a predicate and $sub$ a function:</p>
+  $$ \exists X \forall Y \exists Z.\ eq\bigl(sub(X,Z),\, sub(Z,Y)\bigr) $$
+  <ol class="parts">
+    <li>Convert it to clausal normal form.</li>
+    <li>Read the result as ordinary arithmetic and say what the Skolem function has to be.</li>
+    <li>Is the original true of the naturals? Of the rationals?</li>
+  </ol>
+  <div class="btns"><button class="btn ansbtn">Show answer</button></div>
+  <div class="ans" hidden>
+    <span class="step">(a) The conversion</span>
+    <p>Steps 1 and 2 have nothing to do — no implications, no negations. Straight to Skolemisation, left-most existential first.</p>
+    <p><em>Step 3a</em>, $\exists X$ with no universal in scope becomes a constant $c$:</p>
+    <p>$\forall Y \exists Z.\ eq(sub(c,Z), sub(Z,Y))$</p>
+    <p><em>Step 3b</em>, $\exists Z$ sits inside $\forall Y$, so it becomes $f(Y)$:</p>
+    <p>$\forall Y.\ eq\bigl(sub(c,f(Y)),\, sub(f(Y),Y)\bigr)$</p>
+    <p><em>Step 4</em>, generalisation — drop the $\forall$ and leave $Y$ unbound:</p>
+    $$ eq\bigl(sub(c,f(Y)),\, sub(f(Y),Y)\bigr) $$
+    <p>A single clause with one positive literal.</p>
+    <span class="step">(b) Reading it back</span>
+    <p>Writing $sub$ as subtraction and $eq$ as equality, the clause says</p>
+    $$ c - f(Y) \;=\; f(Y) - Y \qquad\text{that is}\qquad f(Y) = \frac{c + Y}{2} $$
+    <p><strong>The Skolem function is the midpoint function.</strong> And the original sentence, read back, says: there is some $X$ such that every $Y$ has a $Z$ exactly midway between $X$ and $Y$. Naming that midpoint is precisely what Skolemisation did.</p>
+    <span class="step">(c) Truth</span>
+    <p><strong>False of the naturals.</strong> Whatever $c$ you pick, choose $Y$ with $c + Y$ odd — for instance $Y = c + 1$. Then $(c+Y)/2$ is not a natural number, and since $Z$ must range over the domain there is no such $Z$. ∎</p>
+    <p><strong>True of the rationals</strong>, taking $f(Y) = (c+Y)/2$, which is defined for every rational and lands in the rationals. Any $c$ works.</p>
+    <span class="step">Checks</span>
+    <p>Test the naturals claim concretely: with $c = 0$ and $Y = 1$ you would need $Z$ with $0 - Z = Z - 1$, so $Z = 1/2$. Not a natural. ✓</p>
+    <p>Note what this demonstrates about slide 15's justification. The Skolem function exists <em>if the sentence is satisfiable in that domain</em> — over $\mathbb{Q}$ you can add it, over $\mathbb{N}$ you cannot, and that is exactly the sentence being false over $\mathbb{N}$. <strong>Skolemisation never manufactures truth; it only names something the sentence already claimed.</strong> ✓</p>
+  </div>
+</div>
+
+<div class="q" data-id="C6" data-t="compute">
+  <div class="qtop"><span class="qid">C6</span><span class="tag compute">compute</span><label class="donebox"><input type="checkbox" class="cb"> done</label></div>
+  <p>Slide 16 justifies generalisation, and slide 18 gives three ways of writing the same clause.</p>
+  <ol class="parts">
+    <li>Why is it sound to drop the universal quantifiers and leave the variables free?</li>
+    <li>Write the clause $\neg p_1(t_1) \vee \neg p_2(t_2) \vee q_1(u_1) \vee q_2(u_2)$ as a set, as an implication, and in ASCII.</li>
+    <li>Which of those three shapes is a definite clause, and which is not?</li>
+  </ol>
+  <div class="btns"><button class="btn ansbtn">Show answer</button></div>
+  <div class="ans" hidden>
+    <span class="step">(a)</span>
+    <p>Because an unquantified variable has <strong>no constraints placed upon it</strong>, so its interpretation agrees with a universally quantified one. Slide 16 points at $\forall$-introduction for the reason: a formula proved of a variable about which nothing was assumed holds of everything.</p>
+    <p>So the convention is not a trick — <strong>free variables in a clause are read as universally quantified over the whole clause.</strong> That is why the $Y$ in C5's answer still means "for every $Y$", and why the $X$s in two different clauses are unrelated (E4).</p>
+    <span class="step">(b)</span>
+    <p><em>As a set of literals:</em></p>
+    $$ \{\neg p_1(t_1),\ \neg p_2(t_2),\ q_1(u_1),\ q_2(u_2)\} $$
+    <p><em>As an implication</em>, gathering the positives on the left of a backwards arrow and the negated ones on the right:</p>
+    $$ q_1(u_1) \vee q_2(u_2) \;\leftarrow\; p_1(t_1) \wedge p_2(t_2) $$
+    <p><em>In ASCII:</em> &nbsp; <code>q1(u1); q2(u2) :- p1(t1), p2(t2).</code></p>
+    <span class="step">(c)</span>
+    <p><strong>None of them is a definite clause</strong> — they are three notations for the <em>same</em> clause, and it has <strong>two</strong> positive literals. Definite requires exactly one.</p>
+    <p>Drop $q_2$ and all three become definite: $\{\neg p_1(t_1), \neg p_2(t_2), q_1(u_1)\}$, or <code>q1(u1) :- p1(t1), p2(t2).</code> — a Prolog rule.</p>
+    <span class="step">Checks</span>
+    <p>Verify the three notations agree by counting. The set has four literals; the implication has two on each side; the ASCII has two before <code>:-</code> and two after. Positives go left of the arrow, negatives go right and lose their $\neg$. ✓</p>
+    <p><strong>On the ASCII separator:</strong> head disjuncts are separated by <code>;</code>, as slide 19's <code>awake; sleeping :- person.</code> and slide 40's program both show. If your copy of slide 18 shows a comma between the two head literals, read it as a semicolon — a comma in the head would mean conjunction and would be a different clause. ✓</p>
+    <span class="step">Why this matters</span>
+    <p><strong>How to use this:</strong> for the homework, give your clauses as sets. It is the least ambiguous of the three, it is what resolution consumes, and counting positive literals to check for definiteness is immediate.</p>
+  </div>
+</div>
+
+<div class="q" data-id="C7" data-t="prove">
+  <div class="qtop"><span class="qid">C7</span><span class="tag prove">prove</span><label class="donebox"><input type="checkbox" class="cb"> done</label></div>
+  <p>Convert this to clausal normal form, all six steps, and say which of the resulting clauses are definite.</p>
+  $$ \forall X.\Bigl(person(X) \to \exists Y.\bigl(loves(X,Y) \wedge \neg loves(Y,X)\bigr)\Bigr) $$
+  <div class="btns"><button class="btn ansbtn">Show answer</button></div>
+  <div class="ans" hidden>
+    <span class="step">The conversion</span>
+    <p><em>1</em>, eliminate $\to$:</p>
+    <p>$\forall X.\bigl(\neg person(X) \vee \exists Y.(loves(X,Y) \wedge \neg loves(Y,X))\bigr)$</p>
+    <p><em>2</em>: every $\neg$ is already on a predicate. Nothing to do.</p>
+    <p><em>3</em>, Skolemise. The $\exists Y$ sits inside $\forall X$, so $Y$ becomes a one-place function $f(X)$ — "the person $X$ loves unrequitedly":</p>
+    <p>$\forall X.\bigl(\neg person(X) \vee (loves(X,f(X)) \wedge \neg loves(f(X),X))\bigr)$</p>
+    <p><em>4</em>, generalise:</p>
+    <p>$\neg person(X) \vee \bigl(loves(X,f(X)) \wedge \neg loves(f(X),X)\bigr)$</p>
+    <p><em>5</em>, distribute the $\vee$ over the $\wedge$:</p>
+    $$ \bigl(\neg person(X) \vee loves(X,f(X))\bigr) \wedge \bigl(\neg person(X) \vee \neg loves(f(X),X)\bigr) $$
+    <p><em>6</em>: no constants to remove, and neither clause is a tautology.</p>
+    <span class="step">The clauses</span>
+    <table>
+      <tr><th></th><th>set form</th><th>ASCII</th><th>definite?</th></tr>
+      <tr><td>C1</td><td>$\{\neg person(X),\ loves(X,f(X))\}$</td><td><code>loves(X,f(X)) :- person(X).</code></td><td><strong>yes</strong> — one positive</td></tr>
+      <tr><td>C2</td><td>$\{\neg person(X),\ \neg loves(f(X),X)\}$</td><td><code>:- person(X), loves(f(X),X).</code></td><td><strong>no</strong> — zero positives, a denial</td></tr>
+    </table>
+    <span class="step">Checks</span>
+    <p><strong>One sentence, two clauses, and only one of them is a Prolog rule.</strong> C2 is a constraint — "nobody is loved back by the person they love unrequitedly" — and Prolog will not accept it as a program clause. That is slide 19's definite-clause restriction biting on an ordinary English sentence. ✓</p>
+    <p>Check the clause count against B4's rule: step 5 distributed one literal over a conjunction of two, giving $1 \times 2 = 2$ clauses. ✓</p>
+    <p>Check the Skolem function reads sensibly: $f(X)$ names someone $X$ loves and who does not love $X$ back. C1 and C2 together say exactly that, for every person. That is the original with the witness named — which is C4's point, that Skolemisation strengthens by naming. ✓</p>
+    <span class="step">Why this matters</span>
+    <p><strong>The common error</strong> is stopping after step 4 with a single clause containing a $\wedge$. A clause is a <em>disjunction of literals</em> — if there is a $\wedge$ anywhere inside it, step 5 is not finished, and you will have one clause where the marker expects two.</p>
+  </div>
+</div>
+
+</section>
+<section class="part" id="partD">
+  <div class="parthead">
+    <h2>Part D · Unification</h2>
+    <div class="meta"><span class="partcount">0 / 6</span> · ~45 min</div>
+  </div>
+  <p class="lead">Slides 24–29. The one idea to hold onto: unification computes a substitution from two terms, rather than your choosing one — which is the whole reason resolution automates and natural deduction does not. D4 is the lecture's own pair of exercises, and the second of them has no answer, which is the point.</p>
+
+<div class="q" data-id="D1" data-t="recall">
+  <div class="qtop"><span class="qid">D1</span><span class="tag recall">recall</span><label class="donebox"><input type="checkbox" class="cb"> done</label></div>
+  <p>Define <em>substitution</em>, what it means to <em>unify</em> two predicate statements, and <em>most general unifier</em>. Give the notation slide 25 uses for applying a substitution.</p>
+  <div class="btns"><button class="btn ansbtn">Show answer</button></div>
+  <div class="ans" hidden>
+    <span class="step">Definitions</span>
+    <p>A <strong>substitution</strong> $\theta : \texttt{var} \to \texttt{terms}$ assigns a term to each variable.</p>
+    <p>Given a predicate $p(t_1, \dots, t_{\#p})$, the notation $p(t_1,\dots,t_{\#p})\backslash\theta$ is the result of replacing every variable $X$ appearing in any of the terms by $\theta(X)$. Slide 25's example:</p>
+    $$ \texttt{drive}(\texttt{father}(X), Y)\backslash[X \mapsto \texttt{sam},\ Y \mapsto \texttt{morris}] \;=\; \texttt{drive}(\texttt{father}(\texttt{sam}), \texttt{morris}) $$
+    <p>To <strong>unify</strong> two predicate statements $p_1, p_2$ with the same predicate symbol is to find substitutions $\theta_1, \theta_2$ such that $p_1\backslash\theta_1$ and $p_2\backslash\theta_2$ are identical.</p>
+    <p>The <strong>most general unifier</strong> is the pair of substitutions that makes the predicates equal <strong>with the least commitment</strong>.</p>
+    <span class="step">Checks</span>
+    <p>Note the definition uses <strong>two</strong> substitutions, one per predicate, rather than one applied to both. That matters when the same variable name occurs in both — slide 25's own example unifies $\texttt{drive}(\texttt{father}(X),Y)$ with $\texttt{drive}(X, \texttt{car}(X))$, where a single substitution could not work because $X$ would have to be both $\texttt{father}(\texttt{sam})$ and $\texttt{sam}$. The usual alternative is to rename the clauses apart first and use one substitution, which is what slide 30 suggests at resolution time. ✓</p>
+    <span class="step">Why this matters</span>
+    <p><strong>How to use this:</strong> "least commitment" is the operative phrase in D3. A unifier that binds more variables than it has to still unifies — it is just not the <em>most general</em> one, and using it throws away solutions.</p>
+  </div>
+</div>
+
+<div class="q" data-id="D2" data-t="compute">
+  <div class="qtop"><span class="qid">D2</span><span class="tag compute">compute</span><label class="donebox"><input type="checkbox" class="cb"> done</label></div>
+  <p>Slide 24's question. Can resolution be applied to these two clauses, and if so what is the resolvent?</p>
+  $$ \{P,\ Q(g(a))\} \qquad\qquad \{R,\ \neg Q(X)\} $$
+  <p>Do you get the empty clause?</p>
+  <div class="btns"><button class="btn ansbtn">Show answer</button></div>
+  <div class="ans" hidden>
+    <span class="step">Answer</span>
+    <p><strong>Yes, resolution applies</strong> — but only after unifying. The complementary literals are $Q(g(a))$ and $\neg Q(X)$, and they are not syntactically complementary as they stand: one mentions $g(a)$ and the other a variable. The substitution</p>
+    $$ X \mapsto g(a) $$
+    <p>makes them so. Applying it and resolving on $Q$:</p>
+    $$ \dfrac{\{P,\ Q(g(a))\} \qquad \{R,\ \neg Q(X)\}}{\{P,\ R\}}\;{\small(\text{res},\ X \mapsto g(a))} $$
+    <span class="step">Do you get $\square$?</span>
+    <p><strong>No.</strong> The resolvent is $\{P, R\}$, which has two literals left. The empty clause requires both parent clauses to have <em>nothing</em> besides the resolved pair — that is, resolving $\{L\}$ with $\{\neg L\}$.</p>
+    <p>These two clauses are perfectly satisfiable together: make $P$ true and $Q^{I}$ false everywhere, and both hold. So no refutation should be derivable from them alone, and none is. ✓</p>
+    <span class="step">Checks</span>
+    <p>Confirm the substitution is forced. $X$ is a variable and $g(a)$ is a compound term, so the only way to make $Q(X)$ and $Q(g(a))$ identical is to send $X$ to $g(a)$; you cannot go the other way, because $g(a)$ is not a variable. <strong>Unification has no freedom here at all</strong>, which is typical. ✓</p>
+    <span class="step">Why this matters</span>
+    <p><strong>The moral:</strong> this is why slides 24 to 29 exist. Propositional resolution needs the two literals to be literally complementary; full clausal logic needs a way to <em>make</em> them so, and that way is unification.</p>
+  </div>
+</div>
+
+<div class="q" data-id="D3" data-t="compute">
+  <div class="qtop"><span class="qid">D3</span><span class="tag compute">compute</span><label class="donebox"><input type="checkbox" class="cb"> done</label></div>
+  <p>Slide 26's question. For the terms $f(X,Y)$ and $f(a,Z)$, which of these is the more general unifier, and why?</p>
+  $$ \theta_1 = [X \mapsto a,\ Y \mapsto Z] \qquad\qquad \theta_2 = [X \mapsto a,\ Y \mapsto a,\ Z \mapsto a] $$
+  <div class="btns"><button class="btn ansbtn">Show answer</button></div>
+  <div class="ans" hidden>
+    <span class="step">Answer</span>
+    <p><strong>$\theta_1$ is the most general unifier.</strong> Both work — under $\theta_1$ both terms become $f(a,Z)$, and under $\theta_2$ both become $f(a,a)$ — but $\theta_2$ commits to more than it needs to.</p>
+    <p>The test: <strong>$\theta_2$ can be obtained from $\theta_1$ by applying a further substitution</strong>, namely $[Z \mapsto a]$, but not the other way round. Anything $\theta_2$ unifies, $\theta_1$ unifies too, and more besides.</p>
+    <span class="step">Why the difference costs you</span>
+    <p>$\theta_1$ leaves $Z$ free, so the resolvent it produces still holds for <em>every</em> value of $Z$. $\theta_2$ pins $Z$ to $a$, so any conclusion drawn afterwards is only about $a$ — every other solution has been thrown away before you looked for it.</p>
+    <p>Resolution is still <em>sound</em> with a non-general unifier; it stops being <em>complete</em>. You can fail to find a refutation that exists, because you narrowed too early.</p>
+    <span class="step">Checks</span>
+    <p>Verify $\theta_1$ really unifies: $f(X,Y)\backslash\theta_1 = f(a,Z)$ and $f(a,Z)\backslash\theta_1 = f(a,Z)$. Identical. ✓ Verified in SWI-Prolog: unifying <code>f(X,Y)</code> with <code>f(a,Z)</code> binds <code>X = a</code> and leaves <code>Y</code> and <code>Z</code> sharing a single unbound variable — exactly $\theta_1$, and no more. ✓</p>
+    <span class="step">Why this matters</span>
+    <p><strong>How to use this:</strong> when writing a unifier by hand, bind a variable only when forced. If two variables meet, bind one to the other rather than both to a constant — $[Y \mapsto Z]$, not $[Y \mapsto a, Z \mapsto a]$.</p>
+  </div>
+</div>
+
+<div class="q" data-id="D4" data-t="compute">
+  <div class="qtop"><span class="qid">D4</span><span class="tag compute">compute</span><label class="donebox"><input type="checkbox" class="cb"> done</label></div>
+  <p>Slide 28's two exercises.</p>
+  <ol class="parts">
+    <li>What is the MGU for $plus(s(0), X, s(X))$ and $plus(s(Y), s(0), s(s(Y)))$?</li>
+    <li>Can you find a most general unifier for $p(X, f(X))$ and $p(f(Y), Y)$?</li>
+  </ol>
+  <div class="btns"><button class="btn hintbtn">Hint</button><button class="btn ansbtn">Show answer</button></div>
+  <div class="hint" hidden><p>Work argument by argument, left to right, carrying each binding forward. In (b), do that and look carefully at what the second argument demands.</p></div>
+  <div class="ans" hidden>
+    <span class="step">(a)</span>
+    <p>Match argument by argument, propagating bindings as you go.</p>
+    <table>
+      <tr><th>position</th><th>terms</th><th>forces</th></tr>
+      <tr><td>1</td><td>$s(0)$ against $s(Y)$</td><td>same functor, so descend: $0$ against $Y$, giving $Y \mapsto 0$</td></tr>
+      <tr><td>2</td><td>$X$ against $s(0)$</td><td>$X \mapsto s(0)$</td></tr>
+      <tr><td>3</td><td>$s(X)$ against $s(s(Y))$</td><td>descend: $X$ against $s(Y)$. With $Y \mapsto 0$ that is $X \mapsto s(0)$ — <strong>consistent with position 2</strong></td></tr>
+    </table>
+    <p><strong>MGU:</strong> $[X \mapsto s(0),\ Y \mapsto 0]$. Both terms become $plus(s(0), s(0), s(s(0)))$ — which in successor arithmetic reads $1 + 1 = 2$. ✓ Verified in SWI-Prolog with <code>unify_with_occurs_check/2</code>.</p>
+    <p>Position 3 is the one that matters: it had to be checked, and it could have clashed. Had the third argument been $s(s(Y))$ against $s(X)$ with $X$ already bound to something else, unification would fail.</p>
+    <span class="step">(b)</span>
+    <p><strong>There is none.</strong> Work it through:</p>
+    <table>
+      <tr><th>position</th><th>terms</th><th>forces</th></tr>
+      <tr><td>1</td><td>$X$ against $f(Y)$</td><td>$X \mapsto f(Y)$</td></tr>
+      <tr><td>2</td><td>$f(X)$ against $Y$</td><td>$Y \mapsto f(X)$, and with $X \mapsto f(Y)$ that is $Y \mapsto f(f(Y))$</td></tr>
+    </table>
+    <p>$Y$ would have to be a term containing itself. <strong>The occurs check fails</strong>, so unification fails and no unifier exists — most general or otherwise. Verified: SWI's <code>unify_with_occurs_check(p(X,f(X)), p(f(Y),Y))</code> returns <code>false</code>. ∎</p>
+    <p>Slide 27 spells out the danger: allowing $Y \mapsto f(Y)$ would generate $p(f(f(f(f(\dots)))))$, an infinite term.</p>
+    <span class="step">Checks</span>
+    <p>Note the shape of the failure. Neither position alone is a problem — $X \mapsto f(Y)$ is fine, $Y \mapsto f(X)$ is fine — it is the <strong>combination</strong> that is circular. That is why you must carry bindings forward rather than solving each position independently. ✓</p>
+    <span class="step">Why this matters</span>
+    <p><strong>The common error</strong> is answering (b) with $[X \mapsto f(Y),\ Y \mapsto f(X)]$ and calling it done. Substitute it into either term and you get an expression that never bottoms out. If a proposed unifier still contains the variable it is meant to eliminate, it is not a unifier.</p>
+  </div>
+</div>
+
+<div class="q" data-id="D5" data-t="prove">
+  <div class="qtop"><span class="qid">D5</span><span class="tag prove">prove</span><label class="donebox"><input type="checkbox" class="cb"> done</label></div>
+  <p>Slide 27 lists four conditions under which two terms can be unified. State them, and for each give a pair of terms that fails it.</p>
+  <div class="btns"><button class="btn ansbtn">Show answer</button></div>
+  <div class="ans" hidden>
+    <span class="step">The conditions</span>
+    <table>
+      <tr><th>condition</th><th>a failing pair</th></tr>
+      <tr><td><strong>Structure must match</strong> — a pair $(t_1,t_2)$ cannot unify with a constant</td><td>$(a,b)$ against $c$</td></tr>
+      <tr><td><strong>Functions unify only if same name and all arguments unify</strong></td><td>$f(x)$ against $h(y,z)$ — different name <em>and</em> different arity</td></tr>
+      <tr><td><strong>Constants unify only if equal</strong></td><td>$a$ against $b$</td></tr>
+      <tr><td><strong>A variable unifies with a term only if it passes the occurs check</strong> — for variable $X$ and term $t$, if $X$ occurs in $t$ it cannot be unified</td><td>$X$ against $f(X)$</td></tr>
+    </table>
+    <span class="step">Why the occurs check exists</span>
+    <p>Suppose you allowed $X \mapsto f(X)$ in order to unify <code>p(f(X))</code> with <code>p(X)</code>. Substituting once gives $p(f(f(X)))$; substituting again gives $p(f(f(f(X))))$; and the process never terminates. The "unifier" describes an <strong>infinite term</strong>, which is not a term at all. ∎</p>
+    <span class="step">Checks</span>
+    <p>Verified in SWI-Prolog: <code>unify_with_occurs_check(X, f(X))</code> is <code>false</code>, as it should be. But plain <code>X = f(X)</code> <strong>succeeds</strong> and builds a cyclic term — SWI omits the occurs check by default, because it costs time on every single unification and the situation almost never arises in practice. ✓</p>
+    <p>That is a genuine gap between the theory and the implementation, and worth knowing exists: <strong>standard resolution is defined with the occurs check, and the default implementation is unsound without it.</strong> Use <code>unify_with_occurs_check/2</code> when it matters.</p>
+    <span class="step">Why this matters</span>
+    <p><strong>How to use this:</strong> slide 27's closing remark is the practical one — think of unification as operating on <em>trees</em> whose nodes are pairs, constants and variables. Two terms unify when the trees have the same shape and the same functor at every internal node, with variables free to absorb whole subtrees. Every condition above is one way for that tree match to fail.</p>
+  </div>
+</div>
+
+<div class="q" data-id="D6" data-t="compute">
+  <div class="qtop"><span class="qid">D6</span><span class="tag compute">compute</span><label class="donebox"><input type="checkbox" class="cb"> done</label></div>
+  <p>Slide 29's four comparison predicates. Say what each means, then give the result of every query in the table.</p>
+  <p><code>X = Y</code> &nbsp; <code>X \= Y</code> &nbsp; <code>X == Y</code> &nbsp; <code>X \== Y</code></p>
+  <ol class="parts">
+    <li><code>?- a = a.</code> and <code>?- a == a.</code></li>
+    <li><code>?- X = a.</code> and <code>?- X == a.</code></li>
+    <li><code>?- X = Y.</code> and <code>?- X == Y.</code></li>
+    <li><code>?- red(X) = red(apple).</code></li>
+  </ol>
+  <div class="btns"><button class="btn ansbtn">Show answer</button></div>
+  <div class="ans" hidden>
+    <span class="step">Meanings</span>
+    <table>
+      <tr><td><code>X = Y</code></td><td>true if <code>X</code> <strong>unifies</strong> (matches) with <code>Y</code></td></tr>
+      <tr><td><code>X \= Y</code></td><td>true if <code>X</code> does <strong>not</strong> unify with <code>Y</code></td></tr>
+      <tr><td><code>X == Y</code></td><td>true if <code>X</code> and <code>Y</code> are <strong>identical terms</strong></td></tr>
+      <tr><td><code>X \== Y</code></td><td>true if <code>X</code> and <code>Y</code> are not identical terms</td></tr>
+    </table>
+    <span class="step">Results</span>
+    <table>
+      <tr><th>query</th><th>result</th><th>why</th></tr>
+      <tr><td><code>a = a.</code></td><td><code>true</code></td><td>identical atoms unify trivially</td></tr>
+      <tr><td><code>a == a.</code></td><td><code>true</code></td><td>and they are identical</td></tr>
+      <tr><td><code>X = a.</code></td><td><code>X = a.</code></td><td>unification <strong>binds</strong> the variable</td></tr>
+      <tr><td><code>X == a.</code></td><td><code>false</code></td><td>an unbound variable is <strong>not identical</strong> to an atom, and <code>==</code> binds nothing</td></tr>
+      <tr><td><code>X = Y.</code></td><td><code>X = Y.</code></td><td>the two variables are made to share</td></tr>
+      <tr><td><code>X == Y.</code></td><td><code>false</code></td><td>two <em>distinct</em> unbound variables are different terms</td></tr>
+      <tr><td><code>red(X) = red(apple).</code></td><td><code>X = apple.</code></td><td>same functor, descend, bind</td></tr>
+    </table>
+    <span class="step">Checks</span>
+    <p>The pair that separates them is <code>X = a</code> against <code>X == a</code>. <strong><code>=</code> asks "could these be made the same?" and acts; <code>==</code> asks "are these already the same?" and does not.</strong> ✓</p>
+    <p>The last row is slide 29's own point: the query <code>?- red(X).</code> against the fact <code>red(apple).</code> returns <code>X = apple</code> because Prolog has <em>found a unifier</em> between query and fact. Unification is not a comparison operator bolted on — it is how every goal is matched to every clause head. ✓</p>
+    <span class="step">Why this matters</span>
+    <p><strong>The common error</strong> is reaching for <code>==</code> to test equality in a rule body. It only succeeds when both sides are already bound to the same thing, so it silently fails whenever a variable has not been instantiated yet — the same class of ordering bug as G5's negation.</p>
+  </div>
+</div>
+
+</section>
+<section class="part" id="partE">
+  <div class="parthead">
+    <h2>Part E · Resolution</h2>
+    <div class="meta"><span class="partcount">0 / 7</span> · ~55 min</div>
+  </div>
+  <p class="lead">Slides 20–34, and homework task 2(c). The one idea to hold onto: resolution proves nothing directly — it derives $\square$ from the premises plus the <em>negated</em> goal. E5 is the lecture's own worked example and the only place factoring is needed; E3 and E7 are the theory questions that get asked in words rather than symbols.</p>
+
+<div class="q" data-id="E1" data-t="recall">
+  <div class="qtop"><span class="qid">E1</span><span class="tag recall">recall</span><label class="donebox"><input type="checkbox" class="cb"> done</label></div>
+  <p>State the propositional resolution rule and slide 21's four-step procedure for proving a formula $\alpha$. What does the empty clause mean, and how is it written?</p>
+  <div class="btns"><button class="btn ansbtn">Show answer</button></div>
+  <div class="ans" hidden>
+    <span class="step">The rule</span>
+    $$ \dfrac{L \vee \alpha \qquad \neg L \vee \beta}{\alpha \vee \beta}\;{\small(\text{res})} $$
+    <p>$L$ is the literal being <strong>resolved on</strong>; $\alpha$ and $\beta$ are in CNF with no literals in common.</p>
+    <span class="step">The procedure</span>
+    <ol>
+      <li><strong>Negate</strong> the formula — this is the start of a proof by contradiction.</li>
+      <li>Translate $\neg\alpha$ into <strong>CNF</strong> and separate out the clauses.</li>
+      <li>Repeatedly apply the <strong>resolution rule</strong>, producing new clauses.</li>
+      <li>If a contradiction is reached, $\neg\alpha$ is refuted, so $\alpha$ is true.</li>
+    </ol>
+    <span class="step">The empty clause</span>
+    <p>Written $\square$, or as <code>:-</code> in Prolog notation. It is a disjunction of <em>no</em> literals, so nothing satisfies it — deriving it shows the clause set is unsatisfiable.</p>
+    <span class="step">Why this matters</span>
+    <p><strong>How to use this:</strong> resolution "aims to find a refutation", in slide 21's words. You never build the conclusion. That converts an open-ended search for a proof into a search for one specific object, which is what makes it mechanisable.</p>
+  </div>
+</div>
+
+<div class="q" data-id="E2" data-t="prove">
+  <div class="qtop"><span class="qid">E2</span><span class="tag prove">prove</span><label class="donebox"><input type="checkbox" class="cb"> done</label></div>
+  <p>Slide 23's example. Using the clauses you produced in B5, prove $P \wedge Q \to Q \wedge P$ by resolution. Name the literal resolved on at each step.</p>
+  <div class="btns"><button class="btn ansbtn">Show answer</button></div>
+  <div class="ans" hidden>
+    <span class="step">The clauses</span>
+    <p>$\{P\}$, &nbsp; $\{Q\}$, &nbsp; $\{\neg Q, \neg P\}$ &nbsp; — the last being the negated goal, from B5.</p>
+    <span class="step">The refutation</span>
+    <table>
+      <tr><th>step</th><th>from</th><th>on</th><th>resolvent</th></tr>
+      <tr><td>R1</td><td>$\{P\}$, $\{\neg Q, \neg P\}$</td><td>$P$</td><td>$\{\neg Q\}$</td></tr>
+      <tr><td>R2</td><td>$\{\neg Q\}$, $\{Q\}$</td><td>$Q$</td><td>$\square$</td></tr>
+    </table>
+    <p>$\neg\alpha$ is refuted, so $P \wedge Q \to Q \wedge P$ holds. ∎</p>
+    <span class="step">Checks</span>
+    <p>Every step shortens the clause you are holding: 2 literals, then 1, then 0. <strong>If your resolvents keep growing, you are resolving on the wrong literal.</strong> ✓</p>
+    <p>Resolving in the other order works equally well — $\{Q\}$ with $\{\neg Q,\neg P\}$ gives $\{\neg P\}$, then $\{P\}$ gives $\square$. <strong>Refutations are not unique</strong>, so any correct one is a correct answer. ✓</p>
+    <span class="step">Why this matters</span>
+    <p><strong>The moral:</strong> compare the effort. Proving this in natural deduction takes five lines with an assumption to discharge (Lecture 3); here it is two mechanical steps once the clauses exist. The work has moved from the proof to the conversion — which is why parts B and C carry as many marks as this one.</p>
+  </div>
+</div>
+
+<div class="q" data-id="E3" data-t="prove">
+  <div class="qtop"><span class="qid">E3</span><span class="tag prove">prove</span><label class="donebox"><input type="checkbox" class="cb"> done</label></div>
+  <p>Slide 22 makes four claims about propositional resolution. State each precisely, and explain the third given the second.</p>
+  <ol class="parts">
+    <li>Resolution is sound.</li>
+    <li>Resolution is not complete.</li>
+    <li>Resolution is refutation complete.</li>
+    <li>Propositional clausal logic is decidable.</li>
+  </ol>
+  <div class="btns"><button class="btn ansbtn">Show answer</button></div>
+  <div class="ans" hidden>
+    <span class="step">(a) Sound</span>
+    <p>If $C_1$ and $C_2$ are clauses and $C_3$ results from applying resolution to them, then for every program $P$ with $P \models C_1$ and $P \models C_2$, we have $P \models C_3$. <strong>Resolution never produces a clause that was not already entailed.</strong></p>
+    <span class="step">(b) Not complete</span>
+    <p>Given a program $P$, resolution cannot derive every clause that is true in every model of $P$. Slide 22's example: <code>h1 :- h1</code> is true in every model — it is a tautology, $\neg h_1 \vee h_1$ — but the clause cannot always be derived.</p>
+    <span class="step">(c) Refutation complete</span>
+    <p><strong>If a clause set is unsatisfiable, resolution can derive $\square$ from it.</strong></p>
+    <p>These are consistent because they answer different questions. (b) is about <em>generating</em> consequences: there are entailed clauses resolution will never write down, and tautologies are the obvious family, since resolution only ever combines two clauses you already have and cannot invent $\neg h_1 \vee h_1$ from nothing. (c) is about <em>detecting inconsistency</em>, and there resolution misses nothing.</p>
+    <p><strong>This step is exactly where the choice to work by refutation is used.</strong> Because (b) holds and (c) holds, the only sound way to use resolution as a proof method is to negate the goal — which is why slide 21's procedure begins by negating.</p>
+    <span class="step">(d) Decidable</span>
+    <p>The number of atoms in a program $P$ is finite, so there are only finitely many distinct clauses over them. Resolution is refutation complete, so applying it systematically must terminate: either you find a refutation, or you exhaust the possibilities and find no new clauses — and by (c), no refutation exists. Either way you get an answer. ∎</p>
+    <span class="step">Checks</span>
+    <p>Note the semantics underneath all four is <em>Herbrand interpretations</em>, which slide 22 leaves as optional reading. You do not need them for the homework, but the results above are stated relative to that semantics. ✓</p>
+    <p>Contrast E7: (d) fails for full clausal logic, and the reason is exactly the finiteness used here. ✓</p>
+  </div>
+</div>
+
+<div class="q" data-id="E4" data-t="compute">
+  <div class="qtop"><span class="qid">E4</span><span class="tag compute">compute</span><label class="donebox"><input type="checkbox" class="cb"> done</label></div>
+  <p>Slides 30–31. State the resolution rule for full clausal logic, say what <em>factoring</em> is and why you would want it, and give slide 31's adjusted procedure.</p>
+  <p>Then factor $\{P(a,Y),\, P(Y,a)\}$.</p>
+  <div class="btns"><button class="btn ansbtn">Show answer</button></div>
+  <div class="ans" hidden>
+    <span class="step">The rule</span>
+    <p>To resolve two clauses you must first find a substitution $\theta$ that makes the two complementary literals the same; propositional resolution then applies, and <strong>the substitution is applied to the resulting clause</strong>. Slide 30 adds: you may rename the variables within one clause to prevent clashes when resolving with another.</p>
+    <span class="step">Factoring</span>
+    <p>Resolution "can quickly start to produce expanding clauses". <strong>Factoring produces an additional clause with a substitution already applied</strong>, collapsing two literals of the same clause into one when they unify.</p>
+    <p>$\{P(a,Y),\, P(Y,a)\}$ under $[Y \mapsto a]$ becomes $\{P(a,a),\, P(a,a)\}$, and a clause is a <em>set</em>, so the duplicate disappears: &nbsp; $\{P(a,a)\}$.</p>
+    <span class="step">The procedure</span>
+    <ol>
+      <li>Negate the formula.</li>
+      <li>Translate into CNF and separate out the clauses.</li>
+      <li><strong>Check for obvious factors</strong> that may be useful for the next step.</li>
+      <li>Find a substitution allowing the resolution rule to be applied between two clauses.</li>
+      <li>Apply resolution using that substitution.</li>
+      <li>Repeat 3–5 as necessary.</li>
+      <li>If a contradiction is reached, $\alpha$ is true.</li>
+    </ol>
+    <span class="step">Checks</span>
+    <p>Factoring is not a new inference — it is sound because $\{P(a,Y), P(Y,a)\}$ is universally quantified over $Y$, so it holds in particular at $Y = a$, and there its two literals coincide. <strong>You are instantiating a clause you already have</strong>, which is why slide 30 says you get the extra clause "for free". ✓</p>
+    <p>Note the cost of skipping it: without factoring, E5's refutation cannot be closed in two steps, because both clauses still carry two literals each. ✓</p>
+  </div>
+</div>
+
+<div class="q" data-id="E5" data-t="prove">
+  <div class="qtop"><span class="qid">E5</span><span class="tag prove">prove</span><label class="donebox"><input type="checkbox" class="cb"> done</label></div>
+  <p>Slide 32's example. Prove</p>
+  $$ \forall X \exists Y\, \neg\bigl(P(Y,X) \leftrightarrow \neg P(Y,Y)\bigr) $$
+  <p>Negate it and convert, then use factoring and resolution to reach $\square$.</p>
+  <div class="btns"><button class="btn hintbtn">Hint</button><button class="btn ansbtn">Show answer</button></div>
+  <div class="hint" hidden><p>After negating, the two $\neg$s cancel and you are left with a biconditional under $\exists X \forall Y$. Skolemise the $X$ first — it has no universal in scope.</p></div>
+  <div class="ans" hidden>
+    <span class="step">Negating and converting</span>
+    <p>$\neg \forall X \exists Y\, \neg(\dots)$ becomes $\exists X \forall Y\, (\dots)$ — both quantifiers flip and the double negation cancels:</p>
+    <p>$\exists X \forall Y.\bigl(P(Y,X) \leftrightarrow \neg P(Y,Y)\bigr)$</p>
+    <p><em>Skolemise</em> $\exists X$ with a constant $a$, no universal in scope: &nbsp; $\forall Y.\bigl(P(Y,a) \leftrightarrow \neg P(Y,Y)\bigr)$</p>
+    <p><em>Expand the biconditional</em> into two implications and eliminate them:</p>
+    $$ \bigl(\neg P(Y,a) \vee \neg P(Y,Y)\bigr) \wedge \bigl(P(Y,Y) \vee P(Y,a)\bigr) $$
+    <p>Generalising gives the two clauses slide 32 states:</p>
+    <p>$C_1 = \{\neg P(Y,a),\, \neg P(Y,Y)\}$ &nbsp;&nbsp; $C_2 = \{P(Y,Y),\, P(Y,a)\}$</p>
+    <span class="step">Factoring</span>
+    <p>Both clauses factor under $[Y \mapsto a]$, since $P(a,a)$ and $P(a,a)$ coincide:</p>
+    <p>$C_1' = \{\neg P(a,a)\}$ &nbsp;&nbsp; $C_2' = \{P(a,a)\}$</p>
+    <span class="step">The refutation</span>
+    $$ \dfrac{\{P(a,a)\} \qquad \{\neg P(a,a)\}}{\square}\;{\small(\text{res on } P(a,a))} $$
+    <p>$\neg\alpha$ is refuted, so the original is valid. ∎</p>
+    <span class="step">Checks</span>
+    <p>Sanity-check the sentence semantically. It says: for every $X$ there is a $Y$ such that "$P(Y,X)$ if and only if not $P(Y,Y)$" <em>fails</em>. Take $Y = X$: the biconditional becomes $P(X,X) \leftrightarrow \neg P(X,X)$, which is false in every interpretation. So the witness always exists and the sentence is valid — as the refutation reports. ✓</p>
+    <p>This is Russell's paradox in clause form: the Skolem constant $a$ is "the set of all sets that do not contain themselves", and the contradiction is that it must both contain and not contain itself. ✓</p>
+    <span class="step">Why this matters</span>
+    <p><strong>The moral:</strong> without factoring the two clauses have two literals each and resolving them on $P(Y,a)$ gives $\{\neg P(Y,Y), P(Y,Y)\}$ — a tautology, and no progress. <strong>Factoring is what makes this refutation two lines instead of impossible</strong>, which is why slide 31 promotes it to step 3 of the procedure.</p>
+  </div>
+</div>
+
+<div class="q" data-id="E6" data-t="prove">
+  <div class="qtop"><span class="qid">E6</span><span class="tag prove">prove</span><label class="donebox"><input type="checkbox" class="cb"> done</label></div>
+  <p>Slide 33's refutation. Given the program</p>
+  <p><code>likes(peter,S) :- student_of(S,peter).</code><br>
+     <code>student_of(S,T) :- follows(S,C), teaches(T,C).</code><br>
+     <code>follows(maria, ai_techniques).</code> &nbsp; <code>teaches(peter, ai_techniques).</code></p>
+  <p>derive $\square$ from the query <code>?- likes(peter,N).</code> Give the substitution at each step, and state the answer returned.</p>
+  <div class="btns"><button class="btn hintbtn">Hint</button><button class="btn ansbtn">Show answer</button></div>
+  <div class="hint" hidden><p>The query is already the negated goal — a clause with no positive literal. At each step resolve it against the one program clause whose <em>head</em> unifies with its leftmost literal.</p></div>
+  <div class="ans" hidden>
+    <span class="step">The refutation</span>
+    <table>
+      <tr><th>resolvent</th><th>against</th><th>substitution</th></tr>
+      <tr><td><code>:- likes(peter,N)</code></td><td><code>likes(peter,S) :- student_of(S,peter)</code></td><td>$S \mapsto N$</td></tr>
+      <tr><td><code>:- student_of(N,peter)</code></td><td><code>student_of(S,T) :- follows(S,C), teaches(T,C)</code></td><td>$S \mapsto N$, $T \mapsto peter$</td></tr>
+      <tr><td><code>:- follows(N,C), teaches(peter,C)</code></td><td><code>follows(maria, ai_techniques)</code></td><td>$N \mapsto maria$, $C \mapsto ai\_techniques$</td></tr>
+      <tr><td><code>:- teaches(peter, ai_techniques)</code></td><td><code>teaches(peter, ai_techniques)</code></td><td>empty</td></tr>
+      <tr><td>$\square$</td><td></td><td></td></tr>
+    </table>
+    <p><strong>Answer returned: <code>N = maria</code></strong> — composed from the substitutions along the way.</p>
+    <span class="step">Checks</span>
+    <p>The query <code>?- likes(peter,N).</code> <em>is</em> the negated goal: it is the clause $\{\neg likes(peter,N)\}$, with no positive literal. That is why slide 35 can say an execution is "an attempted proof of the refutation of the query". <strong>You never negate anything by hand in Prolog — the query notation already is the negation.</strong> ✓</p>
+    <p>Note every step keeps exactly one resolvent and resolves it against a program clause, never two program clauses against each other. That constraint has a name — <em>linear</em> resolution — and it is the L of SLD. ✓</p>
+    <p>Note also that the answer is not the refutation but the <strong>composed substitution</strong>. The refutation shows <em>that</em> someone is liked; the substitution says <em>who</em>. ✓</p>
+  </div>
+</div>
+
+<div class="q" data-id="E7" data-t="prove">
+  <div class="qtop"><span class="qid">E7</span><span class="tag prove">prove</span><label class="donebox"><input type="checkbox" class="cb"> done</label></div>
+  <p>Slide 34 says resolution for full clausal logic is refutation complete but only <em>semi-decidable</em>. Explain what breaks relative to E3(d), and say exactly what a machine can and cannot do.</p>
+  <div class="btns"><button class="btn ansbtn">Show answer</button></div>
+  <div class="ans" hidden>
+    <span class="step">What breaks</span>
+    <p>E3(d)'s argument used the fact that a propositional program has <strong>finitely many atoms</strong>, hence finitely many clauses, so systematic resolution must eventually run out of new clauses.</p>
+    <p>Full clausal logic has <strong>function symbols</strong>. From a constant $a$ and a unary $f$ you already get $a$, $f(a)$, $f(f(a))$, and so on without end — <strong>terms can be infinite in number</strong>, so there are infinitely many distinct clauses and the search need never exhaust itself. ∎</p>
+    <span class="step">Can and cannot</span>
+    <table>
+      <tr><td><strong>Can</strong></td><td>find a refutation whenever one exists. Refutation completeness is unaffected — any inconsistent program can be shown to have a refutation.</td></tr>
+      <tr><td><strong>Cannot</strong></td><td>determine that a program <em>is</em> consistent. There is no definite procedure for that: you may search forever without distinguishing "no refutation exists" from "not found yet".</td></tr>
+    </table>
+    <p>That asymmetry is what <em>semi-decidable</em> names — the yes-instances are recognisable, the no-instances are not.</p>
+    <span class="step">Checks</span>
+    <p>Compare with Lecture 3, slide 18: validity in first order logic is undecidable but semi-decidable, for the same underlying reason. <strong>Resolution has not made the problem harder or easier</strong> — it has given a far more mechanisable procedure for a problem whose difficulty was already fixed. ✓</p>
+    <p>The semantics for full clausal logic is again Herbrand interpretations, which is why the soundness and refutation-completeness results carry over from E3 unchanged; only the decidability one does not. ✓</p>
+    <span class="step">Why this matters</span>
+    <p><strong>The moral:</strong> this is why Prolog can hang. A query with no answer may loop forever rather than returning <code>false</code>, and no amount of engineering removes that — it is semi-decidability showing up at the prompt. Part F's SLD trees are where you can see which queries do it.</p>
+  </div>
+</div>
+
+</section>
+<section class="part" id="partF">
+  <div class="parthead">
+    <h2>Part F · Execution and SLD resolution</h2>
+    <div class="meta"><span class="partcount">0 / 5</span> · ~40 min</div>
+  </div>
+  <p class="lead">Slides 35–39. The one idea to hold onto: running a Prolog program <em>is</em> a resolution refutation, carried out under three restrictions that make the search cheap. F4 and F5 are SLD trees, which are the fastest way to see why a query loops or why clause order changes the answer.</p>
+
+<div class="q" data-id="F1" data-t="compute">
+  <div class="qtop"><span class="qid">F1</span><span class="tag compute">compute</span><label class="donebox"><input type="checkbox" class="cb"> done</label></div>
+  <p>Slide 35. What is a program, what is a query, and what is an execution? What is reported in each of the two outcomes, and which Prolog features are <em>not</em> part of definite clause logic?</p>
+  <div class="btns"><button class="btn ansbtn">Show answer</button></div>
+  <div class="ans" hidden>
+    <span class="step">Answers</span>
+    <table>
+      <tr><td>program</td><td>a set of <strong>definite clauses</strong>, with predicates, variables and functions</td></tr>
+      <tr><td>query</td><td>a <strong>conjunction of literals</strong></td></tr>
+      <tr><td>execution</td><td>an attempted proof of the <strong>refutation of the query</strong></td></tr>
+      <tr><td>if refuted</td><td><code>No.</code> is reported</td></tr>
+      <tr><td>if not refuted</td><td>a substitution has been found in some model satisfying the program, and <strong>the substitution is reported</strong></td></tr>
+    </table>
+    <p>Not part of definite clause logic: <strong>cuts, <code>assert</code>, and IO with side effects.</strong> Prolog adds them; the logic does not have them.</p>
+    <span class="step">Checks</span>
+    <p>Slide 35's phrasing is worth reading twice, because it is easy to invert. The <em>query</em> is what gets refuted — and refuting the query means the query's negation is contradictory, which means the query <strong>succeeds</strong>. E6 shows this concretely: <code>?- likes(peter,N)</code> is the clause $\{\neg likes(peter,N)\}$, and deriving $\square$ from it is a success returning <code>N = maria</code>. ✓</p>
+    <span class="step">Why this matters</span>
+    <p><strong>The moral:</strong> "Definite Clause Logic is declarative: it just describes <em>what is true</em>." The declarative reading tells you which answers are correct; the execution model of F2 tells you which you get first, and whether you get them at all. Every Prolog bug that is not a typo lives in the gap between those two.</p>
+  </div>
+</div>
+
+<div class="q" data-id="F2" data-t="compute">
+  <div class="qtop"><span class="qid">F2</span><span class="tag compute">compute</span><label class="donebox"><input type="checkbox" class="cb"> done</label></div>
+  <p>State slide 36's execution algorithm in your own words — all seven points. Then say which step is the backtracking step, and which single word in the algorithm makes the search depth-first.</p>
+  <div class="btns"><button class="btn ansbtn">Show answer</button></div>
+  <div class="ans" hidden>
+    <span class="step">The algorithm</span>
+    <ol>
+      <li>Take the <strong>left-most</strong> element of the query conjuncts; call it <code>q</code>.</li>
+      <li>Go through the knowledge base <strong>row by row</strong> until finding a clause whose head unifies with <code>q</code>.</li>
+      <li>Apply unification to both the matched clause and the entire query conjunct, then apply resolution, and insert the resulting literals <strong>at the front</strong> of the query conjunct.</li>
+      <li>Take the element now at the front and repeat.</li>
+      <li>If no clause matches <code>q</code>, <strong>reverse</strong> the last unification and resolution step and continue searching top down for the next match.</li>
+      <li>If no clause matches and there are no steps left to reverse: <code>no.</code></li>
+      <li>If all query conjuncts resolve away: <code>yes</code>, and return the successful substitution.</li>
+    </ol>
+    <span class="step">Backtracking and depth</span>
+    <p><strong>Step 5 is backtracking</strong> — undoing the most recent choice and trying the next clause from where it left off.</p>
+    <p>The word that makes it depth-first is <strong>"front"</strong> in step 3. New subgoals are pushed to the front of the conjunct and step 1 always takes the left-most, so the engine drives all the way down one branch before touching anything it postponed. Append them at the <em>back</em> instead and you would get breadth-first search.</p>
+    <span class="step">Checks</span>
+    <p>Two orderings are doing separate jobs, and confusing them is the usual source of trouble. <strong>Left-most goal</strong> in step 1 decides <em>which subgoal</em> to work on; <strong>row by row</strong> in step 2 decides <em>which clause</em> to try for it. Reordering goals in a body changes the first; reordering clauses in a file changes the second. ✓</p>
+    <p>Note step 5 says "continue searching top down for the next match", not "start again" — the engine remembers how far down the file it had reached, which is what makes backtracking finite rather than looping over the same clause. ✓</p>
+  </div>
+</div>
+
+<div class="q" data-id="F3" data-t="prove">
+  <div class="qtop"><span class="qid">F3</span><span class="tag prove">prove</span><label class="donebox"><input type="checkbox" class="cb"> done</label></div>
+  <p>SLD resolution stands for three things. Name each, state what it constrains, and say what is bought by it.</p>
+  <div class="btns"><button class="btn ansbtn">Show answer</button></div>
+  <div class="ans" hidden>
+    <span class="step">S — Selection rule</span>
+    <p>A rule for finding the next clause and literal to resolve. In Prolog: the <strong>left-most</strong> literal of the query or resolvent; the <strong>first</strong> clause in the program whose head unifies with it; and the tail of that clause, after substitution, is inserted at the <strong>front</strong> of the resolvent.</p>
+    <p><em>Bought:</em> no search over which literal to resolve, and no search over which clause. Both choices are made by position, so they cost nothing.</p>
+    <span class="step">L — Linear resolution</span>
+    <p>The process always produces <strong>linear</strong> proofs, so only a <em>single resolvent</em> need be kept track of.</p>
+    <p><em>Bought:</em> memory. General resolution accumulates a growing pool of derived clauses, any pair of which might be resolved next; linear resolution keeps exactly one. E6 is linear — every step resolves the current resolvent against a program clause, never two program clauses against each other.</p>
+    <span class="step">D — Definite clauses</span>
+    <p>Exactly one positive literal per clause.</p>
+    <p><em>Bought:</em> a goal always matches against a unique head, so the engine never reasons by cases about which disjunct of a head holds. <strong>This step is exactly where the definite restriction is used</strong> — indefinite clauses would force a case split at every step and destroy linearity.</p>
+    <span class="step">And when nothing matches</span>
+    <p>Backtrack, to find the next clause from the top of the program that might apply.</p>
+    <span class="step">Checks</span>
+    <p>Slide 37's summary: these constraints "make it possible to design very efficient computation engines for Prolog". Each of the three removes one dimension of search — <em>which literal</em>, <em>which stored clause</em>, <em>which disjunct</em> — leaving only one genuine choice point: which program clause to try, resolved by file order and undone by backtracking. ✓</p>
+    <p>Note what is <em>not</em> bought: completeness of the search. SLD is refutation complete as a calculus, but Prolog's fixed depth-first selection can loop before finding an existing refutation — F5. <strong>The restrictions are about efficiency, not correctness.</strong> ✓</p>
+  </div>
+</div>
+
+<div class="q" data-id="F4" data-t="compute">
+  <div class="qtop"><span class="qid">F4</span><span class="tag compute">compute</span><label class="donebox"><input type="checkbox" class="cb"> done</label></div>
+  <p>Slide 38's example. Draw the SLD tree for <code>?- student_of(S, peter).</code> against</p>
+  <p><code>student_of(S,T) :- follows(S,C), teaches(T,C).</code><br>
+     <code>teaches(peter, computer_science).</code> &nbsp; <code>teaches(peter, ai_techniques).</code> &nbsp; <code>teaches(peter, expert_systems).</code><br>
+     <code>follows(maria, ai_techniques).</code></p>
+  <p>Which branches succeed, and in what order does Prolog visit them?</p>
+  <div class="btns"><button class="btn hintbtn">Hint</button><button class="btn ansbtn">Show answer</button></div>
+  <div class="hint" hidden><p>Resolve the left-most goal first. After the first step you have two goals; the branching happens at whichever one the selection rule picks next.</p></div>
+  <div class="ans" hidden>
+    <span class="step">The tree</span>
+    <p>The root resolves against the only <code>student_of</code> clause, with $T \mapsto peter$:</p>
+    <p><code>?- student_of(S, peter)</code> &nbsp;→&nbsp; <code>:- follows(S,C), teaches(peter,C)</code></p>
+    <p>Left-most is now <code>follows(S,C)</code>, and only one fact matches, binding $S \mapsto maria$, $C \mapsto ai\_techniques$:</p>
+    <p>→&nbsp; <code>:- teaches(peter, ai_techniques)</code> &nbsp;→&nbsp; $\square$, with <strong><code>S = maria</code></strong>.</p>
+    <p>Slide 38 draws the tree the other way round, selecting <code>teaches(peter,C)</code> first, and then the branching is visible — <strong>three</strong> children, one per <code>teaches</code> fact:</p>
+    <table>
+      <tr><th>branch</th><th>then</th><th>outcome</th></tr>
+      <tr><td>$C \mapsto computer\_science$</td><td><code>:- follows(S, computer_science)</code></td><td><strong>fails</strong> — no matching fact</td></tr>
+      <tr><td>$C \mapsto ai\_techniques$</td><td><code>:- follows(S, ai_techniques)</code></td><td><strong>succeeds</strong>, $S = maria$</td></tr>
+      <tr><td>$C \mapsto expert\_systems$</td><td><code>:- follows(S, expert_systems)</code></td><td><strong>fails</strong></td></tr>
+    </table>
+    <p>Visited left to right, so the failing <code>computer_science</code> branch is explored and abandoned before the successful one is reached.</p>
+    <span class="step">Checks</span>
+    <p><strong>Both selections give the same answer</strong>, <code>S = maria</code>, and different amounts of work — one branch versus three. That is the point of drawing the tree: the <em>set</em> of solutions is fixed by the program, but the shape of the search is fixed by the selection rule, and Prolog's is left-most. ✓</p>
+    <p>Note that with the goals written as <code>follows(S,C), teaches(peter,C)</code> Prolog takes the cheaper route by accident — <code>follows</code> is more constraining. Swap the two goals in the clause body and you get the three-branch tree. <strong>Put the most constraining goal first.</strong> ✓</p>
+  </div>
+</div>
+
+<div class="q" data-id="F5" data-t="prove">
+  <div class="qtop"><span class="qid">F5</span><span class="tag prove">prove</span><label class="donebox"><input type="checkbox" class="cb"> done</label></div>
+  <p>Draw the SLD tree for <code>?- p(X,Y).</code> against</p>
+  <p><code>p(X,Y) :- q(X,Y).</code> &nbsp; <code>p(X,Y) :- r(X,Y).</code> &nbsp; <code>q(X,Y) :- s(X), t(Y).</code></p>
+  <p>with no facts for <code>r</code>, <code>s</code> or <code>t</code>. Then add <code>anc(X,Z) :- anc(X,Y), par(Y,Z).</code> as the <em>first</em> clause of an ancestor program and say what its SLD tree looks like.</p>
+  <div class="btns"><button class="btn ansbtn">Show answer</button></div>
+  <div class="ans" hidden>
+    <span class="step">The first tree</span>
+    <p>The root has <strong>two</strong> children, one per <code>p</code> clause:</p>
+    <table>
+      <tr><th>branch</th><th>continues</th><th>outcome</th></tr>
+      <tr><td><code>:- q(X,Y)</code></td><td>→ <code>:- s(X), t(Y)</code> → no clause for <code>s</code></td><td><strong>fails</strong></td></tr>
+      <tr><td><code>:- r(X,Y)</code></td><td>no clause for <code>r</code></td><td><strong>fails</strong></td></tr>
+    </table>
+    <p>Both branches are finite and both end in failure, so the tree is finite with no success leaves and the query returns <code>no</code>. <strong>A finitely failed tree is a genuine answer</strong> — Prolog has established that nothing follows.</p>
+    <span class="step">The second tree</span>
+    <p>With the recursive clause first, the left-most goal of <code>?- anc(a,Z)</code> is <code>anc(a,Z)</code>, whose head unifies with the <em>first</em> clause, producing <code>:- anc(a,Y), par(Y,Z)</code>. The left-most goal is again <code>anc(a,_)</code>, and the same clause matches again.</p>
+    <p><strong>The leftmost branch is infinite.</strong> Every node has the same shape with one more <code>par</code> goal appended, and the base case — which sits below in the file — is never reached, because step 2 of the algorithm always finds the recursive clause first and depth-first search never returns to try the other.</p>
+    <p>Verified: SWI reports <span class="f">Stack limit exceeded ... Probable infinite recursion (cycle)</span>. ∎</p>
+    <span class="step">Checks</span>
+    <p><strong>The declarative reading of the second program is correct.</strong> "X is an ancestor of Z if X is an ancestor of some Y who is a parent of Z" is true, and the clause set entails the right things. The failure is entirely in the search order, which is F3's warning about SLD being an efficiency restriction rather than a correctness one. ✓</p>
+    <p>Two fixes, and they are different: put the <strong>base case first</strong>, so the finite branch is explored before the infinite one; and make sure the recursive goal is <strong>not left-most</strong> with unchanged arguments, so each recursive step consumes a fact. Doing only the first leaves the loop reachable on backtracking. ✓</p>
+    <span class="step">Why this matters</span>
+    <p><strong>How to use this:</strong> when a query hangs, sketch two levels of the SLD tree. If the second level looks like the first with something appended, you have left recursion — and this is E7's semi-decidability arriving at the prompt in person.</p>
+  </div>
+</div>
+
+</section>
+<section class="part" id="partG">
+  <div class="parthead">
+    <h2>Part G · Cuts, negation and the closed world</h2>
+    <div class="meta"><span class="partcount">0 / 7</span> · ~55 min</div>
+  </div>
+  <p class="lead">Slides 40–47. Run everything here — every result below was checked in SWI-Prolog, and two of them contradict what the slides appear to say. G2 answers the question slide 41 leaves open, and G4 and G5 are where the header's erratum lives. This is also the material the week 7 demonstration will probe, because it is where you have to <em>explain</em> your program rather than just run it.</p>
+
+<div class="q" data-id="G1" data-t="compute">
+  <div class="qtop"><span class="qid">G1</span><span class="tag compute">compute</span><label class="donebox"><input type="checkbox" class="cb"> done</label></div>
+  <p>Slide 40's program:</p>
+  <p><code>parent(X,Y) :- father(X,Y), !.</code> &nbsp; <code>parent(X,Y) :- mother(X,Y).</code><br>
+     <code>father(john,paul).</code> &nbsp; <code>mother(mary,paul).</code></p>
+  <p>Say what a cut does, then trace <code>?- parent(john, C).</code> with and without it.</p>
+  <div class="btns"><button class="btn ansbtn">Show answer</button></div>
+  <div class="ans" hidden>
+    <span class="step">What a cut does</span>
+    <p>It <strong>prunes</strong> the remaining search. Once execution passes a <code>!</code>, the alternatives that were still open for the goals to its left — and for the clause it appears in — are discarded, so backtracking cannot revisit them.</p>
+    <span class="step">The trace</span>
+    <p><em>Without the cut:</em> <code>parent(john,C)</code> matches clause 1, <code>father(john,C)</code> succeeds with <code>C = paul</code>. Asked for more, Prolog backtracks into clause 2 and tries <code>mother(john,C)</code>, which fails — John is not a mother. So one solution.</p>
+    <p><em>With the cut:</em> the same first solution, and the cut discards clause 2 before it is ever tried.</p>
+    <table>
+      <tr><th>query</th><th>with cut</th><th>without cut</th></tr>
+      <tr><td><code>parent(john,C)</code></td><td><code>[paul]</code></td><td><code>[paul]</code></td></tr>
+    </table>
+    <p>Verified in SWI-Prolog. <strong>Identical.</strong></p>
+    <span class="step">Checks</span>
+    <p>So for <em>this</em> query the cut removes only a branch that was going to fail anyway — it saves work and changes nothing. That is the definition of a green cut (G3), and it is why slide 40 says "backtracking obviously fails". ✓</p>
+    <p>But the colour of a cut is not a property of the cut alone. G2 asks the same program a different question. ✓</p>
+  </div>
+</div>
+
+<div class="q" data-id="G2" data-t="prove">
+  <div class="qtop"><span class="qid">G2</span><span class="tag prove">prove</span><label class="donebox"><input type="checkbox" class="cb"> done</label></div>
+  <p>Slide 41 leaves this open: for the same program, consider the query <code>?- parent(P, paul).</code> Is the cut a red or a green cut? Prove your answer by giving both result sets.</p>
+  <div class="btns"><button class="btn hintbtn">Hint</button><button class="btn ansbtn">Show answer</button></div>
+  <div class="hint" hidden><p>This time the first argument is the unbound one. Who else is a parent of Paul?</p></div>
+  <div class="ans" hidden>
+    <span class="step">The definitions</span>
+    <p><strong>Green cuts</strong> remove pointless search space — they do not cut away subtrees containing success branches, and the meaning of the program is unchanged. <strong>Red cuts</strong> remove successful branches, so they <em>change</em> the meaning of the program.</p>
+    <span class="step">The two result sets</span>
+    <table>
+      <tr><th>query</th><th>with cut</th><th>without cut</th></tr>
+      <tr><td><code>parent(P, paul)</code></td><td><code>[john]</code></td><td><code>[john, mary]</code></td></tr>
+    </table>
+    <p>Verified in SWI-Prolog.</p>
+    <span class="step">The answer</span>
+    <p><strong>Red.</strong> Clause 1 succeeds with <code>P = john</code> and the cut then discards clause 2 — but clause 2 would have succeeded, with <code>P = mary</code> from <code>mother(mary,paul)</code>. <strong>This step is exactly where a successful branch is destroyed:</strong> the cut fires after a success, and what it prunes is not empty. ∎</p>
+    <span class="step">Checks</span>
+    <p><strong>The same cut in the same program is green for G1's query and red for this one.</strong> Nothing about the <code>!</code> changed; what changed is which argument was bound. Green and red are properties of a cut <em>together with a query</em>, not of the cut alone. ✓</p>
+    <p>Sanity check the declarative reading: the program says a parent is a father or a mother, and Paul has both. Losing Mary means the program no longer means what its clauses say — which is precisely what "changes the meaning" is. ✓</p>
+    <span class="step">Why this matters</span>
+    <p><strong>The moral:</strong> a cut written to prune one query can silently break another. If you use one in the homework, say which query you had in mind and check the others — that is a question the demonstration can reasonably ask, and "it worked when I tested it" is the answer it is designed to catch.</p>
+  </div>
+</div>
+
+<div class="q" data-id="G3" data-t="compute">
+  <div class="qtop"><span class="qid">G3</span><span class="tag compute">compute</span><label class="donebox"><input type="checkbox" class="cb"> done</label></div>
+  <p>Slide 41's other program:</p>
+  <p><code>f(X,0) :- X&lt;3, !.</code> &nbsp; <code>f(X,1) :- 3=&lt;X, X&lt;6, !.</code> &nbsp; <code>f(X,2) :- 6=&lt;X.</code></p>
+  <ol class="parts">
+    <li>Are these cuts red or green? Check by running the program with and without them.</li>
+    <li>What happens to <code>?- f(X, 0).</code> with <code>X</code> unbound, and why?</li>
+  </ol>
+  <div class="btns"><button class="btn ansbtn">Show answer</button></div>
+  <div class="ans" hidden>
+    <span class="step">(a)</span>
+    <table>
+      <tr><th>query</th><th>with cuts</th><th>without cuts</th></tr>
+      <tr><td><code>f(2,N)</code></td><td><code>[0]</code></td><td><code>[0]</code></td></tr>
+      <tr><td><code>f(7,N)</code></td><td><code>[2]</code></td><td><code>[2]</code></td></tr>
+    </table>
+    <p>Verified in SWI-Prolog. <strong>Green.</strong> The three guards $X \lt 3$, $3 \le X \lt 6$ and $6 \le X$ are <strong>mutually exclusive</strong>, so at most one clause can ever succeed and the cut discards only branches that were bound to fail. Slide 41's point: the meaning of the program remains the same, and <code>?- f(2,N).</code> returns the same result regardless.</p>
+    <span class="step">(b)</span>
+    <p>It raises an <strong>instantiation error</strong>. Verified in SWI-Prolog.</p>
+    <p>Slide 41 flags the reason: the arithmetic operators $\lt$ and $\le$ <strong>require their variables to be instantiated before they are applied</strong>. They are evaluation, not unification — like <code>is/2</code> they only run in one direction, and an unbound argument leaves nothing to evaluate.</p>
+    <span class="step">Checks</span>
+    <p>So the guards are only mutually exclusive <em>when <code>X</code> is bound</em>, and if it is not, the question of colour never arises because the program errors before reaching a cut. <strong>A green cut can rely on a mode assumption</strong> — here, that the first argument arrives instantiated. Worth writing in a comment. ✓</p>
+    <p>Contrast G2, where the failure was silent: wrong answers rather than an error. <strong>An error is the better failure</strong>, because you find out. ✓</p>
+    <span class="step">Why this matters</span>
+    <p><strong>The general test</strong> for red versus green: delete every cut, run the same queries, and compare the full solution sets. If they match, the cuts are green. If anything disappeared, they are red — and you now know exactly what.</p>
+  </div>
+</div>
+
+<div class="q" data-id="G4" data-t="prove">
+  <div class="qtop"><span class="qid">G4</span><span class="tag prove">prove</span><label class="donebox"><input type="checkbox" class="cb"> done</label></div>
+  <p>Slide 42 defines negation using a cut, and asks what <code>?- supp(X,Y).</code> returns.</p>
+  <p><code>not(P) :- P, !, fail.</code> &nbsp; <code>not(P).</code><br>
+     <code>supp(X,Y) :- not(pass(X,Y)), sat(X,Y).</code><br>
+     <code>sat(tim,cits3005).</code> &nbsp; <code>sat(jane,cits3005).</code> &nbsp; <code>pass(jane,cits3005).</code></p>
+  <ol class="parts">
+    <li>Explain how the two <code>not</code> clauses implement negation.</li>
+    <li>Answer slide 42's question, and prove your answer.</li>
+    <li>Change one thing to make the program return what you expected.</li>
+  </ol>
+  <div class="btns"><button class="btn hintbtn">Hint</button><button class="btn ansbtn">Show answer</button></div>
+  <div class="hint" hidden><p>For (b): when <code>not(pass(X,Y))</code> is called, are <code>X</code> and <code>Y</code> bound to anything yet?</p></div>
+  <div class="ans" hidden>
+    <span class="step">(a)</span>
+    <p><code>not(P)</code> takes a predicate as its argument. If <code>P</code> can be satisfied, the cut fires — preventing backtracking into the second clause — and then <code>fail</code> makes the whole call fail. If <code>P</code> cannot be satisfied, the first clause fails before reaching the cut, so the second clause is tried and succeeds unconditionally.</p>
+    <p>This is <strong>a red cut used deliberately</strong>: it removes the second clause's success branch, and that removal is the entire mechanism. It is not classical negation, and is <strong>better described as "failure to prove"</strong>.</p>
+    <span class="step">(b) The answer</span>
+    <p><code>?- supp(X,Y).</code> returns <strong>nothing</strong>. Verified in SWI-Prolog: no solutions.</p>
+    <p><em>Proof.</em> The left-most goal is <code>not(pass(X,Y))</code>, and at that point <code>X</code> and <code>Y</code> are <strong>unbound</strong> — <code>sat(X,Y)</code> has not run yet. So the call asks whether <code>pass(X,Y)</code> can be satisfied for <em>some</em> substitution. It can: <code>pass(jane,cits3005)</code>. So the first <code>not</code> clause succeeds up to the cut and then fails, and the cut blocks the second clause. Hence <code>not(pass(X,Y))</code> fails, and with the left-most goal failing, <code>supp(X,Y)</code> has no solutions at all. ∎</p>
+    <p>Verified directly: <code>not(pass(X,Y))</code> with both unbound is <code>false</code>.</p>
+    <span class="step">(c) The fix</span>
+    <p><strong>Swap the goals.</strong></p>
+    <p><code>supp(X,Y) :- sat(X,Y), not(pass(X,Y)).</code></p>
+    <p>Now <code>sat</code> binds <code>X</code> and <code>Y</code> first, so the negation is asked about a <em>ground</em> goal — "did <em>this</em> person pass <em>this</em> unit?" Verified: returns <code>X = tim, Y = cits3005</code>, which is the supplementary list you wanted.</p>
+    <span class="step">Checks</span>
+    <p>Read the two orderings aloud and the difference is obvious. The original asks "is there <em>no</em> pass anywhere, and also is there a sat?"; the fix asks "for each sat, is there no pass?" <strong>Negation binds nothing</strong> — the only way it succeeds is by its goal failing, and failure undoes bindings — so it can only ever be a test, never a generator. ✓</p>
+    <span class="step">Why this matters</span>
+    <p><strong>The rule:</strong> never put a negation before the goals that bind its variables. The bug has a name — <em>floundering</em> — and it is silent, which is why slide 42 asks the question rather than telling you the answer.</p>
+  </div>
+</div>
+
+<div class="q" data-id="G5" data-t="compute">
+  <div class="qtop"><span class="qid">G5</span><span class="tag compute">compute</span><label class="donebox"><input type="checkbox" class="cb"> done</label></div>
+  <p>Slide 46 says the preferred representation of negation as failure uses <code>\+P</code> rather than <code>not(P)</code>, and gives the same program rewritten. Load it and see.</p>
+  <ol class="parts">
+    <li>Does the program as printed load?</li>
+    <li>Once it does, does <code>?- supp(X,Y).</code> now return anything?</li>
+    <li>So what does switching to <code>\+</code> actually change?</li>
+  </ol>
+  <div class="warn"><p><strong>Erratum, slide 46.</strong> Both parts of this were confirmed by running the program. The clause as printed does not parse, and the rewrite does not change the program's behaviour.</p></div>
+  <div class="btns"><button class="btn ansbtn">Show answer</button></div>
+  <div class="ans" hidden>
+    <span class="step">(a) It does not load</span>
+    <p>Slide 46 prints <code>supp(X,Y):-\+pass(X,Y),sat(X,Y).</code> and SWI-Prolog rejects it:</p>
+    <p><span class="f">Syntax error: Operator expected</span></p>
+    <p><strong>Why:</strong> <code>:-</code> and <code>\+</code> are both built entirely from <em>symbol characters</em>, and Prolog's tokeniser greedily takes a maximal run of them as a <strong>single</strong> token. So <code>:-\+</code> is read as one atom, which is not an operator, and the clause has no <code>:-</code> in it at all.</p>
+    <p>A space fixes it: <code>supp(X,Y) :- \+pass(X,Y), sat(X,Y).</code> The same hazard applies to <code>:- \+</code>, <code>, \+</code> and any other adjacent symbolic operators — the comma is not a symbol character, which is why <code>,\+</code> is fine.</p>
+    <span class="step">(b) Still nothing</span>
+    <p>With the space added, <code>?- supp(X,Y).</code> returns <strong>no solutions</strong> — exactly as in G4. Verified.</p>
+    <p>The reason is unchanged: the negation is still the left-most goal, so it is still called with <code>X</code> and <code>Y</code> unbound, and <code>pass(jane,cits3005)</code> still makes it fail. <strong>The operator was never the problem; the goal order was.</strong> Reordering to <code>sat(X,Y), \+pass(X,Y)</code> gives <code>X = tim</code>, as in G4(c). Verified.</p>
+    <span class="step">(c) What switching does change</span>
+    <p>Three things, none of them the answer to this query:</p>
+    <ul>
+      <li><code>\+</code> is the <strong>standard built-in</strong>, so you are not redefining anything and not relying on your own cut being correct.</li>
+      <li>It is <strong>notation, not a user predicate</strong> — <code>\+ Goal</code> reads as an operator rather than a call taking a goal as an argument.</li>
+      <li>Slide 42's <code>not/1</code> is defined <em>with a red cut</em>, so its behaviour depends on the cut semantics; <code>\+</code> is primitive.</li>
+    </ul>
+    <span class="step">Checks</span>
+    <p>Both spellings mean <strong>negation as failure</strong> and neither is classical negation, so no change of operator could fix a floundering query. If the slide's intent is that <code>\+</code> is the preferred <em>spelling</em>, that is right; if you read it as fixing the program's behaviour, running it corrects you. ✓</p>
+  </div>
+</div>
+
+<div class="q" data-id="G6" data-t="prove">
+  <div class="qtop"><span class="qid">G6</span><span class="tag prove">prove</span><label class="donebox"><input type="checkbox" class="cb"> done</label></div>
+  <p>Slides 43–46. State the closed world assumption and the open world assumption, and prove that negation as failure commits you to the CWA. Then say why slide 46 calls this a problem in practice.</p>
+  <div class="btns"><button class="btn ansbtn">Show answer</button></div>
+  <div class="ans" hidden>
+    <span class="step">The two assumptions</span>
+    <p><strong>CWA:</strong> the presumption that a statement that is true is also <em>known</em> to be true — and conversely, that what is not currently known to be true is <strong>false</strong>.</p>
+    <p><strong>OWA:</strong> the only statements that are false are those that are <em>provably</em> false.</p>
+    <span class="step">Proof that NAF commits you to the CWA</span>
+    <p>When we say <code>P</code> can be satisfied in Prolog, we mean there is <em>some</em> substitution for which <code>P</code> can be derived from the knowledge base. So <code>\+P</code> is true exactly when there is <strong>no</strong> substitution for which <code>P</code> can be derived.</p>
+    <p>That is a statement about the <em>knowledge base</em>, not the world. Treating it as $\neg P$ — which is what any program using <code>\+</code> in a rule body does — is asserting that failure to derive implies falsity. <strong>That implication <em>is</em> the closed world assumption.</strong> ∎</p>
+    <p>Slide 43 states the gap directly: when we pose a query we are not asking "what is true in the world", we are asking "what can be truly derived from the knowledge base"; and if $\alpha$ cannot be derived, it does not follow that $\neg\alpha$ can be.</p>
+    <span class="step">Why it is a problem</span>
+    <p>Because <strong>the CWA rarely applies to real knowledge bases</strong>. Slide 45's observation is that knowledge bases, formal and informal, record far more positive information than negative — so there is a natural asymmetry, and absence of a fact is usually ignorance rather than falsity. Negation in Prolog therefore breaks the OWA, which is the assumption real data actually satisfies.</p>
+    <p>Slide 44's quotation is the same point: the difficult category is the <em>unknown unknowns</em>, and a system that reports every unknown as false cannot distinguish them from the known-false.</p>
+    <span class="step">Checks</span>
+    <p>Test it on G4's program. <code>\+ pass(tim, cits3005)</code> succeeds — but the knowledge base never said Tim failed; it simply has no <code>pass</code> fact for him. Under the CWA that is "Tim did not pass"; under the OWA it is "no idea". <strong>Same query, same output, entirely different epistemic status</strong>, and Prolog cannot tell you which you have. ✓</p>
+    <p>Lecture 3's <code>nearby</code> predicate is the same phenomenon — slide 43 says so explicitly. ✓</p>
+    <span class="step">Why this matters</span>
+    <p><strong>How to use this:</strong> for the homework, say in a comment which of your <code>\+</code> uses rely on your facts being <em>complete</em>. A closed station list probably is complete; a list of who passed probably is not. That single sentence is the difference between using negation and understanding it.</p>
+  </div>
+</div>
+
+<div class="q" data-id="G7" data-t="recall">
+  <div class="qtop"><span class="qid">G7</span><span class="tag recall">recall</span><label class="donebox"><input type="checkbox" class="cb"> done</label></div>
+  <p>Slide 47. What is belief revision, what goes wrong without it, and what are the three operators?</p>
+  <div class="btns"><button class="btn ansbtn">Show answer</button></div>
+  <div class="ans" hidden>
+    <span class="step">What goes wrong</span>
+    <p>If a knowledge base contains an incorrect fact and it is inconsistent with other facts, <strong>all reasoning breaks down</strong>. From a contradiction everything follows, so an inconsistent knowledge base entails every sentence and its negation — the knowledge base still answers queries, and every answer is worthless.</p>
+    <span class="step">Belief revision</span>
+    <p>The process of <strong>repairing a knowledge base</strong> when new information comes to light, or when correcting a misconception.</p>
+    <table>
+      <tr><td>$K \oplus \varphi$</td><td><strong>extend</strong> a knowledge base by a fact</td></tr>
+      <tr><td>$K \ominus \varphi$</td><td><strong>retract</strong> a fact from a knowledge base</td></tr>
+      <tr><td>$K \otimes \varphi$</td><td><strong>revise</strong> a knowledge base with new information</td></tr>
+    </table>
+    <p>The hard one is $\otimes$: <strong>it is non-trivial to decide which facts ought to be rescinded</strong> to allow the new information in. Several different retractions may restore consistency, and the logic does not say which is right.</p>
+    <span class="step">Checks</span>
+    <p>Note how this closes the lecture's arc. The CWA says absent facts are false; belief revision asks what to do when <em>present</em> facts are wrong. Together they are the two ways a knowledge base can mislead you — <strong>by what it omits and by what it asserts</strong> — and neither is a problem the proof theory can solve, which is why they are representation questions rather than logic questions. ✓</p>
+    <p>Prolog's <code>assert</code> and <code>retract</code> are the $\oplus$ and $\ominus$ operators as programming constructs — and, per slide 35, are not part of definite clause logic. There is no built-in $\otimes$, because choosing what to give up is a design decision, not a computation. ✓</p>
+  </div>
+</div>
+
+</section>
+</main>
+
+<footer class="end">
+  <p>Built from CITS3005 Lecture 4, <em>Resolution and Logic Programming Theory</em> (Chelsea Edmonds, Semester 2 2026, The University of Western Australia), together with the Homework 1 task sheet. Slide numbers cited in the part leads and answers point at the lecture's own numbering. Further reading is Flach, <em>Simply Logical</em>, section I, chapters 1 to 3, as slide 3 recommends.</p>
+  <p>Every Prolog program, query result and unifier in this sheet was run in SWI-Prolog before being written down — including slide 40's cut example, slide 42's negation query, and the three unification exercises of slides 26 and 28. The slide 46 erratum in the header was found by loading the program as printed.</p>
+  <p>Ticks and your choice of palette are stored with this worksheet, so closing it and coming back keeps your place. "Reset ticks" clears the ticks; printing always uses the light palette and reveals every answer.</p>
+</footer>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<script>
+(function(){
+  "use strict";
+  var STORE_KEY = "cits3005-l4-worksheet-v1";
+  var THEME_KEY = "cits3005-l4-worksheet-theme";
+  var done = {};
+
+  function all(sel, root){ return Array.prototype.slice.call((root || document).querySelectorAll(sel)); }
+
+  /* ---------- maths ---------- */
+  function renderMath(){
+    if (typeof window.renderMathInElement !== "function") return;
+    try {
+      window.renderMathInElement(document.body, {
+        delimiters: [
+          {left: "$$", right: "$$", display: true},
+          {left: "\\[", right: "\\]", display: true},
+          {left: "$", right: "$", display: false}
+        ],
+        ignoredTags: ["script", "noscript", "style", "textarea", "option"],
+        throwOnError: false
+      });
+    } catch (e) { /* raw LaTeX stays readable if this fails */ }
+  }
+
+  /* ---------- progress ---------- */
+  function paint(){
+    var qs = all(".q"), total = qs.length, count = 0;
+    qs.forEach(function(q){
+      var on = !!done[q.dataset.id];
+      if (on) count++;
+      q.classList.toggle("done", on);
+      var cb = q.querySelector("input.cb");
+      if (cb) cb.checked = on;
+    });
+    all("section.part").forEach(function(sec){
+      var inSec = all(".q", sec);
+      var d = inSec.filter(function(q){ return done[q.dataset.id]; }).length;
+      var el = sec.querySelector(".partcount");
+      if (el) el.textContent = d + " / " + inSec.length;
+    });
+    document.getElementById("count").textContent = count + " / " + total + " done";
+    document.getElementById("fill").style.width = (total ? (100 * count / total) : 0) + "%";
+  }
+
+  function save(){
+    if (!window.storage || !window.storage.set) return;
+    try { window.storage.set(STORE_KEY, JSON.stringify(done), false); }
+    catch (e) { /* progress stays in memory for this session */ }
+  }
+
+  function load(){
+    if (!window.storage || !window.storage.get) { paint(); return; }
+    Promise.resolve()
+      .then(function(){ return window.storage.get(STORE_KEY, false); })
+      .then(function(res){ if (res && res.value) done = JSON.parse(res.value) || {}; })
+      .catch(function(){ done = {}; })
+      .then(paint);
+  }
+
+  /* ---------- theme ---------- */
+  var themeBtn = document.getElementById("theme");
+
+  function applyTheme(name){
+    if (name === "light") { document.documentElement.setAttribute("data-theme", "light"); }
+    else { document.documentElement.removeAttribute("data-theme"); }
+    themeBtn.textContent = (name === "light") ? "Dark" : "Light";
+  }
+
+  function loadTheme(){
+    if (!window.storage || !window.storage.get) return;
+    Promise.resolve()
+      .then(function(){ return window.storage.get(THEME_KEY, false); })
+      .then(function(res){ if (res && res.value) applyTheme(res.value); })
+      .catch(function(){ /* stay on the dark default */ });
+  }
+
+  themeBtn.addEventListener("click", function(){
+    var next = document.documentElement.getAttribute("data-theme") === "light" ? "dark" : "light";
+    applyTheme(next);
+    if (window.storage && window.storage.set) {
+      try { window.storage.set(THEME_KEY, next, false); } catch (e) { /* session only */ }
+    }
+  });
+
+  /* ---------- interactions ---------- */
+  document.addEventListener("click", function(ev){
+    var t = ev.target;
+    if (!t.classList) return;
+
+    if (t.classList.contains("ansbtn") || t.classList.contains("hintbtn")) {
+      var card = t.closest(".q");
+      if (!card) return;
+      var isHint = t.classList.contains("hintbtn");
+      var box = card.querySelector(isHint ? ".hint" : ".ans");
+      if (!box) return;
+      if (box.hasAttribute("hidden")) {
+        box.removeAttribute("hidden");
+        t.textContent = isHint ? "Hide hint" : "Hide answer";
+      } else {
+        box.setAttribute("hidden", "");
+        t.textContent = isHint ? "Hint" : "Show answer";
+      }
+    }
+  });
+
+  document.addEventListener("change", function(ev){
+    if (!ev.target.classList || !ev.target.classList.contains("cb")) return;
+    var card = ev.target.closest(".q");
+    if (!card) return;
+    if (ev.target.checked) { done[card.dataset.id] = true; }
+    else { delete done[card.dataset.id]; }
+    paint();
+    save();
+  });
+
+  document.getElementById("hideall").addEventListener("click", function(){
+    all(".ans, .hint").forEach(function(b){ b.setAttribute("hidden", ""); });
+    all(".ansbtn").forEach(function(b){ b.textContent = "Show answer"; });
+    all(".hintbtn").forEach(function(b){ b.textContent = "Hint"; });
+  });
+
+  document.getElementById("reset").addEventListener("click", function(){
+    done = {};
+    paint();
+    save();
+  });
+
+  renderMath();
+  loadTheme();
+  load();
+})();
+</script>
+</body>
+</html>

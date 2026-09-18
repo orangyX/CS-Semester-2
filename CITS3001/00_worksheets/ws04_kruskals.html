@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>CITS3001 Lecture 13 worksheet — Kruskal's Algorithm</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<style>
+  :root{
+    color-scheme:light;
+    --bg:#faf2e4; --bg-fade:rgba(250,242,228,.95); --card:#fffbf2; --ans-bg:#f4e9d5;
+    --ink:#2f221c; --muted:#7b6156; --line:#e6d6be; --line-2:#cdb99c; --rule:#8f2e21;
+    --prove:#9e2318; --prove-bg:#f0bcac; --prove-fg:#7d1d12;
+    --compute:#bd6531; --compute-bg:#f7dab9; --compute-fg:#8a3f0d;
+    --recall:#a97a61; --recall-bg:#faeee1; --recall-fg:#7a5540;
+    --accent:#a63125;
+    --btn-bg:#fffdf7; --btn-hover:#f6ecd9;
+    --ansbtn-bd:#e0b5a9; --ansbtn-fg:#8b2c1e; --ansbtn-hover:#fbeae4;
+    --hint-bg:#fdf0e3; --th-bg:#efe2c9; --code-bg:#f0e4cd;
+    --warn-bd:#c7952f; --warn-bg:#fbf2dd;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth; background:var(--bg);}
+  body{margin:0; background:var(--bg); color:var(--ink); font-family:var(--serif); font-size:16.5px; line-height:1.55;}
+  .wrap{max-width:900px; margin:0 auto; padding:0 22px 100px;}
+
+  .bar{position:sticky; top:0; z-index:30; background:var(--bg-fade); border-bottom:1px solid var(--line); backdrop-filter:blur(8px);}
+  .bar-in{max-width:900px; margin:0 auto; padding:9px 22px; display:flex; flex-wrap:wrap; align-items:center; gap:10px 14px; font-family:var(--sans); font-size:12.5px; color:var(--muted);}
+  .bar .btn{padding:4px 9px; font-size:11.5px;}
+
+  header.top{padding:34px 0 6px;}
+  .eyebrow{font-family:var(--sans); font-size:11.5px; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:var(--accent); margin:0 0 8px;}
+  h1{font-size:31px; line-height:1.18; font-weight:600; margin:0 0 6px; letter-spacing:-.01em;}
+  .sub{color:var(--muted); font-size:15px; margin:0 0 22px;}
+
+  .howto{background:var(--card); border:1px solid var(--line); border-radius:12px; padding:16px 18px; margin:0 0 10px;}
+  .howto h3{font-family:var(--sans); font-size:12px; letter-spacing:.09em; text-transform:uppercase; color:var(--muted); margin:0 0 10px; font-weight:700;}
+  .howto p{margin:0 0 9px; font-size:15.5px;}
+  .howto p:last-child{margin-bottom:0;}
+  .key{display:flex; flex-wrap:wrap; gap:16px; margin:12px 0 4px; font-size:14.5px;}
+  .key div{display:flex; align-items:baseline; gap:7px;}
+  .flag{border-left:3px solid var(--prove); padding-left:12px; margin-top:14px; font-size:14.5px; color:var(--muted);}
+
+  section.part{margin:44px 0 0; scroll-margin-top:56px;}
+  .parthead{display:flex; align-items:baseline; gap:12px; border-bottom:2px solid var(--rule); padding-bottom:7px; margin-bottom:4px;}
+  .parthead h2{font-size:22px; font-weight:600; margin:0; letter-spacing:-.005em;}
+  .parthead .meta{margin-left:auto; font-family:var(--sans); font-size:12px; color:var(--muted); white-space:nowrap;}
+  .partcount{font-weight:700; color:var(--ink);}
+  .lead{color:var(--muted); font-size:15px; margin:10px 0 4px;}
+
+  .spec{background:var(--card); border:1px solid var(--line); border-left:4px solid var(--accent); border-radius:10px; padding:14px 16px; margin:14px 0 18px;}
+  .spec h4{font-family:var(--sans); font-size:11.5px; letter-spacing:.09em; text-transform:uppercase; color:var(--muted); margin:0 0 8px; font-weight:700;}
+  .spec p{margin:0 0 8px; font-size:15.5px;}
+  .spec p:last-child{margin-bottom:0;}
+  .io{display:grid; grid-template-columns:1fr; gap:12px; margin:12px 0 0;}
+  .io > div{min-width:0;}
+  .io pre{margin:3px 0 0;}
+  .iolab{font-family:var(--sans); font-size:10.5px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--muted);}
+
+  .q{background:var(--card); border:1px solid var(--line); border-left:4px solid var(--line); border-radius:10px; padding:15px 17px; margin:16px 0;}
+  .q[data-t="prove"]{border-left-color:var(--prove);}
+  .q[data-t="compute"]{border-left-color:var(--compute);}
+  .q[data-t="recall"]{border-left-color:var(--recall);}
+  .qtop{display:flex; align-items:center; gap:9px; margin-bottom:9px;}
+  .qid{font-family:var(--sans); font-size:13px; font-weight:700; letter-spacing:.05em;}
+  .tag{font-family:var(--sans); font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.09em; padding:2.5px 8px; border-radius:99px;}
+  .tag.prove{background:var(--prove-bg); color:var(--prove-fg);}
+  .tag.compute{background:var(--compute-bg); color:var(--compute-fg);}
+  .tag.recall{background:var(--recall-bg); color:var(--recall-fg);}
+  .q p{margin:0 0 9px;}
+  .q ol,.q ul{margin:6px 0 9px; padding-left:22px;}
+  .q li{margin:4px 0;}
+  ol.parts{list-style:none; padding-left:0; counter-reset:pp;}
+  ol.parts > li{counter-increment:pp; position:relative; padding-left:28px; margin:6px 0;}
+  ol.parts > li::before{content:"(" counter(pp,lower-alpha) ")"; position:absolute; left:0; color:var(--muted); font-family:var(--sans); font-size:13px; top:1px;}
+
+  .btns{display:flex; gap:8px; margin-top:11px; flex-wrap:wrap;}
+  .btn{font-family:var(--sans); font-size:12.5px; font-weight:600; border:1px solid var(--line-2); background:var(--btn-bg); color:var(--ink); padding:6px 12px; border-radius:7px; cursor:pointer; transition:background .12s, border-color .12s;}
+  .btn:hover{background:var(--btn-hover); border-color:var(--rule);}
+  .btn:focus-visible{outline:2px solid var(--accent); outline-offset:2px;}
+  .btn.ansbtn{border-color:var(--ansbtn-bd); color:var(--ansbtn-fg);}
+  .btn.ansbtn:hover{background:var(--ansbtn-hover); border-color:var(--prove);}
+
+  .hint{margin-top:11px; padding:10px 13px; border-left:3px solid var(--recall); background:var(--hint-bg); border-radius:0 7px 7px 0; font-size:15.5px;}
+  .ans{margin-top:11px; padding:13px 15px; background:var(--ans-bg); border:1px solid var(--line); border-radius:9px; font-size:15.5px;}
+  .ans p{margin:0 0 9px;}
+  .ans p:last-child{margin-bottom:0;}
+  .ans .step{font-family:var(--sans); font-size:11px; font-weight:700; letter-spacing:.07em; text-transform:uppercase; color:var(--muted); display:block; margin:12px 0 4px;}
+  .ans .step:first-child{margin-top:0;}
+  .ans table{border-collapse:collapse; margin:8px 0 10px; font-size:14.5px;}
+  .ans th,.ans td{border:1px solid var(--line); padding:4px 10px; text-align:center;}
+  .ans th{background:var(--th-bg); font-family:var(--sans); font-size:12px; font-weight:600;}
+  .warn{border-left:3px solid var(--warn-bd); background:var(--warn-bg); padding:9px 12px; border-radius:0 7px 7px 0; margin:10px 0;}
+  pre{background:var(--code-bg); border:1px solid var(--line); border-radius:7px; padding:10px 12px; overflow-x:auto; margin:8px 0; line-height:1.45;}
+  pre code{background:none; padding:0; border-radius:0;}
+  code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:14px; background:var(--code-bg); padding:1px 5px; border-radius:4px;}
+  .katex{font-size:1.02em;}
+  footer.end{margin-top:52px; padding-top:16px; border-top:1px solid var(--line); font-size:13.5px; color:var(--muted);}
+
+  @media(max-width:640px){
+    body{font-size:16px;} .wrap{padding:0 15px 80px;} h1{font-size:25px;}
+    .bar-in{padding:8px 15px;} .qtop{flex-wrap:wrap;} pre{font-size:12px;}
+  }
+  @media print{
+    body{-webkit-print-color-adjust:exact; print-color-adjust:exact;}
+    .bar,.btns{display:none !important;}
+    .ans,.hint{display:block !important;}
+    .q{break-inside:avoid;}
+  }
+  @media (prefers-reduced-motion:reduce){ *{transition:none !important; scroll-behavior:auto !important;} }
+</style>
+</head>
+<body>
+
+<div class="bar">
+  <div class="bar-in">
+    <button class="btn" id="hideall">Hide all answers</button>
+  </div>
+</div>
+
+<div class="wrap">
+<header class="top">
+  <p class="eyebrow">CITS3001 · Lecture 13 · September siege</p>
+  <h1>Kruskal's Algorithm</h1>
+  <p class="sub">22 problems on Lecture 13: two DOMjudge-style programming tasks (MST weight, union&ndash;find) and the full correctness proof, in lecture order. Every answer is a full worked solution, not just a final number.</p>
+
+  <div class="howto">
+    <h3>How to use this</h3>
+    <p>Do a part, not the sheet. Four parts, about four hours of real work end to end — four sittings, not one.</p>
+    <p>Every part has the same shape: read the spec, build or prove the result, implement it, then check it against the samples below. Parts A and B are the programming tasks — implementation-heavy, good afternoon or lab-session work. Part C is the correctness proof end to end, no coding — put it in a morning block. Part D is mixed and unsignposted, with the closed-book recall drill as the last question.</p>
+    <p>On the implementation questions, write and run your code before opening the answer. On the proof questions, write the proof out on paper first. Sample 1 in Problem A is the lecture's own mid-lecture-break graph (slide 9), read directly off the mug and checked against three independent solvers before it went in the sheet — it's worth trusting.</p>
+    <div class="key">
+      <div><span class="tag recall">recall</span> <span>state or apply a definition</span></div>
+      <div><span class="tag compute">compute</span> <span>numbers or code out, checkable</span></div>
+      <div><span class="tag prove">prove</span> <span>write it properly</span></div>
+    </div>
+  </div>
+</header>
+
+<main>
+<section class="part" id="partA">
+  <div class="parthead">
+    <h2>Part A · MST weight</h2>
+    <div class="meta"><span class="partcount">5</span> questions · ~55 min</div>
+  </div>
+  <p class="lead">Slides 2–7. The one idea to hold onto: sort every edge once, then walk the sorted list adding any edge that joins two currently-separate trees. A5 is the one worth sitting with — it's the question that stops you trusting a single spanning tree as "the" answer.</p>
+
+  <div class="spec">
+    <h4>Problem A · MST weight</h4>
+    <p>Given a connected, undirected, weighted graph, compute the total weight of a minimum spanning tree using Kruskal's algorithm.</p>
+    <p><strong>Input.</strong> Line 1: two integers $n\ m$ — the number of vertices (numbered $0$ to $n-1$) and the number of edges. Next $m$ lines: three integers $u\ v\ w$ — an edge between $u$ and $v$ with weight $w$. The graph is guaranteed connected.</p>
+    <p><strong>Output.</strong> A single integer: the total weight of a minimum spanning tree.</p>
+    <div class="io">
+      <div><span class="iolab">Sample Input 1</span><pre><code>7 11
+0 1 7
+1 2 8
+1 3 9
+0 3 4
+1 4 7
+2 4 5
+3 4 12
+3 5 6
+5 4 10
+4 6 9
+5 6 11</code></pre></div>
+      <div><span class="iolab">Sample Output 1</span><pre><code>38</code></pre></div>
+      <div><span class="iolab">Sample Input 2</span><pre><code>5 7
+0 1 3
+1 2 4
+0 2 6
+1 3 2
+2 3 5
+2 4 7
+3 4 1</code></pre></div>
+      <div><span class="iolab">Sample Output 2</span><pre><code>10</code></pre></div>
+      <div><span class="iolab">Sample Input 3</span><pre><code>3 3
+0 1 2
+1 2 2
+0 2 5</code></pre></div>
+      <div><span class="iolab">Sample Output 3</span><pre><code>4</code></pre></div>
+    </div>
+  </div>
+
+  <div class="q" data-id="A1" data-t="recall">
+    <div class="qtop"><span class="qid">A1</span><span class="tag recall">recall</span></div>
+    <p>Read the spec against the source's own definitions and its point of comparison.</p>
+    <ol class="parts">
+      <li>Define a spanning tree and a minimum spanning tree.</li>
+      <li>State Kruskal's rule in one sentence: what does the algorithm do, start to finish?</li>
+      <li>Prim's (slide 3) also builds an MST greedily, one edge at a time. In one sentence, what's the structural difference between what the two algorithms are greedily choosing <em>from</em> at each step?</li>
+      <li>Sample 3 has 3 vertices and needs exactly 2 edges, whichever spanning tree you pick. Why does <em>every</em> spanning tree on $n$ vertices have exactly $n-1$ edges, regardless of which one it is?</li>
+    </ol>
+    <div class="btns"><button class="btn ansbtn">Show answer</button></div>
+    <div class="ans" hidden>
+      <span class="step">(a) Definitions</span>
+      <p>A spanning tree of $G=(V,E)$ is a subgraph $T=(V,E')$ that is itself a tree (connected, acyclic) and contains every vertex of $G$. A minimum spanning tree is a spanning tree whose total edge weight is as small as possible.</p>
+      <span class="step">(b) The rule</span>
+      <p>Start with every vertex in its own single-vertex tree; consider every edge once, in increasing order of weight; add an edge whenever its two endpoints currently sit in different trees; stop once one tree remains.</p>
+      <span class="step">(c) What each algorithm chooses from</span>
+      <p>Prim's grows <em>one</em> tree and, at each step, chooses among only the edges with exactly one endpoint already in that tree — a frontier that changes shape every step. Kruskal's never tracks a frontier at all: it looks at <em>every</em> edge in the whole graph, sorted once up front, and decides validity only at the moment each edge is considered, against whichever trees happen to exist at that point.</p>
+      <span class="step">(d) Why $n-1$, always</span>
+      <p>By induction on $n$. A single vertex ($n=1$) is a tree with $0=n-1$ edges. Given a tree on $n-1$ vertices with $n-2$ edges, attaching one new vertex to it requires exactly one new edge to keep the result connected — and adding exactly one edge to a tree, to a genuinely new vertex, cannot create a cycle. <strong>This is where "tree" doing double duty as both "connected" and "acyclic" is used</strong>: a spanning tree with more than $n-1$ edges would have to contain a cycle (too many edges to stay acyclic on $n$ vertices), and one with fewer couldn't reach every vertex. Exactly $n-1$ is the only count that can do both.</p>
+    </div>
+  </div>
+
+  <div class="q" data-id="A2" data-t="compute">
+    <div class="qtop"><span class="qid">A2</span><span class="tag compute">compute</span></div>
+    <p>Hand-trace sample 2's graph, in lecture style: process every edge in weight order and say what happens to it.</p>
+    <ol class="parts">
+      <li>Sort the 7 edges by weight. For each one, in order, state whether Kruskal's adds it or skips it, and why.</li>
+      <li>Give the total weight and the specific 4 edges chosen.</li>
+      <li>Trust, but verify: pick a <em>different</em> set of 4 edges that also forms a valid spanning tree, and show its total is higher.</li>
+    </ol>
+    <div class="btns"><button class="btn ansbtn">Show answer</button></div>
+    <div class="ans" hidden>
+      <span class="step">(a) Edge by edge</span>
+      <table>
+        <tr><th>Edge</th><th>Weight</th><th>Trees just before</th><th>Result</th></tr>
+        <tr><td>3–4</td><td>1</td><td>all singletons</td><td>add</td></tr>
+        <tr><td>1–3</td><td>2</td><td>$\{1\},\{3,4\}$</td><td>add</td></tr>
+        <tr><td>0–1</td><td>3</td><td>$\{0\},\{1,3,4\}$</td><td>add</td></tr>
+        <tr><td>1–2</td><td>4</td><td>$\{2\},\{0,1,3,4\}$</td><td>add</td></tr>
+        <tr><td>2–3</td><td>5</td><td>both already in $\{0,1,2,3,4\}$</td><td>skip</td></tr>
+        <tr><td>0–2</td><td>6</td><td>both already in $\{0,1,2,3,4\}$</td><td>skip</td></tr>
+        <tr><td>2–4</td><td>7</td><td>both already in $\{0,1,2,3,4\}$</td><td>skip</td></tr>
+      </table>
+      <span class="step">(b) Total and edges</span>
+      <p>$$1+2+3+4 = 10,$$ using edges $\{3,4\},\{1,3\},\{0,1\},\{1,2\}$ — matching sample output 2.</p>
+      <span class="step">(c) A worse alternative, to check against</span>
+      <p>$\{0,1\},\{1,2\},\{2,3\},\{2,4\}$ is also a valid spanning tree (5 vertices, 4 edges, connected, no cycle): $3+4+5+7=19$. <strong>Independent check:</strong> $19 \gt 10$, consistent with Kruskal's tree being at least as good as an arbitrary alternative. ✓</p>
+    </div>
+  </div>
+
+  <div class="q" data-id="A3" data-t="compute">
+    <div class="qtop"><span class="qid">A3</span><span class="tag compute">compute</span></div>
+    <p>Implement Problem A using the disjoint-set structure (slides 19–23), not the naive array from slide 6. Pass the samples above.</p>
+    <ol class="parts">
+      <li>Write it: read the graph, print the MST weight.</li>
+      <li>Run the three samples.</li>
+    </ol>
+    <div class="btns"><button class="btn ansbtn">Show answer</button></div>
+    <div class="ans" hidden>
+      <span class="step">Implementation</span>
+<pre><code>class DisjointSets:
+    def __init__(self, n):
+        self.parent = [i for i in range(n)]
+        self.rank = [0 for _ in range(n)]
+
+    def find(self, i):
+        root = i
+        while self.parent[root] != root:
+            root = self.parent[root]
+        curr = i
+        while self.parent[curr] != curr:
+            nxt = self.parent[curr]
+            self.parent[curr] = root
+            curr = nxt
+        return root
+
+    def union(self, i, j):
+        i, j = self.find(i), self.find(j)
+        if i == j:
+            return
+        if self.rank[i] &lt; self.rank[j]:
+            i, j = j, i
+        self.parent[j] = i
+        self.rank[i] = max(self.rank[i], self.rank[j] + 1)
+
+
+def mst_weight(n, edges):
+    sets = DisjointSets(n)
+    total = 0
+    for u, v, w in sorted(edges, key=lambda e: e[2]):
+        if sets.find(u) != sets.find(v):
+            total += w
+            sets.union(u, v)
+    return total
+
+if __name__ == "__main__":
+    n, m = map(int, input().split())
+    edges = [tuple(map(int, input().split())) for _ in range(m)]
+    print(mst_weight(n, edges))</code></pre>
+      <p><strong>Independent check:</strong> all three samples (38, 10, 4) reproduce the figures already given — and all three were separately confirmed by brute-force search over every spanning tree and by an independent library implementation before appearing on this sheet. ✓</p>
+    </div>
+  </div>
+
+  <div class="q" data-id="A4" data-t="prove">
+    <div class="qtop"><span class="qid">A4</span><span class="tag prove">prove</span></div>
+    <p>Cost A3's implementation.</p>
+    <ol class="parts">
+      <li>Sorting $m$ edges costs $O(m\log m)$. Using the plain (not amortised) worst-case bound for disjoint-set operations that C4 proves — $O(\log n)$ per find or union, for $n$ vertices — give the cost of the main loop.</li>
+      <li>Combine the two to state the overall complexity, and simplify it: for a connected graph, explain why $\log m$ and $\log n$ are the same order, so the two terms collapse into one.</li>
+      <li>Contrast with the naive array-based version from slide 6, costed on slide 7 as $O(n^2 + m\log m)$. For a <em>sparse</em> graph ($m$ close to $n$) versus a <em>dense</em> one ($m$ close to $n^2$), which term dominates the naive version in each case?</li>
+    </ol>
+    <div class="btns"><button class="btn hintbtn">Hint</button><button class="btn ansbtn">Show answer</button></div>
+    <div class="hint" hidden><p>For part (b): a connected graph has $n-1\le m\le \binom{n}{2}$. Take logs of both bounds and see what that forces about how $\log m$ relates to $\log n$.</p></div>
+    <div class="ans" hidden>
+      <span class="step">(a) The main loop</span>
+      <p>The loop does 2 finds per edge (to check) and up to 1 union (if added): $O(m)$ disjoint-set operations, each $O(\log n)$ worst case, giving $O(m\log n)$ for the loop.</p>
+      <span class="step">(b) Collapsing the two terms</span>
+      <p>For a connected graph, $n-1\le m\le\binom{n}{2}=O(n^2)$. Taking logs: $\log(n-1) \le \log m \le O(\log n)$ (since $\log(n^2)=2\log n$). <strong>So $\log m$ and $\log n$ are both $\Theta(\log n)$ — the same order</strong> — meaning $O(m\log m)+O(m\log n)=O(m\log m)$. The overall cost is $O(m\log m)$, exactly the figure slide 23 states.</p>
+      <span class="step">(c) Sparse versus dense, for the naive version</span>
+      <p>Sparse ($m\approx n$): $n^2$ dominates $m\log m\approx n\log n$ — the naive version's array-scan is the bottleneck, exactly the case the lecture motivates disjoint sets with. Dense ($m\approx n^2$): $m\log m \approx n^2\log n$ now dominates $n^2$ — sorting becomes the bottleneck instead, and the naive version's $O(n^2)$ union cost stops being the limiting factor.</p>
+      <p><strong>Why this matters:</strong> the disjoint-set upgrade is most valuable exactly where graphs actually tend to be — sparse. On a dense graph the two versions are asymptotically much closer, since sorting dominates either way.</p>
+    </div>
+  </div>
+
+  <div class="q" data-id="A5" data-t="compute">
+    <div class="qtop"><span class="qid">A5</span><span class="tag compute">compute</span></div>
+    <p>A 4-vertex, 4-edge graph, all weights equal: $\{0,1{:}1\},\{1,2{:}1\},\{2,3{:}1\},\{3,0{:}1\}$ — a 4-cycle.</p>
+    <ol class="parts">
+      <li>Run A3's implementation with the edges fed in the order listed above, then again with the list reversed. Report the total and which one edge is excluded, each time.</li>
+      <li>You and a lab partner both implement Problem A correctly. On this graph, you get total $3$ with one tree; they get total $3$ with a <em>different</em> tree. Does that mean one of you has a bug?</li>
+    </ol>
+    <div class="btns"><button class="btn ansbtn">Show answer</button></div>
+    <div class="ans" hidden>
+      <span class="step">(a) Two runs, two different trees</span>
+      <p>As listed — $\{0,1\},\{1,2\},\{2,3\},\{3,0\}$ — the first three edges connect everything ($0,1,2,3$ all reachable after $0\text{–}1,1\text{–}2,2\text{–}3$), so $3\text{–}0$ is skipped: total $3$, $\{3,0\}$ excluded.</p>
+      <p>Reversed — $\{3,0\},\{2,3\},\{1,2\},\{0,1\}$ — by the same logic the <em>last</em>-processed edge, $\{0,1\}$, is now the one that would close the cycle: total $3$, $\{0,1\}$ excluded.</p>
+      <span class="step">(b) No bug — this is expected</span>
+      <p>Both totals agree ($3$); only which edge got left out differs, and that's determined entirely by which of the four tied, equal-weight edges happens to be considered last among the ones that would close a cycle. <strong>Nothing here indicates a bug</strong> — it's the graph-theoretic analogue of A5/C6 in the Huffman sheet: ties don't pin down a unique tree, only a unique total. C3 proves exactly why the total survives regardless.</p>
+    </div>
+  </div>
+
+</section>
+<section class="part" id="partB">
+  <div class="parthead">
+    <h2>Part B · Union&ndash;Find</h2>
+    <div class="meta"><span class="partcount">5</span> questions · ~55 min</div>
+  </div>
+  <p class="lead">Slides 9–22. No graphs here — just the data structure Kruskal's is built on. The one idea to hold onto: <code>find</code> always walks to the root first, <em>then</em> flattens the path it just walked. B3 is where that ordering has a real, checkable consequence.</p>
+
+  <div class="spec">
+    <h4>Problem B · Union&ndash;Find</h4>
+    <p>Given $n$ elements $0$ to $n-1$, each initially its own set, process a sequence of operations using the disjoint-set structure from slides 19–21 (path compression, union by rank).</p>
+    <p><strong>Input.</strong> Line 1: two integers $n\ q$ — the number of elements and the number of operations. Next $q$ lines: each either <code>union i j</code> or <code>find i</code>.</p>
+    <p><strong>Output.</strong> One line per operation. For <code>find i</code>, the leader it returns. For <code>union i j</code>, print <code>merged</code> if it joined two different sets, or <code>already</code> if $i$ and $j$ were already in the same set.</p>
+    <div class="io">
+      <div><span class="iolab">Sample Input 1</span><pre><code>4 6
+union 0 1
+union 2 3
+find 0
+find 3
+union 1 2
+find 3</code></pre></div>
+      <div><span class="iolab">Sample Output 1</span><pre><code>merged
+merged
+0
+2
+merged
+0</code></pre></div>
+      <div><span class="iolab">Sample Input 2</span><pre><code>8 14
+union 0 1
+union 2 3
+union 0 2
+union 1 3
+find 3
+union 4 5
+union 4 6
+union 4 7
+find 6
+union 0 4
+find 1
+find 5
+union 0 6
+find 7</code></pre></div>
+      <div><span class="iolab">Sample Output 2</span><pre><code>merged
+merged
+merged
+already
+0
+merged
+merged
+merged
+4
+merged
+0
+0
+already
+0</code></pre></div>
+      <div><span class="iolab">Sample Input 3</span><pre><code>2 3
+find 0
+union 0 1
+find 1</code></pre></div>
+      <div><span class="iolab">Sample Output 3</span><pre><code>0
+merged
+0</code></pre></div>
+    </div>
+  </div>
+
+  <div class="q" data-id="B1" data-t="compute">
+    <div class="qtop"><span class="qid">B1</span><span class="tag compute">compute</span></div>
+    <p>Trace why the data structure needs the shape it has, using the source's own progression (slides 6, 10–11).</p>
+    <ol class="parts">
+      <li>In the naive <code>tree[]</code> array (slide 6), which of find/union is expensive, and why?</li>
+      <li>The first fix (slide 11) is to store a parent pointer instead of a leader directly. Which operation becomes expensive <em>instead</em>, and why does the trade happen at all?</li>
+      <li>With <em>only</em> that fix — parent pointers, no union-by-height, no compression — show that a bad sequence of unions can still make a single <code>find</code> cost $\Theta(n)$.</li>
+    </ol>
+    <div class="btns"><button class="btn ansbtn">Show answer</button></div>
+    <div class="ans" hidden>
+      <span class="step">(a) The array version</span>
+      <p><code>find</code> is a single array lookup, $O(1)$. <code>union</code> has to overwrite the leader for every element currently in one of the two sets — an $O(n)$ scan over the whole array, since nothing records which elements belong to which set except by scanning to find them.</p>
+      <span class="step">(b) The trade</span>
+      <p>Pointing each element at its <em>parent</em> instead of its leader makes <code>union</code> $O(1)$ — attach one root under the other, nothing else moves. The cost shifts to <code>find</code>, which must now walk from an element up through however many parent links separate it from its root — $O(\text{height of its tree})$, $O(n)$ in the worst case. <strong>Nothing was solved for free: the $O(n)$ cost that used to sit in union just relocated to find.</strong></p>
+      <span class="step">(c) A concrete $\Theta(n)$ chain</span>
+      <p>Call <code>union(1,0)</code>, then <code>union(2,1)</code>, then <code>union(3,2)</code>, …, up to <code>union(n-1,n-2)</code>, with union always attaching the <em>second</em> argument's root under the <em>first</em>'s. Each call attaches the entire tree built so far underneath a single fresh element, extending the chain by exactly one link every time: $0\to1\to2\to\cdots\to(n-1)$. <code>find(0)</code> now walks all $n-1$ links to the root — verified directly: for $n=6$ this sequence produces the parent array $[1,2,3,4,5,5]$, and <code>find(0)</code> takes exactly 5 steps.</p>
+      <p><strong>Why this matters:</strong> this exact failure mode is what union-by-height (slide 13) is built to rule out — B4 and C4 pick this back up.</p>
+    </div>
+  </div>
+
+  <div class="q" data-id="B2" data-t="compute">
+    <div class="qtop"><span class="qid">B2</span><span class="tag compute">compute</span></div>
+    <p>Implement Problem B directly from the lecture's <code>DisjointSets</code> class. Pass all three samples.</p>
+    <ol class="parts">
+      <li>Write it: read the operations, print one line of output per operation.</li>
+      <li>Hand-trace sample 2's final two lines — <code>union 0 6</code> then <code>find 7</code> — starting from the parent array immediately before them, <code>[0,0,0,0,0,0,0,4]</code>. Show every pointer that changes.</li>
+    </ol>
+    <div class="btns"><button class="btn ansbtn">Show answer</button></div>
+    <div class="ans" hidden>
+      <span class="step">(a) Implementation</span>
+<pre><code>class DisjointSets:
+    def __init__(self, n):
+        self.parent = [i for i in range(n)]
+        self.rank = [0 for _ in range(n)]
+
+    def find(self, i):
+        root = i
+        while self.parent[root] != root:
+            root = self.parent[root]
+        curr = i
+        while self.parent[curr] != curr:
+            nxt = self.parent[curr]
+            self.parent[curr] = root
+            curr = nxt
+        return root
+
+    def union(self, i, j):
+        i, j = self.find(i), self.find(j)
+        if i == j:
+            return False
+        if self.rank[i] &lt; self.rank[j]:
+            i, j = j, i
+        self.parent[j] = i
+        self.rank[i] = max(self.rank[i], self.rank[j] + 1)
+        return True
+
+if __name__ == "__main__":
+    n, q = map(int, input().split())
+    sets = DisjointSets(n)
+    out = []
+    for _ in range(q):
+        parts = input().split()
+        if parts[0] == "union":
+            i, j = int(parts[1]), int(parts[2])
+            out.append("merged" if sets.union(i, j) else "already")
+        else:
+            out.append(str(sets.find(int(parts[1]))))
+    print("\n".join(out))</code></pre>
+      <p><strong>Independent check:</strong> all three samples reproduce the output already given, line for line. ✓</p>
+      <span class="step">(b) Hand trace</span>
+      <p>Starting parent: $[0,0,0,0,0,0,0,4]$ (element 6 already points to 0; element 7 still points to 4).</p>
+      <p><code>union(0,6)</code>: <code>find(0)</code> walks $0\to0$, root $0$, no compression needed. <code>find(6)</code> walks $6\to0$, root $0$; already direct, nothing to compress. Both roots are $0$ — <strong>already</strong>, no parent or rank changes.</p>
+      <p><code>find(7)</code>: walks $7\to4\to0$ (root), 2 hops. Path compression's second pass now repoints every node on that walk directly to the root: <code>parent[7]</code> changes from $4$ to $0$. ($4$ itself was already direct.) Returns $0$.</p>
+      <p>Final parent array: $[0,0,0,0,0,0,0,0]$ — matching the fully-flattened state confirmed by running the code.</p>
+    </div>
+  </div>
+
+  <div class="q" data-id="B3" data-t="recall">
+    <div class="qtop"><span class="qid">B3</span><span class="tag recall">recall</span></div>
+    <p>Sample 2's fourth operation is <code>union 1 3</code>, which prints <code>already</code> — 1 and 3 are already in the same set. Does an <code>already</code> result mean the parent array is unchanged by that call?</p>
+    <ol class="parts">
+      <li>Look at <code>union</code>'s implementation (B2). Which two things does it call before it even checks whether $i$ and $j$ are already equal?</li>
+      <li>Trace the actual effect of <code>union 1 3</code> at that point in sample 2, given the parent array is $[0,0,0,2,4,5,6,7]$ immediately beforehand (from <code>union 0 2</code>).</li>
+    </ol>
+    <div class="btns"><button class="btn ansbtn">Show answer</button></div>
+    <div class="ans" hidden>
+      <span class="step">(a) What runs regardless</span>
+      <p><code>union(i,j)</code> calls <code>self.find(i)</code> and <code>self.find(j)</code> <em>first</em>, unconditionally, to get the roots it needs to compare — and <code>find</code> always runs its path-compression pass, whether or not the two roots turn out to be equal. The equality check happens only after both finds have already run.</p>
+      <span class="step">(b) What actually happens</span>
+      <p><code>find(1)</code>: parent$[1]=0$, already direct — no change. <code>find(3)</code>: walks $3\to2\to0$ (root); path compression repoints <code>parent[3]</code> from $2$ to $0$ directly. Both roots equal $0$, so the union itself is a no-op and prints <code>already</code> — <strong>but <code>parent[3]</code> has already changed, from $2$ to $0$, as a side effect of the <code>find</code> call the union made internally.</strong> The next line's parent array, $[0,0,0,0,4,5,6,7]$, confirms it.</p>
+      <p><strong>Why this matters:</strong> "no-op" describes the <em>set structure</em> — no sets were merged — not the internal representation. A `already` result and an unchanged parent array are two different claims, and only the first one is guaranteed.</p>
+    </div>
+  </div>
+
+  <div class="q" data-id="B4" data-t="prove">
+    <div class="qtop"><span class="qid">B4</span><span class="tag prove">prove</span></div>
+    <p>Cost B2's implementation, contrasting the two bounds the lecture actually gives.</p>
+    <ol class="parts">
+      <li>C4 proves a tree built under union-by-rank has height $O(\log n)$. State what this gives as the worst-case cost of a single <code>find</code> or <code>union</code>, and hence of $q$ operations total.</li>
+      <li>Slide 22 states a <em>better</em> bound for the combination of path compression and union by rank — $O(q\,\alpha(n))$ for $q$ operations — but says the proof is "too complicated to present." Without proving it, explain in one sentence what kind of claim an <em>amortised</em> bound like this is, that a plain worst-case-per-operation bound (part a) is not.</li>
+    </ol>
+    <div class="btns"><button class="btn ansbtn">Show answer</button></div>
+    <div class="ans" hidden>
+      <span class="step">(a) The provable bound</span>
+      <p>Height $O(\log n)$ means a single <code>find</code> (and hence <code>union</code>, which calls two finds) costs $O(\log n)$ in the worst case. $q$ operations therefore cost $O(q\log n)$ overall — already a world away from B1(c)'s $\Theta(n)$ single-<code>find</code> disaster.</p>
+      <span class="step">(b) What "amortised" claims that worst-case-per-op doesn't</span>
+      <p>A worst-case-per-operation bound says <em>every single</em> operation costs at most that much. An amortised bound says something weaker but still useful: <em>averaged over the whole sequence</em> of $q$ operations, the cost per operation is at most $\alpha(n)$ — some individual finds can still cost more than that (an expensive find right after a long chain of unions is exactly when path compression has the most to flatten), but the sheet's own bound already builds in why: an expensive find can only happen after enough unions to build a tall path, and it pays for its own expense by flattening that path for everyone after it.</p>
+    </div>
+  </div>
+
+  <div class="q" data-id="B5" data-t="compute">
+    <div class="qtop"><span class="qid">B5</span><span class="tag compute">compute</span></div>
+    <p>Two inputs Problem B's spec doesn't explicitly rule out.</p>
+    <ol class="parts">
+      <li><code>union i i</code> — the same element twice. Trace what B2's code does with this, and confirm it's safe.</li>
+      <li><code>find i</code> or <code>union i j</code> where $i\ge n$. What actually happens when you run this against B2's implementation, and is that a helpful failure or a silent one?</li>
+    </ol>
+    <div class="btns"><button class="btn ansbtn">Show answer</button></div>
+    <div class="ans" hidden>
+      <span class="step">(a) Self-union</span>
+      <p><code>find(i)==find(i)</code> trivially, so <code>union(i,i)</code> always takes the "already" branch and returns <code>False</code> having changed nothing beyond whatever path compression <code>find(i)</code> itself performs. Safe, and confirmed directly: <code>union(2,2)</code> on a fresh 4-element structure leaves the parent array untouched, $[0,1,2,3]$.</p>
+      <span class="step">(b) Out-of-range index</span>
+      <p>Not a silent failure: <code>self.parent[root]</code> with <code>root &gt;= n</code> raises <code>IndexError: list index out of range</code> immediately — confirmed directly, calling <code>find(10)</code> on a 4-element structure. <strong>This is a helpful failure, not a silent one</strong> — a genuinely dangerous version would be one that returned some plausible-looking wrong integer instead of crashing; an index error at least points straight at the bad input rather than propagating a wrong answer downstream.</p>
+    </div>
+  </div>
+
+</section>
+<section class="part" id="partC">
+  <div class="parthead">
+    <h2>Part C · Correctness</h2>
+    <div class="meta"><span class="partcount">7</span> questions · ~90 min</div>
+  </div>
+  <p class="lead">Slides 5 and 13–22, no coding. The lecture's slide 5 sketches Kruskal's correctness in seven bullet points; C1–C2 write out what those bullets are actually standing in for. C3 is the one worth reading twice.</p>
+
+  <div class="q" data-id="C1" data-t="prove">
+    <div class="qtop"><span class="qid">C1</span><span class="tag prove">prove</span></div>
+    <p>Prove the cut property: for any partition of the vertices into nonempty $S$ and $V\setminus S$, if $e$ is a minimum-weight edge with exactly one endpoint in $S$, then some MST contains $e$.</p>
+    <div class="btns"><button class="btn hintbtn">Hint</button><button class="btn ansbtn">Show answer</button></div>
+    <div class="hint" hidden><p>Take any MST $T$ that doesn't already contain $e$. Adding $e$ to $T$ creates exactly one cycle — think about how many times that cycle can cross the cut $(S, V\setminus S)$, and what that forces about the cycle's <em>other</em> edges.</p></div>
+    <div class="ans" hidden>
+      <span class="step">Set-up</span>
+      <p>Let $T$ be any MST. If $e\in T$, done. Otherwise, $T+e$ contains exactly one cycle $C$ (a spanning tree plus one extra edge always creates exactly one cycle, through that edge).</p>
+      <span class="step">Finding a partner edge</span>
+      <p>$C$ is a cycle, so it must return to whichever side of the cut it started on — <strong>it crosses $(S,V\setminus S)$ an even number of times</strong>. $e$ itself is one crossing, so $C$ contains at least one <em>other</em> edge $f\ne e$ that also crosses the cut.</p>
+      <span class="step">The swap</span>
+      <p>Since $e$ is a minimum-weight edge crossing this cut, and $f$ also crosses it: $w(e)\le w(f)$. Form $T' = T - f + e$. Removing $f$ breaks cycle $C$ back into a tree shape; since both $e$ and $f$ cross the same cut, $e$ reconnects exactly the two pieces $f$'s removal separated — $T'$ is a valid spanning tree.</p>
+      <span class="step">Conclusion</span>
+      <p>$\text{weight}(T') = \text{weight}(T) - w(f) + w(e) \le \text{weight}(T)$. But $T$ was already optimal, so nothing can cost less: $\text{weight}(T')\ge\text{weight}(T)$ too. Hence $\text{weight}(T')=\text{weight}(T)$ — $T'$ is also an MST, and it contains $e$. $\blacksquare$</p>
+    </div>
+  </div>
+
+  <div class="q" data-id="C2" data-t="prove">
+    <div class="qtop"><span class="qid">C2</span><span class="tag prove">prove</span></div>
+    <p>Show that every edge Kruskal's selects satisfies C1's hypothesis — and that this is enough to conclude Kruskal's produces an MST, not just that each individual edge is <em>somewhere</em> safe.</p>
+    <div class="btns"><button class="btn ansbtn">Show answer</button></div>
+    <div class="ans" hidden>
+      <span class="step">Kruskal's edge is minimum over its own cut</span>
+      <p>Say Kruskal's selects $\{u,v\}$, with $U$ = $u$'s current tree. Take any edge $\{x,y\}$ crossing $(U,V\setminus U)$, i.e. $x\in U, y\notin U$. Suppose for contradiction $w(x,y) \lt w(u,v)$ — then Kruskal's processes $\{x,y\}$ strictly earlier (sorted order). At that earlier moment, either $x,y$ were already in the same tree, or they weren't:</p>
+      <ul>
+        <li>If they weren't, $\{x,y\}$ connects two different trees and has already been reached in the sort order, so Kruskal's <strong>adds</strong> it — merging $x$ and $y$ into the same tree from then on.</li>
+        <li>If they already were in the same tree, $y$ was already merged with $x$ before this point.</li>
+      </ul>
+      <p>Either way, $y$ ends up in $x$'s tree — and since $x\in U$, that means $y\in U$. <strong>This contradicts $y\notin U$.</strong> So no edge crossing $(U,V\setminus U)$ is lighter than $\{u,v\}$: it is a minimum-weight edge across this cut, exactly C1's hypothesis.</p>
+      <span class="step">Why one-safe-edge-at-a-time is enough</span>
+      <p>Induct on the number of edges added. Claim: after Kruskal's has added $e_1,\ldots,e_k$, there is an MST $T_k$ containing all of them. Base case $k=0$: any MST works. For the step, apply C1's own proof — not just its conclusion — to $T_k$ and the cut $(U,V\setminus U)$ that makes $e_{k+1}$ safe: if $e_{k+1}\notin T_k$, swap it in for some other cut-crossing edge $f$ in the resulting cycle, giving $T_{k+1}$.</p>
+      <p><strong>The one thing that needs checking: $f$ can never be one of $e_1,\ldots,e_k$.</strong> Every edge Kruskal's has already added is now internal to some tree in Kruskal's forest — both its endpoints share a tree — so it cannot cross the cut $(U, V\setminus U)$ between two currently-different trees. $f$ crosses that cut by construction, so $f\ne e_i$ for every $i\le k$. $T_{k+1}$ therefore contains $e_1,\ldots,e_k,e_{k+1}$, all at once.</p>
+      <p>At the end, $n-1$ edges have been added and there is an MST containing all of them — a set of $n-1$ edges that forms a spanning tree and sits inside an MST of the same size must simply <em>be</em> that MST. $\blacksquare$</p>
+    </div>
+  </div>
+
+  <div class="q" data-id="C3" data-t="prove">
+    <div class="qtop"><span class="qid">C3</span><span class="tag prove">prove</span></div>
+    <p>A5 showed the 4-cycle graph gives total $3$ either way, but excludes a different edge depending on processing order. Use C1's own proof to show exactly why this had to be possible.</p>
+    <div class="btns"><button class="btn ansbtn">Show answer</button></div>
+    <div class="ans" hidden>
+      <p>Re-examine the one inequality C1 actually needs: $w(e)\le w(f)$, used to conclude $\text{weight}(T')\le\text{weight}(T)$. <strong>Nothing in the proof requires this to be a strict inequality</strong> — $\le$ is exactly what's stated and exactly what's used.</p>
+      <p>On the 4-cycle, every edge has weight $1$. Whichever edge plays the role of $e$ (the one being swapped in) and whichever plays $f$ (the one being swapped out), $w(e)=w(f)=1$: the inequality is always an equality. C1's proof concludes $T'$ is <em>also</em> an MST whenever this holds — it never claims $T$ was wrong to use $f$ instead of $e$. <strong>Since every pair of edges on this cycle ties, the proof is silent on which one "should" be excluded — it only guarantees that whichever choice gets made, the total is preserved.</strong></p>
+      <p><strong>Why this matters:</strong> this is the graph analogue of the Huffman sheet's C6 — re-examining an exchange argument's own inequality to see exactly where it stops distinguishing between tied alternatives. The mechanism is identical; only the objects being exchanged (edges vs. codeword positions) differ.</p>
+    </div>
+  </div>
+
+  <div class="q" data-id="C4" data-t="prove">
+    <div class="qtop"><span class="qid">C4</span><span class="tag prove">prove</span></div>
+    <p>Prove slide 15's claim: under union by height, a tree of height $h$ contains at least $2^h$ elements. Conclude that a tree built from $n$ elements has height at most $\log_2 n$.</p>
+    <div class="btns"><button class="btn hintbtn">Hint</button><button class="btn ansbtn">Show answer</button></div>
+    <div class="hint" hidden><p>First pin down exactly when a merge can increase height at all, using the rank-update rule $\text{new\_height} = \max(\text{taller's height}, \text{shorter's height}+1)$ — then induct on $h$.</p></div>
+    <div class="ans" hidden>
+      <span class="step">When height actually increases</span>
+      <p>Merging a tree of height $h_i$ (becoming the new root) with one of height $h_j\le h_i$ gives new height $\max(h_i, h_j+1)$. If $h_i \gt h_j$, then $h_i\ge h_j+1$, so the max is just $h_i$ — <strong>height only changes when $h_i=h_j$ exactly</strong>, in which case it becomes $h_i+1$. A tree reaches height $h\ge1$ only by merging two trees that were <em>both already at height $h-1$</em>.</p>
+      <span class="step">Induction</span>
+      <p>Let $n(h)$ be the minimum possible size of a height-$h$ tree. Base case $h=0$: a single node, $n(0)=1=2^0$. Step: a height-$h$ tree ($h\ge1$) is the union of two height-$(h-1)$ trees, each with at least $n(h-1)$ elements by the inductive hypothesis, so $n(h)\ge 2\,n(h-1) \ge 2\cdot 2^{h-1} = 2^h$. $\blacksquare$</p>
+      <span class="step">The height bound</span>
+      <p>If a tree built from $n$ elements had height $h$, it would need at least $2^h$ elements — so $2^h\le n$, giving $h\le\log_2 n$.</p>
+      <p><strong>Independent check:</strong> the bound is tight, not just an upper estimate — repeatedly pairing equal-sized groups (1,1 $\to$ 2; 2,2 $\to$ 4; 4,4 $\to$ 8; …) was simulated directly for $h=0$ through $5$ and produced a tree of <em>exactly</em> height $h$ from <em>exactly</em> $2^h$ elements every time. ✓</p>
+    </div>
+  </div>
+
+  <div class="q" data-id="C5" data-t="recall">
+    <div class="qtop"><span class="qid">C5</span><span class="tag recall">recall</span></div>
+    <p>In the same terms the Huffman sheet's C5 uses: what does C1 establish (the greedy-choice property for this problem), what does C2 add on top of it, and why doesn't "this one edge is safe" by itself already prove Kruskal's produces an MST?</p>
+    <div class="btns"><button class="btn ansbtn">Show answer</button></div>
+    <div class="ans" hidden>
+      <p><strong>Greedy-choice property</strong> (C1): for any cut, a minimum-weight edge crossing it is always safe to add — some MST contains it. <strong>C2 shows two things</strong>: first, that every edge Kruskal's actually selects satisfies exactly this hypothesis at the moment it's selected; second — the part that closes the real gap — that repeating this doesn't just land in <em>some</em> MST at each step, it lands in an MST containing <em>every edge already added</em>, because none of those earlier edges can ever be the one swapped out.</p>
+      <p><strong>Why "one edge is safe" isn't automatically enough:</strong> being told each individual choice doesn't hurt says nothing about whether the choices stay compatible with each other over time — a sequence of moves that are each locally fine could still, in principle, contradict each other collectively. What actually licenses Kruskal's is the inductive invariant C2 proves: the growing edge set is, at every single step, a subset of one common MST — so by the last step, when it's a full spanning tree in its own right, it doesn't just resemble an MST, it <em>is</em> the one it's been a subset of all along.</p>
+    </div>
+  </div>
+
+  <div class="q" data-id="C6" data-t="recall">
+    <div class="qtop"><span class="qid">C6</span><span class="tag recall">recall</span></div>
+    <p>Slide 22 states, without proof, that path compression plus union by rank gives $O(m\,\alpha(n))$ for $m$ operations on $n$ elements.</p>
+    <ol class="parts">
+      <li>State what $\alpha(n)$ is, and explain — without proving the complexity result itself — why the Ackermann function's explosive growth forces $\alpha(n)$ to grow correspondingly slowly.</li>
+      <li>C4 already proves a worst-case bound of $O(\log n)$ per operation. What does slide 22's result improve, precisely, and what does $\alpha(n)\le 4$ "for all practical purposes" actually buy over $m$ operations each costing $O(\log n)$?</li>
+    </ol>
+    <div class="btns"><button class="btn ansbtn">Show answer</button></div>
+    <div class="ans" hidden>
+      <span class="step">(a) What $\alpha(n)$ is, and why it's slow</span>
+      <p>$\alpha(n)$ is defined as the smallest $k$ such that $A_k(k)\ge n$, where $A_k$ is the Ackermann function. <strong>Because $A_k(k)$ grows so fast that it passes any fixed, fathomable number almost as soon as $k$ ticks up by one</strong> — the source's own example is $A_4(4)$ already exceeding the number of atoms in the observable universe — $\alpha$, which asks "how large does $k$ need to be before $A_k(k)$ catches up to $n$," barely has to move at all even for enormous $n$. An inverse of an extremely fast-growing function is, definitionally, an extremely slow-growing one.</p>
+      <span class="step">(b) What actually improves</span>
+      <p>C4's bound is <em>worst-case per operation</em>: every single find or union costs at most $O(\log n)$, full stop. Slide 22's bound is <em>amortised over the whole sequence</em>: $m$ operations cost $O(m\,\alpha(n))$ <em>total</em>, not $O(m\log n)$. Since $\alpha(n)\le4$ for any $n$ you could actually construct, this means $m$ operations cost, in total, barely more than $O(m)$ — the per-operation cost effectively becomes a small constant once amortised, rather than growing (even slowly, as $\log n$) with the size of the structure.</p>
+    </div>
+  </div>
+
+  <div class="q" data-id="C7" data-t="prove">
+    <div class="qtop"><span class="qid">C7</span><span class="tag prove">prove</span></div>
+    <p>Problem A's spec guarantees a connected graph. Neither the naive (slide 6) nor the efficient (slide 23) implementation actually checks this.</p>
+    <ol class="parts">
+      <li>Trace <code>mst_weight</code> on $n{=}3$ with a single edge $\{0,1{:}5\}$ — vertex $2$ has no edges at all. What does the function return?</li>
+      <li>Is the number it returns the weight of a spanning tree? Prove your answer using A1(d)'s own fact about spanning trees.</li>
+      <li>Propose one small change to the implementation that would let it detect this situation instead of silently returning a number.</li>
+    </ol>
+    <div class="btns"><button class="btn ansbtn">Show answer</button></div>
+    <div class="ans" hidden>
+      <span class="step">(a) What it returns</span>
+      <p>The single edge $\{0,1\}$ connects two different trees, so it's added; total returned: $5$. No exception, no warning — the function returns a plain, unremarkable-looking integer.</p>
+      <span class="step">(b) Not a spanning tree</span>
+      <p><strong>No.</strong> By A1(d), any spanning tree on $n=3$ vertices needs exactly $n-1=2$ edges. Only $1$ edge was added here. The "$5$" is the weight of a spanning tree of the <em>subgraph</em> on $\{0,1\}$ — a spanning <em>forest</em> of the whole graph, covering 2 of 3 vertices, not a spanning tree of it. The function's return type promises a single number either way, so there is nothing in the output itself that distinguishes "the MST weight" from "the weight of whatever forest happened to result."</p>
+      <span class="step">(c) A fix</span>
+      <p>Count the number of edges actually added (equivalently, the number of successful, non-"already" unions). If that count is ever less than $n-1$ once every edge has been considered, the graph was disconnected — raise an error, or return the forest's weight paired with how many components remain, rather than a bare integer that looks identical to a genuine MST weight either way.</p>
+      <p><strong>Why this matters:</strong> this is the same shape of gap as the Huffman sheet's C7 — the algorithm's stated correctness proof (C1–C2 here) implicitly assumes the setting its hypotheses actually hold in, and the code doesn't verify that assumption before running.</p>
+    </div>
+  </div>
+
+</section>
+<section class="part" id="partD">
+  <div class="parthead">
+    <h2>Part D · Mixed</h2>
+    <div class="meta"><span class="partcount">5</span> questions · ~45 min</div>
+  </div>
+  <p class="lead">No signposting from here — that's the point. D3 is the one to slow down on: two of the five disjoint-set states are unreachable, for different reasons, and neither reason is "it has a rank in it."</p>
+
+  <div class="q" data-id="D1" data-t="compute">
+    <div class="qtop"><span class="qid">D1</span><span class="tag compute">compute</span></div>
+    <p>Put the three complexities side by side: Prim's ($O(V\lg V + E\lg V)$, slide 3), naive Kruskal's ($O(V^2+E\lg E)$, slide 7), efficient Kruskal's ($O(E\lg E)$, slide 23).</p>
+    <ol class="parts">
+      <li>Compute all three (as plain operation-count magnitudes, dropping the $O(\cdot)$) for a sparse graph, $V{=}1000,\ E{=}5000$.</li>
+      <li>Recompute for a dense graph, $V{=}1000,\ E\approx V^2/2 = 499{,}500$. Does the ranking change, and can you explain why from the formulas alone?</li>
+    </ol>
+    <div class="btns"><button class="btn hintbtn">Hint</button><button class="btn ansbtn">Show answer</button></div>
+    <div class="hint" hidden><p>Don't just plug numbers in — first look at what changes about the relationship between $\lg V$ and $\lg E$ as $E$ grows from $\Theta(V)$ towards $\Theta(V^2)$.</p></div>
+    <div class="ans" hidden>
+      <span class="step">(a) Sparse: $V{=}1000,E{=}5000$</span>
+      <table>
+        <tr><th>Prim's</th><th>naive Kruskal's</th><th>efficient Kruskal's</th></tr>
+        <tr><td>59,795</td><td>1,061,439</td><td>61,439</td></tr>
+      </table>
+      <p>Prim's and efficient Kruskal's are close; naive Kruskal's is worse by more than $17\times$ — the $V^2$ term dominating exactly as slide 7 warns.</p>
+      <span class="step">(b) Dense: $V{=}1000,E{\approx}499{,}500$</span>
+      <table>
+        <tr><th>Prim's</th><th>naive Kruskal's</th><th>efficient Kruskal's</th></tr>
+        <tr><td>4,987,875</td><td>10,455,598</td><td>9,455,598</td></tr>
+      </table>
+      <p><strong>The ranking changes: Prim's is now clearly ahead, at roughly half of either Kruskal's variant.</strong> The reason is visible directly in the formulas: Prim's log factor is always $\lg V$, but both Kruskal's variants carry $\lg E$. When $E\approx V^2$, $\lg E\approx 2\lg V$ — <em>double</em> Prim's log factor — on top of an $E$ term that's already the same size in every formula. Sparse graphs keep $\lg E\approx\lg V$, so that gap barely matters; dense graphs open it right up.</p>
+      <p><strong>Why this matters:</strong> "efficient Kruskal's beats naive Kruskal's" is true everywhere, but "which MST algorithm is fastest" genuinely depends on how dense the graph is — sparse favours Kruskal's, dense favours Prim's.</p>
+    </div>
+  </div>
+
+  <div class="q" data-id="D2" data-t="prove">
+    <div class="qtop"><span class="qid">D2</span><span class="tag prove">prove</span></div>
+    <p>Slide 23's $O(E\lg E)$ is dominated entirely by the sort.</p>
+    <ol class="parts">
+      <li>If the edges arrive already sorted by weight — no sort needed — what does the overall complexity become?</li>
+      <li>Even for <em>unsorted</em> input, is a comparison-based sort the only option? Name one situation where a non-comparison sort could still get the whole algorithm down to that same complexity.</li>
+    </ol>
+    <div class="btns"><button class="btn ansbtn">Show answer</button></div>
+    <div class="ans" hidden>
+      <span class="step">(a) Skipping the sort</span>
+      <p>What's left is just the disjoint-set operations: $O(E\,\alpha(V))$ by slide 22's amortised bound, which — since $\alpha(V)\le4$ for any $V$ you could construct — is $O(E)$ in every practical sense. <strong>Removing the sort doesn't shave a log factor off; it removes the only super-linear term in the whole algorithm.</strong></p>
+      <span class="step">(b) A non-comparison route</span>
+      <p>If edge weights are small integers within a known bounded range (say $0$ to $W$), counting sort or radix sort can sort the $E$ edges in $O(E+W)$ time rather than $O(E\log E)$ — sidestepping the $\Omega(E\log E)$ lower bound that applies only to comparison-based sorting. Whenever that assumption holds, the whole algorithm drops to $O(E)$ even from a cold, unsorted start.</p>
+    </div>
+  </div>
+
+  <div class="q" data-id="D3" data-t="compute">
+    <div class="qtop"><span class="qid">D3</span><span class="tag compute">compute</span></div>
+    <p>Each of these is a final <code>(parent, rank)</code> state. Which could actually result from the lecture's <code>DisjointSets</code> class, and which couldn't?</p>
+    <ol class="parts">
+      <li>$n{=}4$: parent $=[0,0,0,0]$, rank $=[2,0,0,0]$</li>
+      <li>$n{=}3$: parent $=[1,0,2]$</li>
+      <li>$n{=}4$: parent $=[0,0,0,0]$, rank $=[3,0,0,0]$</li>
+      <li>$n{=}3$: parent $=[1,1,1]$, rank $=[0,1,0]$</li>
+      <li>$n{=}8$: parent $=[3,3,3,3,3,3,3,3]$, rank $=[0,0,0,3,0,0,0,0]$</li>
+    </ol>
+    <div class="btns"><button class="btn ansbtn">Show answer</button></div>
+    <div class="ans" hidden>
+      <span class="step">1 — valid</span>
+      <p>Root $0$ has rank $2$ and its set has all $4$ elements. C4 requires size $\ge 2^{\text{rank}}=4$: exactly met. Achievable by, e.g., merging $\{0,1\}$ and $\{2,3\}$ (each rank $1$) together.</p>
+      <span class="step">2 — invalid: not a valid forest at all</span>
+      <p>parent$[0]{=}1$ and parent$[1]{=}0$ is a 2-cycle. Neither $0$ nor $1$ is ever recognised as a root, and <code>find</code> would loop forever rather than terminate. This can't arise from any sequence of correct <code>union</code> calls, which only ever attach a root under another root — never create a cycle.</p>
+      <span class="step">3 — invalid: rank exceeds what the set size supports</span>
+      <p>Root $0$ claims rank $3$, which by C4 needs a set of at least $2^3=8$ elements — but only $4$ elements exist in total. <strong>This directly contradicts C4</strong>: no sequence of union-by-rank merges on $4$ elements can ever produce a rank higher than $2$.</p>
+      <span class="step">4 — valid</span>
+      <p>Root $1$, rank $1$, set size $3\ge2^1=2$. Achievable: <code>union(0,1)</code> (tied ranks $0,0$, giving root $1$ if $1$ is passed first — the lecture's code doesn't swap on a tie — rank becomes $1$), then <code>union(1,2)</code> attaches $2$ under the now rank-$1$ root.</p>
+      <span class="step">5 — valid</span>
+      <p>Root $3$, rank $3$, set size $8=2^3$: the tight case from C4, achievable by pairing up all $8$ elements two at a time, then pairing the resulting pairs, then pairing those.</p>
+      <p><strong>Two different flaws, both real:</strong> (2) isn't even a valid forest — a structural impossibility with no reference to rank at all; (3) is a perfectly well-formed forest whose rank simply lies about how it could have been built. "Well-formed" and "reachable by this algorithm" are different bars, exactly as B3 found for a single operation and A5/C3 found for edge selection.</p>
+    </div>
+  </div>
+
+  <div class="q" data-id="D4" data-t="recall">
+    <div class="qtop"><span class="qid">D4</span><span class="tag recall">recall</span></div>
+    <p>The lecture builds disjoint sets specifically to serve Kruskal's.</p>
+    <ol class="parts">
+      <li>Name one other task — unrelated to spanning trees — that "are these two things already connected, and can I merge them" naturally fits.</li>
+      <li>Kruskal's and Prim's as presented both assume an <em>undirected</em> graph. What about the cut-property proof (C1) specifically breaks if edges only go one way?</li>
+    </ol>
+    <div class="btns"><button class="btn ansbtn">Show answer</button></div>
+    <div class="ans" hidden>
+      <span class="step">(a) Another natural fit</span>
+      <p>Finding connected components in an image (grouping adjacent same-coloured pixels into regions) or detecting a cycle while building a graph edge by edge — both are exactly "are these two elements already in the same group, and if not, merge them," with no reference to trees or edge weights at all.</p>
+      <span class="step">(b) What breaks in a directed setting</span>
+      <p>C1's proof leans on a cycle crossing the cut "an even number of times" purely because it has to return to where it started — a statement about the cycle's <em>vertex sequence</em>, which holds regardless of edge direction. What actually breaks is earlier: a cut $(S,V\setminus S)$ in a directed graph has edges crossing <em>both ways</em> (some $S\to (V\setminus S)$, some the reverse), and "connects the two sides" no longer means the same thing for both directions — reconnecting a piece severed by removing $f$ isn't guaranteed by adding an edge $e$ that only permits travel in one specific direction. The proof's swap step assumes any cut-crossing edge can serve as a two-way bridge, which is exactly what a directed edge can't do.</p>
+    </div>
+  </div>
+
+  <div class="q" data-id="D5" data-t="recall">
+    <div class="qtop"><span class="qid">D5</span><span class="tag recall">recall</span></div>
+    <p>Closed book. For each, give the precise statement, not just the topic name.</p>
+    <ol class="parts">
+      <li>Define a spanning tree and a minimum spanning tree.</li>
+      <li>State Kruskal's rule.</li>
+      <li>State the cut property.</li>
+      <li>State the $2^h$ lower bound for union-by-height trees, and what it implies about find/union's worst-case cost.</li>
+      <li>Does path compression change which set an element belongs to, or only how quickly that fact is discovered?</li>
+      <li>Give the overall time complexity of efficient Kruskal's, and name the one step that dominates it.</li>
+      <li>True or false, with one line of justification: two correct implementations of Kruskal's, given the same graph, always return the same specific set of edges.</li>
+    </ol>
+    <div class="btns"><button class="btn ansbtn">Show answer</button></div>
+    <div class="ans" hidden>
+      <span class="step">1</span><p>A spanning tree of $G=(V,E)$ is a subgraph $T=(V,E')$ that is a tree and contains every vertex. A minimum spanning tree is a spanning tree of minimum total edge weight.</p>
+      <span class="step">2</span><p>Sort all edges by weight; process them in increasing order, adding any edge whose endpoints are currently in different trees; stop once one tree remains.</p>
+      <span class="step">3</span><p>For any partition of the vertices into nonempty $S$ and $V\setminus S$, a minimum-weight edge with exactly one endpoint in $S$ is contained in some MST (C1).</p>
+      <span class="step">4</span><p>A tree of height $h$ built under union-by-height has at least $2^h$ elements (C4); equivalently, a tree of $n$ elements has height at most $\log_2 n$, so find and union cost $O(\log n)$ in the worst case.</p>
+      <span class="step">5</span><p>Only how quickly — path compression repoints pointers to the already-determined root; it cannot change which root an element's set has, only how many hops it takes to discover it (C5, C6).</p>
+      <span class="step">6</span><p>$O(E\log E)$; sorting the edges dominates, with the disjoint-set operations contributing only $O(E\,\alpha(V))$ (D2).</p>
+      <span class="step">7</span><p><strong>False.</strong> A5 and C3 exhibit two correct runs on the same tied-weight graph that exclude different edges while agreeing on total weight — ties fix the cost, not the specific tree.</p>
+    </div>
+  </div>
+
+</section>
+</main>
+
+<footer class="end">
+  <p>Built from Lecture 13, Kruskal's Algorithm (CITS3001 Advanced Algorithms, Department of Computer Science and Software Engineering, University of Western Australia), citing CLRS §21.2 and §19.3–19.4. No errors were found in the source slides — every complexity figure, the union-by-rank code, and the disjoint-set class all checked out exactly against an independent reimplementation; the mid-lecture-break graph (slide 9) was read directly off the rasterised mug image and its topology cross-checked against the comic's own "one edge away from one tree" punchline before use.</p>
+  <p>Problems A and B are original, written for this sheet in judge-format style; Part C proves what slides 5 and 13–22 state or, where the source itself says a proof is too complicated to present, explains precisely what is and isn't being claimed instead. Printing uses the same palette as the screen, with all answers revealed.</p>
+</footer>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<script>
+(function(){
+  "use strict";
+
+  function all(sel, root){ return Array.prototype.slice.call((root || document).querySelectorAll(sel)); }
+
+  function renderMath(){
+    if (typeof window.renderMathInElement !== "function") return;
+    try {
+      window.renderMathInElement(document.body, {
+        delimiters: [
+          {left: "$$", right: "$$", display: true},
+          {left: "\\[", right: "\\]", display: true},
+          {left: "$", right: "$", display: false}
+        ],
+        ignoredTags: ["script", "noscript", "style", "textarea", "option"],
+        throwOnError: false
+      });
+    } catch (e) { /* raw LaTeX stays readable if this fails */ }
+  }
+
+  document.addEventListener("click", function(ev){
+    var t = ev.target;
+    if (!t.classList) return;
+
+    if (t.classList.contains("ansbtn") || t.classList.contains("hintbtn")) {
+      var card = t.closest(".q");
+      if (!card) return;
+      var isHint = t.classList.contains("hintbtn");
+      var box = card.querySelector(isHint ? ".hint" : ".ans");
+      if (!box) return;
+      if (box.hasAttribute("hidden")) {
+        box.removeAttribute("hidden");
+        t.textContent = isHint ? "Hide hint" : "Hide answer";
+      } else {
+        box.setAttribute("hidden", "");
+        t.textContent = isHint ? "Hint" : "Show answer";
+      }
+    }
+  });
+
+  document.getElementById("hideall").addEventListener("click", function(){
+    all(".ans, .hint").forEach(function(b){ b.setAttribute("hidden", ""); });
+    all(".ansbtn").forEach(function(b){ b.textContent = "Show answer"; });
+    all(".hintbtn").forEach(function(b){ b.textContent = "Hint"; });
+  });
+
+  renderMath();
+})();
+</script>
+</body>
+</html>

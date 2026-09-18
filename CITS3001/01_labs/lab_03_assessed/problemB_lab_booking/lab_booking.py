@@ -1,24 +1,34 @@
 import sys
 
-def pivot(request_lst: list) -> list:
-    pivot_index = len(request_lst) - 1
-    pivot_val = request_lst[pivot][1]
-    i = -1
+def lab_booking(bookings):
+    # Sort by the ending times; important for our greedy algorithm
+    bookings = sorted(bookings, key=lambda x: x[1])
+    # First ending value needs to be stored, so that comparison is possible between the first state and next state
+    prev_end = 0
+    valid_requests = []
 
-    for j in range(request_lst):
-        if request_lst[j][1] <= pivot_val:
-            i += 1
-            swap(request_lst, j, i)
+    for time in bookings:
+        start, end = time
 
-    swap(request_lst, j, i + 1)
+        # Consider if the booking end time starts after the most recent end time; if occurring in the booking, it becomes invalid
+        if start >= prev_end:
+            valid_requests.append((start, end))
+            prev_end = end
 
-def swap(request_lst: list, j_idx: int, i_idx: int) -> None:
-    request_lst[j_idx][1], request_lst[i_idx][1] = request_lst[i_idx][1], request_lst[j_idx][1]
+    return len(valid_requests)
+
+# Given something like [(1, 3), (2, 4), (3, 5), (6, 7)]
+# Count:
+    # 1, 3 (prev_end iter 1)
+    # 2, 4 -> invalidated, since the start time occurs during the running time of 1, 3
+    # 3, 5 -> valid, since 3 >= 3, this runs to 5
+    # 6, 7 -> also valid, since 6 >= 5, it occurs after the finishing time of 3, 5
 
 inputs = sys.stdin.read().split()
-print(inputs)
 num_req = int(inputs[0])
-request_lst = []
+bookings = []
 
-for i in range(1, num_req):
-    request_lst.append((int(inputs[i]), int(inputs[i+1])))
+for i in range(1, len(inputs), 2):
+    bookings.append((int(inputs[i]), int(inputs[i+1])))
+
+print(lab_booking(bookings))

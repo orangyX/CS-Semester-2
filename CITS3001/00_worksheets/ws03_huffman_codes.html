@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>CITS3001 Lecture 12 worksheet — Huffman Codes</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<style>
+  :root{
+    color-scheme:light;
+    --bg:#faf2e4; --bg-fade:rgba(250,242,228,.95); --card:#fffbf2; --ans-bg:#f4e9d5;
+    --ink:#2f221c; --muted:#7b6156; --line:#e6d6be; --line-2:#cdb99c; --rule:#8f2e21;
+    --prove:#9e2318; --prove-bg:#f0bcac; --prove-fg:#7d1d12;
+    --compute:#bd6531; --compute-bg:#f7dab9; --compute-fg:#8a3f0d;
+    --recall:#a97a61; --recall-bg:#faeee1; --recall-fg:#7a5540;
+    --accent:#a63125;
+    --btn-bg:#fffdf7; --btn-hover:#f6ecd9;
+    --ansbtn-bd:#e0b5a9; --ansbtn-fg:#8b2c1e; --ansbtn-hover:#fbeae4;
+    --hint-bg:#fdf0e3; --th-bg:#efe2c9; --code-bg:#f0e4cd;
+    --warn-bd:#c7952f; --warn-bg:#fbf2dd;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth; background:var(--bg);}
+  body{margin:0; background:var(--bg); color:var(--ink); font-family:var(--serif); font-size:16.5px; line-height:1.55;}
+  .wrap{max-width:900px; margin:0 auto; padding:0 22px 100px;}
+
+  /* sticky bar */
+  .bar{position:sticky; top:0; z-index:30; background:var(--bg-fade); border-bottom:1px solid var(--line); backdrop-filter:blur(8px);}
+  .bar-in{max-width:900px; margin:0 auto; padding:9px 22px; display:flex; flex-wrap:wrap; align-items:center; gap:10px 14px; font-family:var(--sans); font-size:12.5px; color:var(--muted);}
+  .bar .btn{padding:4px 9px; font-size:11.5px;}
+
+  /* header */
+  header.top{padding:34px 0 6px;}
+  .eyebrow{font-family:var(--sans); font-size:11.5px; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:var(--accent); margin:0 0 8px;}
+  h1{font-size:31px; line-height:1.18; font-weight:600; margin:0 0 6px; letter-spacing:-.01em;}
+  .sub{color:var(--muted); font-size:15px; margin:0 0 22px;}
+
+  .howto{background:var(--card); border:1px solid var(--line); border-radius:12px; padding:16px 18px; margin:0 0 10px;}
+  .howto h3{font-family:var(--sans); font-size:12px; letter-spacing:.09em; text-transform:uppercase; color:var(--muted); margin:0 0 10px; font-weight:700;}
+  .howto p{margin:0 0 9px; font-size:15.5px;}
+  .howto p:last-child{margin-bottom:0;}
+  .key{display:flex; flex-wrap:wrap; gap:16px; margin:12px 0 4px; font-size:14.5px;}
+  .key div{display:flex; align-items:baseline; gap:7px;}
+  .flag{border-left:3px solid var(--prove); padding-left:12px; margin-top:14px; font-size:14.5px; color:var(--muted);}
+
+  /* parts */
+  section.part{margin:44px 0 0; scroll-margin-top:56px;}
+  .parthead{display:flex; align-items:baseline; gap:12px; border-bottom:2px solid var(--rule); padding-bottom:7px; margin-bottom:4px;}
+  .parthead h2{font-size:22px; font-weight:600; margin:0; letter-spacing:-.005em;}
+  .parthead .meta{margin-left:auto; font-family:var(--sans); font-size:12px; color:var(--muted); white-space:nowrap;}
+  .partcount{font-weight:700; color:var(--ink);}
+  .lead{color:var(--muted); font-size:15px; margin:10px 0 4px;}
+
+  /* programming-task spec + sample I/O */
+  .spec{background:var(--card); border:1px solid var(--line); border-left:4px solid var(--accent); border-radius:10px; padding:14px 16px; margin:14px 0 18px;}
+  .spec h4{font-family:var(--sans); font-size:11.5px; letter-spacing:.09em; text-transform:uppercase; color:var(--muted); margin:0 0 8px; font-weight:700;}
+  .spec p{margin:0 0 8px; font-size:15.5px;}
+  .spec p:last-child{margin-bottom:0;}
+  .io{display:grid; grid-template-columns:1fr; gap:12px; margin:12px 0 0;}
+  .io > div{min-width:0;}
+  .io pre{margin:3px 0 0;}
+  .iolab{font-family:var(--sans); font-size:10.5px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--muted);}
+
+  /* question cards */
+  .q{background:var(--card); border:1px solid var(--line); border-left:4px solid var(--line); border-radius:10px; padding:15px 17px; margin:16px 0;}
+  .q[data-t="prove"]{border-left-color:var(--prove);}
+  .q[data-t="compute"]{border-left-color:var(--compute);}
+  .q[data-t="recall"]{border-left-color:var(--recall);}
+  .qtop{display:flex; align-items:center; gap:9px; margin-bottom:9px;}
+  .qid{font-family:var(--sans); font-size:13px; font-weight:700; letter-spacing:.05em;}
+  .tag{font-family:var(--sans); font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.09em; padding:2.5px 8px; border-radius:99px;}
+  .tag.prove{background:var(--prove-bg); color:var(--prove-fg);}
+  .tag.compute{background:var(--compute-bg); color:var(--compute-fg);}
+  .tag.recall{background:var(--recall-bg); color:var(--recall-fg);}
+  .q p{margin:0 0 9px;}
+  .q ol,.q ul{margin:6px 0 9px; padding-left:22px;}
+  .q li{margin:4px 0;}
+  ol.parts{list-style:none; padding-left:0; counter-reset:pp;}
+  ol.parts > li{counter-increment:pp; position:relative; padding-left:28px; margin:6px 0;}
+  ol.parts > li::before{content:"(" counter(pp,lower-alpha) ")"; position:absolute; left:0; color:var(--muted); font-family:var(--sans); font-size:13px; top:1px;}
+
+  .btns{display:flex; gap:8px; margin-top:11px; flex-wrap:wrap;}
+  .btn{font-family:var(--sans); font-size:12.5px; font-weight:600; border:1px solid var(--line-2); background:var(--btn-bg); color:var(--ink); padding:6px 12px; border-radius:7px; cursor:pointer; transition:background .12s, border-color .12s;}
+  .btn:hover{background:var(--btn-hover); border-color:var(--rule);}
+  .btn:focus-visible{outline:2px solid var(--accent); outline-offset:2px;}
+  .btn.ansbtn{border-color:var(--ansbtn-bd); color:var(--ansbtn-fg);}
+  .btn.ansbtn:hover{background:var(--ansbtn-hover); border-color:var(--prove);}
+
+  .hint{margin-top:11px; padding:10px 13px; border-left:3px solid var(--recall); background:var(--hint-bg); border-radius:0 7px 7px 0; font-size:15.5px;}
+  .ans{margin-top:11px; padding:13px 15px; background:var(--ans-bg); border:1px solid var(--line); border-radius:9px; font-size:15.5px;}
+  .ans p{margin:0 0 9px;}
+  .ans p:last-child{margin-bottom:0;}
+  .ans .step{font-family:var(--sans); font-size:11px; font-weight:700; letter-spacing:.07em; text-transform:uppercase; color:var(--muted); display:block; margin:12px 0 4px;}
+  .ans .step:first-child{margin-top:0;}
+  .ans table{border-collapse:collapse; margin:8px 0 10px; font-size:14.5px;}
+  .ans th,.ans td{border:1px solid var(--line); padding:4px 10px; text-align:center;}
+  .ans th{background:var(--th-bg); font-family:var(--sans); font-size:12px; font-weight:600;}
+  .warn{border-left:3px solid var(--warn-bd); background:var(--warn-bg); padding:9px 12px; border-radius:0 7px 7px 0; margin:10px 0;}
+  pre{background:var(--code-bg); border:1px solid var(--line); border-radius:7px; padding:10px 12px; overflow-x:auto; margin:8px 0; line-height:1.45;}
+  pre code{background:none; padding:0; border-radius:0;}
+  code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:14px; background:var(--code-bg); padding:1px 5px; border-radius:4px;}
+  .katex{font-size:1.02em;}
+  footer.end{margin-top:52px; padding-top:16px; border-top:1px solid var(--line); font-size:13.5px; color:var(--muted);}
+
+  @media(max-width:640px){
+    body{font-size:16px;} .wrap{padding:0 15px 80px;} h1{font-size:25px;}
+    .bar-in{padding:8px 15px;} .qtop{flex-wrap:wrap;} pre{font-size:12px;}
+  }
+  @media print{
+    body{-webkit-print-color-adjust:exact; print-color-adjust:exact;}
+    .bar,.btns{display:none !important;}
+    .ans,.hint{display:block !important;}
+    .q{break-inside:avoid;}
+  }
+  @media (prefers-reduced-motion:reduce){ *{transition:none !important; scroll-behavior:auto !important;} }
+</style>
+</head>
+<body>
+
+<div class="bar">
+  <div class="bar-in">
+    <button class="btn" id="hideall">Hide all answers</button>
+  </div>
+</div>
+
+<div class="wrap">
+<header class="top">
+  <p class="eyebrow">CITS3001 · Lecture 12 · September siege</p>
+  <h1>Huffman Codes</h1>
+  <p class="sub">22 problems on Lecture 12: two DOMjudge-style programming tasks (encode, decode) and the full optimality proof, in lecture order. Every answer is a full worked solution, not just a final number.</p>
+
+  <div class="howto">
+    <h3>How to use this</h3>
+    <p>Do a part, not the sheet. Four parts, about four hours of real work end to end — four sittings, not one.</p>
+    <p>Every part has the same shape: read the spec, build or prove the result, implement it, then check it against the samples below. Parts A and B are the programming tasks — implementation-heavy, good afternoon or lab-session work. Part C is the optimality proof end to end, no coding — put it in a morning block. Part D is mixed and unsignposted, with the closed-book recall drill as the last question.</p>
+    <p>On the implementation questions, write and run your code before opening the answer. On the proof questions, write the proof out on paper first. Sample inputs and outputs are given in judge format; your own codeword <em>assignment</em> may legitimately differ from the answer's (Huffman codes aren't unique when frequencies tie) — C6 covers exactly when that's fine and when it isn't.</p>
+    <div class="key">
+      <div><span class="tag recall">recall</span> <span>state or apply a definition</span></div>
+      <div><span class="tag compute">compute</span> <span>numbers or code out, checkable</span></div>
+      <div><span class="tag prove">prove</span> <span>write it properly</span></div>
+    </div>
+  </div>
+</header>
+
+<main>
+<section class="part" id="partA">
+  <div class="parthead">
+    <h2>Part A · Encode</h2>
+    <div class="meta"><span class="partcount">5</span> questions · ~55 min</div>
+  </div>
+  <p class="lead">Slides 2–17. The one idea to hold onto: build the tree by always merging the two lowest-weight nodes on the table, leaves and already-merged subtrees treated exactly alike. A5 is the one worth sitting with — it's the question that stops you trusting a code table just because it looks plausible.</p>
+
+  <div class="spec">
+    <h4>Problem A · Encode</h4>
+    <p>Given a line of text, build an optimal (Huffman) binary prefix-free code for its characters and report how many bits an optimal encoding of the whole line needs.</p>
+    <p><strong>Input.</strong> One line of text, using at least two distinct characters. Letters, spaces and punctuation all count as characters.</p>
+    <p><strong>Output.</strong> A single integer: the number of bits in an optimal encoding of the input under a binary Huffman code.</p>
+    <div class="io">
+      <div><span class="iolab">Sample Input 1</span><pre><code>streets are stone stars are hot</code></pre></div>
+      <div><span class="iolab">Sample Output 1</span><pre><code>94</code></pre></div>
+      <div><span class="iolab">Sample Input 2</span><pre><code>abracadabra</code></pre></div>
+      <div><span class="iolab">Sample Output 2</span><pre><code>23</code></pre></div>
+      <div><span class="iolab">Sample Input 3</span><pre><code>bbbba</code></pre></div>
+      <div><span class="iolab">Sample Output 3</span><pre><code>5</code></pre></div>
+    </div>
+  </div>
+
+  <div class="q" data-id="A1" data-t="recall">
+    <div class="qtop"><span class="qid">A1</span><span class="tag recall">recall</span></div>
+    <p>Read the spec against the source's own fixed-length baseline.</p>
+    <ol class="parts">
+      <li>Define a prefix-free code.</li>
+      <li>Sample 1's alphabet has 9 distinct characters. What would a fixed-length code cost per character, and for the whole 31-character line?</li>
+      <li>State Huffman's construction rule in one sentence: what does each step of the algorithm actually do?</li>
+      <li>Sample 3, <code>bbbba</code>, gives an output of 5 — for 5 characters, that's 1 bit each. Explain why a 2-symbol alphabet can never do better than 1 bit per character, under <em>any</em> prefix-free code, Huffman or otherwise.</li>
+    </ol>
+    <div class="btns"><button class="btn ansbtn">Show answer</button></div>
+    <div class="ans" hidden>
+      <span class="step">(a) Prefix-free</span>
+      <p>A code is prefix-free if no codeword is a prefix of another codeword. That single property is what makes concatenated codewords splittable left to right with no lookahead: the first codeword you can match against the front of the remaining bits is the only one there is, because nothing shorter and nothing longer that started the same way is also in the code.</p>
+      <span class="step">(b) Fixed-length baseline</span>
+      <p>$\lceil \lg 9 \rceil = 4$ bits per character. For the 31-character line: $31 \times 4 = 124$ bits — exactly the figure the source computes on slide 4.</p>
+      <span class="step">(c) The rule</span>
+      <p>Start with one leaf per symbol, weighted by its frequency; repeatedly take the two lowest-weight nodes currently on the table — leaves or already-merged subtrees, it makes no difference which — and join them under a new parent whose weight is their sum; stop when one tree remains. Each symbol's codeword is then the sequence of left/right choices from the root down to its leaf.</p>
+      <span class="step">(d) The 2-symbol floor</span>
+      <p>With exactly two codewords needed and the code required to be prefix-free, neither can be a prefix of the other. <strong>A 0-bit codeword is a prefix of every other string, so it is ruled out immediately</strong> — both codewords need length $\ge 1$. One bit is already enough to distinguish two things, so length exactly $1$ for both is achievable and therefore optimal: $\lceil \lg 2\rceil = 1$ too, so fixed-length ties Huffman here rather than losing to it.</p>
+      <p><strong>Why this matters:</strong> every "no saving" case on this sheet — sample 3 here, and the balanced cases in D3 — traces back to this one fact. Prefix-freeness has a hard floor, and Huffman can only ever reach that floor, never beat it.</p>
+    </div>
+  </div>
+
+  <div class="q" data-id="A2" data-t="compute">
+    <div class="qtop"><span class="qid">A2</span><span class="tag compute">compute</span></div>
+    <p>A second worked example, run the same way as slides 7–15. Frequencies: $a{:}45,\ b{:}13,\ c{:}12,\ d{:}16,\ e{:}9,\ f{:}5$ (a round set of counts, summing to 100).</p>
+    <ol class="parts">
+      <li>Carry out every merge — there are five — stating which two nodes combine and the new node's weight each time, until one tree remains.</li>
+      <li>Read off each symbol's codeword from your tree and give the total number of bits to encode 100 symbols at these frequencies.</li>
+      <li>Compare that total to a fixed-length code for 6 symbols. (This distribution's entropy is $2.2199$ bits/symbol if you want a second comparison point — you don't need to derive it.)</li>
+    </ol>
+    <div class="btns"><button class="btn ansbtn">Show answer</button></div>
+    <div class="ans" hidden>
+      <span class="step">(a) The five merges</span>
+      <table>
+        <tr><th>Step</th><th>Combine</th><th>New weight</th></tr>
+        <tr><td>1</td><td>$f(5) + e(9)$</td><td>14</td></tr>
+        <tr><td>2</td><td>$c(12) + b(13)$</td><td>25</td></tr>
+        <tr><td>3</td><td>$[fe](14) + d(16)$</td><td>30</td></tr>
+        <tr><td>4</td><td>$[cb](25) + [fed](30)$</td><td>55</td></tr>
+        <tr><td>5</td><td>$a(45) + [\ldots](55)$</td><td>100</td></tr>
+      </table>
+      <p>Step 2 reaches past the still-unmerged $d(16)$ and $a(45)$ to combine two original leaves ($b,c$) instead; step 3 reaches past $a(45)$ again to merge an internal node with a leaf. <strong>Weight is all that decides a merge — not depth, and not whether a node is a leaf or already-internal.</strong></p>
+      <span class="step">(b) Codewords and total</span>
+      <p>Labelling the lighter side of each merge $0$ and the heavier side $1$ (either convention is fine, and only relabels which specific string each symbol gets — see A5): $a{=}0,\ c{=}100,\ b{=}101,\ d{=}111,\ f{=}1100,\ e{=}1101$.</p>
+      <p>$$45(1) + 12(3) + 13(3) + 16(3) + 5(4) + 9(4) = 45+36+39+48+20+36 = 224 \text{ bits}.$$</p>
+      <span class="step">(c) Comparison</span>
+      <p>Fixed-length needs $\lceil \lg 6\rceil = 3$ bits/symbol, $300$ bits total — Huffman saves $76$ bits, a $25.3\%$ reduction. Average Huffman length is $224/100 = 2.24$ bits/symbol, sitting just above the entropy floor of $2.2199$ and well under the fixed-length ceiling of $3$, exactly where an optimal code has to sit.</p>
+      <p><strong>Independent check:</strong> $45+36+39+48+20+36=224$ ✓, and every leaf depth used (1, 3, 3, 3, 4, 4) matches the merge table in (a) exactly one level deeper than the step at which that symbol was absorbed. ✓</p>
+    </div>
+  </div>
+
+  <div class="q" data-id="A3" data-t="compute">
+    <div class="qtop"><span class="qid">A3</span><span class="tag compute">compute</span></div>
+    <p>Implement Problem A. Pass the samples above and the extra tests below.</p>
+    <ol class="parts">
+      <li>Write it: read one line from stdin, print the total-bits integer.</li>
+      <li>Run the three samples and the extra tests.</li>
+      <li>Your total is $\sum_c \text{freq}(c)\times\text{len}(code(c))$. For the single-repeated-character input <code>aaaa</code> — only one distinct symbol — what should your program print, and why doesn't a literal 0-bit codeword make sense even though information theory says one known symbol costs $\lg 1 = 0$ bits?</li>
+    </ol>
+<pre><code>Extra tests
+
+  hello world            -&gt; 32
+  mississippi             -&gt; 21</code></pre>
+    <div class="btns"><button class="btn ansbtn">Show answer</button></div>
+    <div class="ans" hidden>
+      <span class="step">(a)+(b) Implementation</span>
+<pre><code>import heapq
+from collections import Counter
+
+def total_bits(text):
+    freq = Counter(text)
+    if len(freq) == 1:
+        return sum(freq.values())          # 1 bit/occurrence by convention -- see (c)
+
+    heap = [[w, i, ch, None, None] for i, (ch, w) in enumerate(freq.items())]
+    heapq.heapify(heap)
+    node_id = len(heap)
+    while len(heap) &gt; 1:
+        left  = heapq.heappop(heap)
+        right = heapq.heappop(heap)
+        merged = [left[0] + right[0], node_id, None, left, right]
+        node_id += 1
+        heapq.heappush(heap, merged)
+
+    root = heap[0]
+    total = 0
+    def walk(node, depth):
+        nonlocal total
+        w, _, ch, left, right = node
+        if ch is not None:                 # leaf
+            total += w * max(depth, 1)
+            return
+        walk(left, depth + 1)
+        walk(right, depth + 1)
+    walk(root, 0)
+    return total
+
+if __name__ == "__main__":
+    print(total_bits(input()))</code></pre>
+      <p><strong>Independent check:</strong> all three samples (94, 23, 5) and both extra tests (32, 21) reproduce the figures already given. ✓</p>
+      <span class="step">(c) The single-symbol edge case</span>
+      <p>$\lg 1 = 0$ is correct as an information-theoretic statement: once you already know every character is <code>a</code>, a stream of <code>a</code>s carries no new information, so it costs nothing to describe in the limit. But a 0-bit codeword is unusable in practice — a decoder has to tell "4 repetitions" from "0 repetitions" by reading the bitstream, and an empty codeword produces the empty bitstring either way, so the two cases become indistinguishable.</p>
+      <p><strong>The fix used above is the one every real implementation uses: fall back to a 1-bit codeword when the alphabet has exactly one symbol, and rely on the character count — which every real format transmits somewhere — to know when to stop.</strong> For <code>aaaa</code> that gives $4\times1=4$.</p>
+      <p><strong>Why this matters:</strong> this is the gap between the theoretical entropy bound and what any concrete, decodable code can actually achieve. Huffman gets arbitrarily close to entropy, but staying decodable is what rules out 0 bits here. C7 revisits this same edge case from the algorithm's-correctness side, not the implementation side.</p>
+    </div>
+  </div>
+
+  <div class="q" data-id="A4" data-t="prove">
+    <div class="qtop"><span class="qid">A4</span><span class="tag prove">prove</span></div>
+    <p>Cost the construction itself, not the encoding it produces.</p>
+    <ol class="parts">
+      <li>With $n$ distinct symbols in the input — not the input's length — how many merge steps does the algorithm perform, and how many heap push/pop operations does that come to in total, initial pushes included?</li>
+      <li>Each operation on a heap of size $O(n)$ costs $O(\log n)$. Give the total time to build the tree, and separately the time to compute the initial frequency table from an input of length $N$.</li>
+      <li>Combine these: what is the overall time complexity of Problem A's solution, in terms of both $N$ and $n$? Under what condition does the $n\log n$ term stop mattering next to the $N$ term?</li>
+    </ol>
+    <div class="btns"><button class="btn hintbtn">Hint</button><button class="btn ansbtn">Show answer</button></div>
+    <div class="hint" hidden><p>Count pushes and pops separately before you combine them — don't reason about "the heap's size" directly, reason about how many times something goes in or comes out.</p></div>
+    <div class="ans" hidden>
+      <span class="step">(a) Operation count</span>
+      <p>$n$ symbols need exactly $n-1$ merges to reach a single tree — each merge reduces the node count by one, from $n$ down to $1$. That's $n$ initial pushes, plus $n-1$ more pushes (one per merge) and $2(n-1)$ pops (two per merge): $2n-1$ pushes and $2n-2$ pops, so $\Theta(n)$ heap operations in total.</p>
+      <span class="step">(b) Costing it</span>
+      <p>The heap never holds more than $O(n)$ items, so every operation costs $O(\log n)$: the whole build is $\Theta(n)\times O(\log n) = O(n\log n)$. Computing the frequency table is one linear pass over the input incrementing a hash map — $O(N)$, no comparisons involved.</p>
+      <span class="step">(c) Overall</span>
+      <p>$$O(N + n\log n).$$</p>
+      <p><strong>The $n\log n$ term is dominated by $N$ whenever $n = O(N/\log N)$</strong> — true of nearly every real input, since alphabet size is bounded (256 for raw bytes, far smaller for natural-language text) while $N$ grows without bound. The two terms are only comparable when the input is itself close to the size of its own alphabet: a handful of characters, not the regime this problem is built for.</p>
+      <p><strong>Independent check:</strong> sample 1 has $n=9,\ N=31$, giving $n\log_2 n \approx 28.5$ against $N=31$ — genuinely comparable at this toy size, which is exactly why the dominance claim above is stated as asymptotic, not as something true of sample 1 itself. ✓</p>
+    </div>
+  </div>
+
+  <div class="q" data-id="A5" data-t="compute">
+    <div class="qtop"><span class="qid">A5</span><span class="tag compute">compute</span></div>
+    <p>You and a lab partner both implement Problem A correctly and both pass sample 1, printing <code>94</code>. Unprompted, your partner also shows you their per-character code table — every single codeword is different from any table you've seen, yet it also claims to total 94 bits.</p>
+    <ol class="parts">
+      <li>Does a different-looking table necessarily mean one of you has a bug? What would you actually check before concluding anything?</li>
+      <li>Run A3's implementation's code-producing cousin on <code>streets are stone stars are hot</code> and read off the lengths it assigns to <code>s</code> and <code>' '</code> (space). Compare them to $s{=}2,\ \text{space}{=}3$ from the lecture's own worked example (slide 16).</li>
+    </ol>
+    <div class="btns"><button class="btn ansbtn">Show answer</button></div>
+    <div class="ans" hidden>
+      <span class="step">(a) What to actually check</span>
+      <p>A different table is not, by itself, evidence of a bug. Two things are worth checking: that the table is prefix-free (no codeword a prefix of another — a real bug usually breaks exactly this), and that $\sum_c \text{freq}(c)\times\text{len}(code(c))$ genuinely equals the $94$ you both printed. If both hold, the two tables are simply different optimal solutions to the same problem.</p>
+      <span class="step">(b) A concrete instance, not a hypothetical one</span>
+      <p>Running A3's tree-builder in the natural way — processing symbols in the order they first appear in the string, which is $s,t,r,e,\text{space},a,o,n,h$ — gives <code>s</code> a 3-bit code and <code>' '</code> a 2-bit code: the reverse of the lecture's $s{=}2,\ \text{space}{=}3$. Both constructions total 94 bits; both are prefix-free; both are optimal.</p>
+      <p><strong>Why this matters: whenever two or more symbols tie on frequency — here $s,t,e,\text{space}$ all sit at weight 5 — which one of them ends up with the shorter code is an accident of implementation order, not a property of the input.</strong> C6 proves this is unavoidable whenever ties exist, and proves the one thing about it that is <em>not</em> an accident: the total.</p>
+    </div>
+  </div>
+
+</section>
+<section class="part" id="partB">
+  <div class="parthead">
+    <h2>Part B · Decode</h2>
+    <div class="meta"><span class="partcount">5</span> questions · ~50 min</div>
+  </div>
+  <p class="lead">The mirror image of Part A: no construction here, just a table and a bitstring. The one idea to hold onto: decoding only ever needs prefix-freeness, never optimality — B3 is where that distinction earns its keep.</p>
+
+  <div class="spec">
+    <h4>Problem B · Decode</h4>
+    <p>Given a codeword table and a bit string encoded under it, recover the original text. The table is guaranteed prefix-free; it is not guaranteed to be Huffman-optimal.</p>
+    <p><strong>Input.</strong> Line 1: an integer $k$, the number of symbols. Next $k$ lines: the symbol, a tab character, then its codeword (a string of 0s and 1s). The symbol is exactly one character and may itself be a space — which is exactly why a tab, not whitespace, separates it from its codeword. Final line: the encoded bit string.</p>
+    <p><strong>Output.</strong> The decoded text, on one line.</p>
+    <div class="io">
+      <div><span class="iolab">Sample Input 1</span><pre><code>9
+s	00
+r	010
+a	011
+t	100
+e	101
+ 	110
+o	1110
+n	11110
+h	11111
+0010001010110110000110011010101110001001110111101011100010001101000110011010101110111111110100</code></pre></div>
+      <div><span class="iolab">Sample Output 1</span><pre><code>streets are stone stars are hot</code></pre></div>
+      <div><span class="iolab">Sample Input 2</span><pre><code>5
+a	0
+c	100
+d	101
+b	110
+r	111
+01101110100010101101110</code></pre></div>
+      <div><span class="iolab">Sample Output 2</span><pre><code>abracadabra</code></pre></div>
+      <div><span class="iolab">Sample Input 3</span><pre><code>4
+a	0
+b	10
+c	110
+d	111
+0101101110</code></pre></div>
+      <div><span class="iolab">Sample Output 3</span><pre><code>abcda</code></pre></div>
+    </div>
+  </div>
+
+  <div class="q" data-id="B1" data-t="compute">
+    <div class="qtop"><span class="qid">B1</span><span class="tag compute">compute</span></div>
+    <p>Before implementing anything, trace what the lecture's own example (slide 5) actually breaks.</p>
+    <ol class="parts">
+      <li>The lecture gives $A{=}01,\ B{=}0101$ and says $010101$ could be read as "AB", "BA", or "AAA". Write out all three parses explicitly — which bits belong to which codeword, for each reading.</li>
+      <li>Which direction of the prefix-free property does this code violate: is $01$ a prefix of $0101$, the reverse, or both?</li>
+      <li>State precisely what has to be true of a message's first codeword boundary for greedy left-to-right matching — accumulate bits, stop at the first exact table match — to find it correctly every time.</li>
+    </ol>
+    <div class="btns"><button class="btn ansbtn">Show answer</button></div>
+    <div class="ans" hidden>
+      <span class="step">(a) The three parses</span>
+      <p>"AB": $\underbrace{01}_{A}\,\underbrace{0101}_{B}$. "BA": $\underbrace{0101}_{B}\,\underbrace{01}_{A}$. "AAA": $\underbrace{01}_{A}\,\underbrace{01}_{A}\,\underbrace{01}_{A}$. All three consume exactly the same six bits, $010101$, with no bits left over in any reading.</p>
+      <span class="step">(b) Which direction</span>
+      <p><strong>$01$ is a prefix of $0101$</strong> — the first two characters of B's codeword are exactly A's entire codeword. The reverse can't hold: a length-4 string can never be a prefix of a length-2 string.</p>
+      <span class="step">(c) What greedy matching needs</span>
+      <p>The accumulated bits must reach a state that matches <em>exactly one</em> codeword and cannot also be a strict prefix of some other, longer codeword still in the table. Prefix-freeness is precisely the guarantee that this never happens: the moment your running prefix equals some codeword, no other codeword extends it, so stopping there is always correct. Break that guarantee — as $A{=}01,B{=}0101$ does — and a decoder has no principled way to choose between stopping at $01$ (reading $A$) or reading on toward $0101$ (reading $B$); both are locally consistent with what it's seen so far.</p>
+      <p><strong>Why this matters:</strong> this is the exact property B2's decoder leans on with no further checking — one linear pass, stop the instant the running prefix matches a table entry. It's only safe because Problem B's input is guaranteed prefix-free.</p>
+    </div>
+  </div>
+
+  <div class="q" data-id="B2" data-t="compute">
+    <div class="qtop"><span class="qid">B2</span><span class="tag compute">compute</span></div>
+    <p>Implement Problem B. Pass all three samples above.</p>
+    <ol class="parts">
+      <li>Write it: read the table (tab-separated), then the bitstring; print the decoded text.</li>
+      <li>Trace it by hand on just the <em>first 10 bits</em> of sample 1, <code>0010001010</code>. Which characters does that decode to, and what — if anything — is left over, un-consumed, at the 10-bit mark?</li>
+    </ol>
+    <div class="btns"><button class="btn ansbtn">Show answer</button></div>
+    <div class="ans" hidden>
+      <span class="step">(a) Implementation</span>
+<pre><code>def decode(table, bits):
+    rev = {v: k for k, v in table.items()}
+    out, cur = [], ''
+    for b in bits:
+        cur += b
+        if cur in rev:
+            out.append(rev[cur]); cur = ''
+    if cur:
+        raise ValueError(f"leftover undecodable bits: {cur}")
+    return ''.join(out)
+
+if __name__ == "__main__":
+    k = int(input())
+    table = {}
+    for _ in range(k):
+        sym, code = input().split('\t')
+        table[sym] = code
+    bits = input()
+    print(decode(table, bits))</code></pre>
+      <p><strong>Independent check:</strong> all three samples round-trip to their stated outputs, and running the same table forward through A3's encoder on each output reproduces the exact bitstring given as input. ✓</p>
+      <span class="step">(b) Hand trace</span>
+      <p>Bit by bit against $s{=}00,\ t{=}100,\ r{=}010,\ e{=}101,\ldots$: <code>0</code> (no match) → <code>00</code> = <strong>s</strong>, reset. <code>1</code>,<code>0</code> (no match) → <code>100</code> = <strong>t</strong>, reset. <code>0</code>,<code>1</code> (no match) → <code>010</code> = <strong>r</strong>, reset. <code>1</code>,<code>0</code>: <code>10</code> is not itself a codeword.</p>
+      <p>Ten bits decode <strong>"str"</strong>, with <code>10</code> left pending — the start of $e{=}101$, which the 11th bit (a $1$, from the fuller string) completes. This lines up exactly with the true message, which begins "streets…".</p>
+    </div>
+  </div>
+
+  <div class="q" data-id="B3" data-t="recall">
+    <div class="qtop"><span class="qid">B3</span><span class="tag recall">recall</span></div>
+    <p>Sample 3's table — $a{:}0,\ b{:}10,\ c{:}110,\ d{:}111$ — is valid, but is it the Huffman-optimal table for these symbols' actual frequencies in <code>abcda</code> ($a{:}2,\ b{:}1,\ c{:}1,\ d{:}1$)?</p>
+    <ol class="parts">
+      <li>Does your B2 decoder need to know or check that a table is Huffman-optimal in order to decode correctly? Justify from what the code you wrote actually reads.</li>
+      <li>Work out the real Huffman-optimal table for $a{:}2,\ b{:}1,\ c{:}1,\ d{:}1$ and its total cost on <code>abcda</code>. Then take the <em>same four codewords</em> $\{0,10,110,111\}$ and reassign them so the shortest goes to the <em>least</em>-frequent symbol instead of the most-frequent one. Recompute the cost. What do the three totals (sample 3's table, true-optimal, backwards-relabelled) tell you about whether "valid prefix-free" already implies "as good as Huffman"?</li>
+    </ol>
+    <div class="btns"><button class="btn ansbtn">Show answer</button></div>
+    <div class="ans" hidden>
+      <span class="step">(a) What the decoder actually uses</span>
+      <p>No. B2's loop only ever asks "is the accumulated prefix, <code>cur</code>, an exact key in the table?" — nothing in that check, or anywhere else in the function, refers to frequencies or to how the table was built. <strong>Decoding correctness depends only on the table being prefix-free; optimality never enters.</strong></p>
+      <span class="step">(b) Three totals, one honest surprise</span>
+      <p>Huffman on $a{:}2,b{:}1,c{:}1,d{:}1$ (total weight 5) merges the three weight-1 leaves down in a way that leaves every symbol at depth 2: $b{=}00,c{=}01,d{=}10,a{=}11$, cost $5\times2=10$.</p>
+      <p>Sample 3's table costs $2(1)+1(2)+1(3)+1(3) = 2+2+3+3=10$ — <strong>the same 10</strong>. Relabelling the identical codeword set backwards — $d{=}0,c{=}10,b{=}110,a{=}111$, shortest word now on the rarest symbol — costs $2(3)+1(3)+1(2)+1(1)=6+3+2+1=12$.</p>
+      <p>So: sample 3's table happens to tie the true optimum here, purely because it (like the real Huffman table) put its shortest word on the most-frequent symbol. <strong>The backwards relabelling — still prefix-free, same four codewords, same decoder, no bug anywhere — proves "valid" and "optimal" are genuinely different properties: it costs 2 bits more on the same input.</strong> Sample 3 tying Huffman was a property of these particular frequencies, not a property of prefix-free codes in general.</p>
+      <p><strong>Why this matters:</strong> A5 and C6 show two different Huffman-optimal tables can tie on total cost; this question shows a non-Huffman table can <em>also</em> tie, or can lose — prefix-freeness guarantees decodability, never cost.</p>
+    </div>
+  </div>
+
+  <div class="q" data-id="B4" data-t="prove">
+    <div class="qtop"><span class="qid">B4</span><span class="tag prove">prove</span></div>
+    <p>Cost the decoder from B2.</p>
+    <ol class="parts">
+      <li>Argue that decoding runs in $O(M)$ time, where $M$ is the length of the bitstring — one pass, each bit examined once. Contrast this with a naive decoder that, at every bit position, tries matching all $k$ table entries from scratch; give its complexity and say exactly what work the $O(M)$ version avoids repeating.</li>
+      <li>Does the number of decoded characters, or the alphabet size $k$, appear anywhere in your $O(M)$ bound? Explain why each does or doesn't.</li>
+    </ol>
+    <div class="btns"><button class="btn ansbtn">Show answer</button></div>
+    <div class="ans" hidden>
+      <span class="step">(a) One pass versus brute force</span>
+      <p>B2's loop extends the running prefix by one bit and does a single $O(1)$ hash-map lookup, then moves on — every bit is touched exactly once, so decoding is $\Theta(M)$, full stop. A naive decoder that instead tries all $k$ codewords against the remaining bits at every position pays $O(k)$ work per position it's tried at, giving roughly $O(Mk)$ in the worst case.</p>
+      <p><strong>The wasted work is re-deriving, from scratch at every position, a fact a hash lookup already gives for free: "is this exact prefix a known codeword."</strong> The one-pass version remembers only the running prefix and throws it away the instant it resolves; it never re-examines bits it has already committed to a decoded symbol.</p>
+      <span class="step">(b) What does and doesn't appear</span>
+      <p>The output length doesn't need a separate term because it's already implied by $M$: every codeword has length $\ge 1$, so the number of decoded characters is at most $M$, and that work is folded into the single pass already counted.</p>
+      <p>$k$ doesn't appear in the per-bit cost because the hash-map lookup is $O(1)$ regardless of how many entries the table holds. <strong>Building that hash map from the $k$ input lines costs $O(k)$ once, up front — separate from, and dominated by, $O(M)$ for any message actually worth encoding, i.e. whenever $M \ge k$.</strong></p>
+    </div>
+  </div>
+
+  <div class="q" data-id="B5" data-t="compute">
+    <div class="qtop"><span class="qid">B5</span><span class="tag compute">compute</span></div>
+    <p>Real bitstreams aren't always well-formed. Extend B2 to handle two distinct failure modes.</p>
+    <ol class="parts">
+      <li>The bitstring ends with bits that never complete into any codeword. How does B2's implementation already detect this, and what should it do about it?</li>
+      <li>A different failure: partway through, the running prefix becomes a string that is not a prefix of <em>any</em> codeword in the table — no future bit could ever complete it. Can this be detected earlier than waiting for the whole stream to end, and would you want it to be?</li>
+    </ol>
+    <div class="btns"><button class="btn ansbtn">Show answer</button></div>
+    <div class="ans" hidden>
+      <span class="step">(a) Leftover bits at the end</span>
+      <p>B2's loop already leaves this visible for free: if the stream is malformed this way, <code>cur</code> is non-empty once the loop finishes, since nothing forces it to empty out. The <code>if cur: raise ValueError(...)</code> after the loop turns that leftover state directly into a reported failure rather than silently dropping the trailing bits.</p>
+      <span class="step">(b) A dead prefix, detected early</span>
+      <p>Yes — but not with a plain hash map of complete codewords, which can only ever say "match" or "not yet, keep reading," never "this can never match." Detecting a dead end early needs a structure that can answer "does any codeword <em>start with</em> this prefix," not just "is this prefix itself a codeword" — a trie built from the table does this in $O(1)$ per step, since a dead prefix simply has no corresponding node to descend into.</p>
+      <p><strong>Whether you want this depends on what you're building.</strong> For an offline decoder reading a complete file, catching a dead prefix at bit 5 instead of bit 5000 mainly makes error messages more useful, since the whole stream is available either way. For anything reading a live stream — decoding as bits arrive rather than after the fact — early detection is the only way to fail fast at all, since there may be no "end of stream" moment to fall back on.</p>
+    </div>
+  </div>
+
+</section>
+<section class="part" id="partC">
+  <div class="parthead">
+    <h2>Part C · Optimal</h2>
+    <div class="meta"><span class="partcount">7</span> questions · ~85 min</div>
+  </div>
+  <p class="lead">Slides 18–24, no coding. The lecture sketches this proof in five slides and a picture; every step here asks you to write the sentence the picture is standing in for. C4 is the one genuinely load-bearing proof in the lecture — C3 is the one worth reading twice.</p>
+
+  <div class="q" data-id="C1" data-t="prove">
+    <div class="qtop"><span class="qid">C1</span><span class="tag prove">prove</span></div>
+    <p>Two claims sit underneath everything else in this part.</p>
+    <ol class="parts">
+      <li>In an optimal code tree — one achieving the minimum possible total weighted path length for its symbol set — prove that no node has exactly one child.</li>
+      <li>Using (a), prove the sibling property (slide 20): the sibling of a deepest leaf is itself a leaf, at that same maximum depth.</li>
+    </ol>
+    <div class="btns"><button class="btn ansbtn">Show answer</button></div>
+    <div class="ans" hidden>
+      <span class="step">(a) No one-child nodes, by contradiction</span>
+      <p>Suppose an optimal tree $T$ has some internal node $v$ with exactly one child $c$. Delete $v$ and attach $c$ directly to $v$'s former parent (or make $c$ the new root, if $v$ was the root). Every leaf in $c$'s subtree now sits exactly one level shallower than before; every other leaf in the tree is untouched.</p>
+      <p>Total cost is $\sum_{\text{leaf}} \text{freq}\times\text{depth}$, and at least one leaf (in $c$'s subtree, which is non-empty) just had its depth reduced by exactly 1 while every other term stayed fixed. <strong>This is exactly where every symbol having strictly positive frequency is used</strong>: a positive-weight term getting strictly smaller means the sum strictly decreases. That contradicts $T$'s optimality. So no such $v$ exists — every internal node has exactly two children.</p>
+      <span class="step">(b) The sibling property</span>
+      <p>Let $\ell$ be a leaf at the tree's maximum depth $D$. By (a) the tree is full, so $\ell$'s parent has exactly two children: $\ell$ and a sibling $s$. Suppose $s$ is not a leaf. Then by (a) again, $s$ has two children, so $s$ has some descendant leaf $\ell'$ strictly deeper than $s$ itself — and since $s$ sits at depth $D$ (siblings share a depth), $\ell'$ is at depth $\gt D$.</p>
+      <p><strong>That contradicts $D$ being the maximum depth in the tree</strong> — the hypothesis this whole argument turns on. So $s$ must be a leaf, and since it's $\ell$'s sibling it shares $\ell$'s depth $D$: $s$ is a deepest leaf too. $\blacksquare$</p>
+    </div>
+  </div>
+
+  <div class="q" data-id="C2" data-t="prove">
+    <div class="qtop"><span class="qid">C2</span><span class="tag prove">prove</span></div>
+    <p>Prove CLRS Lemma 15.2 (slide 21): if $x,y$ are two symbols of minimum frequency in the alphabet, there is an optimal tree in which $x$ and $y$ are siblings at maximum depth.</p>
+    <div class="btns"><button class="btn hintbtn">Hint</button><button class="btn ansbtn">Show answer</button></div>
+    <div class="hint" hidden><p>Work out the change in total cost from swapping two leaves' positions as a single product: (frequency difference) $\times$ (depth difference). Then pin down the sign of each factor separately for the specific swap you need — don't try to reason about the sign of the product directly.</p></div>
+    <div class="ans" hidden>
+      <span class="step">Set-up</span>
+      <p>Let $T$ be any optimal tree. By C1, $T$ has two leaves $a,b$ that are siblings at the maximum depth $D$. If $x=a$ and $y=b$ (in either order) there's nothing to prove, so assume not.</p>
+      <span class="step">The cost of a single swap</span>
+      <p>Swapping the positions of any two leaves $u$ (frequency $f_u$, depth $d_u$) and $v$ (frequency $f_v$, depth $d_v$) — every other leaf untouched — changes total cost by
+      $$\Delta = \big(f_u d_v + f_v d_u\big) - \big(f_u d_u + f_v d_v\big) = (f_u-f_v)(d_v-d_u).$$</p>
+      <span class="step">Applying it twice</span>
+      <p>Swap $x$ into $a$'s position. Here $u=x,\ v=a$: $\Delta_1=(f_x-f_a)(d_a-d_x)$. Since $x$ has minimum frequency over the whole alphabet, $f_x\le f_a$, so $f_x-f_a\le 0$. Since $D$ is the maximum depth and $d_a=D$, $d_a-d_x = D-d_x\ge 0$. <strong>A non-positive factor times a non-negative factor is non-positive: $\Delta_1\le 0$.</strong></p>
+      <p>Now swap $y$ into $b$'s position (in the tree that resulted from the first swap). The identical argument applies with $u=y,\ v=b$: $f_y\le f_b$ gives $\Delta_2\le 0$.</p>
+      <span class="step">Conclusion</span>
+      <p>Let $T_2$ be the tree after both swaps: $\text{cost}(T_2) = \text{cost}(T) + \Delta_1+\Delta_2 \le \text{cost}(T)$. But $T$ was optimal, so nothing can cost less: $\text{cost}(T_2)\ge\text{cost}(T)$ too. Hence $\text{cost}(T_2)=\text{cost}(T)$ — $T_2$ is also optimal — and in $T_2$, $x$ and $y$ sit exactly where $a,b$ did: siblings, at depth $D$. $\blacksquare$</p>
+      <p><strong>Independent check:</strong> if $x=a$ already, $f_x-f_a=0$ and $\Delta_1=0$ automatically — the formula degenerates correctly rather than needing a separate case. ✓</p>
+    </div>
+  </div>
+
+  <div class="q" data-id="C3" data-t="prove">
+    <div class="qtop"><span class="qid">C3</span><span class="tag prove">prove</span></div>
+    <p>C2 shows merging the two globally lowest-frequency symbols first is always safe. Is every <em>other</em> first choice automatically unsafe?</p>
+    <ol class="parts">
+      <li>On the lecture's own 9-symbol frequencies, forcing the first merge to combine $h(1)$ with $s(5)$ instead of the correct $n(1){+}h(1)$, then proceeding greedily, verifiably gives a total of 96 bits against the true optimum of 94 — and the change is not spread evenly: $h$ moves from 5 bits to 3, $n$ from 5 to 4, but space (frequency 5) moves from 2 bits to 3. Using C2's swap-cost formula, explain in general terms what this specific trade is buying and what it's spending.</li>
+      <li>Forcing the first merge to instead combine $s(5)$ with $t(5)$ — neither one a minimum-frequency symbol — verifiably still lands on the optimal 94. Does this contradict C2? What does the contrast between (a) and (b) tell you about what a greedy-choice property actually guarantees?</li>
+    </ol>
+    <div class="btns"><button class="btn ansbtn">Show answer</button></div>
+    <div class="ans" hidden>
+      <span class="step">(a) What the bad trade buys and spends</span>
+      <p>Net change: $h$'s $-2$ bits (freq 1, so cost $-2$) plus $n$'s $-1$ bit (freq 1, cost $-1$) against space's $+1$ bit (freq 5, cost $+5$): $-2-1+5=+2$, exactly the 96-vs-94 gap.</p>
+      <p>Pairing $h$ with $s$ instead of with $n$ lets $h$ — and, knock-on, $n$ — sit shallower than the optimum needs. That looks like a win, but frequency-1 symbols are <strong>cheap to leave deep</strong> in the first place: an extra bit of depth on a frequency-1 leaf only costs 1. What the trade actually spends is $s$'s rightful position — using $s$ up on an early merge with $h$ leaves some other weight-5 symbol (here, space) to absorb the depth $s$ would otherwise have taken, and a weight-5 symbol getting one bit deeper costs 5, not 1. <strong>This is precisely the trade C2's swap argument rules out: paying a high-frequency symbol's bit-cost to buy a low-frequency symbol something it didn't need.</strong></p>
+      <span class="step">(b) One-directional, not two-directional</span>
+      <p>No contradiction. <strong>C2 proves merging the two minimum-frequency symbols is always safe — it does not claim every other pairing is always unsafe.</strong> $(s,t)$ happens to still route to an optimal tree; $(h,s)$ provably doesn't. Nothing in C2 tells you in advance which non-minimal pairings are secretly fine and which aren't — working that out would need re-running an exchange argument for that specific pairing, on that specific frequency table, from scratch.</p>
+      <p><strong>Why this matters: a greedy-choice property is a guarantee about one choice, not a verdict on every alternative.</strong> "This is safe" is a far weaker, far more useful claim than "everything else fails" — and it's the only kind of claim C2 actually makes. The two smallest is the one pairing you don't have to re-derive a proof for, every single time.</p>
+    </div>
+  </div>
+
+  <div class="q" data-id="C4" data-t="prove">
+    <div class="qtop"><span class="qid">C4</span><span class="tag prove">prove</span></div>
+    <p>Prove CLRS Lemma 15.3 (slides 22–23). Let $T$ be an optimal tree for alphabet $S=\{x,y\}\cup R$ with $x,y$ as siblings at depth $D$ (C2 guarantees such a $T$ exists). Let $T'$ be $T$ with $x,y$ deleted and their shared parent turned into a single leaf $z$, weight $f_z=f_x+f_y$, on the reduced alphabet $S'=\{z\}\cup R$. Show: $T'$ is optimal for $S'$, and every optimal tree for $S'$ expands back (re-splitting $z$ into $x,y$) into an optimal tree for $S$.</p>
+    <div class="btns"><button class="btn hintbtn">Hint</button><button class="btn ansbtn">Show answer</button></div>
+    <div class="hint" hidden><p>Don't try to prove "$T$ optimal for $S$ iff $T'$ optimal for $S'$" for an arbitrary pair. Fix the one $T$ from C2 and its $T'$, derive the exact cost identity between them, then argue by cut-and-paste in each direction: assume a better competitor exists on one side, build its counterpart on the other side, and show it would have been a better competitor there too.</p></div>
+    <div class="ans" hidden>
+      <span class="step">The cost identity</span>
+      <p>Every symbol in $R$ has the same depth in $T$ and $T'$ (nothing about their positions changed). So
+      $$\text{cost}(T) = \sum_{w\in R} f_w\,\text{depth}(w) + f_x D + f_y D, \qquad \text{cost}(T') = \sum_{w\in R} f_w\,\text{depth}(w) + f_z(D-1).$$
+      Since $f_z=f_x+f_y$, the first sums agree and $f_xD+f_yD - f_z(D-1) = f_z\cdot D - f_z\cdot D + f_z = f_z$. So
+      $$\text{cost}(T) = \text{cost}(T') + f_x + f_y.$$
+      This holds for <em>any</em> tree with $x,y$ as siblings, paired with its $z$-reduction — it's an identity about the shape, not something special to an optimal $T$.</p>
+      <span class="step">$T'$ is optimal for $S'$</span>
+      <p>Suppose not: some tree $V'$ on $S'$ has $\text{cost}(V') \lt \text{cost}(T')$. Un-merge $V'$ — split $z$'s leaf back into an internal node with children $x,y$ — to get a tree $V$ on $S$, with $x,y$ siblings by construction. The identity applies to $(V,V')$ too: $\text{cost}(V)=\text{cost}(V')+f_x+f_y \lt \text{cost}(T')+f_x+f_y = \text{cost}(T)$. <strong>But $T$ was optimal for $S$ — nothing beats it.</strong> Contradiction, so no such $V'$ exists: $T'$ is optimal.</p>
+      <span class="step">Optimal subproblem solutions expand back to optimal solutions</span>
+      <p>Let $O'$ be any optimal tree for $S'$. Since $T'$ is also optimal (just shown), and all optimal trees for the same alphabet share the same cost, $\text{cost}(O')=\text{cost}(T')$. Un-merge $O'$ into $O$ on $S$: by the identity, $\text{cost}(O) = \text{cost}(O')+f_x+f_y = \text{cost}(T')+f_x+f_y = \text{cost}(T)$. $O$ costs exactly what the optimal $T$ costs, so $O$ is optimal too. $\blacksquare$</p>
+      <p><strong>Why this matters:</strong> this is what actually licenses recursion. It's not enough that <em>some</em> good tree exists for the smaller alphabet — every step needs "solve the subproblem optimally, un-merge, get an optimal answer to the original," which is exactly the two directions just proved, not one.</p>
+    </div>
+  </div>
+
+  <div class="q" data-id="C5" data-t="recall">
+    <div class="qtop"><span class="qid">C5</span><span class="tag recall">recall</span></div>
+    <p>Name the two properties C2 and C4 each establish, in the general sense used across every greedy-algorithm correctness proof — not just this one — and say why the algorithm needs both, not just one.</p>
+    <div class="btns"><button class="btn ansbtn">Show answer</button></div>
+    <div class="ans" hidden>
+      <span class="step">The two properties</span>
+      <p><strong>Greedy-choice property</strong> (C2): a globally optimal solution can always be reached by making the locally best choice first — merge the two lowest-frequency symbols — without ever needing to revisit that choice later. <strong>Optimal substructure</strong> (C4): an optimal solution to the full problem contains an optimal solution to the smaller subproblem left behind after the greedy choice, and conversely.</p>
+      <span class="step">Why both, and neither alone</span>
+      <p>Greedy-choice alone says it's <em>safe</em> to merge the two smallest first, but says nothing about what to do with what's left — without optimal substructure there's no guarantee that solving the remaining, smaller problem well combines into a good solution overall. Optimal substructure alone, without greedy-choice, only says that recursion behaves well <em>if</em> you happen to start from the right first move — it never tells you which first move that is, which would force trying all $\binom{n}{2}$ possible first pairings to find out.</p>
+      <p>Together they license exactly the one-pass algorithm on slide 6: make the greedy choice once, recurse on what's left, never backtrack.</p>
+    </div>
+  </div>
+
+  <div class="q" data-id="C6" data-t="prove">
+    <div class="qtop"><span class="qid">C6</span><span class="tag prove">prove</span></div>
+    <p>A5 showed, by example, that the lecture's tree and a natural from-scratch implementation disagree on which of $s,t,e,\text{space}$ — all frequency 5 — gets the 2-bit code, while both total 94. Prove this had to be possible: use C2's own proof to show exactly where it stops distinguishing between tied symbols.</p>
+    <div class="btns"><button class="btn ansbtn">Show answer</button></div>
+    <div class="ans" hidden>
+      <p>Re-examine where C2's proof actually uses the values $f_x,f_y$: only through the inequalities $f_x\le f_a$ and $f_y\le f_b$, comparing against whatever sits at maximum depth. <strong>Nothing in that step distinguishes between two symbols with equal frequency</strong> — if $f_x=f_{x'}$, the inequality $f_x\le f_a$ holds if and only if $f_{x'}\le f_a$ does too, since they're the same number. The proof goes through identically whichever of $x,x'$ you send to the deepest position.</p>
+      <p>Concretely: C2 only pins down that <em>some</em> frequency-5 symbol ends up paired with frequency-4 $r$ at the point a weight-9 merge happens — the lecture's construction sends space there, a first-occurrence-ordered implementation sends $s$. <strong>The proof's only appeal to $x,y$'s identity is an inequality, and inequalities between tied values don't distinguish which tied value satisfies them</strong> — so both choices, and any other respecting the same merge weights, are left equally valid.</p>
+      <p>What C4's identity <em>does</em> pin down exactly, not up to ties: total cost. That identity is stated purely in terms of frequencies — $\text{cost}(T)=\text{cost}(T')+f_x+f_y$ — and never refers to which specific tied symbol occupies which position, so it forces the same number regardless.</p>
+      <p><strong>Why this matters: this is the general reason Huffman codes aren't unique but Huffman costs are.</strong> It isn't a quirk of this string — it's built into exactly where the optimality proof does, and doesn't, look at frequency values.</p>
+    </div>
+  </div>
+
+  <div class="q" data-id="C7" data-t="prove">
+    <div class="qtop"><span class="qid">C7</span><span class="tag prove">prove</span></div>
+    <p>The algorithm (slide 6) starts with one leaf per symbol and merges until one tree remains. Walk it through on an alphabet of size 1.</p>
+    <ol class="parts">
+      <li>With exactly one symbol, how many merges does the procedure perform, and what is "the tree" at the end?</li>
+      <li>A3(c) showed real implementations give this symbol a 1-bit code by convention, even though $\lg 1=0$. Prove that no valid prefix-free code can give a 2-symbol alphabet less than 1 bit each — that's A1(d)'s argument — then show precisely why that same argument does <em>not</em> apply once you're down to exactly one symbol, and what does step in instead.</li>
+    </ol>
+    <div class="btns"><button class="btn ansbtn">Show answer</button></div>
+    <div class="ans" hidden>
+      <span class="step">(a) Zero merges</span>
+      <p>With one symbol, the algorithm already has exactly one tree — a single leaf — before it does anything, so "repeat until one tree remains" is satisfied immediately: zero merges. That leaf has no edges leading to it from anywhere; its root-to-leaf path has length 0.</p>
+      <span class="step">(b) Why A1(d)'s argument is silent here</span>
+      <p>A1(d)'s argument needs a <em>second</em> codeword for the empty string to be a prefix of — a 0-bit codeword is banned because it would be a prefix of every other, nonempty codeword sharing its table, which is exactly what breaks unambiguous left-to-right decoding. <strong>With only one symbol in the whole alphabet, there is no second codeword for the empty string to conflict with</strong> — a one-entry table $\{\text{symbol}\to\varepsilon\}$ is, formally, vacuously prefix-free. A1(d)'s argument doesn't rule out 0 bits here; it can't, because the condition it depends on — something else in the table for the empty word to be a prefix of — is exactly what's missing.</p>
+      <p>The actual obstruction is a different one, already identified in A3(c): a 0-bit code carries no way to recover <em>how many times</em> the symbol occurred, since the encoded bitstream is the empty string whether the source had one occurrence or a million. That's a statement about recovering the message's length, not about ambiguity between distinct codewords. <strong>The single-symbol case is exactly where those two concerns — usually bundled together under "prefix-free" — come apart.</strong></p>
+    </div>
+  </div>
+
+</section>
+<section class="part" id="partD">
+  <div class="parthead">
+    <h2>Part D · Mixed</h2>
+    <div class="meta"><span class="partcount">5</span> questions · ~45 min</div>
+  </div>
+  <p class="lead">No signposting from here — that's the point. D3 is the one to slow down on: two of the five tables are wrong for different reasons, and neither reason is "not prefix-free" on its own.</p>
+
+  <div class="q" data-id="D1" data-t="compute">
+    <div class="qtop"><span class="qid">D1</span><span class="tag compute">compute</span></div>
+    <p>Put every length figure from this sheet side by side.</p>
+    <ol class="parts">
+      <li>Fill in a table: for both worked examples on this sheet — the lecture's 9-symbol string, and A2's six-symbol table — give entropy, Huffman average, and fixed-length bits per symbol.</li>
+      <li>Huffman's average is never below entropy, and (take this as given) never exceeds it by more than 1 bit. Which of the two examples sits closer, in absolute bits, to the entropy floor — and does that match which example has the more skewed (less uniform) frequencies?</li>
+    </ol>
+    <div class="btns"><button class="btn hintbtn">Hint</button><button class="btn ansbtn">Show answer</button></div>
+    <div class="hint" hidden><p>Compare the <em>gap</em> — Huffman average minus entropy — in absolute bits for each example. Don't compare the entropy or average values in isolation; the question is about how close each one gets, not which one is bigger.</p></div>
+    <div class="ans" hidden>
+      <span class="step">(a) Side by side</span>
+      <table>
+        <tr><th></th><th>entropy</th><th>Huffman avg</th><th>fixed-length</th></tr>
+        <tr><td>Lecture string (9 symbols)</td><td>2.9802</td><td>3.0323</td><td>4</td></tr>
+        <tr><td>A2's table (6 symbols)</td><td>2.2199</td><td>2.24</td><td>3</td></tr>
+      </table>
+      <span class="step">(b) The gap, and what it tracks</span>
+      <p>Lecture string: $3.0323-2.9802=0.0521$ bits. A2's table: $2.24-2.2199=0.0201$ bits. <strong>A2's table sits closer to entropy</strong>, by better than a factor of two.</p>
+      <p>This matches the skew: A2's frequencies run from 5 to 45 out of 100 — one symbol carries nearly half the weight. The lecture's string is comparatively flat: 1 to 5 out of 31, with four symbols tied at the maximum. A dominant symbol can be handed a cheap, short code without much competition for that depth; a flatter distribution has more symbols jostling for the same few short codeword slots, and integer-bit-length codewords can't split that difference as finely. This is consistent with the general pattern — not a theorem proved on this sheet — that Huffman gets closer to entropy as a distribution gets more skewed.</p>
+    </div>
+  </div>
+
+  <div class="q" data-id="D2" data-t="prove">
+    <div class="qtop"><span class="qid">D2</span><span class="tag prove">prove</span></div>
+    <p>Part B's decoder needs the exact table Part A's encoder used. For a real message, that table has to be sent or stored too — it isn't free.</p>
+    <ol class="parts">
+      <li>Order-of-magnitude only: for an alphabet of $n$ symbols, roughly how many bits does transmitting the table itself cost, storing each symbol plus its codeword directly?</li>
+      <li>Using sample 1 as a reference ($n{=}9$, Huffman saves $124-94=30$ bits over fixed-length): sketch, roughly, why a short-enough message could make the table cost more than encoding saves — and name one real technique that reduces this overhead.</li>
+    </ol>
+    <div class="btns"><button class="btn ansbtn">Show answer</button></div>
+    <div class="ans" hidden>
+      <span class="step">(a) Rough table cost</span>
+      <p>Each entry needs the symbol itself (a fixed cost — 8 bits for a byte alphabet) plus its codeword, which is at most on the order of $n$ bits in a maximally skewed tree and typically closer to $\lg n$-ish for a balanced one. That puts the whole table somewhere around $O(n\log n)$ bits for a reasonably balanced tree, growing toward $O(n^2)$ in a pathological one. For sample 1's $n=9$ with codeword lengths up to 5 bits: roughly $9\times(8+4) \approx 108$ bits just to write the table down plainly — already more than the 30 bits the encoding saved.</p>
+      <span class="step">(b) When the overhead wins</span>
+      <p>Savings scale with message length $N$ — roughly $N\times(\text{fixed bits/char} - \text{Huffman avg bits/char})$ — while the table's cost is fixed by the alphabet, independent of $N$. <strong>For a short enough message the fixed table cost simply doesn't have enough $N$ to be amortised against, and the "saving" goes negative overall</strong> once you count what the decoder actually needs to receive.</p>
+      <p>One real fix: transmit only codeword <em>lengths</em> (each $O(\log(\text{max length}))$ bits) rather than full codewords, and reconstruct the actual bit patterns canonically from the lengths and a fixed symbol ordering — this is exactly what <em>canonical Huffman codes</em> do (D4 names the general family). It shrinks the table without touching anything about how well the codewords themselves compress the message.</p>
+    </div>
+  </div>
+
+  <div class="q" data-id="D3" data-t="compute">
+    <div class="qtop"><span class="qid">D3</span><span class="tag compute">compute</span></div>
+    <p>Which of these code tables could have come out of Huffman's algorithm, for <em>some</em> set of frequencies — and which definitely could not?</p>
+    <ol class="parts">
+      <li>$\{a{:}0,\ b{:}10,\ c{:}11\}$</li>
+      <li>$\{a{:}0,\ b{:}1,\ c{:}11\}$</li>
+      <li>$\{a{:}00,\ b{:}01,\ c{:}10,\ d{:}110,\ e{:}111\}$</li>
+      <li>$\{a{:}0,\ b{:}10,\ c{:}110,\ d{:}1111\}$</li>
+      <li>$\{a{:}0,\ c{:}100,\ b{:}101,\ d{:}111,\ f{:}1100,\ e{:}1101\}$</li>
+    </ol>
+    <div class="btns"><button class="btn ansbtn">Show answer</button></div>
+    <div class="ans" hidden>
+      <span class="step">1 — valid</span>
+      <p>The standard 3-leaf shape: one symbol at depth 1, two siblings at depth 2. Achievable for, e.g., $a{:}2,b{:}1,c{:}1$.</p>
+      <span class="step">2 — invalid, not even prefix-free</span>
+      <p>$b{=}1$ is a prefix of $c{=}11$: this fails the basic decodability requirement before optimality is even a question. A message starting $11\ldots$ can't be told apart between "$b$ then something" and "$c$".</p>
+      <span class="step">3 — valid</span>
+      <p>Lengths $2,2,2,3,3$. The two length-3 codewords, $d{=}110$ and $e{=}111$, share the prefix $11$ and differ only in the last bit — genuine siblings, satisfying C1b. Achievable for a frequency set with $d,e$ the two smallest and roughly equal, $a,b,c$ larger.</p>
+      <span class="step">4 — invalid, but for a different reason than 2</span>
+      <p>This one <em>is</em> prefix-free — check every pair and none is a prefix of another. The problem is structural: $d{=}1111$ is the <strong>only</strong> codeword starting $111$, which means the node at prefix $111$ has exactly one child. <strong>C1(a) already rules this out for any optimal tree</strong> — if these were real frequencies, shortening $d$ to $111$ would strictly reduce cost, so no optimal (Huffman) construction would ever leave it at 4 bits with an empty sibling slot. Valid prefix-free code; not a Huffman output.</p>
+      <span class="step">5 — valid</span>
+      <p>This is exactly A2's own answer, verified there: $a{=}0,c{=}100,b{=}101,d{=}111,f{=}1100,e{=}1101$, achieved by the frequencies $a{:}45,b{:}13,c{:}12,d{:}16,e{:}9,f{:}5$.</p>
+      <p><strong>Two different flaws, both real:</strong> (2) fails to be a valid code at all; (4) is a perfectly valid code that simply isn't optimal. "Prefix-free" and "Huffman-optimal" are different bars, and a table can clear the first without clearing the second — B3 already made the same point from the decoding side.</p>
+    </div>
+  </div>
+
+  <div class="q" data-id="D4" data-t="recall">
+    <div class="qtop"><span class="qid">D4</span><span class="tag recall">recall</span></div>
+    <p>Slide 24 closes by saying Huffman is optimal "for the alphabet with given frequencies," but beating it needs "an encoding that can encode multiple symbols at once."</p>
+    <ol class="parts">
+      <li>What does the optimality proof (C1–C4) implicitly assume about how symbols get encoded, that a multi-symbol scheme would break?</li>
+      <li>Name one real situation where frequencies aren't known upfront — unlike every problem on this sheet — and say, in one sentence, what would have to change about Problem A to handle it.</li>
+    </ol>
+    <div class="btns"><button class="btn ansbtn">Show answer</button></div>
+    <div class="ans" hidden>
+      <span class="step">(a) The hidden assumption</span>
+      <p>C1–C4 prove optimality <em>within the rule</em> "each symbol, independently, gets its own whole-number-of-bits codeword." A symbol with probability $0.9$ carries only about $0.15$ bits of information ideally, but no prefix code can give it less than 1 bit — Huffman's proof is airtight about being the best possible <em>under that one-symbol-one-codeword constraint</em>, and says nothing about schemes that don't play by it: encoding pairs or blocks of symbols together, or genuinely fractional-bit allocation, as arithmetic/range coding does. Huffman can still be optimal in its own lane and be beaten by a scheme in a different lane.</p>
+      <span class="step">(b) When frequencies aren't known in advance</span>
+      <p>Streaming or live text compression, where the encoder has to start before it has seen the whole input. Problem A would need to change from "read the whole line, then decide" to something that updates its code as data arrives — either two passes (count first, ship the table, then encode) or a genuinely adaptive scheme where encoder and decoder maintain synchronised statistics and neither ever transmits a table at all.</p>
+    </div>
+  </div>
+
+  <div class="q" data-id="D5" data-t="recall">
+    <div class="qtop"><span class="qid">D5</span><span class="tag recall">recall</span></div>
+    <p>Closed book. For each, give the precise statement, not just the topic name.</p>
+    <ol class="parts">
+      <li>Define a prefix-free code.</li>
+      <li>State Huffman's construction rule.</li>
+      <li>State the sibling property.</li>
+      <li>State the greedy-choice property this problem satisfies, and name the lemma that proves it.</li>
+      <li>State optimal substructure for this problem, and name the lemma that proves it.</li>
+      <li>Give the overall time complexity of building a code from an input of length $N$ with alphabet size $n$, and of decoding a bitstring of length $M$.</li>
+      <li>True or false, with one line of justification: two correct Huffman implementations, given the same input, always produce identical codeword tables.</li>
+    </ol>
+    <div class="btns"><button class="btn ansbtn">Show answer</button></div>
+    <div class="ans" hidden>
+      <span class="step">1</span><p>No codeword is a prefix of another.</p>
+      <span class="step">2</span><p>One leaf per symbol, weighted by frequency; repeatedly merge the two lowest-weight nodes into a new parent until one tree remains; codewords are root-to-leaf paths.</p>
+      <span class="step">3</span><p>The sibling of a deepest leaf is itself a leaf, at the same maximum depth (C1b).</p>
+      <span class="step">4</span><p>There is always an optimal tree in which the two globally lowest-frequency symbols are siblings at maximum depth — C2 (CLRS Lemma 15.2).</p>
+      <span class="step">5</span><p>Merging the two lowest-frequency symbols into one and solving the resulting smaller alphabet optimally, then un-merging, yields an optimal solution to the original alphabet — C4 (CLRS Lemma 15.3).</p>
+      <span class="step">6</span><p>$O(N+n\log n)$ to build; $O(M)$ to decode (A4, B4).</p>
+      <span class="step">7</span><p><strong>False.</strong> A5 and C6 exhibit two correct constructions on the same input that disagree on which of several tied-frequency symbols gets which codeword, while both total the same 94 bits — ties make the tree, but not its cost, implementation-dependent.</p>
+    </div>
+  </div>
+
+</section>
+</main>
+
+<footer class="end">
+  <p>Built from Lecture 12, Huffman Codes (CITS3001 Advanced Algorithms, Department of Computer Science and Software Engineering, University of Western Australia), citing CLRS §15.3. No errors were found in the source slides — every number quoted from the lecture (124 bits, 94 bits, the 24% reduction, all nine frequencies) checked out against an independent computation.</p>
+  <p>Problems A and B are original, written for this sheet in the lecture's own worked example and judge-format style; Part C proves what slides 18–24 state. Printing uses the same palette as the screen, with all answers revealed.</p>
+</footer>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<script>
+(function(){
+  "use strict";
+
+  function all(sel, root){ return Array.prototype.slice.call((root || document).querySelectorAll(sel)); }
+
+  /* ---------- maths ---------- */
+  function renderMath(){
+    if (typeof window.renderMathInElement !== "function") return;
+    try {
+      window.renderMathInElement(document.body, {
+        delimiters: [
+          {left: "$$", right: "$$", display: true},
+          {left: "\\[", right: "\\]", display: true},
+          {left: "$", right: "$", display: false}
+        ],
+        ignoredTags: ["script", "noscript", "style", "textarea", "option"],
+        throwOnError: false
+      });
+    } catch (e) { /* raw LaTeX stays readable if this fails */ }
+  }
+
+  /* ---------- interactions ---------- */
+  document.addEventListener("click", function(ev){
+    var t = ev.target;
+    if (!t.classList) return;
+
+    if (t.classList.contains("ansbtn") || t.classList.contains("hintbtn")) {
+      var card = t.closest(".q");
+      if (!card) return;
+      var isHint = t.classList.contains("hintbtn");
+      var box = card.querySelector(isHint ? ".hint" : ".ans");
+      if (!box) return;
+      if (box.hasAttribute("hidden")) {
+        box.removeAttribute("hidden");
+        t.textContent = isHint ? "Hide hint" : "Hide answer";
+      } else {
+        box.setAttribute("hidden", "");
+        t.textContent = isHint ? "Hint" : "Show answer";
+      }
+    }
+  });
+
+  document.getElementById("hideall").addEventListener("click", function(){
+    all(".ans, .hint").forEach(function(b){ b.setAttribute("hidden", ""); });
+    all(".ansbtn").forEach(function(b){ b.textContent = "Show answer"; });
+    all(".hintbtn").forEach(function(b){ b.textContent = "Hint"; });
+  });
+
+  renderMath();
+})();
+</script>
+</body>
+</html>

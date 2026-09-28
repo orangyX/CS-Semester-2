@@ -1,0 +1,567 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rdf:RDF
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+   xmlns:terraria="http://example.org/terraria/"
+>
+  <rdf:Description rdf:about="http://example.org/terraria/EyeOfCthulhu">
+    <rdf:type rdf:resource="http://example.org/terraria/Boss"/>
+    <rdfs:label>Eye of Cthulhu</rdfs:label>
+    <terraria:game_phase rdf:resource="http://example.org/terraria/PreHardmode"/>
+    <terraria:health rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">3640</terraria:health>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/terraria/StarFury">
+    <rdf:type rdf:resource="http://example.org/terraria/Weapon"/>
+    <rdfs:label>Star Fury</rdfs:label>
+    <terraria:acquired_from rdf:resource="http://example.org/terraria/Chest"/>
+    <terraria:game_phase rdf:resource="http://example.org/terraria/PreHardmode"/>
+    <terraria:damage rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">25</terraria:damage>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/terraria/TrueExcalibur">
+    <rdf:type rdf:resource="http://example.org/terraria/Weapon"/>
+    <rdfs:label>True Excalibur</rdfs:label>
+    <terraria:crafted_from rdf:resource="http://example.org/terraria/Excalibur"/>
+    <terraria:crafted_from rdf:resource="http://example.org/terraria/ChlorophyteBar"/>
+    <terraria:crafted_at rdf:resource="http://example.org/terraria/HardmodeAnvil"/>
+    <terraria:game_phase rdf:resource="http://example.org/terraria/Hardmode"/>
+    <terraria:damage rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">72</terraria:damage>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/terraria/TrueNightsEdge">
+    <rdf:type rdf:resource="http://example.org/terraria/Weapon"/>
+    <rdfs:label>True Nights Edge</rdfs:label>
+    <terraria:crafted_from rdf:resource="http://example.org/terraria/NightsEdge"/>
+    <terraria:crafted_from rdf:resource="http://example.org/terraria/SoulOfSight"/>
+    <terraria:crafted_from rdf:resource="http://example.org/terraria/SoulOfMight"/>
+    <terraria:crafted_from rdf:resource="http://example.org/terraria/SoulOfFright"/>
+    <terraria:crafted_at rdf:resource="http://example.org/terraria/HardmodeAnvil"/>
+    <terraria:game_phase rdf:resource="http://example.org/terraria/Hardmode"/>
+    <terraria:damage rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">70</terraria:damage>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/terraria/Skeletron">
+    <rdf:type rdf:resource="http://example.org/terraria/Boss"/>
+    <rdfs:label>Skeletron</rdfs:label>
+    <terraria:game_phase rdf:resource="http://example.org/terraria/PreHardmode"/>
+    <terraria:health rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">8800</terraria:health>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/terraria/TheDestroyer">
+    <rdf:type rdf:resource="http://example.org/terraria/Boss"/>
+    <rdfs:label>The Destroyer</rdfs:label>
+    <terraria:is_a rdf:resource="http://example.org/terraria/AnyMechanicalBoss"/>
+    <terraria:game_phase rdf:resource="http://example.org/terraria/Hardmode"/>
+    <terraria:health rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">93600</terraria:health>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/terraria/PreHardmode">
+    <rdf:type rdf:resource="http://example.org/terraria/Progression"/>
+    <rdfs:label>Pre-hardmode</rdfs:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/terraria/Chest">
+    <rdf:type rdf:resource="http://example.org/terraria/Location"/>
+    <rdfs:label>Chest</rdfs:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/terraria/InfluxWaver">
+    <rdf:type rdf:resource="http://example.org/terraria/Weapon"/>
+    <rdfs:label>Influx Waver</rdfs:label>
+    <terraria:dropped_from rdf:resource="http://example.org/terraria/MartianSaucer"/>
+    <terraria:game_phase rdf:resource="http://example.org/terraria/Hardmode"/>
+    <terraria:damage rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">100</terraria:damage>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/terraria/Dungeon">
+    <rdf:type rdf:resource="http://example.org/terraria/Location"/>
+    <rdfs:label>Dungeon</rdfs:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/terraria/Pumpking">
+    <rdf:type rdf:resource="http://example.org/terraria/Boss"/>
+    <rdfs:label>Pumpking</rdfs:label>
+    <terraria:game_phase rdf:resource="http://example.org/terraria/Hardmode"/>
+    <terraria:health rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">33800</terraria:health>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/terraria/StarWrath">
+    <rdf:type rdf:resource="http://example.org/terraria/Weapon"/>
+    <rdfs:label>Star Wrath</rdfs:label>
+    <terraria:dropped_from rdf:resource="http://example.org/terraria/MoonLord"/>
+    <terraria:game_phase rdf:resource="http://example.org/terraria/Hardmode"/>
+    <terraria:damage rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">170</terraria:damage>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/terraria/QueenBee">
+    <rdf:type rdf:resource="http://example.org/terraria/Boss"/>
+    <rdfs:label>Queen Bee</rdfs:label>
+    <terraria:game_phase rdf:resource="http://example.org/terraria/PreHardmode"/>
+    <terraria:health rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">4760</terraria:health>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/terraria/AnyEvilSword">
+    <rdf:type rdf:resource="http://example.org/terraria/Weapon"/>
+    <rdfs:label>Any Evil Sword</rdfs:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/terraria/DemoniteOre">
+    <rdf:type rdf:resource="http://example.org/terraria/Material"/>
+    <rdfs:label>Demonite Ore</rdfs:label>
+    <terraria:dropped_from rdf:resource="http://example.org/terraria/EaterOfWorlds"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/terraria/WallOfFlesh">
+    <rdf:type rdf:resource="http://example.org/terraria/Boss"/>
+    <rdfs:label>Wall of Flesh</rdfs:label>
+    <terraria:game_phase rdf:resource="http://example.org/terraria/PreHardmode"/>
+    <terraria:health rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">11200</terraria:health>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/terraria/Zenith">
+    <rdf:type rdf:resource="http://example.org/terraria/Weapon"/>
+    <rdfs:label>Zenith</rdfs:label>
+    <terraria:crafted_from rdf:resource="http://example.org/terraria/CopperShortSword"/>
+    <terraria:crafted_from rdf:resource="http://example.org/terraria/StarFury"/>
+    <terraria:crafted_from rdf:resource="http://example.org/terraria/EnchantedSword"/>
+    <terraria:crafted_from rdf:resource="http://example.org/terraria/BeeKeeper"/>
+    <terraria:crafted_from rdf:resource="http://example.org/terraria/Seedler"/>
+    <terraria:crafted_from rdf:resource="http://example.org/terraria/TheHorsemansBlade"/>
+    <terraria:crafted_from rdf:resource="http://example.org/terraria/InfluxWaver"/>
+    <terraria:crafted_from rdf:resource="http://example.org/terraria/StarWrath"/>
+    <terraria:crafted_from rdf:resource="http://example.org/terraria/Meowmere"/>
+    <terraria:crafted_from rdf:resource="http://example.org/terraria/Terrablade"/>
+    <terraria:crafted_at rdf:resource="http://example.org/terraria/HardmodeAnvil"/>
+    <terraria:game_phase rdf:resource="http://example.org/terraria/Hardmode"/>
+    <terraria:damage rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">190</terraria:damage>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/terraria/Workbench">
+    <rdf:type rdf:resource="http://example.org/terraria/CraftingSource"/>
+    <rdfs:label>Workbench</rdfs:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/terraria/Plantera">
+    <rdf:type rdf:resource="http://example.org/terraria/Boss"/>
+    <rdfs:label>Plantera</rdfs:label>
+    <terraria:game_phase rdf:resource="http://example.org/terraria/Hardmode"/>
+    <terraria:health rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">42000</terraria:health>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/terraria/TitaniumBar">
+    <rdf:type rdf:resource="http://example.org/terraria/Material"/>
+    <rdfs:label>Titanium Bar</rdfs:label>
+    <terraria:crafted_from rdf:resource="http://example.org/terraria/TitaniumOre"/>
+    <terraria:crafted_at rdf:resource="http://example.org/terraria/HardmodeForge"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/terraria/Terrablade">
+    <rdf:type rdf:resource="http://example.org/terraria/Weapon"/>
+    <rdfs:label>Terrablade</rdfs:label>
+    <terraria:crafted_from rdf:resource="http://example.org/terraria/TrueNightsEdge"/>
+    <terraria:crafted_from rdf:resource="http://example.org/terraria/TrueExcalibur"/>
+    <terraria:crafted_from rdf:resource="http://example.org/terraria/BrokenHeroSword"/>
+    <terraria:crafted_at rdf:resource="http://example.org/terraria/HardmodeAnvil"/>
+    <terraria:game_phase rdf:resource="http://example.org/terraria/Hardmode"/>
+    <terraria:damage rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">85</terraria:damage>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/terraria/MartianSaucer">
+    <rdf:type rdf:resource="http://example.org/terraria/Boss"/>
+    <rdfs:label>Martian Saucer</rdfs:label>
+    <terraria:game_phase rdf:resource="http://example.org/terraria/Hardmode"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/terraria/DemoniteBar">
+    <rdf:type rdf:resource="http://example.org/terraria/Material"/>
+    <rdfs:label>Demonite Bar</rdfs:label>
+    <terraria:crafted_from rdf:resource="http://example.org/terraria/DemoniteOre"/>
+    <terraria:crafted_at rdf:resource="http://example.org/terraria/AnyForge"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/terraria/BladeOfGrass">
+    <rdf:type rdf:resource="http://example.org/terraria/Weapon"/>
+    <rdfs:label>Blade of Grass</rdfs:label>
+    <terraria:crafted_from rdf:resource="http://example.org/terraria/Stinger"/>
+    <terraria:crafted_from rdf:resource="http://example.org/terraria/JungleSpore"/>
+    <terraria:crafted_from rdf:resource="http://example.org/terraria/Vine"/>
+    <terraria:crafted_at rdf:resource="http://example.org/terraria/AnyAnvil"/>
+    <terraria:game_phase rdf:resource="http://example.org/terraria/PreHardmode"/>
+    <terraria:damage rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">18</terraria:damage>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/terraria/Gel">
+    <rdf:type rdf:resource="http://example.org/terraria/Material"/>
+    <rdfs:label>Gel</rdfs:label>
+    <terraria:dropped_from rdf:resource="http://example.org/terraria/Slime"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/terraria/LeadBar">
+    <rdf:type rdf:resource="http://example.org/terraria/Material"/>
+    <rdfs:label>Lead Bar</rdfs:label>
+    <terraria:crafted_from rdf:resource="http://example.org/terraria/LeadOre"/>
+    <terraria:crafted_at rdf:resource="http://example.org/terraria/AnyForge"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/terraria/TitaniumForge">
+    <rdf:type rdf:resource="http://example.org/terraria/CraftingSource"/>
+    <rdfs:label>Titanium Forge</rdfs:label>
+    <terraria:is_a rdf:resource="http://example.org/terraria/AnyForge"/>
+    <terraria:is_a rdf:resource="http://example.org/terraria/HardmodeForge"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/terraria/AnyWood">
+    <rdf:type rdf:resource="http://example.org/terraria/Material"/>
+    <rdfs:label>Any Wood</rdfs:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/terraria/TheHorsemansBlade">
+    <rdf:type rdf:resource="http://example.org/terraria/Weapon"/>
+    <rdfs:label>The Horseman's blade</rdfs:label>
+    <terraria:dropped_from rdf:resource="http://example.org/terraria/Pumpking"/>
+    <terraria:game_phase rdf:resource="http://example.org/terraria/Hardmode"/>
+    <terraria:damage rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">150</terraria:damage>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/terraria/Hornet">
+    <rdf:type rdf:resource="http://example.org/terraria/Enemy"/>
+    <rdfs:label>Hornet</rdfs:label>
+    <terraria:game_phase rdf:resource="http://example.org/terraria/PreHardmode"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/terraria/AdamantiteForge">
+    <rdf:type rdf:resource="http://example.org/terraria/CraftingSource"/>
+    <rdfs:label>Adamantite Forge</rdfs:label>
+    <terraria:is_a rdf:resource="http://example.org/terraria/AnyForge"/>
+    <terraria:is_a rdf:resource="http://example.org/terraria/HardmodeForge"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/terraria/Golem">
+    <rdf:type rdf:resource="http://example.org/terraria/Boss"/>
+    <rdfs:label>Golem</rdfs:label>
+    <terraria:game_phase rdf:resource="http://example.org/terraria/Hardmode"/>
+    <terraria:health rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">46200</terraria:health>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/terraria/HardmodeForge">
+    <rdf:type rdf:resource="http://example.org/terraria/CraftingSource"/>
+    <rdfs:label>Hardmode Forge</rdfs:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/terraria/SwordShrine">
+    <rdf:type rdf:resource="http://example.org/terraria/Location"/>
+    <rdfs:label>Sword Shrine</rdfs:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/terraria/ChlorophyteOre">
+    <rdf:type rdf:resource="http://example.org/terraria/Material"/>
+    <rdfs:label>Chlorophyte Ore</rdfs:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/terraria/Excalibur">
+    <rdf:type rdf:resource="http://example.org/terraria/Weapon"/>
+    <rdfs:label>Excalibur</rdfs:label>
+    <terraria:crafted_from rdf:resource="http://example.org/terraria/HallowedBar"/>
+    <terraria:crafted_at rdf:resource="http://example.org/terraria/HardmodeForge"/>
+    <terraria:game_phase rdf:resource="http://example.org/terraria/Hardmode"/>
+    <terraria:damage rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">72</terraria:damage>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/terraria/Mothron">
+    <rdf:type rdf:resource="http://example.org/terraria/Enemy"/>
+    <rdfs:label>Mothron</rdfs:label>
+    <terraria:game_phase rdf:resource="http://example.org/terraria/Hardmode"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/terraria/NightsEdge">
+    <rdf:type rdf:resource="http://example.org/terraria/Weapon"/>
+    <rdfs:label>Nights Edge</rdfs:label>
+    <terraria:crafted_from rdf:resource="http://example.org/terraria/AnyEvilSword"/>
+    <terraria:crafted_from rdf:resource="http://example.org/terraria/BladeOfGrass"/>
+    <terraria:crafted_from rdf:resource="http://example.org/terraria/Volcano"/>
+    <terraria:crafted_from rdf:resource="http://example.org/terraria/Muramasa"/>
+    <terraria:crafted_at rdf:resource="http://example.org/terraria/AnyAltar"/>
+    <terraria:game_phase rdf:resource="http://example.org/terraria/PreHardmode"/>
+    <terraria:damage rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">40</terraria:damage>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/terraria/BrainOfCthulhu">
+    <rdf:type rdf:resource="http://example.org/terraria/Boss"/>
+    <rdfs:label>Brain of Cthulhu</rdfs:label>
+    <terraria:game_phase rdf:resource="http://example.org/terraria/PreHardmode"/>
+    <terraria:health rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1350</terraria:health>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/terraria/HellstoneBar">
+    <rdf:type rdf:resource="http://example.org/terraria/Material"/>
+    <rdfs:label>Hellstone Bar</rdfs:label>
+    <terraria:crafted_from rdf:resource="http://example.org/terraria/HellstoneOre"/>
+    <terraria:crafted_at rdf:resource="http://example.org/terraria/Hellforge"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/terraria/Vine">
+    <rdf:type rdf:resource="http://example.org/terraria/Material"/>
+    <rdfs:label>Vine</rdfs:label>
+    <terraria:dropped_from rdf:resource="http://example.org/terraria/Maneater"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/terraria/Maneater">
+    <rdf:type rdf:resource="http://example.org/terraria/Enemy"/>
+    <rdfs:label>Maneater</rdfs:label>
+    <terraria:game_phase rdf:resource="http://example.org/terraria/PreHardmode"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/terraria/AdamantiteBar">
+    <rdf:type rdf:resource="http://example.org/terraria/Material"/>
+    <rdfs:label>Adamantite Bar</rdfs:label>
+    <terraria:crafted_from rdf:resource="http://example.org/terraria/AdamantiteOre"/>
+    <terraria:crafted_at rdf:resource="http://example.org/terraria/HardmodeForge"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/terraria/OrichalcumAnvil">
+    <rdf:type rdf:resource="http://example.org/terraria/CraftingSource"/>
+    <rdfs:label>Orichalcum Anvil</rdfs:label>
+    <terraria:is_a rdf:resource="http://example.org/terraria/AnyAnvil"/>
+    <terraria:is_a rdf:resource="http://example.org/terraria/HardmodeAnvil"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/terraria/EnchantedSword">
+    <rdf:type rdf:resource="http://example.org/terraria/Weapon"/>
+    <rdfs:label>Enchanted Sword</rdfs:label>
+    <terraria:acquired_from rdf:resource="http://example.org/terraria/SwordShrine"/>
+    <terraria:game_phase rdf:resource="http://example.org/terraria/PreHardmode"/>
+    <terraria:damage rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">23</terraria:damage>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/terraria/Muramasa">
+    <rdf:type rdf:resource="http://example.org/terraria/Weapon"/>
+    <rdfs:label>Muramasa</rdfs:label>
+    <terraria:acquired_from rdf:resource="http://example.org/terraria/Dungeon"/>
+    <terraria:game_phase rdf:resource="http://example.org/terraria/PreHardmode"/>
+    <terraria:damage rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">24</terraria:damage>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/terraria/Seedler">
+    <rdf:type rdf:resource="http://example.org/terraria/Weapon"/>
+    <rdfs:label>Seedler</rdfs:label>
+    <terraria:dropped_from rdf:resource="http://example.org/terraria/Plantera"/>
+    <terraria:game_phase rdf:resource="http://example.org/terraria/Hardmode"/>
+    <terraria:damage rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">50</terraria:damage>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/terraria/Anvil">
+    <rdf:type rdf:resource="http://example.org/terraria/CraftingSource"/>
+    <rdfs:label>Anvil</rdfs:label>
+    <terraria:is_a rdf:resource="http://example.org/terraria/AnyAnvil"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/terraria/SoulOfMight">
+    <rdf:type rdf:resource="http://example.org/terraria/Material"/>
+    <rdfs:label>Soul of Might</rdfs:label>
+    <terraria:dropped_from rdf:resource="http://example.org/terraria/TheDestroyer"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/terraria/HallowedBar">
+    <rdf:type rdf:resource="http://example.org/terraria/Material"/>
+    <rdfs:label>Hallowed Bar</rdfs:label>
+    <terraria:dropped_from rdf:resource="http://example.org/terraria/AnyMechanicalBoss"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/terraria/MythrilAnvil">
+    <rdf:type rdf:resource="http://example.org/terraria/CraftingSource"/>
+    <rdfs:label>Mythril Anvil</rdfs:label>
+    <terraria:is_a rdf:resource="http://example.org/terraria/AnyAnvil"/>
+    <terraria:is_a rdf:resource="http://example.org/terraria/HardmodeAnvil"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/terraria/TheTwins">
+    <rdf:type rdf:resource="http://example.org/terraria/Boss"/>
+    <rdfs:label>The Twins</rdfs:label>
+    <terraria:is_a rdf:resource="http://example.org/terraria/AnyMechanicalBoss"/>
+    <terraria:game_phase rdf:resource="http://example.org/terraria/Hardmode"/>
+    <terraria:health rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">60000</terraria:health>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/terraria/Hellforge">
+    <rdf:type rdf:resource="http://example.org/terraria/CraftingSource"/>
+    <rdfs:label>Hellforge</rdfs:label>
+    <terraria:is_a rdf:resource="http://example.org/terraria/AnyForge"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/terraria/BloodButcherer">
+    <rdf:type rdf:resource="http://example.org/terraria/Weapon"/>
+    <rdfs:label>Blood Butcherer</rdfs:label>
+    <terraria:is_a rdf:resource="http://example.org/terraria/AnyEvilSword"/>
+    <terraria:crafted_from rdf:resource="http://example.org/terraria/CrimtaneBar"/>
+    <terraria:crafted_at rdf:resource="http://example.org/terraria/AnyAnvil"/>
+    <terraria:game_phase rdf:resource="http://example.org/terraria/PreHardmode"/>
+    <terraria:damage rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">22</terraria:damage>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/terraria/CopperShortSword">
+    <rdf:type rdf:resource="http://example.org/terraria/Weapon"/>
+    <rdfs:label>Copper Shortsword</rdfs:label>
+    <terraria:crafted_from rdf:resource="http://example.org/terraria/CopperBar"/>
+    <terraria:crafted_at rdf:resource="http://example.org/terraria/AnyAnvil"/>
+    <terraria:game_phase rdf:resource="http://example.org/terraria/PreHardmode"/>
+    <terraria:damage rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">5</terraria:damage>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/terraria/IronOre">
+    <rdf:type rdf:resource="http://example.org/terraria/Material"/>
+    <rdfs:label>Iron Ore</rdfs:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/terraria/SkeletronPrime">
+    <rdf:type rdf:resource="http://example.org/terraria/Boss"/>
+    <rdfs:label>Skeletron Prime</rdfs:label>
+    <terraria:is_a rdf:resource="http://example.org/terraria/AnyMechanicalBoss"/>
+    <terraria:game_phase rdf:resource="http://example.org/terraria/Hardmode"/>
+    <terraria:health rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">42000</terraria:health>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/terraria/Hand">
+    <rdf:type rdf:resource="http://example.org/terraria/CraftingSource"/>
+    <rdfs:label>Hand</rdfs:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/terraria/SoulOfSight">
+    <rdf:type rdf:resource="http://example.org/terraria/Material"/>
+    <rdfs:label>Soul of Sight</rdfs:label>
+    <terraria:dropped_from rdf:resource="http://example.org/terraria/TheTwins"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/terraria/BrokenHeroSword">
+    <rdf:type rdf:resource="http://example.org/terraria/Material"/>
+    <rdfs:label>Broken Hero Sword</rdfs:label>
+    <terraria:dropped_from rdf:resource="http://example.org/terraria/Mothron"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/terraria/IronBar">
+    <rdf:type rdf:resource="http://example.org/terraria/Material"/>
+    <rdfs:label>Iron Bar</rdfs:label>
+    <terraria:crafted_from rdf:resource="http://example.org/terraria/IronOre"/>
+    <terraria:crafted_at rdf:resource="http://example.org/terraria/AnyForge"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/terraria/BeeKeeper">
+    <rdf:type rdf:resource="http://example.org/terraria/Weapon"/>
+    <rdfs:label>Bee Keeper</rdfs:label>
+    <terraria:dropped_from rdf:resource="http://example.org/terraria/QueenBee"/>
+    <terraria:game_phase rdf:resource="http://example.org/terraria/PreHardmode"/>
+    <terraria:damage rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">30</terraria:damage>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/terraria/Slime">
+    <rdf:type rdf:resource="http://example.org/terraria/Enemy"/>
+    <rdfs:label>Slime</rdfs:label>
+    <terraria:game_phase rdf:resource="http://example.org/terraria/PreHardmode"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/terraria/AnyMechanicalBoss">
+    <rdf:type rdf:resource="http://example.org/terraria/Boss"/>
+    <rdfs:label>Any Mechanical Boss</rdfs:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/terraria/MoonLord">
+    <rdf:type rdf:resource="http://example.org/terraria/Boss"/>
+    <rdfs:label>Moon Lord</rdfs:label>
+    <terraria:game_phase rdf:resource="http://example.org/terraria/Hardmode"/>
+    <terraria:health rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">217500</terraria:health>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/terraria/Stinger">
+    <rdf:type rdf:resource="http://example.org/terraria/Material"/>
+    <rdfs:label>Stinger</rdfs:label>
+    <terraria:dropped_from rdf:resource="http://example.org/terraria/Hornet"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/terraria/SoulOfFright">
+    <rdf:type rdf:resource="http://example.org/terraria/Material"/>
+    <rdfs:label>Soul of Fright</rdfs:label>
+    <terraria:dropped_from rdf:resource="http://example.org/terraria/SkeletronPrime"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/terraria/OrichalcumBar">
+    <rdf:type rdf:resource="http://example.org/terraria/Material"/>
+    <rdfs:label>Orichalcum Bar</rdfs:label>
+    <terraria:crafted_from rdf:resource="http://example.org/terraria/OrichalcumOre"/>
+    <terraria:crafted_at rdf:resource="http://example.org/terraria/AnyForge"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/terraria/CopperOre">
+    <rdf:type rdf:resource="http://example.org/terraria/Material"/>
+    <rdfs:label>Copper Ore</rdfs:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/terraria/Lightsbane">
+    <rdf:type rdf:resource="http://example.org/terraria/Weapon"/>
+    <rdfs:label>Lightsbane</rdfs:label>
+    <terraria:is_a rdf:resource="http://example.org/terraria/AnyEvilSword"/>
+    <terraria:crafted_from rdf:resource="http://example.org/terraria/DemoniteBar"/>
+    <terraria:crafted_at rdf:resource="http://example.org/terraria/AnyAnvil"/>
+    <terraria:game_phase rdf:resource="http://example.org/terraria/PreHardmode"/>
+    <terraria:damage rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">16</terraria:damage>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/terraria/LunaticCultist">
+    <rdf:type rdf:resource="http://example.org/terraria/Boss"/>
+    <rdfs:label>Lunatic Cultist</rdfs:label>
+    <terraria:game_phase rdf:resource="http://example.org/terraria/Hardmode"/>
+    <terraria:health rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">32500</terraria:health>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/terraria/EaterOfWorlds">
+    <rdf:type rdf:resource="http://example.org/terraria/Boss"/>
+    <rdfs:label>Eater of Worlds</rdfs:label>
+    <terraria:game_phase rdf:resource="http://example.org/terraria/PreHardmode"/>
+    <terraria:health rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">15120</terraria:health>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/terraria/CrimtaneOre">
+    <rdf:type rdf:resource="http://example.org/terraria/Material"/>
+    <rdfs:label>Crimtane Ore</rdfs:label>
+    <terraria:dropped_from rdf:resource="http://example.org/terraria/BrainOfCthulhu"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/terraria/ChlorophyteBar">
+    <rdf:type rdf:resource="http://example.org/terraria/Material"/>
+    <rdfs:label>Chlorophyte Bar</rdfs:label>
+    <terraria:crafted_from rdf:resource="http://example.org/terraria/ChlorophyteOre"/>
+    <terraria:crafted_at rdf:resource="http://example.org/terraria/HardmodeForge"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/terraria/Volcano">
+    <rdf:type rdf:resource="http://example.org/terraria/Weapon"/>
+    <rdfs:label>Volcano</rdfs:label>
+    <terraria:crafted_from rdf:resource="http://example.org/terraria/HellstoneBar"/>
+    <terraria:crafted_at rdf:resource="http://example.org/terraria/AnyAnvil"/>
+    <terraria:game_phase rdf:resource="http://example.org/terraria/PreHardmode"/>
+    <terraria:damage rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">40</terraria:damage>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/terraria/MythrilBar">
+    <rdf:type rdf:resource="http://example.org/terraria/Material"/>
+    <rdfs:label>Mythril Bar</rdfs:label>
+    <terraria:crafted_from rdf:resource="http://example.org/terraria/MythrilOre"/>
+    <terraria:crafted_at rdf:resource="http://example.org/terraria/AnyForge"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/terraria/AnyAltar">
+    <rdf:type rdf:resource="http://example.org/terraria/CraftingSource"/>
+    <rdfs:label>Any altar</rdfs:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/terraria/MythrilOre">
+    <rdf:type rdf:resource="http://example.org/terraria/Material"/>
+    <rdfs:label>Mythril Ore</rdfs:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/terraria/Hardmode">
+    <rdf:type rdf:resource="http://example.org/terraria/Progression"/>
+    <rdfs:label>Hardmode</rdfs:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/terraria/CrimtaneBar">
+    <rdf:type rdf:resource="http://example.org/terraria/Material"/>
+    <rdfs:label>Crimtane Bar</rdfs:label>
+    <terraria:crafted_from rdf:resource="http://example.org/terraria/CrimtaneOre"/>
+    <terraria:crafted_at rdf:resource="http://example.org/terraria/AnyForge"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/terraria/CrimsonAltar">
+    <rdf:type rdf:resource="http://example.org/terraria/CraftingSource"/>
+    <rdfs:label>Crimson Altar</rdfs:label>
+    <terraria:is_a rdf:resource="http://example.org/terraria/AnyAltar"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/terraria/AnyForge">
+    <rdf:type rdf:resource="http://example.org/terraria/CraftingSource"/>
+    <rdfs:label>Any forge</rdfs:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/terraria/Meowmere">
+    <rdf:type rdf:resource="http://example.org/terraria/Weapon"/>
+    <rdfs:label>Meowmere</rdfs:label>
+    <terraria:dropped_from rdf:resource="http://example.org/terraria/MoonLord"/>
+    <terraria:game_phase rdf:resource="http://example.org/terraria/Hardmode"/>
+    <terraria:damage rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">200</terraria:damage>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/terraria/DemonAltar">
+    <rdf:type rdf:resource="http://example.org/terraria/CraftingSource"/>
+    <rdfs:label>Demon Altar</rdfs:label>
+    <terraria:is_a rdf:resource="http://example.org/terraria/AnyAltar"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/terraria/AnyAnvil">
+    <rdf:type rdf:resource="http://example.org/terraria/CraftingSource"/>
+    <rdfs:label>Any anvil</rdfs:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/terraria/Furnace">
+    <rdf:type rdf:resource="http://example.org/terraria/CraftingSource"/>
+    <rdfs:label>Furnace</rdfs:label>
+    <terraria:is_a rdf:resource="http://example.org/terraria/AnyForge"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/terraria/CopperBar">
+    <rdf:type rdf:resource="http://example.org/terraria/Material"/>
+    <rdfs:label>Copper Bar</rdfs:label>
+    <terraria:crafted_from rdf:resource="http://example.org/terraria/CopperOre"/>
+    <terraria:crafted_at rdf:resource="http://example.org/terraria/AnyForge"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/terraria/TitaniumOre">
+    <rdf:type rdf:resource="http://example.org/terraria/Material"/>
+    <rdfs:label>Titanium Ore</rdfs:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/terraria/HardmodeAnvil">
+    <rdf:type rdf:resource="http://example.org/terraria/CraftingSource"/>
+    <rdfs:label>Hardmode Anvil</rdfs:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/terraria/JungleSpore">
+    <rdf:type rdf:resource="http://example.org/terraria/Material"/>
+    <rdfs:label>Jungle Spore</rdfs:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/terraria/HellstoneOre">
+    <rdf:type rdf:resource="http://example.org/terraria/Material"/>
+    <rdfs:label>Hellstone Ore</rdfs:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/terraria/Torch">
+    <rdf:type rdf:resource="http://example.org/terraria/Material"/>
+    <rdfs:label>Torch</rdfs:label>
+    <terraria:crafted_from rdf:resource="http://example.org/terraria/Gel"/>
+    <terraria:crafted_from rdf:resource="http://example.org/terraria/AnyWood"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/terraria/LeadOre">
+    <rdf:type rdf:resource="http://example.org/terraria/Material"/>
+    <rdfs:label>Lead Ore</rdfs:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/terraria/AdamantiteOre">
+    <rdf:type rdf:resource="http://example.org/terraria/Material"/>
+    <rdfs:label>Adamantite Ore</rdfs:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/terraria/StoneBlock">
+    <rdf:type rdf:resource="http://example.org/terraria/Material"/>
+    <rdfs:label>Stone Block</rdfs:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/terraria/OrichalcumOre">
+    <rdf:type rdf:resource="http://example.org/terraria/Material"/>
+    <rdfs:label>Orichalcum Ore</rdfs:label>
+  </rdf:Description>
+</rdf:RDF>

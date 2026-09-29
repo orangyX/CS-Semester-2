@@ -1,0 +1,1279 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rdf:RDF
+   xmlns:mia="http://example.com/made-in-abyss/"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Gallice">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Human"/>
+    <rdfs:label>Gallice</rdfs:label>
+    <mia:lastKnownLocation rdf:resource="http://example.com/made-in-abyss/Ido_Front"/>
+    <mia:hasGender>Male</mia:hasGender>
+    <mia:hasSpecies>Human</mia:hasSpecies>
+    <mia:hasStatus>Alive</mia:hasStatus>
+    <mia:hasOccupation>Umbra Hand</mia:hasOccupation>
+    <mia:hasWhistleRank rdf:resource="http://example.com/made-in-abyss/BlackWhistle"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Third_Works">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Artifact"/>
+    <rdfs:label>Third Works</rdfs:label>
+    <mia:hasDescription>A psychokinetic arm resembling the skeletal forearm of a humanoid being.</mia:hasDescription>
+    <mia:hasEffect>Psychokinetic control</mia:hasEffect>
+    <mia:ownedBy rdf:resource="http://example.com/made-in-abyss/Bondrewd"/>
+    <mia:hasGrade rdf:resource="http://example.com/made-in-abyss/First_Grade"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Bellmore">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Human"/>
+    <rdfs:label>Bellmore</rdfs:label>
+    <mia:lastKnownLocation rdf:resource="http://example.com/made-in-abyss/The_Grand_Pier"/>
+    <mia:hasGender>Male</mia:hasGender>
+    <mia:hasSpecies>Human</mia:hasSpecies>
+    <mia:hasStatus>Alive</mia:hasStatus>
+    <mia:hasOccupation>Storyteller/Merchant</mia:hasOccupation>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Forest_of_Crooked_Stone_Columns">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Location"/>
+    <rdfs:label>Forest of Crooked Stone Columns</rdfs:label>
+    <mia:locatedIn rdf:resource="http://example.com/made-in-abyss/Layer_4"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Shiggy">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Human"/>
+    <rdfs:label>Shiggy</rdfs:label>
+    <mia:lastKnownLocation rdf:resource="http://example.com/made-in-abyss/Belchero_Orphanage"/>
+    <mia:hasGender>Male</mia:hasGender>
+    <mia:hasSpecies>Human</mia:hasSpecies>
+    <mia:hasStatus>Alive</mia:hasStatus>
+    <mia:hasOccupation>Delver</mia:hasOccupation>
+    <mia:hasWhistleRank rdf:resource="http://example.com/made-in-abyss/RedWhistle"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Orb_Piercer">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Beast"/>
+    <rdfs:label>Orb Piercer</rdfs:label>
+    <mia:hasSpecies>Mammal</mia:hasSpecies>
+    <mia:livesIn rdf:resource="http://example.com/made-in-abyss/Layer_4"/>
+    <mia:hasDangerLevel rdf:resource="http://example.com/made-in-abyss/Absurd_Danger"/>
+    <mia:hasDescription>Orb Piercers (タマウガチ, Tamaugachi) are dangerous creatures inhabiting the 4th Layer of The Abyss. They are covered with long, sharpened and venomous spines that can pierce through metal, as if was paper. </mia:hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Layer_2">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Place"/>
+    <mia:hasDepth>1,350 - 2,600 meters.</mia:hasDepth>
+    <mia:minDepth rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1350</mia:minDepth>
+    <mia:maxDepth rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">2600</mia:maxDepth>
+    <mia:hasDescription>The Forest of Temptation is the first truly dangerous section of The Abyss. The fauna and environment suddenly change, shifting into a forest with large vegetation. The creatures that inhabit this layer are much more dangerous. Deeper in, there is an area known as the 'Inverted Forest', where the trees grow upside-down and the updraft wind blows hard, with even water flows upward. An outpost known as Seeker Camp has been established here to serve as a resting point for Delvers.</mia:hasDescription>
+    <mia:hasEffect>Strains of Ascent: Intense nausea, headaches, and numbness of limbs.</mia:hasEffect>
+    <mia:hasWhistleRequirement rdf:resource="http://example.com/made-in-abyss/BlueWhistle"/>
+    <rdfs:label>2nd Layer</rdfs:label>
+    <mia:locatedIn rdf:resource="http://example.com/made-in-abyss/The_Abyss"/>
+    <mia:contains rdf:resource="http://example.com/made-in-abyss/Heavens_Waterfall"/>
+    <mia:contains rdf:resource="http://example.com/made-in-abyss/Rohana_Fountainhead"/>
+    <mia:contains rdf:resource="http://example.com/made-in-abyss/Sky_Jellyfish"/>
+    <mia:contains rdf:resource="http://example.com/made-in-abyss/Sleeping_Bed_of_Mushrooms"/>
+    <mia:contains rdf:resource="http://example.com/made-in-abyss/The_Inverted_Forest"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Layer_1">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Place"/>
+    <mia:hasDepth>0 - 1350 meters</mia:hasDepth>
+    <mia:minDepth rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">0</mia:minDepth>
+    <mia:maxDepth rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1350</mia:maxDepth>
+    <mia:hasDescription>The 1st Layer is the most shallow section of The Abyss, right below the town of Orth. The environment is consistent and sunny, full of hollows in the grassy rock faces and petrified trees. The wildlife consists of fantastical and mostly harmless animals. Scattered and hidden all across the 1st Layer are Praying Skeletons.</mia:hasDescription>
+    <mia:hasEffect>Strains of Ascent: Light dizziness and nausea.</mia:hasEffect>
+    <mia:hasWhistleRequirement rdf:resource="http://example.com/made-in-abyss/RedWhistle"/>
+    <rdfs:label>1st Layer</rdfs:label>
+    <mia:locatedIn rdf:resource="http://example.com/made-in-abyss/The_Abyss"/>
+    <mia:contains rdf:resource="http://example.com/made-in-abyss/Abode_of_Trees_and_Fossils"/>
+    <mia:contains rdf:resource="http://example.com/made-in-abyss/Big_Gondola"/>
+    <mia:contains rdf:resource="http://example.com/made-in-abyss/Burial_Tower"/>
+    <mia:contains rdf:resource="http://example.com/made-in-abyss/Gate_to_the_Netherworld"/>
+    <mia:contains rdf:resource="http://example.com/made-in-abyss/The_Guiding_Tree"/>
+    <mia:contains rdf:resource="http://example.com/made-in-abyss/Ominaki_Falls"/>
+    <mia:contains rdf:resource="http://example.com/made-in-abyss/Seat_of_the_Waterfall"/>
+    <mia:contains rdf:resource="http://example.com/made-in-abyss/Stargazing_Hill"/>
+    <mia:contains rdf:resource="http://example.com/made-in-abyss/Stone_Ark"/>
+    <mia:contains rdf:resource="http://example.com/made-in-abyss/Twisting_Crag"/>
+    <mia:contains rdf:resource="http://example.com/made-in-abyss/Wind_Riding_Windmills"/>
+    <mia:contains rdf:resource="http://example.com/made-in-abyss/Wuthering"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Princess_Bosom">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Artifact"/>
+    <rdfs:label>Princess Bosom</rdfs:label>
+    <mia:hasDescription>An egg-shaped Artifact with patterns on its surface and a soft texture that squishes when pressure is applied.</mia:hasDescription>
+    <mia:hasEffect>Squishy Material</mia:hasEffect>
+    <mia:ownedBy rdf:resource="http://example.com/made-in-abyss/Orth"/>
+    <mia:hasGrade rdf:resource="http://example.com/made-in-abyss/Third_Grade"/>
+    <mia:sourcedFrom rdf:resource="http://example.com/made-in-abyss/Layer_1"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Reg">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Living_Thing"/>
+    <rdfs:label>Reg</rdfs:label>
+    <mia:lastKnownLocation rdf:resource="http://example.com/made-in-abyss/Layer_7"/>
+    <mia:hasGender>Male</mia:hasGender>
+    <mia:hasSpecies>Unknown</mia:hasSpecies>
+    <mia:hasStatus>Alive</mia:hasStatus>
+    <mia:hasOccupation>Delver</mia:hasOccupation>
+    <mia:hasWhistleRank rdf:resource="http://example.com/made-in-abyss/RedWhistle"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Madokajack">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Beast"/>
+    <rdfs:label>Madokajack</rdfs:label>
+    <mia:hasSpecies>Reptile</mia:hasSpecies>
+    <mia:livesIn rdf:resource="http://example.com/made-in-abyss/Layer_3"/>
+    <mia:hasDangerLevel rdf:resource="http://example.com/made-in-abyss/Deadly_Danger"/>
+    <mia:hasDescription>Madokajacks (マドカジャク, Madokajaku) are large reptilian creatures that live in the 3rd Layer.</mia:hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Crystallized_Water_Supports">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Location"/>
+    <mia:hasDepth rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">12300</mia:hasDepth>
+    <rdfs:label>Crystallized Water Supports</rdfs:label>
+    <mia:locatedIn rdf:resource="http://example.com/made-in-abyss/Layer_5"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Artifact">
+    <rdf:type rdf:resource="http://www.w3.org/2000/01/rdf-schema#Class"/>
+    <rdfs:subClassOf rdf:resource="http://example.com/made-in-abyss/Item"/>
+    <rdfs:label>Artifact</rdfs:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Yataramar">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Narehate"/>
+    <rdfs:label>Yataramar</rdfs:label>
+    <mia:lastKnownLocation rdf:resource="http://example.com/made-in-abyss/Layer_6"/>
+    <mia:hasGender>Male</mia:hasGender>
+    <mia:hasSpecies>Narehate</mia:hasSpecies>
+    <mia:hasStatus>Alive</mia:hasStatus>
+    <mia:hasOccupation>Delver</mia:hasOccupation>
+    <mia:hasWhistleRank rdf:resource="http://example.com/made-in-abyss/BlackWhistle"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Gueira">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Human"/>
+    <rdfs:label>Gueira</rdfs:label>
+    <mia:lastKnownLocation rdf:resource="http://example.com/made-in-abyss/Ido_Front"/>
+    <mia:hasGender>Male</mia:hasGender>
+    <mia:hasSpecies>Human</mia:hasSpecies>
+    <mia:hasStatus>Deceased</mia:hasStatus>
+    <mia:hasOccupation>Umbra Hand</mia:hasOccupation>
+    <mia:hasWhistleRank rdf:resource="http://example.com/made-in-abyss/BlackWhistle"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Hablog">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Human"/>
+    <rdfs:label>Hablog</rdfs:label>
+    <mia:lastKnownLocation rdf:resource="http://example.com/made-in-abyss/Orth"/>
+    <mia:hasGender>Male</mia:hasGender>
+    <mia:hasSpecies>Human</mia:hasSpecies>
+    <mia:hasStatus>Alive</mia:hasStatus>
+    <mia:hasOccupation>Delver</mia:hasOccupation>
+    <mia:hasWhistleRank rdf:resource="http://example.com/made-in-abyss/BlackWhistle"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Layer_4">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Place"/>
+    <mia:hasDepth>7,000 - 12,000 meters</mia:hasDepth>
+    <mia:minDepth rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">7000</mia:minDepth>
+    <mia:maxDepth rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">12000</mia:maxDepth>
+    <mia:hasDescription>The Goblets of Giants (巨人きょじんの盃さかずき, Kyojin no Sakazuki) is The Abyss' fourth layer (深界しんかい四層よんそう, Shinkai Yon-sō). It is a sprawling jungle of unique, awe-inspiring, and deadly fauna. This layer is characterized by a deceptive fusion of beauty and danger</mia:hasDescription>
+    <mia:hasEffect>Strains of Ascent: Intense pain throughout the body and bleeding from every orifice.</mia:hasEffect>
+    <mia:hasWhistleRequirement rdf:resource="http://example.com/made-in-abyss/BlackWhistle"/>
+    <rdfs:label>4th Layer</rdfs:label>
+    <mia:locatedIn rdf:resource="http://example.com/made-in-abyss/The_Abyss"/>
+    <mia:contains rdf:resource="http://example.com/made-in-abyss/Acid_Waterfall"/>
+    <mia:contains rdf:resource="http://example.com/made-in-abyss/Dead_Crystal_Cave"/>
+    <mia:contains rdf:resource="http://example.com/made-in-abyss/Eternal_Wave_Crests"/>
+    <mia:contains rdf:resource="http://example.com/made-in-abyss/Flat_Creeper_Spike_Stretch"/>
+    <mia:contains rdf:resource="http://example.com/made-in-abyss/Forest_of_Crooked_Stone_Columns"/>
+    <mia:contains rdf:resource="http://example.com/made-in-abyss/Gas_Plume_Deposit"/>
+    <mia:contains rdf:resource="http://example.com/made-in-abyss/Flat_Creeper_Squid_Spawning_Grounds"/>
+    <mia:contains rdf:resource="http://example.com/made-in-abyss/Garden_of_the_Flowers_of_Fortitude"/>
+    <mia:contains rdf:resource="http://example.com/made-in-abyss/Nanachis_Hideout"/>
+    <mia:contains rdf:resource="http://example.com/made-in-abyss/Old_Beasts_Hidden_Hot_Spring"/>
+    <mia:contains rdf:resource="http://example.com/made-in-abyss/Spiral_Ice_Pillars"/>
+    <mia:contains rdf:resource="http://example.com/made-in-abyss/Steel_Fossil_Assemblage"/>
+    <mia:contains rdf:resource="http://example.com/made-in-abyss/Sticky_Clouds"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Steel_Fossil_Assemblage">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Location"/>
+    <rdfs:label>Steel Fossil Assemblage</rdfs:label>
+    <mia:locatedIn rdf:resource="http://example.com/made-in-abyss/Layer_4"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Star_Compass">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Artifact"/>
+    <rdfs:label>Star Compass</rdfs:label>
+    <mia:hasDescription>An Artifact found in the 1st Layer by Riko, who named it.</mia:hasDescription>
+    <mia:hasEffect>Navigation</mia:hasEffect>
+    <mia:ownedBy rdf:resource="http://example.com/made-in-abyss/Riko"/>
+    <mia:hasGrade rdf:resource="http://example.com/made-in-abyss/Fourth_Grade"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Heavens_Waterfall">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Location"/>
+    <mia:hasDepth rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">2600</mia:hasDepth>
+    <rdfs:label>Heaven's Waterfall</rdfs:label>
+    <mia:locatedIn rdf:resource="http://example.com/made-in-abyss/Layer_2"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Delver_Guild_HQ">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Location"/>
+    <mia:hasDescription>The Delver Guild HQ (探窟たんくつ組合くみあい本部ほんぶ, Tankutsu Kumiai Honbu) is the headquarters of the organization in charge of regulating delving processes, as well as managing the Delvers and giving them ranks according to their achievements.</mia:hasDescription>
+    <rdfs:label>Delver Guild HQ</rdfs:label>
+    <mia:locatedIn rdf:resource="http://example.com/made-in-abyss/East_Orth"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Bido">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Human"/>
+    <rdfs:label>Bido</rdfs:label>
+    <mia:lastKnownLocation rdf:resource="http://example.com/made-in-abyss/Ido_Front"/>
+    <mia:hasGender>Male</mia:hasGender>
+    <mia:hasSpecies>Human</mia:hasSpecies>
+    <mia:hasStatus>Deceased</mia:hasStatus>
+    <mia:hasOccupation>Umbra Hand</mia:hasOccupation>
+    <mia:hasWhistleRank rdf:resource="http://example.com/made-in-abyss/BlackWhistle"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Flat_Creeper_Spike_Stretch">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Location"/>
+    <mia:hasDepth rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">7100</mia:hasDepth>
+    <rdfs:label>Flat-Creeper Spike Stretch</rdfs:label>
+    <mia:locatedIn rdf:resource="http://example.com/made-in-abyss/Layer_4"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/DangerLevel">
+    <rdf:type rdf:resource="http://www.w3.org/2000/01/rdf-schema#Class"/>
+    <rdfs:label>Danger Level</rdfs:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Orth">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Place"/>
+    <mia:hasDescription>Orth (オース, Ōsu), also known as the City of the Giant Pit (大穴おおあなの街まち, Ōana no Machi), is a large town on the edge of The Abyss, formed as a result of the many explorers traveling to the island located in the southern sea of Beoluska.</mia:hasDescription>
+    <rdfs:label>Orth</rdfs:label>
+    <mia:locatedIn rdf:resource="http://example.com/made-in-abyss/Beoluska"/>
+    <mia:contains rdf:resource="http://example.com/made-in-abyss/North_Orth"/>
+    <mia:contains rdf:resource="http://example.com/made-in-abyss/South_Orth"/>
+    <mia:contains rdf:resource="http://example.com/made-in-abyss/East_Orth"/>
+    <mia:contains rdf:resource="http://example.com/made-in-abyss/West_Orth"/>
+    <mia:contains rdf:resource="http://example.com/made-in-abyss/Central_Orth"/>
+    <mia:contains rdf:resource="http://example.com/made-in-abyss/The_Abyss"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Ottobas">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Beast"/>
+    <rdfs:label>Ottobas</rdfs:label>
+    <mia:hasSpecies>Mammal</mia:hasSpecies>
+    <mia:livesIn rdf:resource="http://example.com/made-in-abyss/Layer_2"/>
+    <mia:hasDangerLevel rdf:resource="http://example.com/made-in-abyss/Serious_Danger"/>
+    <mia:hasDescription>The Ottobas (オットバス, Ottobasu) are large amphibious animals that live deep within the bottom of the 2nd Layer of The Abyss, in the area around the borders of the Inverted Forest.</mia:hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Marulk">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Human"/>
+    <rdfs:label>Marulk</rdfs:label>
+    <mia:lastKnownLocation rdf:resource="http://example.com/made-in-abyss/Seeker_Camp"/>
+    <mia:hasGender>Male</mia:hasGender>
+    <mia:hasSpecies>Human</mia:hasSpecies>
+    <mia:hasStatus>Alive</mia:hasStatus>
+    <mia:hasOccupation>Delver</mia:hasOccupation>
+    <mia:hasWhistleRank rdf:resource="http://example.com/made-in-abyss/BlueWhistle"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Forgetter">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Artifact"/>
+    <rdfs:label>Forgetter</rdfs:label>
+    <mia:hasDescription>A rigid Second-Grade Artifact. A large number were found at the Joint Delving Site.</mia:hasDescription>
+    <mia:hasEffect>Storage unit</mia:hasEffect>
+    <mia:ownedBy rdf:resource="http://example.com/made-in-abyss/Orth"/>
+    <mia:hasGrade rdf:resource="http://example.com/made-in-abyss/Second_Grade"/>
+    <mia:sourcedFrom rdf:resource="http://example.com/made-in-abyss/Joint_Delving_Site"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Nishagora">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Human"/>
+    <rdfs:label>Nishagora</rdfs:label>
+    <mia:lastKnownLocation rdf:resource="http://example.com/made-in-abyss/Layer_6"/>
+    <mia:hasGender>Female</mia:hasGender>
+    <mia:hasSpecies>Human</mia:hasSpecies>
+    <mia:hasStatus>Alive</mia:hasStatus>
+    <mia:hasOccupation>Delver</mia:hasOccupation>
+    <mia:hasWhistleRank rdf:resource="http://example.com/made-in-abyss/BlackWhistle"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Fog_Weave">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Artifact"/>
+    <rdfs:label>Fog Weave</rdfs:label>
+    <mia:hasDescription>A very thin and lightweight piece of cloth that floats over the ground.</mia:hasDescription>
+    <mia:hasEffect>Lightweight fabric</mia:hasEffect>
+    <mia:ownedBy rdf:resource="http://example.com/made-in-abyss/Nanachi"/>
+    <mia:hasGrade rdf:resource="http://example.com/made-in-abyss/Third_Grade"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Blaze_Reap">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Artifact"/>
+    <rdfs:label>Blaze Reap</rdfs:label>
+    <mia:hasDescription>An abnormally large pickaxe containing Everlasting Gunpowder.</mia:hasDescription>
+    <mia:hasEffect>Injects an explosion into a struck object.</mia:hasEffect>
+    <mia:ownedBy rdf:resource="http://example.com/made-in-abyss/Riko"/>
+    <mia:hasGrade rdf:resource="http://example.com/made-in-abyss/First_Grade"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Stargazing_Hill">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Location"/>
+    <rdfs:label>Stargazing Hill</rdfs:label>
+    <mia:locatedIn rdf:resource="http://example.com/made-in-abyss/Layer_1"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Layer_3">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Place"/>
+    <mia:hasDepth>2,600 - 7,000 meters.</mia:hasDepth>
+    <mia:minDepth rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">2600</mia:minDepth>
+    <mia:maxDepth rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">7000</mia:maxDepth>
+    <mia:hasDescription>The Great Fault (大断層だいだんそう, Dai-dansō) is The Abyss' third layer (深界しんかい三層さんそう, Shinkai San-sō). A narrow, 4-kilometer-deep gorge surrounded by countless interlocking caverns and with creatures, both harmless and deadly, lurking inside.</mia:hasDescription>
+    <mia:hasEffect>Strains of Ascent: In addition to aforementioned effects, vertigo combined with visual and auditory hallucinations.</mia:hasEffect>
+    <mia:hasWhistleRequirement rdf:resource="http://example.com/made-in-abyss/MoonWhistle"/>
+    <rdfs:label>3rd Layer</rdfs:label>
+    <mia:locatedIn rdf:resource="http://example.com/made-in-abyss/The_Abyss"/>
+    <mia:contains rdf:resource="http://example.com/made-in-abyss/Baracocha_Corridors"/>
+    <mia:contains rdf:resource="http://example.com/made-in-abyss/Cumulonimbus_Point"/>
+    <mia:contains rdf:resource="http://example.com/made-in-abyss/Ghostly_Roots"/>
+    <mia:contains rdf:resource="http://example.com/made-in-abyss/Greenery_Layer"/>
+    <mia:contains rdf:resource="http://example.com/made-in-abyss/The_Imprisoned_Pirate_Ship"/>
+    <mia:contains rdf:resource="http://example.com/made-in-abyss/Rumbling_Grounds_of_the_Strong"/>
+    <mia:contains rdf:resource="http://example.com/made-in-abyss/Tallowstone_Layer"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Meinastilim">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Beast"/>
+    <rdfs:label>Meinastilim</rdfs:label>
+    <mia:hasSpecies>Mammal</mia:hasSpecies>
+    <mia:hasDangerLevel rdf:resource="http://example.com/made-in-abyss/Unknown_Danger"/>
+    <mia:hasDescription>Meinastilim (メイナストイリム, Meinasutoirimu), also called a 'Child of Change' (変化へんかの子こ, Henka no Ko), are a species found in The Abyss. Not much is known about the species as a whole, due to there being only one known specimen, Meinya.</mia:hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/South_Orth">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/District"/>
+    <rdfs:label>South District</rdfs:label>
+    <mia:locatedIn rdf:resource="http://example.com/made-in-abyss/Orth"/>
+    <mia:contains rdf:resource="http://example.com/made-in-abyss/The_Wharf"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Baracocha_Corridors">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Location"/>
+    <mia:hasDepth rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">3300</mia:hasDepth>
+    <rdfs:label>Baracocha Corridors</rdfs:label>
+    <mia:locatedIn rdf:resource="http://example.com/made-in-abyss/Layer_3"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/The_Imprisoned_Pirate_Ship">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Location"/>
+    <mia:hasDepth rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">3000</mia:hasDepth>
+    <rdfs:label>The Imprisoned Pirate Ship</rdfs:label>
+    <mia:locatedIn rdf:resource="http://example.com/made-in-abyss/Layer_3"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Third_Grade">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/ArtifactGrade"/>
+    <rdfs:label>Third Grade</rdfs:label>
+    <mia:hasDescription>Third Grade Artifacts are described as being extremely valuable or useful. They can help with cave raiding.</mia:hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Canopy_Unto_Dawn">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Artifact"/>
+    <rdfs:label>Canopy Unto Dawn</rdfs:label>
+    <mia:hasDescription>A custom-made set of armour for the Umbra Hands, made from several Artifacts and bio-fibres.</mia:hasDescription>
+    <mia:hasEffect>Armour set</mia:hasEffect>
+    <mia:ownedBy rdf:resource="http://example.com/made-in-abyss/Bondrewd"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Jisweku">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Place"/>
+    <mia:hasDescription>Jisweku (ジスェクー, Jisuekū) is a remote western country outside of Orth</mia:hasDescription>
+    <rdfs:label>Jisweku</rdfs:label>
+    <mia:locatedIn rdf:resource="http://example.com/made-in-abyss/World"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Old_Beasts_Hidden_Hot_Spring">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Location"/>
+    <mia:hasDepth rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">7100</mia:hasDepth>
+    <rdfs:label>Old Beasts' Hidden Hot Spring</rdfs:label>
+    <mia:locatedIn rdf:resource="http://example.com/made-in-abyss/Layer_4"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Ghostly_Roots">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Location"/>
+    <rdfs:label>Ghostly Roots</rdfs:label>
+    <mia:locatedIn rdf:resource="http://example.com/made-in-abyss/Layer_3"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Twisting_Crag">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Location"/>
+    <rdfs:label>Twisting Crag</rdfs:label>
+    <mia:locatedIn rdf:resource="http://example.com/made-in-abyss/Layer_1"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Zoaholic">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Artifact"/>
+    <rdfs:label>Zoaholic</rdfs:label>
+    <mia:hasDescription>An Artifact that transfers the user's mind into other living beings and allows the connected bodies to share thoughts.</mia:hasDescription>
+    <mia:hasEffect>Consciousness transference</mia:hasEffect>
+    <mia:ownedBy rdf:resource="http://example.com/made-in-abyss/Bondrewd"/>
+    <mia:hasGrade rdf:resource="http://example.com/made-in-abyss/Special_Grade"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Layer_5">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Place"/>
+    <mia:hasDepth>12,000 - 13,000 meters.</mia:hasDepth>
+    <mia:minDepth rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">12000</mia:minDepth>
+    <mia:maxDepth rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">13000</mia:maxDepth>
+    <mia:hasDescription>The Sea of Corpses (なきがらの海うみ, Nakigara no Umi) is The Abyss' fifth layer (深界しんかい五ご層そう, Shinkai Go-sō). It consists of a vast frozen wasteland encircling a massive sea.[1] It is also the last layer that it is physically possible for Delvers to return to the surface without loss of humanity or dying</mia:hasDescription>
+    <mia:hasEffect>Strains of Ascent: Complete sensory deprivation, confusion and self-harming behavior.</mia:hasEffect>
+    <mia:hasWhistleRequirement rdf:resource="http://example.com/made-in-abyss/WhiteWhistle"/>
+    <rdfs:label>5th Layer</rdfs:label>
+    <mia:locatedIn rdf:resource="http://example.com/made-in-abyss/The_Abyss"/>
+    <mia:contains rdf:resource="http://example.com/made-in-abyss/Crystallized_Water_Supports"/>
+    <mia:contains rdf:resource="http://example.com/made-in-abyss/Frost_Dragonbones"/>
+    <mia:contains rdf:resource="http://example.com/made-in-abyss/Ido_Front"/>
+    <mia:contains rdf:resource="http://example.com/made-in-abyss/Sandstone_Region"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Central_Orth">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/District"/>
+    <rdfs:label>Central District</rdfs:label>
+    <mia:locatedIn rdf:resource="http://example.com/made-in-abyss/Orth"/>
+    <mia:contains rdf:resource="http://example.com/made-in-abyss/Gate_to_the_Netherworld"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Neyozel">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Narehate"/>
+    <rdfs:label>Neyozel</rdfs:label>
+    <mia:lastKnownLocation rdf:resource="http://example.com/made-in-abyss/Layer_6"/>
+    <mia:hasGender>Male</mia:hasGender>
+    <mia:hasSpecies>Narehate</mia:hasSpecies>
+    <mia:hasStatus>Alive</mia:hasStatus>
+    <mia:hasOccupation>Delver</mia:hasOccupation>
+    <mia:hasWhistleRank rdf:resource="http://example.com/made-in-abyss/BlackWhistle"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Shaker">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Artifact"/>
+    <rdfs:label>Shaker</rdfs:label>
+    <mia:hasDescription>A personal Artifact of Bondrewd manufactured from Curse Steel.</mia:hasDescription>
+    <mia:hasEffect>Curse infliction</mia:hasEffect>
+    <mia:ownedBy rdf:resource="http://example.com/made-in-abyss/Bondrewd"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Sandstone_Region">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Location"/>
+    <mia:hasDepth rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">12800</mia:hasDepth>
+    <rdfs:label>Sandstone Region</rdfs:label>
+    <mia:locatedIn rdf:resource="http://example.com/made-in-abyss/Layer_5"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Wakuna">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Human"/>
+    <rdfs:label>Wakuna</rdfs:label>
+    <mia:lastKnownLocation rdf:resource="http://example.com/made-in-abyss/Layer_6"/>
+    <mia:hasGender>Unknown</mia:hasGender>
+    <mia:hasSpecies>Human</mia:hasSpecies>
+    <mia:hasStatus>Unknown</mia:hasStatus>
+    <mia:hasOccupation>Delver</mia:hasOccupation>
+    <mia:hasWhistleRank rdf:resource="http://example.com/made-in-abyss/WhiteWhistle"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Wuthering">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Location"/>
+    <rdfs:label>Wuthering</rdfs:label>
+    <mia:locatedIn rdf:resource="http://example.com/made-in-abyss/Layer_1"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Far_Caress">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Artifact"/>
+    <rdfs:label>Far Caress</rdfs:label>
+    <mia:hasDescription>One of Bondrewd's personal Artifacts.</mia:hasDescription>
+    <mia:hasEffect>Manipulating tendrils</mia:hasEffect>
+    <mia:ownedBy rdf:resource="http://example.com/made-in-abyss/Bondrewd"/>
+    <mia:hasGrade rdf:resource="http://example.com/made-in-abyss/Second_Grade"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Seat_of_the_Waterfall">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Location"/>
+    <rdfs:label>Seat of the Waterfall</rdfs:label>
+    <mia:locatedIn rdf:resource="http://example.com/made-in-abyss/Layer_1"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Gas_Plume_Deposit">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Location"/>
+    <rdfs:label>Gas Plume Deposit</rdfs:label>
+    <mia:locatedIn rdf:resource="http://example.com/made-in-abyss/Layer_4"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Beoluska">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Place"/>
+    <mia:hasDescription>Beoluska (ベオルスカ, Beorusuka) is an archipelago country encompassing the entirety of Orth, which refers to some isolated islands and towns that encompass The Abyss, plus other islands and territories.</mia:hasDescription>
+    <rdfs:label>Beoluska</rdfs:label>
+    <mia:locatedIn rdf:resource="http://example.com/made-in-abyss/World"/>
+    <mia:contains rdf:resource="http://example.com/made-in-abyss/Orth"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Rock_Top">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Artifact"/>
+    <rdfs:label>Rock Top</rdfs:label>
+    <mia:hasDescription>An Artifact found in the 1st Layer and mentioned by Nat.</mia:hasDescription>
+    <mia:hasEffect>Floating and shape-shifting material</mia:hasEffect>
+    <mia:sourcedFrom rdf:resource="http://example.com/made-in-abyss/Layer_1"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Inbyo">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Beast"/>
+    <rdfs:label>Inbyo</rdfs:label>
+    <mia:hasSpecies>Mammal</mia:hasSpecies>
+    <mia:livesIn rdf:resource="http://example.com/made-in-abyss/The_Inverted_Forest"/>
+    <mia:hasDangerLevel rdf:resource="http://example.com/made-in-abyss/Caution_Danger"/>
+    <mia:hasDescription>Inbyos (インビョウ, Inbyō) are gibbon-like primates inhabiting the Inverted Forest</mia:hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/The_Abyss">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Place"/>
+    <mia:hasDepth>0 - Unknown meters</mia:hasDepth>
+    <mia:minDepth rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">0</mia:minDepth>
+    <mia:hasDescription>The Abyss (奈落アビス, Netherworld) is a colossal pit discovered 1,900 years ago around the islands of the southern ocean of Beoluska; a vertical hole with an opening diameter of around 1,000 meters and speculated to be over 20,000 meters deep.</mia:hasDescription>
+    <rdfs:label>The Abyss</rdfs:label>
+    <mia:locatedIn rdf:resource="http://example.com/made-in-abyss/Orth"/>
+    <mia:contains rdf:resource="http://example.com/made-in-abyss/Layer_1"/>
+    <mia:contains rdf:resource="http://example.com/made-in-abyss/Layer_2"/>
+    <mia:contains rdf:resource="http://example.com/made-in-abyss/Layer_3"/>
+    <mia:contains rdf:resource="http://example.com/made-in-abyss/Layer_4"/>
+    <mia:contains rdf:resource="http://example.com/made-in-abyss/Layer_5"/>
+    <mia:contains rdf:resource="http://example.com/made-in-abyss/Layer_6"/>
+    <mia:contains rdf:resource="http://example.com/made-in-abyss/Layer_7"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Hammerbeak">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Beast"/>
+    <rdfs:label>Hammerbeak</rdfs:label>
+    <mia:hasSpecies>Bird</mia:hasSpecies>
+    <mia:livesIn rdf:resource="http://example.com/made-in-abyss/Layer_1"/>
+    <mia:livesIn rdf:resource="http://example.com/made-in-abyss/Layer_2"/>
+    <mia:livesIn rdf:resource="http://example.com/made-in-abyss/Layer_3"/>
+    <mia:livesIn rdf:resource="http://example.com/made-in-abyss/Layer_4"/>
+    <mia:hasDangerLevel rdf:resource="http://example.com/made-in-abyss/Insignificant_Danger"/>
+    <mia:hasDescription>The Hammerbeak (ツチバシ, Tsuchibashi) is an avian species whose habitat extends from the surface down to the 4th Layer of The Abyss.</mia:hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Layer_6">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Place"/>
+    <mia:hasDepth>13,000 - 15,500 meters</mia:hasDepth>
+    <mia:minDepth rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">13000</mia:minDepth>
+    <mia:maxDepth rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">15500</mia:maxDepth>
+    <mia:hasDescription>A White Whistle's 'Last Dive'. A human who tries to ascend from the 6th Layer either succumbs to death, or is deformed beyond recognition, hence the name, 'The Capital of the Unreturned.' In Orth, there is a rumor about a Golden City at the bottom of The Abyss, which supposedly originated from the 6th Layer, where the ruins of a majestic city sleep undisturbed. The buildings spread in every direction and are covered in crystal.It is not uncommon to come across creatures of an irrational danger level here and there even occur geo-thermal explosions that emit poisonous gas and iron rain.Avian species in this layer are unaffected by the bird repellent used on the Mail Balloons that delvers send back up to the surface. In a secluded area of the 6th Layer, an entire village inhabited by Narehate called Iruburu was formed.</mia:hasDescription>
+    <mia:hasEffect>Strains of Ascent: Loss of humanity or death, or under specific conditions, the Blessing.</mia:hasEffect>
+    <rdfs:label>6th Layer</rdfs:label>
+    <mia:locatedIn rdf:resource="http://example.com/made-in-abyss/The_Abyss"/>
+    <mia:contains rdf:resource="http://example.com/made-in-abyss/Iruburu"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Torka">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Human"/>
+    <rdfs:label>Torka</rdfs:label>
+    <mia:lastKnownLocation rdf:resource="http://example.com/made-in-abyss/Layer_4"/>
+    <mia:hasGender>Male</mia:hasGender>
+    <mia:hasSpecies>Human</mia:hasSpecies>
+    <mia:hasStatus>Deceased</mia:hasStatus>
+    <mia:hasOccupation>Delver</mia:hasOccupation>
+    <mia:hasWhistleRank rdf:resource="http://example.com/made-in-abyss/BlackWhistle"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Mitty">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Narehate"/>
+    <rdfs:label>Mitty</rdfs:label>
+    <mia:lastKnownLocation rdf:resource="http://example.com/made-in-abyss/Nanachis_Hideout"/>
+    <mia:hasGender>Female</mia:hasGender>
+    <mia:hasSpecies>Narehate</mia:hasSpecies>
+    <mia:hasStatus>Deceased</mia:hasStatus>
+    <mia:hasOccupation>Companion</mia:hasOccupation>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Sun_Sphere">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Artifact"/>
+    <rdfs:label>Sun Sphere</rdfs:label>
+    <mia:hasDescription>An egg-shaped Artifact with a round structure in its centre and encasements covering its glass-like exterior.</mia:hasDescription>
+    <mia:hasEffect>Light emission</mia:hasEffect>
+    <mia:ownedBy rdf:resource="http://example.com/made-in-abyss/Ozen"/>
+    <mia:hasGrade rdf:resource="http://example.com/made-in-abyss/Fourth_Grade"/>
+    <mia:sourcedFrom rdf:resource="http://example.com/made-in-abyss/Layer_2"/>
+    <mia:sourcedFrom rdf:resource="http://example.com/made-in-abyss/Layer_3"/>
+    <mia:sourcedFrom rdf:resource="http://example.com/made-in-abyss/Layer_4"/>
+    <mia:sourcedFrom rdf:resource="http://example.com/made-in-abyss/Layer_5"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Riko">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Human"/>
+    <rdfs:label>Riko</rdfs:label>
+    <mia:lastKnownLocation rdf:resource="http://example.com/made-in-abyss/Layer_7"/>
+    <mia:hasGender>Female</mia:hasGender>
+    <mia:hasSpecies>Human</mia:hasSpecies>
+    <mia:hasStatus>Alive</mia:hasStatus>
+    <mia:hasOccupation>Delver</mia:hasOccupation>
+    <mia:hasWhistleRank rdf:resource="http://example.com/made-in-abyss/WhiteWhistle"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Sereny">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Place"/>
+    <mia:hasDescription>Sereny (セレニの地ち, Sereni no Chi) is a country outside of Orth. It is the most powerful nation of the world's northern territories and has a cold, snowy climate.</mia:hasDescription>
+    <rdfs:label>Sereny</rdfs:label>
+    <mia:locatedIn rdf:resource="http://example.com/made-in-abyss/World"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Dead_Crystal_Cave">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Location"/>
+    <rdfs:label>Dead Crystal Cave</rdfs:label>
+    <mia:locatedIn rdf:resource="http://example.com/made-in-abyss/Layer_4"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Sky_Jellyfish">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Location"/>
+    <rdfs:label>Sky Jellyfish</rdfs:label>
+    <mia:locatedIn rdf:resource="http://example.com/made-in-abyss/Layer_2"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Demonfish">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Beast"/>
+    <rdfs:label>Demonfish</rdfs:label>
+    <mia:hasSpecies>Fish</mia:hasSpecies>
+    <mia:livesIn rdf:resource="http://example.com/made-in-abyss/Layer_1"/>
+    <mia:livesIn rdf:resource="http://example.com/made-in-abyss/Layer_2"/>
+    <mia:livesIn rdf:resource="http://example.com/made-in-abyss/Layer_3"/>
+    <mia:livesIn rdf:resource="http://example.com/made-in-abyss/Layer_4"/>
+    <mia:hasDangerLevel rdf:resource="http://example.com/made-in-abyss/Unknown_Danger"/>
+    <mia:hasDescription>Demonfish (ガンキマス, Gankimasu) are fish that can be found in abundance in the 1st through 4th layers of The Abyss.</mia:hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/BlueWhistle">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/WhistleRank"/>
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Item"/>
+    <rdfs:label>Blue Whistle</rdfs:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Extraordinary_Danger">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/DangerLevel"/>
+    <rdfs:label>Extraordinary</rdfs:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/West_Orth">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/District"/>
+    <rdfs:label>West District</rdfs:label>
+    <mia:locatedIn rdf:resource="http://example.com/made-in-abyss/Orth"/>
+    <mia:contains rdf:resource="http://example.com/made-in-abyss/The_Grand_Pier"/>
+    <mia:contains rdf:resource="http://example.com/made-in-abyss/Belchero_Orphanage"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Rohana_Fountainhead">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Location"/>
+    <mia:hasDepth rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">2550</mia:hasDepth>
+    <rdfs:label>Rohana Fountainhead</rdfs:label>
+    <mia:locatedIn rdf:resource="http://example.com/made-in-abyss/Layer_2"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Shroombear">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Beast"/>
+    <rdfs:label>Shroombear</rdfs:label>
+    <mia:hasSpecies>Mammal</mia:hasSpecies>
+    <mia:livesIn rdf:resource="http://example.com/made-in-abyss/Layer_4"/>
+    <mia:hasDangerLevel rdf:resource="http://example.com/made-in-abyss/Harmless_Danger"/>
+    <mia:hasDescription>Shroombears (タケグマ, Takeguma) are creatures which can be found at the 4th Layer of The Abyss. Their danger classification is unknown, but they seem to lack offensive capabilities and appear to be docile</mia:hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Lyza">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Human"/>
+    <rdfs:label>Lyza</rdfs:label>
+    <mia:lastKnownLocation rdf:resource="http://example.com/made-in-abyss/Unknown_Location"/>
+    <mia:hasGender>Female</mia:hasGender>
+    <mia:hasSpecies>Human</mia:hasSpecies>
+    <mia:hasStatus>Unknown</mia:hasStatus>
+    <mia:hasOccupation>Delver</mia:hasOccupation>
+    <mia:hasWhistleRank rdf:resource="http://example.com/made-in-abyss/WhiteWhistle"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Belchero_Orphanage">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Location"/>
+    <mia:hasDescription>Belchero Orphanage (ベルチェロ孤児院こじいん, Beruchero Kojiin) is an orphanage in Orth run by Belchero, who is sometimes assisted by Jiruo. It is completed with a school, where the children there learn to be Delvers.</mia:hasDescription>
+    <rdfs:label>Belchero Orphanage</rdfs:label>
+    <mia:locatedIn rdf:resource="http://example.com/made-in-abyss/West_Orth"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Unknown_Location">
+    <rdfs:label>Unknown Location</rdfs:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Bondrewd">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Human"/>
+    <rdfs:label>Bondrewd</rdfs:label>
+    <mia:lastKnownLocation rdf:resource="http://example.com/made-in-abyss/Ido_Front"/>
+    <mia:hasGender>Male</mia:hasGender>
+    <mia:hasSpecies>Human</mia:hasSpecies>
+    <mia:hasStatus>Alive</mia:hasStatus>
+    <mia:hasOccupation>Delver</mia:hasOccupation>
+    <mia:hasWhistleRank rdf:resource="http://example.com/made-in-abyss/WhiteWhistle"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Altar_of_the_Absolute_Boundary">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Location"/>
+    <mia:hasDepth rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">13000</mia:hasDepth>
+    <rdfs:label>Altar of the Absolute Boundary</rdfs:label>
+    <mia:locatedIn rdf:resource="http://example.com/made-in-abyss/Ido_Front"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Sleeping_Bed_of_Mushrooms">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Location"/>
+    <rdfs:label>Sleeping Bed of Mushrooms</rdfs:label>
+    <mia:locatedIn rdf:resource="http://example.com/made-in-abyss/Layer_2"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Nanachi">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Narehate"/>
+    <rdfs:label>Nanachi</rdfs:label>
+    <mia:lastKnownLocation rdf:resource="http://example.com/made-in-abyss/Layer_7"/>
+    <mia:hasGender>Unknown</mia:hasGender>
+    <mia:hasSpecies>Narehate</mia:hasSpecies>
+    <mia:hasStatus>Alive</mia:hasStatus>
+    <mia:hasOccupation>Delver</mia:hasOccupation>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Neritantan">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Beast"/>
+    <rdfs:label>Neritantan</rdfs:label>
+    <mia:hasSpecies>Mammal</mia:hasSpecies>
+    <mia:livesIn rdf:resource="http://example.com/made-in-abyss/Layer_3"/>
+    <mia:hasDangerLevel rdf:resource="http://example.com/made-in-abyss/Harmless_Danger"/>
+    <mia:hasDescription>The Neritantan (ネリタンタン) is a species that inhabits the vast cave system within the walls of the 3rd Layer of The Abyss and live in the roots of the plants that grow haphazardly within it.</mia:hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/World">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Entity"/>
+    <mia:hasDescription>The complete world of Made in Abyss</mia:hasDescription>
+    <rdfs:label>World</rdfs:label>
+    <mia:contains rdf:resource="http://example.com/made-in-abyss/Beoluska"/>
+    <mia:contains rdf:resource="http://example.com/made-in-abyss/Sereny"/>
+    <mia:contains rdf:resource="http://example.com/made-in-abyss/Jisweku"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Ido_Front">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Place"/>
+    <mia:hasDepth rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">13000</mia:hasDepth>
+    <rdfs:label>Ido Front</rdfs:label>
+    <mia:locatedIn rdf:resource="http://example.com/made-in-abyss/Layer_5"/>
+    <mia:contains rdf:resource="http://example.com/made-in-abyss/Altar_of_the_Absolute_Boundary"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Srajo">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Human"/>
+    <rdfs:label>Srajo</rdfs:label>
+    <mia:lastKnownLocation rdf:resource="http://example.com/made-in-abyss/Layer_5"/>
+    <mia:hasGender>Female</mia:hasGender>
+    <mia:hasSpecies>Human</mia:hasSpecies>
+    <mia:hasStatus>Alive</mia:hasStatus>
+    <mia:hasOccupation>Delver</mia:hasOccupation>
+    <mia:hasWhistleRank rdf:resource="http://example.com/made-in-abyss/WhiteWhistle"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Laffi">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Human"/>
+    <rdfs:label>Laffi</rdfs:label>
+    <mia:lastKnownLocation rdf:resource="http://example.com/made-in-abyss/Orth"/>
+    <mia:hasGender>Female</mia:hasGender>
+    <mia:hasSpecies>Human</mia:hasSpecies>
+    <mia:hasStatus>Alive</mia:hasStatus>
+    <mia:hasOccupation>Shopkeeper</mia:hasOccupation>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Gate_to_the_Netherworld">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Location"/>
+    <mia:hasDescription>The Gate to the Netherworld (奈落ならく門もん, Narakumon) is a stone archway, overgrown with flora. It appears to be one of the primary entrances for Delvers entering The Abyss down into the 1st Layer.</mia:hasDescription>
+    <mia:hasDepth rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">50</mia:hasDepth>
+    <rdfs:label>Gate to the Netherworld</rdfs:label>
+    <mia:locatedIn rdf:resource="http://example.com/made-in-abyss/Central_Orth"/>
+    <mia:locatedIn rdf:resource="http://example.com/made-in-abyss/Layer_1"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Corpse_Weeper">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Beast"/>
+    <rdfs:label>Corpse-Weeper</rdfs:label>
+    <mia:hasSpecies>Bird</mia:hasSpecies>
+    <mia:livesIn rdf:resource="http://example.com/made-in-abyss/Layer_2"/>
+    <mia:hasDangerLevel rdf:resource="http://example.com/made-in-abyss/Serious_Danger"/>
+    <mia:hasDescription>Corpse-Weepers (ナキカバネ, Nakikabane) are large birds that live in the ruthless 2nd Layer of The Abyss, in the Forest of Temptation. Corpse-Weepers are carnivorous and quite violent at that. They are notorious for their capability to mimic sounds and use it for hunting.</mia:hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Rohana">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Beast"/>
+    <rdfs:label>Rohana</rdfs:label>
+    <mia:hasSpecies>Insect</mia:hasSpecies>
+    <mia:livesIn rdf:resource="http://example.com/made-in-abyss/Layer_2"/>
+    <mia:hasDangerLevel rdf:resource="http://example.com/made-in-abyss/Unknown_Danger"/>
+    <mia:hasDescription>Rohana (ロオハナ, Rōhana), or Waxwing, are a species of aquatic insect found in the 2nd Layer.</mia:hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Big_Gondola">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Location"/>
+    <mia:hasDepth rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">55</mia:hasDepth>
+    <rdfs:label>Big Gondola</rdfs:label>
+    <mia:locatedIn rdf:resource="http://example.com/made-in-abyss/Layer_1"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/RedWhistle">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/WhistleRank"/>
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Item"/>
+    <rdfs:label>Red Whistle</rdfs:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Altar_of_the_Absolute_Boundary_Relic">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Artifact"/>
+    <rdfs:label>Altar of the Absolute Boundary</rdfs:label>
+    <mia:hasDescription>An elevator-like connection between the 5th and 6th Layers and the principal method for White Whistles beginning their Last Dive.</mia:hasDescription>
+    <mia:hasEffect>Transport device</mia:hasEffect>
+    <mia:ownedBy rdf:resource="http://example.com/made-in-abyss/Ido_Front"/>
+    <mia:sourcedFrom rdf:resource="http://example.com/made-in-abyss/Layer_5"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Orth_Windmills">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Location"/>
+    <rdfs:label>Orth Windmills</rdfs:label>
+    <mia:locatedIn rdf:resource="http://example.com/made-in-abyss/North_Orth"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/The_Inverted_Forest">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Place"/>
+    <mia:hasDescription>Deeper in this layer, there is an area known as the 'Inverted Forest.' This is an area where updrafts and wind currents coming from the Abyss are so strong that the environment effectively flips, creating a forest of upside-down platforms that Delvers have to jump across—even water flows upwards.</mia:hasDescription>
+    <mia:hasDepth rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1700</mia:hasDepth>
+    <rdfs:label>The Inverted Forest</rdfs:label>
+    <mia:locatedIn rdf:resource="http://example.com/made-in-abyss/Layer_2"/>
+    <mia:contains rdf:resource="http://example.com/made-in-abyss/Hells_Crossing"/>
+    <mia:contains rdf:resource="http://example.com/made-in-abyss/Joint_Delving_Site"/>
+    <mia:contains rdf:resource="http://example.com/made-in-abyss/Seeker_Camp"/>
+    <mia:contains rdf:resource="http://example.com/made-in-abyss/Sky_Hunting_Grounds"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Cravagli">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Human"/>
+    <rdfs:label>Cravagli</rdfs:label>
+    <mia:lastKnownLocation rdf:resource="http://example.com/made-in-abyss/Layer_6"/>
+    <mia:hasGender>Male</mia:hasGender>
+    <mia:hasSpecies>Human</mia:hasSpecies>
+    <mia:hasStatus>Deceased</mia:hasStatus>
+    <mia:hasOccupation>Delver</mia:hasOccupation>
+    <mia:hasWhistleRank rdf:resource="http://example.com/made-in-abyss/BlackWhistle"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Unheard_Bell">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Artifact"/>
+    <rdfs:label>Unheard Bell</rdfs:label>
+    <mia:hasDescription>A large grey bell discovered in an inaccessible location in the 4th Layer.</mia:hasDescription>
+    <mia:hasEffect>Time stop</mia:hasEffect>
+    <mia:ownedBy rdf:resource="http://example.com/made-in-abyss/Orth"/>
+    <mia:hasGrade rdf:resource="http://example.com/made-in-abyss/Special_Grade"/>
+    <mia:sourcedFrom rdf:resource="http://example.com/made-in-abyss/Layer_4"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Zapo">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Human"/>
+    <rdfs:label>Zapo</rdfs:label>
+    <mia:lastKnownLocation rdf:resource="http://example.com/made-in-abyss/Seeker_Camp"/>
+    <mia:hasGender>Male</mia:hasGender>
+    <mia:hasSpecies>Human</mia:hasSpecies>
+    <mia:hasStatus>Alive</mia:hasStatus>
+    <mia:hasOccupation>Delver</mia:hasOccupation>
+    <mia:hasWhistleRank rdf:resource="http://example.com/made-in-abyss/MoonWhistle"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Hamashirama">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Beast"/>
+    <rdfs:label>Hamashirama</rdfs:label>
+    <mia:hasSpecies>Fish</mia:hasSpecies>
+    <mia:livesIn rdf:resource="http://example.com/made-in-abyss/Layer_5"/>
+    <mia:hasDangerLevel rdf:resource="http://example.com/made-in-abyss/Insignificant_Danger"/>
+    <mia:hasDescription>The Hamashirama (ハマシラマ) is a strange fish that lives in large numbers in the 5th Layer of The Abyss, the Sea of Corpses. It's one of the creatures documented in Lyza's Notes.</mia:hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Prushka">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Human"/>
+    <rdfs:label>Prushka</rdfs:label>
+    <mia:lastKnownLocation rdf:resource="http://example.com/made-in-abyss/Ido_Front"/>
+    <mia:hasGender>Female</mia:hasGender>
+    <mia:hasSpecies>Human</mia:hasSpecies>
+    <mia:hasStatus>Deceased</mia:hasStatus>
+    <mia:hasOccupation>Whistle</mia:hasOccupation>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Silkfang">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Beast"/>
+    <rdfs:label>Silkfang</rdfs:label>
+    <mia:hasSpecies>Insect</mia:hasSpecies>
+    <mia:livesIn rdf:resource="http://example.com/made-in-abyss/Layer_1"/>
+    <mia:hasDangerLevel rdf:resource="http://example.com/made-in-abyss/Caution_Danger"/>
+    <mia:hasDescription>The Silkfang (ゴコウゲ, Gokōge) is a large insect that is occasionally seen within the 1st Layer of The Abyss.</mia:hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Simred">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Human"/>
+    <rdfs:label>Simred</rdfs:label>
+    <mia:lastKnownLocation rdf:resource="http://example.com/made-in-abyss/Seeker_Camp"/>
+    <mia:hasGender>Male</mia:hasGender>
+    <mia:hasSpecies>Human</mia:hasSpecies>
+    <mia:hasStatus>Alive</mia:hasStatus>
+    <mia:hasOccupation>Delver</mia:hasOccupation>
+    <mia:hasWhistleRank rdf:resource="http://example.com/made-in-abyss/BlackWhistle"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Location">
+    <rdf:type rdf:resource="http://www.w3.org/2000/01/rdf-schema#Class"/>
+    <rdfs:subClassOf rdf:resource="http://example.com/made-in-abyss/Place"/>
+    <rdfs:label>Location</rdfs:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Garden_of_the_Flowers_of_Fortitude">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Location"/>
+    <mia:hasDepth rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">9000</mia:hasDepth>
+    <rdfs:label>Garden of the Flowers of Fortitude</rdfs:label>
+    <mia:locatedIn rdf:resource="http://example.com/made-in-abyss/Layer_4"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Absurd_Danger">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/DangerLevel"/>
+    <rdfs:label>Absurd</rdfs:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Layer_7">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Place"/>
+    <mia:hasDepth>15,500 -????? meters.</mia:hasDepth>
+    <mia:minDepth rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">15500</mia:minDepth>
+    <mia:hasDescription>The final known layer of The Abyss. Not much is known about it, but there are many rumors about it transmitted from the Last Dives of generations of White Whistle Delvers, which are only passed down via word of mouth to none but themselves. These include the claim that there exists in it something shaped like a ring, Ring of the Essence, which only a few White Whistle Delvers have seen, as well as the rumor that along the path to the bottom of The Abyss live mysterious beings called 'Gatekeepers.' It was at the entrance of this layer that Lyza documented the Human-like Silhouette, an unknown entity resembling Reg.</mia:hasDescription>
+    <mia:hasEffect>Unknown</mia:hasEffect>
+    <rdfs:label>7th Layer</rdfs:label>
+    <mia:locatedIn rdf:resource="http://example.com/made-in-abyss/The_Abyss"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Sky_Hunting_Grounds">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Location"/>
+    <rdfs:label>Sky Hunting Grounds</rdfs:label>
+    <mia:locatedIn rdf:resource="http://example.com/made-in-abyss/The_Inverted_Forest"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Burial_Tower">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Location"/>
+    <mia:hasDepth rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">300</mia:hasDepth>
+    <rdfs:label>Burial Tower</rdfs:label>
+    <mia:locatedIn rdf:resource="http://example.com/made-in-abyss/Layer_1"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Remayo">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Human"/>
+    <rdfs:label>Remayo</rdfs:label>
+    <mia:lastKnownLocation rdf:resource="http://example.com/made-in-abyss/Layer_6"/>
+    <mia:hasGender>Female</mia:hasGender>
+    <mia:hasSpecies>Human</mia:hasSpecies>
+    <mia:hasStatus>Alive</mia:hasStatus>
+    <mia:hasOccupation>Delver</mia:hasOccupation>
+    <mia:hasWhistleRank rdf:resource="http://example.com/made-in-abyss/BlackWhistle"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Kiyui">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Human"/>
+    <rdfs:label>Kiyui</rdfs:label>
+    <mia:lastKnownLocation rdf:resource="http://example.com/made-in-abyss/Belchero_Orphanage"/>
+    <mia:hasGender>Male</mia:hasGender>
+    <mia:hasSpecies>Human</mia:hasSpecies>
+    <mia:hasStatus>Alive</mia:hasStatus>
+    <mia:hasOccupation>Delver Apprentice</mia:hasOccupation>
+    <mia:hasWhistleRank rdf:resource="http://example.com/made-in-abyss/Bell"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Crimson_Splitjaw">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Beast"/>
+    <rdfs:label>Crimson Splitjaw</rdfs:label>
+    <mia:hasSpecies>Reptile</mia:hasSpecies>
+    <mia:livesIn rdf:resource="http://example.com/made-in-abyss/Layer_3"/>
+    <mia:hasDangerLevel rdf:resource="http://example.com/made-in-abyss/Deadly_Danger"/>
+    <mia:hasDescription>The Crimson Splitjaw (ベニクチナワ, Benikuchinawa) is a giant scarlet red reptile with a serpentine body that primarily lives in the steep cliffs of the 3rd Layer of The Abyss</mia:hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Ozen">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Human"/>
+    <rdfs:label>Ozen</rdfs:label>
+    <mia:lastKnownLocation rdf:resource="http://example.com/made-in-abyss/Seeker_Camp"/>
+    <mia:hasGender>Female</mia:hasGender>
+    <mia:hasSpecies>Human</mia:hasSpecies>
+    <mia:hasStatus>Alive</mia:hasStatus>
+    <mia:hasOccupation>Delver</mia:hasOccupation>
+    <mia:hasWhistleRank rdf:resource="http://example.com/made-in-abyss/WhiteWhistle"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Frost_Dragonbones">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Location"/>
+    <rdfs:label>Frost Dragonbones</rdfs:label>
+    <mia:locatedIn rdf:resource="http://example.com/made-in-abyss/Layer_5"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Sparagmos">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Artifact"/>
+    <rdfs:label>Sparagmos</rdfs:label>
+    <mia:hasDescription>One of Bondrewd's personal Artifacts.</mia:hasDescription>
+    <mia:hasEffect>Destructive light weapon</mia:hasEffect>
+    <mia:ownedBy rdf:resource="http://example.com/made-in-abyss/Bondrewd"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Stingerhead">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Beast"/>
+    <rdfs:label>Stingerhead</rdfs:label>
+    <mia:hasSpecies>Arthropod</mia:hasSpecies>
+    <mia:livesIn rdf:resource="http://example.com/made-in-abyss/Layer_5"/>
+    <mia:hasDangerLevel rdf:resource="http://example.com/made-in-abyss/Extraordinary_Danger"/>
+    <mia:hasDescription>Stingerheads (カッショウガシラ, Kasshōgashira) are dangerous creatures that live in the sandstone area in the 5th Layer of The Abyss, first officially documented by the White Whistle Delver Lyza 'The Annihilator' and named by her</mia:hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Narehate">
+    <rdf:type rdf:resource="http://www.w3.org/2000/01/rdf-schema#Class"/>
+    <rdfs:subClassOf rdf:resource="http://example.com/made-in-abyss/Human"/>
+    <rdfs:label>Narehate</rdfs:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Second_Grade">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/ArtifactGrade"/>
+    <rdfs:label>Second Grade</rdfs:label>
+    <mia:hasDescription>Second Grade Artifacts are very rare and usually have very specialized abilities. They introduce entirely new concepts and can change people's way of life.</mia:hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Special_Grade">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/ArtifactGrade"/>
+    <rdfs:label>Special Grade</rdfs:label>
+    <mia:hasDescription>The most valuable class of Artifacts that can be found. These are items that can change the world and disrupt the balance of power between nations. Retrieving a single one to the surface can guarantee a prosperous future for a whole city or vastly increase the military potential of a country, depending on its use.</mia:hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Nanachis_Hideout">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Location"/>
+    <mia:hasDepth rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">7100</mia:hasDepth>
+    <rdfs:label>Nanachi's Hideout</rdfs:label>
+    <mia:locatedIn rdf:resource="http://example.com/made-in-abyss/Layer_4"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/WhiteWhistle">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/WhistleRank"/>
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Item"/>
+    <rdfs:label>White Whistle</rdfs:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Amakagame">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Beast"/>
+    <rdfs:label>Amakagame</rdfs:label>
+    <mia:hasSpecies>Unknown</mia:hasSpecies>
+    <mia:livesIn rdf:resource="http://example.com/made-in-abyss/Layer_3"/>
+    <mia:hasDangerLevel rdf:resource="http://example.com/made-in-abyss/Serious_Danger"/>
+    <mia:hasDescription>Amakagame (甘花瓶アマカガメ, lit. Sweet-Smelling Vase) are bulbous creatures that live in the cave systems of the 3rd Layer.</mia:hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Wind_Riding_Windmills">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Location"/>
+    <mia:hasDepth rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1000</mia:hasDepth>
+    <rdfs:label>Wind-Riding Windmills</rdfs:label>
+    <mia:locatedIn rdf:resource="http://example.com/made-in-abyss/Layer_1"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Jiruo">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Human"/>
+    <rdfs:label>Jiruo</rdfs:label>
+    <mia:lastKnownLocation rdf:resource="http://example.com/made-in-abyss/Belchero_Orphanage"/>
+    <mia:hasGender>Male</mia:hasGender>
+    <mia:hasSpecies>Human</mia:hasSpecies>
+    <mia:hasStatus>Alive</mia:hasStatus>
+    <mia:hasOccupation>Instructor</mia:hasOccupation>
+    <mia:hasWhistleRank rdf:resource="http://example.com/made-in-abyss/MoonWhistle"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Gangway">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Artifact"/>
+    <rdfs:label>Gangway</rdfs:label>
+    <mia:hasDescription>One of Bondrewd's personal Artifacts.</mia:hasDescription>
+    <mia:hasEffect>Light projection weapon</mia:hasEffect>
+    <mia:ownedBy rdf:resource="http://example.com/made-in-abyss/Bondrewd"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Thousand_Men_Pins">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Artifact"/>
+    <rdfs:label>Thousand-Men Pins</rdfs:label>
+    <mia:hasDescription>Artifacts said to grant the user the strength of a thousand men.</mia:hasDescription>
+    <mia:hasEffect>Enhanced strength</mia:hasEffect>
+    <mia:ownedBy rdf:resource="http://example.com/made-in-abyss/Ozen"/>
+    <mia:hasGrade rdf:resource="http://example.com/made-in-abyss/First_Grade"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Irumyuui">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Human"/>
+    <rdfs:label>Irumyuui</rdfs:label>
+    <mia:lastKnownLocation rdf:resource="http://example.com/made-in-abyss/Iruburu"/>
+    <mia:hasGender>Female</mia:hasGender>
+    <mia:hasSpecies>Human</mia:hasSpecies>
+    <mia:hasStatus>Deceased</mia:hasStatus>
+    <mia:hasOccupation>Delver</mia:hasOccupation>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Abode_of_Trees_and_Fossils">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Location"/>
+    <mia:hasDepth rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">200</mia:hasDepth>
+    <rdfs:label>Abode of Trees and Fossils</rdfs:label>
+    <mia:locatedIn rdf:resource="http://example.com/made-in-abyss/Layer_1"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Spiral_Ice_Pillars">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Location"/>
+    <rdfs:label>Spiral Ice Pillars</rdfs:label>
+    <mia:locatedIn rdf:resource="http://example.com/made-in-abyss/Layer_4"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Amaranthine_Deceptor">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Beast"/>
+    <rdfs:label>Amaranthine-Deceptor</rdfs:label>
+    <mia:hasSpecies>Insect</mia:hasSpecies>
+    <mia:livesIn rdf:resource="http://example.com/made-in-abyss/Layer_4"/>
+    <mia:hasDangerLevel rdf:resource="http://example.com/made-in-abyss/Absurd_Danger"/>
+    <mia:hasDescription>The Amaranthine-Deceptor (クオンガタリ, Kuongatari) are insects native to the impenetrable 6th Layer of The Abyss, where return becomes impossible for humans.</mia:hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/The_Guiding_Tree">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Location"/>
+    <rdfs:label>The Guiding Tree</rdfs:label>
+    <mia:locatedIn rdf:resource="http://example.com/made-in-abyss/Layer_1"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Joint_Delving_Site">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Location"/>
+    <rdfs:label>Joint Delving Site</rdfs:label>
+    <mia:locatedIn rdf:resource="http://example.com/made-in-abyss/The_Inverted_Forest"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Fourth_Grade">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/ArtifactGrade"/>
+    <rdfs:label>Fourth Grade</rdfs:label>
+    <mia:hasDescription>Fourth Grade Artifacts are common Relics, usually found on the upper layers. They are regarded as insignificant or are of uncertain use and incapable of replacing existing tools</mia:hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/District">
+    <rdf:type rdf:resource="http://www.w3.org/2000/01/rdf-schema#Class"/>
+    <rdfs:subClassOf rdf:resource="http://example.com/made-in-abyss/Place"/>
+    <rdfs:label>District</rdfs:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Unknown_Danger">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/DangerLevel"/>
+    <rdfs:label>Unknown</rdfs:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Yelme">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Human"/>
+    <rdfs:label>Yelme</rdfs:label>
+    <mia:lastKnownLocation rdf:resource="http://example.com/made-in-abyss/Seeker_Camp"/>
+    <mia:hasGender>Male</mia:hasGender>
+    <mia:hasSpecies>Human</mia:hasSpecies>
+    <mia:hasStatus>Alive</mia:hasStatus>
+    <mia:hasOccupation>Delver</mia:hasOccupation>
+    <mia:hasWhistleRank rdf:resource="http://example.com/made-in-abyss/MoonWhistle"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Kazura_Squid">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Beast"/>
+    <rdfs:label>Kazura Squid</rdfs:label>
+    <mia:hasSpecies>Cephalopod</mia:hasSpecies>
+    <mia:livesIn rdf:resource="http://example.com/made-in-abyss/Layer_3"/>
+    <mia:livesIn rdf:resource="http://example.com/made-in-abyss/Layer_4"/>
+    <mia:hasDangerLevel rdf:resource="http://example.com/made-in-abyss/Unknown_Danger"/>
+    <mia:hasDescription>The Kazura Squid (カズライカ, Kazuraika) is a species seen inhabiting the 3rd and 4th layers of The Abyss.</mia:hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Gentle_Knock">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Artifact"/>
+    <rdfs:label>Gentle Knock</rdfs:label>
+    <mia:hasDescription>A manufactured multi-purpose tool made from Thinking Stones, which are excavated in the Great Fault.</mia:hasDescription>
+    <mia:hasEffect>Multi-purpose tool</mia:hasEffect>
+    <mia:ownedBy rdf:resource="http://example.com/made-in-abyss/Reg"/>
+    <mia:hasGrade rdf:resource="http://example.com/made-in-abyss/Third_Grade"/>
+    <mia:sourcedFrom rdf:resource="http://example.com/made-in-abyss/Layer_3"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Ominaki_Falls">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Location"/>
+    <rdfs:label>Ominaki Falls</rdfs:label>
+    <mia:locatedIn rdf:resource="http://example.com/made-in-abyss/Layer_1"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Nat">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Human"/>
+    <rdfs:label>Nat</rdfs:label>
+    <mia:lastKnownLocation rdf:resource="http://example.com/made-in-abyss/Belchero_Orphanage"/>
+    <mia:hasGender>Male</mia:hasGender>
+    <mia:hasSpecies>Human</mia:hasSpecies>
+    <mia:hasStatus>Alive</mia:hasStatus>
+    <mia:hasOccupation>Delver</mia:hasOccupation>
+    <mia:hasWhistleRank rdf:resource="http://example.com/made-in-abyss/RedWhistle"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/East_Orth">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/District"/>
+    <rdfs:label>East District</rdfs:label>
+    <mia:locatedIn rdf:resource="http://example.com/made-in-abyss/Orth"/>
+    <mia:contains rdf:resource="http://example.com/made-in-abyss/Delver_Guild_HQ"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Object">
+    <rdf:type rdf:resource="http://www.w3.org/2000/01/rdf-schema#Class"/>
+    <rdfs:subClassOf rdf:resource="http://example.com/made-in-abyss/Entity"/>
+    <rdfs:label>Object</rdfs:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Seeker_Camp">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Location"/>
+    <mia:hasDepth rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">2540</mia:hasDepth>
+    <rdfs:label>Seeker Camp</rdfs:label>
+    <mia:locatedIn rdf:resource="http://example.com/made-in-abyss/The_Inverted_Forest"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Human">
+    <rdf:type rdf:resource="http://www.w3.org/2000/01/rdf-schema#Class"/>
+    <rdfs:subClassOf rdf:resource="http://example.com/made-in-abyss/Living_Thing"/>
+    <rdfs:label>Human</rdfs:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/North_Orth">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/District"/>
+    <rdfs:label>North District</rdfs:label>
+    <mia:locatedIn rdf:resource="http://example.com/made-in-abyss/Orth"/>
+    <mia:contains rdf:resource="http://example.com/made-in-abyss/Orth_Windmills"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/The_Grand_Pier">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Location"/>
+    <mia:hasDescription>The Grand Pier (大桟橋おおさんばし, Ōsanbashi) is an ornate gondola station located in the lowest area of the West District. It is used for triumphant returns of Delver teams.</mia:hasDescription>
+    <rdfs:label>The Grand Pier</rdfs:label>
+    <mia:locatedIn rdf:resource="http://example.com/made-in-abyss/West_Orth"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/MoonWhistle">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/WhistleRank"/>
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Item"/>
+    <rdfs:label>Moon Whistle</rdfs:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Item">
+    <rdf:type rdf:resource="http://www.w3.org/2000/01/rdf-schema#Class"/>
+    <rdfs:subClassOf rdf:resource="http://example.com/made-in-abyss/Object"/>
+    <rdfs:label>Item</rdfs:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Belchero">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Human"/>
+    <rdfs:label>Belchero</rdfs:label>
+    <mia:lastKnownLocation rdf:resource="http://example.com/made-in-abyss/Belchero_Orphanage"/>
+    <mia:hasGender>Female</mia:hasGender>
+    <mia:hasSpecies>Human</mia:hasSpecies>
+    <mia:hasStatus>Alive</mia:hasStatus>
+    <mia:hasOccupation>Director</mia:hasOccupation>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Living_Thing">
+    <rdf:type rdf:resource="http://www.w3.org/2000/01/rdf-schema#Class"/>
+    <rdfs:subClassOf rdf:resource="http://example.com/made-in-abyss/Entity"/>
+    <rdfs:label>Living Thing</rdfs:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Place">
+    <rdf:type rdf:resource="http://www.w3.org/2000/01/rdf-schema#Class"/>
+    <rdfs:subClassOf rdf:resource="http://example.com/made-in-abyss/Entity"/>
+    <rdfs:label>Place</rdfs:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Entity">
+    <rdf:type rdf:resource="http://www.w3.org/2000/01/rdf-schema#Class"/>
+    <rdfs:label>Entity</rdfs:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/BlackWhistle">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/WhistleRank"/>
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Item"/>
+    <rdfs:label>Black Whistle</rdfs:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Tallowstone_Layer">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Location"/>
+    <rdfs:label>Tallowstone Layer</rdfs:label>
+    <mia:locatedIn rdf:resource="http://example.com/made-in-abyss/Layer_3"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Hells_Crossing">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Location"/>
+    <mia:hasDepth rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">2000</mia:hasDepth>
+    <rdfs:label>Hell's Crossing</rdfs:label>
+    <mia:locatedIn rdf:resource="http://example.com/made-in-abyss/The_Inverted_Forest"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Bell">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/WhistleRank"/>
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Item"/>
+    <rdfs:label>Bell</rdfs:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/The_Wharf">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Location"/>
+    <mia:hasDescription>The Wharf (岸壁街がんぺきがい, Ganpekigai) is a section of the South District of Orth</mia:hasDescription>
+    <rdfs:label>The Wharf</rdfs:label>
+    <mia:locatedIn rdf:resource="http://example.com/made-in-abyss/South_Orth"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Flat_Creeper_Squid_Spawning_Grounds">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Location"/>
+    <mia:hasDepth rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">6750</mia:hasDepth>
+    <rdfs:label>Flat-Creeper Squid Spawning Grounds</rdfs:label>
+    <mia:locatedIn rdf:resource="http://example.com/made-in-abyss/Layer_4"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Serious_Danger">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/DangerLevel"/>
+    <rdfs:label>Serious</rdfs:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Beast">
+    <rdf:type rdf:resource="http://www.w3.org/2000/01/rdf-schema#Class"/>
+    <rdfs:subClassOf rdf:resource="http://example.com/made-in-abyss/Living_Thing"/>
+    <rdfs:label>Beast</rdfs:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Sticky_Clouds">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Location"/>
+    <rdfs:label>Sticky Clouds</rdfs:label>
+    <mia:locatedIn rdf:resource="http://example.com/made-in-abyss/Layer_4"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Stone_Ark">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Location"/>
+    <mia:hasDepth rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">600</mia:hasDepth>
+    <rdfs:label>Stone Ark</rdfs:label>
+    <mia:locatedIn rdf:resource="http://example.com/made-in-abyss/Layer_1"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Curse_Warding_Box">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Artifact"/>
+    <rdfs:label>Curse-Warding Box</rdfs:label>
+    <mia:hasDescription>A unique Artifact initially believed to nullify the effects of the Curse of the Abyss.</mia:hasDescription>
+    <mia:hasEffect> Those inside will still suffer the effects of the curse and possibly die as a result, but whatever is placed inside will come back to life seemingly unaffected and will immediately start crawling towards the center of the Abyss before dying again sometime later.</mia:hasEffect>
+    <mia:ownedBy rdf:resource="http://example.com/made-in-abyss/Ozen"/>
+    <mia:hasGrade rdf:resource="http://example.com/made-in-abyss/First_Grade"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Deadly_Danger">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/DangerLevel"/>
+    <rdfs:label>Deadly</rdfs:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/ArtifactGrade">
+    <rdf:type rdf:resource="http://www.w3.org/2000/01/rdf-schema#Class"/>
+    <rdfs:label>Artifact Grade</rdfs:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Rumbling_Grounds_of_the_Strong">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Location"/>
+    <rdfs:label>Rumbling Grounds of the Strong</rdfs:label>
+    <mia:locatedIn rdf:resource="http://example.com/made-in-abyss/Layer_3"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Iruburu">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Place"/>
+    <rdfs:label>Iruburu</rdfs:label>
+    <mia:locatedIn rdf:resource="http://example.com/made-in-abyss/Layer_6"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Eternal_Wave_Crests">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Location"/>
+    <rdfs:label>Eternal Wave Crests</rdfs:label>
+    <mia:locatedIn rdf:resource="http://example.com/made-in-abyss/Layer_4"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Cumulonimbus_Point">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Location"/>
+    <rdfs:label>Cumulonimbus Point</rdfs:label>
+    <mia:locatedIn rdf:resource="http://example.com/made-in-abyss/Layer_3"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/First_Grade">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/ArtifactGrade"/>
+    <rdfs:label>First Grade</rdfs:label>
+    <mia:hasDescription>The second most valuable class of Artifact that can be found. These are items that are extremely rare or versatile. They can change the balance of power between countries and are extremely useful when cave raiding in the deeper levels.</mia:hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Greenery_Layer">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Location"/>
+    <rdfs:label>Greenery Layer</rdfs:label>
+    <mia:locatedIn rdf:resource="http://example.com/made-in-abyss/Layer_3"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Caution_Danger">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/DangerLevel"/>
+    <rdfs:label>Caution</rdfs:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Insignificant_Danger">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/DangerLevel"/>
+    <rdfs:label>Insignificant</rdfs:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/WhistleRank">
+    <rdf:type rdf:resource="http://www.w3.org/2000/01/rdf-schema#Class"/>
+    <rdfs:label>Whistle Rank</rdfs:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Whistle">
+    <rdfs:label>Whistle</rdfs:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Acid_Waterfall">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/Location"/>
+    <rdfs:label>Acid Waterfall</rdfs:label>
+    <mia:locatedIn rdf:resource="http://example.com/made-in-abyss/Layer_4"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/made-in-abyss/Harmless_Danger">
+    <rdf:type rdf:resource="http://example.com/made-in-abyss/DangerLevel"/>
+    <rdfs:label>Harmless</rdfs:label>
+  </rdf:Description>
+</rdf:RDF>

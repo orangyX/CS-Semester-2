@@ -22,7 +22,7 @@ except AssertionError as e:
 inputs = inputs.split("\n")
 inputs = inputs[:len(inputs) - 1] # Have to remove the '' at the end, otherwise valid files are rejected
 
-def validate_format(ln: str, arg=False) -> None:
+def validate_format(ln: str) -> None:
     """
         Validation function; checks if entries in .in is of valid format:
             - Non-negative value
@@ -33,17 +33,14 @@ def validate_format(ln: str, arg=False) -> None:
     ln = ln.split(" ") # Split on a single space; anything with more than a single space is rejected (or on \t)
 
     try:
-        if arg:
-            assert(len(ln) == 2)
-        if not arg:
-            assert(len(ln) == 3)
+        assert(len(ln) == 3)
 
         for i in ln:
             assert(i.isdigit() and not (len(i) > 1 and i.startswith('0')))
     except AssertionError as e:
         exit(43)
 
-def validate_bound(ln: str, num_vert: int, arg=False) -> None:
+def validate_bound(ln: str, num_vert: int) -> None:
     """
         Validation function; checks if entries in .in is of valid bounds/datatypes
             - Ensures that graph is connected (checks that u, v have a key < |V|)
@@ -63,7 +60,7 @@ num_line = 0
 
 for i in range(len(inputs)):
     if i == 0:
-        validate_format(inputs[i], True)
+        validate_format(inputs[i])
         num_vert = int(inputs[i].split()[0])
         num_edge = int(inputs[i].split()[1])
 

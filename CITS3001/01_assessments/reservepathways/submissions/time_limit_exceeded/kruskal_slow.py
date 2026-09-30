@@ -23,20 +23,34 @@ class UnionFind:
         self.parent[root_u] = root_v # Just hang it; we do not use the rank at all
         return True
 
-def kruskal(edge_list: list[tuple[int, int, int]], v: int) -> int:
+def kruskal(edge_list: list[tuple[int, int, int]], v: int, t: int) -> int:
     edge_list = sorted(edge_list, key=lambda x: x[2])
     union_find = UnionFind(v)
-    mst_sum = 0
+    network_sum = 0
+    running_cost = 0
+    redundant_edges = []
+    num_edges = 0
 
     for u, v, w in edge_list:
         if union_find.union(u, v):
-            mst_sum += w
+            network_sum += w
+        else:
+            redundant_edges.append((u, v, w))
 
-    return mst_sum
+        for u, v, w in redundant_edges:
+            running_cost += w
+
+            if running_cost > t:
+                break
+
+            num_edges += 1
+
+    return network_sum, num_edges
 
 inputs = sys.stdin.read().split("\n")
 edge_list = [tuple(map(int, line.split())) for line in inputs if line.strip()]
-v, e = edge_list[0]
+v, e, t = edge_list[0]
 edge_list = edge_list[1:]
 
-print(kruskal(edge_list, v))
+network_sum, num_edges = (kruskal(edge_list, v, t))
+print(network_sum, num_edges)

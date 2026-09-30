@@ -32,22 +32,36 @@ class UnionFind:
 
         return True # Merge successful
 
-def kruskals(edge_list: tuple[int, int, int], v: int) -> int:
-    edge_list = sorted(edge_list, key=lambda x: x[2]) # Sort in ascending order of edge weights
+def kruskals(edge_list: tuple[int, int, int], v: int, t: int) -> tuple[int, int]:
+    edge_list = sorted(edge_list, key=lambda x: x[2]) # Sort in ascending order of edge weights, costs O(nlogn) time
 
     union_find = UnionFind(v) 
-    mst_sum = 0 # The sum of the edge weights in the minimum spanning tree; this shall be the output
+    network_sum = 0 # The sum of the edge weights in the minimum spanning tree; this shall be the output
+    running_cost = 0
+    redundant_edges = [] # This will store the edges introducing cycles; these are usually discarded by Kruskal's, but the problem calls for a greedy approach to use these
+    num_edges = 0 # Num. edges which can be introduced into the network
 
     for u, v, w in edge_list:
         if union_find.union(u, v): # If not forming a cycle, we shall take the edge
-            mst_sum += w
+            network_sum += w
+        else:
+            redundant_edges.append((u, v, w))
 
-    return mst_sum
+    for u, v, w in redundant_edges:
+        running_cost += w
+
+        if running_cost > t:
+            break
+
+        num_edges += 1
+
+    return network_sum, num_edges
         
 # Standard data processing
 inputs = sys.stdin.read().split("\n")
 edge_list = [tuple(map(int, line.split())) for line in inputs if line.strip()]
-v, e = edge_list[0] # Although e isn't inherently necessary for this algorithm to work
+v, e, t = edge_list[0] # Although e isn't inherently necessary for this algorithm to work
 edge_list = edge_list[1:]
 
-print(kruskals(edge_list, v))
+network_sum, num_edges = kruskals(edge_list, v, t)
+print(network_sum, num_edges)

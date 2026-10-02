@@ -9,34 +9,34 @@ def prims_slow(adj_map: dict[list[tuple[int, int, int]]], edge_list: list[tuple[
     running_cost = 0
     num_edges = 0
 
-    distances[0] = 0
+    distances[0] = 0 # Vertex 0 is the starting vertex; its distance to itself is 0
 
     while len(visited) < num_v:
-        x = None # This shall store the ve
+        x = None # This shall store the best distances of the neighbours
 
         for u in range(num_v):
             if u not in visited:
-                if x is None or distances[u] < distances[x]:
+                if x is None or distances[u] < distances[x]: # We've found a new best, set x to be the to-vertex
                     x = u
 
-        if x != 0:
+        if x != 0: # 0 is not a valid edge, so we skip it if x is 0
             mst_sum += distances[x] # Safe; distances[x] is the cheapest edge crossing a split, hence taking it is optimal
             mst_edge_costs.append(distances[x])
         visited.add(x)
 
-        for v, w in adj_map[x]:
+        for v, w in adj_map[x]: # x adds new edges to the graph; so we must take the cheapest of these edges to grow the tree
             if v not in visited and w < distances[v]:
                 distances[v] = w
 
-    for mst_w in mst_edge_costs:
+    for mst_w in mst_edge_costs: # Greedy path selection 
         for i, (_, _, w) in enumerate(edge_list):
             if mst_w == w:
-                edge_list.pop(i)
+                edge_list.pop(i) # Remove by weight; that shall leave a set of vertices that are not in the mst (this step is discussed in the editorial)
                 break
 
     edge_list = sorted(edge_list, key=lambda x: x[2])
 
-    for _, _, w in edge_list:
+    for _, _, w in edge_list: # Standard greedy edge selection logic
         running_cost += w
 
         if running_cost > t:
@@ -46,8 +46,7 @@ def prims_slow(adj_map: dict[list[tuple[int, int, int]]], edge_list: list[tuple[
 
     return mst_sum, num_edges
 
-        
-
+# Data processing
 inputs = sys.stdin.read().split("\n")
 edge_list = [tuple(map(int, line.split())) for line in inputs if line.strip()]
 num_v, e, t = edge_list[0] # Although e isn't inherently necessary for this algorithm to work

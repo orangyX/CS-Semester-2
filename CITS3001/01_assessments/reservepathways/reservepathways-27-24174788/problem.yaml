@@ -1,0 +1,9 @@
+name: Reserve Pathways
+uuid: 6022e942-de18-49f7-a34c-2454a6682ffb
+author: Justin Power
+license: educational
+
+limits:
+  time_multiplier: 5.0
+  time_safety_margin: 2.0
+  memory: 2048

@@ -1,0 +1,23 @@
+\problemname{Launch Countdown}
+Mission Control is preparing to launch its new rocket. Before liftoff, $N$ preflight
+checks must be completed. Some checks can only begin once others are finished. For
+example, the engines must be fuelled before they can be test fired. Each check has its
+own independent team, so any checks whose prerequisites are complete can be carried out
+simultaneously. Check $i$ takes $t_i$ hours to complete. The rocket is ready to launch
+once every check is complete. Mission Control wants to know which checks are critical.
+A critical check is a check that if delayed would delay the launch. Find the minimum number of hours 
+until the rocket is ready to launch and the number of critical checks.
+
+\section*{Input}
+The first line contains two integers $N$ and $M$ ($1 \leq N \leq 10^5$, $1 \leq M \leq 10^5$)  
+the number of preflight checks and the number of prerequisite relations.
+The second line contains $N$ positive integers $t_1, t_2, \ldots, t_N$, where $t_i$ is
+the number of hours needed to complete check $i$. Checks are numbered from $1$ to $N$.
+Each of the next $M$ lines contains two integers $u$ and $v$, meaning check $u$ must be
+completed before check $v$ can begin. The prerequisite relations contain no cycles.
+
+\section*{Output}
+Output two lines. The first line contains the minimum number of hours until the
+rocket is ready to launch. The second line contains the number of critical checks.
+\section*{} Hint: A check is critical if it exists in the longest chain of checks.
+Finding these is very similar to finding the launch time, just inverted.

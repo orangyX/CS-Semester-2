@@ -25,6 +25,7 @@ def kruskal_naive(edge_list: list[tuple[int, int, int]], v: int, t: int) -> tupl
 
     return network_sum, num_edges
 
+# Data processing
 inputs = sys.stdin.read().split("\n")
 edge_list = [tuple(map(int, line.split())) for line in inputs if line.strip()]
 v, e, t = edge_list[0]

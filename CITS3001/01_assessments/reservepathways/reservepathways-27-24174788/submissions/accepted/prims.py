@@ -29,9 +29,9 @@ def prims(adj_map: dict[list[int]], t: int) -> tuple[int, int]:
         visited.add(v)
         mst.append((u, v, w))
 
-        for x in adj_map[v]: # Process all neighbours of v
-            if x[0] not in visited:
-                heapq.heappush(pq, (x[1], v, x[0])) 
+        for x, w_i in adj_map[v]: # Process all neighbours of v
+            if x not in visited:
+                heapq.heappush(pq, (w_i, v, x)) 
 
     mst_sum = sum(map(lambda x: x[2], mst)) # The sum of the weights is a part of the solution
 

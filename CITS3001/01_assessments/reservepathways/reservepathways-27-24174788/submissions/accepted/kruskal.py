@@ -45,12 +45,12 @@ def kruskals(edge_list: list[tuple[int, int, int]], v: int, t: int) -> tuple[int
         if union_find.union(u, v): # If not forming a cycle, we shall take the edge
             network_sum += w
         else:
-            redundant_edges.append((u, v, w))
+            redundant_edges.append((u, v, w)) # If the edge is discarded, it is considered unused from the original graph; save it, this is needed for greedy edge selection
 
     for u, v, w in redundant_edges:
         running_cost += w
 
-        if running_cost > t:
+        if running_cost > t: # While the sum is l.t. t
             break
 
         num_edges += 1

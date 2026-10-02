@@ -50,7 +50,7 @@ def validate_bound(ln: str, num_vert: int) -> None:
     u, v, _ = int(ln[0]), int(ln[1]), int(ln[2])
 
     try:
-        assert(u < num_vert and v < num_vert)
+        assert(u < num_vert and v < num_vert and u != v) # Ban self-loops
     except AssertionError as e:
         exit(43)
 

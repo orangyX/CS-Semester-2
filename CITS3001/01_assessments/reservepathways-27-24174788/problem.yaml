@@ -1,5 +1,6 @@
+# Kattis only supports legacy, or 2023-07-draft, as stated in the README. I'll be using legacy.
 name: Reserve Pathways
-uuid: 6022e942-de18-49f7-a34c-2454a6682ffb # This is generated from verifyproblem reservepathways
+uuid: 6022e942-de18-49f7-a34c-2454a6682ffb
 author: Justin Power (24174788)
 source: CITS3001 Advanced Algorithms
 rights_owner: University of Western Australia

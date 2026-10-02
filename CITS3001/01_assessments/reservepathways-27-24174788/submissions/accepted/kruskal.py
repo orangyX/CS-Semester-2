@@ -32,7 +32,7 @@ class UnionFind:
 
         return True # Merge successful
 
-def kruskals(edge_list: tuple[int, int, int], v: int, t: int) -> tuple[int, int]:
+def kruskals(edge_list: list[tuple[int, int, int]], v: int, t: int) -> tuple[int, int]:
     edge_list = sorted(edge_list, key=lambda x: x[2]) # Sort in ascending order of edge weights, costs O(nlogn) time
 
     union_find = UnionFind(v) 

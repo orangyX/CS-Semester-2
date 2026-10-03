@@ -1,0 +1,53 @@
+{"Degree": {
+    "Object Count": 11,
+    "Properties Count": 8,
+    "Properties": [
+        "code",
+        "title",
+        "school",
+        "study_type",
+        "total_points",
+        "standard_full_time_completion",
+        "locations",
+        "majors"
+        ]
+    },
+"Majors":{
+    "Object Count": 97,
+    "Properties Count": 8,
+    "Properties": [
+        "code",
+        "title",
+        "school",
+        "description",
+        "outcomes",
+        "courses",
+        "bridging",
+        "units"
+        ]
+    },
+"Units": {
+    "Object Count": 887,
+    "Properties Count": 18,
+    "Properties": [
+        "code",
+        "title",
+        "school",
+        "level",
+        "description",
+        "credit",
+        "semesters",
+        "locations",
+        "modes",
+        "majors",
+        "outcomes",
+        "assessment",
+        "contact",
+        "prerequisites_text",
+        "prerequisite_courses",
+        "prerequisite_units",
+        "advisable_prior_study",
+        "note"
+        ]
+    }
+}

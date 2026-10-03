@@ -1,0 +1,14 @@
+{
+  "Object Count": 11,
+  "Properties Count": 8,
+  "Properties": [
+    "code",
+    "title",
+    "school",
+    "study_type",
+    "total_points",
+    "standard_full_time_completion",
+    "locations",
+    "majors"
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "Object Count": 887,
+  "Properties Count": 18,
+  "Properties": [
+    "code",
+    "title",
+    "school",
+    "level",
+    "description",
+    "credit",
+    "semesters",
+    "locations",
+    "modes",
+    "majors",
+    "outcomes",
+    "assessment",
+    "contact",
+    "prerequisites_text",
+    "prerequisite_courses",
+    "prerequisite_units",
+    "advisable_prior_study",
+    "note"
+  ]
+}

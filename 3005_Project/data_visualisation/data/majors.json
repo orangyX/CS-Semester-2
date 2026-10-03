@@ -1,0 +1,14 @@
+{
+  "Object Count": 97,
+  "Properties Count": 8,
+  "Properties": [
+    "code",
+    "title",
+    "school",
+    "description",
+    "outcomes",
+    "courses",
+    "bridging",
+    "units"
+  ]
+}

@@ -54,6 +54,10 @@ with onto:
         domain = [Unit]
         range = [OutCome]
 
+    class unitLevel(DataProperty):
+        domain = [Unit]
+        range = [int] # Validation; level >= 1
+
 if __name__ == "__main__":
     # Add more here
 

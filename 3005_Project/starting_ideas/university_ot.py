@@ -1,7 +1,7 @@
 from owlready2 import *
 
-w = World()
-onto = w.get_ontology("http://uwa/uni.ot#")
+w = World() # Let w be a fresh world
+onto = w.get_ontology("http://uwa/uni.ot#") # IRI 
 
 with onto:
     # These shall be the classes
@@ -14,6 +14,12 @@ with onto:
     class Unit(Thing):
         pass
 
+    class Location(Thing):
+        pass
+
+    class OutCome(Thing):
+        pass
+
     # And the properties
     class hasPrerequisite(ObjectProperty): # ObjectProperty; links an instance to another instance
         domain = [Unit] # Unit requiring the prerequisite
@@ -24,22 +30,31 @@ with onto:
         range = [Unit]
         inverse_property = hasPrerequisite # Declare inverse property
 
-    class hasCreditPrerequisite(ObjectProperty):
-        # This one will error; a unit has exactly one credit prereq; 0 credits, or more than 0
-        # The required credits shall be an integer
+    class hasCreditPrerequisite(DataProperty, FunctionalProperty): # FunctionalProperty -> link to a single entity
         domain = [Unit]
-        range = [int]
-        # TO DO
-        pass
+        range = [int] # Number of credits required to be eligible to take the unit (likely a multiple of 6)
 
     class inMajor(ObjectProperty):
         domain = [Unit]
         range = [Major]
-        # TO DO
-        pass
 
     class inDegree(ObjectProperty):
         domain = [Major]
         range = [Degree]
-        # TO DO
-        pass
+
+    class creditsAcquirable(DataProperty, FunctionalProperty):
+        domain = [Unit]
+        range = [int] # The number of credits acquired from passing the unit (6)
+
+    class locatedIn(ObjectProperty):
+        domain = [Unit]
+        range = [Location]
+
+    class hasOutCome(ObjectProperty):
+        domain = [Unit]
+        range = [OutCome]
+
+if __name__ == "__main__":
+    # Add more here
+
+    onto.save(file="university_ot.owl", format="rdfxml")

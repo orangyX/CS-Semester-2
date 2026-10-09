@@ -35,7 +35,7 @@ with onto:
 
     class degreeLocation(Degree >> Location, ObjectProperty): pass
 
-    # class degreeMajors(Degree >> Major, ObjectProperty): pass # redundant
+    class degreeMajors(Degree >> Major, ObjectProperty): pass
 
     # MAJOR SPECIFIC PROPERTIES ---------------------------------------------------------
     class majorCode(Major >> str, DataProperty, FunctionalProperty): pass
@@ -77,53 +77,10 @@ with onto:
 
     class unitWeeklyContactHours(Unit >> int, DataProperty, FunctionalProperty): pass
 
-    # UNIT RELATIONS --------------------------------------------------------------------
-    class unitHasPrerequisite(Unit >> Unit, ObjectProperty, TransitiveProperty): pass # Owl complains if something is transitive and irreflexive; this rule needs to be enforced elsehwere
+    # DEFINE RELATIONS HERE -------------------------------------------------------------
 
-    class unitIsPrerequisiteOf(Unit >> Unit, ObjectProperty): 
-        inverse_property = unitHasPrerequisite # Set it once, then it also applies to the other
-
-    class unitIsCoreInMajor(Unit >> Major, ObjectProperty): pass # OWA; non-added info is unkown
-
-    # MAJOR RELATIONS -------------------------------------------------------------------
-    class majorHasCoreUnit(Major >> Unit, ObjectProperty):
-        inverse_property = unitIsCoreInMajor
-
-    class majorInDegree(Major >> Degree, ObjectProperty): pass
-
-    # DEGREE RELATIONS ------------------------------------------------------------------
-    class degreeHasMajor(Degree >> Major, ObjectProperty): # Each deg. has at least one major
-        inverse_property = majorInDegree
-
-    # TESTING - DELETE THIS PRIOR TO SUBMISSION -----------------------------------------
-    cits3005 = Unit("CITS3005")
-    cits2200 = Unit("CITS2200")
-    cits1401 = Unit("CITS1401")
-
-    cits3005.unitCode = "CITS3005"
-    cits2200.unitCode = "CITS2200"
-    cits1401.unitCode = "CITS1401"
-
-    mjd_esoft = Major("MJD-ESOFT")
-
-    mjd_esoft.majorCode = "MJD-ESOFT"
-    mjd_esoft.majorTitle = "Software Engineering"
-    
-    mjd_esoft.majorHasCoreUnit = [cits1401, cits2200, cits2200, cits3005]
-
-    cits3005.unitHasPrerequisite = [cits2200]
-    cits2200.unitHasPrerequisite = [cits1401]
-
-    # shapes file testing
-    null_degree = Degree("null") # Do not add a major; test the shape; each degree has at least one major
-
-    null_degree.degreeHasMajor = [mjd_esoft] # Validator returns true
-
+    # PREREQUISITE RESTRICTIONS
 if __name__ == "__main__":
     # Add more here
 
     onto.save(file="university_ot.owl", format="rdfxml")
-    print(cits3005.unitHasPrerequisite)
-
-    sync_reasoner(w, infer_property_values=True) # Reports back inferred property values, writes them into the world w
-    print(cits3005.unitHasPrerequisite)

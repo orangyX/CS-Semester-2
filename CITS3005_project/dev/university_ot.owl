@@ -143,6 +143,11 @@
   <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#integer"/>
 </owl:DatatypeProperty>
 
+<owl:DatatypeProperty rdf:about="#majorCreditsAtLevel">
+  <rdfs:domain rdf:resource="#Major"/>
+  <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#integer"/>
+</owl:DatatypeProperty>
+
 <owl:DatatypeProperty rdf:about="#unitCode">
   <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
   <rdfs:domain rdf:resource="#Unit"/>
@@ -217,30 +222,50 @@
   <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
 </owl:Class>
 
+<owl:Class rdf:about="#Bachelor">
+  <rdfs:subClassOf rdf:resource="#StudyType"/>
+</owl:Class>
+
+<owl:Class rdf:about="#Honours">
+  <rdfs:subClassOf rdf:resource="#StudyType"/>
+</owl:Class>
+
+<owl:Class rdf:about="#CombinedBachelor">
+  <rdfs:subClassOf rdf:resource="#StudyType"/>
+</owl:Class>
+
+<owl:Class rdf:about="#Masters">
+  <rdfs:subClassOf rdf:resource="#StudyType"/>
+</owl:Class>
+
+<owl:Class rdf:about="#PhD">
+  <rdfs:subClassOf rdf:resource="#StudyType"/>
+</owl:Class>
+
 <owl:Class rdf:about="#Assessment">
   <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
 </owl:Class>
 
-<owl:NamedIndividual rdf:about="#bachelors">
-  <rdf:type rdf:resource="#StudyType"/>
+<owl:NamedIndividual rdf:about="#BP">
+  <rdf:type rdf:resource="#Bachelor"/>
 </owl:NamedIndividual>
 
-<owl:NamedIndividual rdf:about="#bachelorHonours">
-  <rdf:type rdf:resource="#StudyType"/>
+<owl:NamedIndividual rdf:about="#BH">
+  <rdf:type rdf:resource="#Honours"/>
 </owl:NamedIndividual>
 
-<owl:NamedIndividual rdf:about="#combinedBachelors">
-  <rdf:type rdf:resource="#StudyType"/>
+<owl:NamedIndividual rdf:about="#CB">
+  <rdf:type rdf:resource="#CombinedBachelor"/>
 </owl:NamedIndividual>
 
 <owl:NamedIndividual rdf:about="#BH005">
   <rdf:type rdf:resource="#Degree"/>
-  <degreeHasStudyType rdf:resource="#bachelorHonours"/>
+  <degreeHasStudyType rdf:resource="#BH"/>
 </owl:NamedIndividual>
 
 <owl:NamedIndividual rdf:about="#BP004">
   <rdf:type rdf:resource="#Degree"/>
-  <degreeHasStudyType rdf:resource="#bachelors"/>
+  <degreeHasStudyType rdf:resource="#BP"/>
   <degreeHasMajor rdf:resource="#MJD_CMPSCI"/>
 </owl:NamedIndividual>
 
@@ -255,6 +280,8 @@
 <swrl:Variable rdf:about="urn:swrl#o"/>
 
 <swrl:Variable rdf:about="urn:swrl#d"/>
+
+<swrl:Variable rdf:about="urn:swrl#b"/>
 
 <swrl:Variable rdf:about="urn:swrl#c"/>
 
@@ -309,13 +336,23 @@
       <rdf:rest>
         <rdf:Description>
           <rdf:first>
-            <swrl:IndividualPropertyAtom>
-              <swrl:propertyPredicate rdf:resource="#degreeHasStudyType"/>
-              <swrl:argument1 rdf:resource="urn:swrl#d"/>
-              <swrl:argument2 rdf:resource="#bachelors"/>
-            </swrl:IndividualPropertyAtom>
+            <swrl:ClassAtom>
+              <swrl:classPredicate rdf:resource="#Bachelor"/>
+              <swrl:argument1 rdf:resource="urn:swrl#b"/>
+            </swrl:ClassAtom>
           </rdf:first>
-          <rdf:rest rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#nil"/>
+          <rdf:rest>
+            <rdf:Description>
+              <rdf:first>
+                <swrl:IndividualPropertyAtom>
+                  <swrl:propertyPredicate rdf:resource="#degreeHasStudyType"/>
+                  <swrl:argument1 rdf:resource="urn:swrl#d"/>
+                  <swrl:argument2 rdf:resource="urn:swrl#b"/>
+                </swrl:IndividualPropertyAtom>
+              </rdf:first>
+              <rdf:rest rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#nil"/>
+            </rdf:Description>
+          </rdf:rest>
         </rdf:Description>
       </rdf:rest>
     </rdf:Description>

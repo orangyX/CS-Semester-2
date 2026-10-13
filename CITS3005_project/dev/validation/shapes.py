@@ -1,26 +1,3 @@
-from pyshacl import validate
-from rdflib import Graph
-from pathlib import Path
-from university_ot import w, onto
-
-# "@prefix sh: <http://www.w3.org/ns/shacl#>" # These will need to be re-integrated in later. turtle will complain
-# "@prefix xsd: <http://www.w3.org/2001/XMLSchema#>"
-# "@prefix : <http://uwa/uni.ot#>"
-
-ot_data = w.as_rdflib_graph() # Transform the world into a graph (rdflib)
-ot_graph = Graph()
-sh_graph = Graph()
-
-for s, p, o in ot_data: # Copy over otherwise class incompatibility forces error (debug w/ Claude)
-    ot_graph.add((s, p, o))
-
-print(f"Successfully loaded ot_graph with {len(ot_graph)} triples")
-
-# print(len(graph))
-
-# for s, p, o in graph:
-#     print(s, p, o)
-
 degree_sh = """
 @prefix sh: <http://www.w3.org/ns/shacl#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
@@ -79,16 +56,45 @@ degree_sh = """
     ] .
 """
 
-# Instructions on defining a shape:
-    # 1. add the required prefixes (as demonstrated above)
-    # 2. declare the shape name (usually just NameShape) to a sh:NodeShape
-    # 3. declare the target class
-    # 4. assign properties as required
-# Documentation: https://www.w3.org/TR/shacl/#introduction
+major_sh = """
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix : <http://uwa/uni.ot#> .
+:MajorShape a sh:NodeShape ;
+    sh:targetClass :Major ;
 
-sh_graph.parse(data=degree_sh, format="turtle")
+    sh:property [
+        sh:path :majorCode ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:string
+    ] ;
 
-result = validate(ot_graph, shacl_graph=sh_graph)
+    sh:property [
+        sh:path :majorTitle ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype
+    ] ;
 
-for r in result:
-    print(r)
+    sh:property [
+        sh:path :majorSchool ;
+        sh:minCount 1 ;
+        sh:class :School
+    ] ;
+
+    sh:property [
+        sh:path :
+    ]
+
+"""
+
+unit_sh = """
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix : <http://uwa/uni.ot#> .
+:UnitShape a sh:NodeShape ;
+    sh:targetClass :Unit ;
+
+
+"""

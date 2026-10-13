@@ -22,3 +22,33 @@ The following scripts can be used to install and run the application.
 
 ## Google Docs
 Link to project planning: [Planning](https://docs.google.com/document/d/1C0VdXkj_N1woV_e29AoLYsKxVcEyFeCmkF8P6Nm3Zq0/edit?usp=sharing)
+
+
+## Notes
+
+Error handling with dataset
+User interaction can add or remove or interact with the system
+Users can load new data sets under the specific schema. 
+
+Generalisation of a majoristy of objects
+Allow namespace changes. Which give guidance on datasets and interactions.
+
+Week 9 Caitlin Woods lecture
+
+
+
+Chelseas work is kinda abstract so questions for more practicallity
+
+
+Natural language processing
+Text pulling from pictures. 
+Sources of text, is it encoded or uncoded?
+Find through convolution. 
+Natural language through audio???
+
+
+Can we induce a ruleset? Allow users to add specific ideas.
+We can have direct prerequisitve vs topological inference
+
+
+Ask Chelsea about research, examples, communities. And available times 

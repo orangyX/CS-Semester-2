@@ -61,7 +61,6 @@ def data_files():
 # KNOWLEDGE BASE
 # =========================
 class KnowledgeBase:
-    """Owns the World, the loaded ontologies and the asserted-facts snapshot."""
 
     def __init__(self):
         self.world = World()           # RULE: everything goes through this world
@@ -83,13 +82,12 @@ class KnowledgeBase:
         self.engine = queries.QueryEngine(self.world)
 
     def _snapshot_asserted(self):
-        """Record asserted facts BEFORE reasoning; anything new afterwards is inferred."""
         for ind in self.world.individuals():
             self.asserted_types[ind] = set(ind.is_a)
             self.asserted_values[ind] = {prop: set(prop[ind]) for prop in ind.get_properties()}
 
     def _reason(self):
-        self.inferred = self.world.get_ontology(INFERRED_IRI)
+        self.inferred = self.world.get_ontology(IRI)
         try:
             with self.inferred:   # inferred facts are stored in this ontology
                 if REASONER == "pellet":
@@ -144,96 +142,6 @@ def section(heading=None, headers=(), rows=(), message=None, ok=True):
 
 def result_section(heading, result: queries.QueryResult):
     return section(heading, result.headers, result.rows, result.message, result.ok)
-
-
-# =========================
-# TEMPLATES
-# =========================
-PAGE = """
-<!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>{{ title }} - Handbook KG</title>
-<style>
-  body { font-family: system-ui, sans-serif; max-width: 1000px; margin: 0 auto; padding: 16px; }
-  nav a { margin-right: 12px; }
-  table { border-collapse: collapse; width: 100%; margin: 12px 0; }
-  th, td { border: 1px solid #ccc; padding: 4px 8px; text-align: left; vertical-align: top; }
-  .msg { background: #f4f4f4; padding: 8px; }
-  .bad { background: #fde8e8; }
-  form { margin: 8px 0; }
-  textarea { width: 100%; font-family: monospace; }
-</style>
-</head>
-<body>
-<nav>
-  <a href="{{ url_for('home') }}">Home</a>
-  {% for key in browsable %}<a href="{{ url_for('browse', kind=key) }}">{{ key|capitalize }}</a>{% endfor %}
-  <a href="{{ url_for('search') }}">Search</a>
-  <a href="{{ url_for('run_query') }}">Query</a>
-  <a href="{{ url_for('errors') }}">Errors</a>
-</nav>
-<h1>{{ title }}</h1>
-{% if notice %}<p class="msg">{{ notice }}</p>{% endif %}
-{% if form %}{{ form|safe }}{% endif %}
-{% for s in sections %}
-  {% if s.heading %}<h2>{{ s.heading }}</h2>{% endif %}
-  {% if s.message %}<p class="msg {{ '' if s.ok else 'bad' }}">{{ s.message }}</p>{% endif %}
-  {% if s.rows %}
-  <table>
-    <tr>{% for h in s.headers %}<th>{{ h }}</th>{% endfor %}</tr>
-    {% for row in s.rows %}
-    <tr>{% for label, iri in row %}
-      <td>{% if iri %}<a href="{{ url_for('entity', iri=iri) }}">{{ label }}</a>{% else %}{{ label }}{% endif %}</td>
-    {% endfor %}</tr>
-    {% endfor %}
-  </table>
-  {% endif %}
-{% endfor %}
-</body>
-</html>
-"""
-
-FILTER_FORM = """
-<form method="get">
-  <input name="q" value="{{ q }}" placeholder="Filter by code or label">
-  <button>Filter</button>
-</form>
-"""
-
-SEARCH_FORM = """
-<form method="get">
-  <input name="q" value="{{ q }}" placeholder="e.g. data analysis">
-  <button>Search</button>
-</form>
-"""
-
-QUERY_FORM = """
-<h2>Named queries</h2>
-{% for nq in named %}
-<form method="get">
-  <input type="hidden" name="name" value="{{ nq.key }}">
-  <strong>{{ nq.title }}</strong>: {{ nq.description }}
-  {% for p in nq.params %}
-    <input name="{{ p }}" placeholder="{{ p }}" value="{{ params.get(p, '') if key == nq.key else '' }}">
-  {% endfor %}
-  <button>Run</button>
-</form>
-{% endfor %}
-<h2>SPARQL</h2>
-<details><summary>Prefixes added automatically</summary><pre>{{ prefixes }}</pre></details>
-<form method="get">
-  <textarea name="sparql" rows="8">{{ sparql }}</textarea>
-  <button>Run SPARQL</button>
-</form>
-"""
-
-
-def render(title, sections=(), notice=None, form=None):
-    return render_template_string(PAGE, title=title, sections=sections, notice=notice,
-                                  form=form, browsable=BROWSABLE)
 
 
 # =========================

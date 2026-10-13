@@ -34,12 +34,8 @@ UNITS_JSON   = DATA_DIR / "units.json"
 SCHEMA_FILE = OUTPUT_DIR / "university_ot.owl"         
 DATA_FILE   = OUTPUT_DIR / f"university_kg_{DATASET}.owl"
 
-
-# =========================
-# REASONER
-# =========================
-REASONER = "hermit"        # "hermit" (default) or "pellet"
-
+REASONER = "pellet"        # "hermit" (default) or "pellet"
+INFER_PROPERTY_VALUES = True
 # Both reasoners need Java. Leave as None if `java` is on the system PATH;
 # otherwise set the full path to the java executable.
 JAVA_EXE = None            # e.g. r"C:\Program Files\Java\jdk-21\bin\java.exe"

@@ -31,24 +31,15 @@ RUN
 # IMPORTS
 # =========================
 from flask import Flask, abort, render_template_string, request
-from owlready2 import (
-    OwlReadyInconsistentOntologyError,
-    Thing,
-    ThingClass,
-    World,
-    onto_path,
-    sync_reasoner,
-    sync_reasoner_pellet,
-)
+from owlready2 import *
 
 import config
 import queries
 
-
 # =========================
 # SETTINGS
 # =========================
-INFERRED_IRI = getattr(config, "INFERRED_IRI", "http://uwa/uni.inferred#")
+IRI = getattr(config, "IRI", "http://uwa/uni.inferred#")
 REASONER = getattr(config, "REASONER", "hermit")
 
 # Browse section -> schema class name.  OPEN: adjust to our final class names.

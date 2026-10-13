@@ -1,7 +1,7 @@
 from pyshacl import validate
 from rdflib import Graph
 from pathlib import Path
-from university_ot import w, onto
+from application.src.backend.university_ot import w, onto
 from shapes import degree_sh
 
 class ShaclValidation:

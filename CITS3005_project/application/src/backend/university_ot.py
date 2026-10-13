@@ -10,7 +10,7 @@ class OntologySchema:
         self.w = world
         self.onto = ontology
 
-        self.build_()
+        self.build_schema()
     def build_schema(self):
 
         with self.onto:
@@ -131,7 +131,7 @@ class OntologySchema:
 
             # Philosophy
             bPhil = Degree("BH005")
-            bPhil.degreeHasStudyType = [honours]
+            bPhil.degreeHasStudyType = honours
 
             # SWRL CONSTRAINTS ------------------------------------------------------------------
 

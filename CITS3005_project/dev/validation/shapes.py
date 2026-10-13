@@ -84,10 +84,21 @@ major_sh = """
     ] ;
 
     sh:property [
-        sh:path :
-    ]
+        sh:path :majorDescription ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:string 
+    ] ;
+
+    sh:property [
+        sh:path :majorOutcomes ;
+        sh:minCount 1 ;
+        sh:datatype xsd:string
+    ] ;
 
 """
+
+# NOT DONE: ADD CREDIT RESTRICTION FOR LEVEL 1 MAJOR
 
 unit_sh = """
 @prefix sh: <http://www.w3.org/ns/shacl#> .
@@ -96,5 +107,36 @@ unit_sh = """
 :UnitShape a sh:NodeShape ;
     sh:targetClass :Unit ;
 
+    sh:property [
+        sh:path :unitCode ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:string
+    ] ;
 
+    sh:property [
+        sh:path :unitTitle ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:string
+    ] ;
+
+    sh:property [
+        sh:path :unitSchool ;
+        sh:minCount 1 ;
+        sh:class :School
+    ] ;
+
+    sh:property [
+        sh:path :unitLevel ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:minInclusive 1 ;
+        sh:maxInclusive 5 ;
+        sh:datatype xsd:integer 
+    ] ;
+
+    sh:property [
+        
+    ]
 """

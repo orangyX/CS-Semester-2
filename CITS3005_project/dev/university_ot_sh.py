@@ -16,11 +16,13 @@ for s, p, o in ot_data: # Copy over otherwise class incompatibility forces error
 
 print(f"Successfully loaded ot_graph with {len(ot_graph)} triples")
 
-# print(len(graph))
-
-# for s, p, o in graph:
-#     print(s, p, o)
-
+# The shape describes the following constraints:
+    # - degreeCode, degreeTitle, degreeCreditsToComplete, degreeFullTimeDuration are functional properties
+    # - degree has at least one school
+    # - degree requires min. 144 credits to complete, max. 240 credits to complete
+    # - degree has min. full time duration of 3 years, max. duration of 5 years
+    # - degree has at least one location (available in)
+    # - degree has at least one major
 degree_sh = """
 @prefix sh: <http://www.w3.org/ns/shacl#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
@@ -78,6 +80,10 @@ degree_sh = """
         sh:class :Major
     ] .
 """
+
+# A unit cannot be its own prerequisite; a prerequisite of a prerequisite is a prerequisite (irreflexivity and transitivity already applied, left as a stub for now)
+
+# No major should exceed 48 credits at level 1
 
 # Instructions on defining a shape:
     # 1. add the required prefixes (as demonstrated above)

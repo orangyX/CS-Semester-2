@@ -35,7 +35,10 @@ with onto:
 
     class degreeLocation(Degree >> Location, ObjectProperty): pass
 
-    # class degreeMajors(Degree >> Major, ObjectProperty): pass # redundant
+    # Added after
+    class degreeHasStudyType(Degree >> StudyType, ObjectProperty): pass
+
+    class combinedDegreeIncludes(Degree >> Degree, ObjectProperty, IrreflexiveProperty): pass
 
     # MAJOR SPECIFIC PROPERTIES ---------------------------------------------------------
     class majorCode(Major >> str, DataProperty, FunctionalProperty): pass
@@ -47,6 +50,11 @@ with onto:
     class majorDescription(Major >> str, DataProperty): pass
 
     class majorOutcomes(Major >> str, DataProperty): pass
+
+    # Added after
+    class majorProgression(Major >> int, DataProperty): pass # Stores major level
+
+    class majorCreditsAtLevel(Major >> int, DataProperty): pass # Stores the number of credits per major-level
 
     # UNIT SPECIFIC PROPERTIES ----------------------------------------------------------
     class Assessment(Thing): pass # Stores assessment modes, such as exam, research, etc.
@@ -69,7 +77,7 @@ with onto:
 
     class unitModes(Unit >> str, DataProperty): pass
 
-    class unitPartOfMajor(Unit >> Major, ObjectProperty): pass
+    class unitPartOfMajor(Unit >> Major, ObjectProperty): pass # This is ambiguous; we need to answer the question "a unit is core in a major"
 
     class unitOutcomes(Unit >> str, DataProperty): pass
 
@@ -95,35 +103,47 @@ with onto:
     class degreeHasMajor(Degree >> Major, ObjectProperty): # Each deg. has at least one major
         inverse_property = majorInDegree
 
+    # PRE-INSTANTIATED INDIVUDLALS, REQUIRED FOR SWRL RULINGS ---------------------------
+    # Abstract information
+    bachelor = StudyType("bachelors")
+    bachelorHonour = StudyType("bachelorHonours")
+    combinedBachelor = StudyType("combinedBachelors")
+
+    # Philosophy
+    bPhil = Degree("BH005")
+    bPhil.degreeHasStudyType = [bachelorHonour]
+
+    # SWRL CONSTRAINTS ------------------------------------------------------------------
+
+    # An outcome of a core unit is an outcome of a major
+    unit_major_outcome_rule = Imp().set_as_rule(
+        "unitIsCoreInMajor(?u, ?m), unitOutcomes(?u, ?o) -> majorOutcomes(?m, ?o)"
+    ) # A unit core in a major with outcomes implies that that major also has the outcomes of the unit
+
+    # Any major of another bachelor's degree is a major in the bachelor of philosophy
+    phil_major_rule = Imp().set_as_rule(
+        "degreeHasMajor(?d, ?m), degreeHasStudyType(?d, bachelors) -> degreeHasMajor(BH005, ?m)"
+    ) # Any degree with a major is a major in philosophy
+
+    # A major of degree X is also a major of any combined degree involving X
+    combined_degree_has_major_rule =  Imp().set_as_rule(
+        "degreeHasMajor(?d, ?m), combinedDegreeIncludes(?c, ?d) -> degreeHasMajor(?c, ?m)"
+    ) # A degree with a major part of a combined degree means that the combined degree also has that major
+
+    # A major must not exceed 48 credits at level 1
+    major_first_level_credit_limit_rule = Imp().set_as_rule(
+        # Stub for 13/10/2026
+    ) # Any major at level 1 cannot exceed 48 credits
+        
     # TESTING - DELETE THIS PRIOR TO SUBMISSION -----------------------------------------
-    cits3005 = Unit("CITS3005")
-    cits2200 = Unit("CITS2200")
-    cits1401 = Unit("CITS1401")
 
-    cits3005.unitCode = "CITS3005"
-    cits2200.unitCode = "CITS2200"
-    cits1401.unitCode = "CITS1401"
-
-    mjd_esoft = Major("MJD-ESOFT")
-
-    mjd_esoft.majorCode = "MJD-ESOFT"
-    mjd_esoft.majorTitle = "Software Engineering"
-    
-    mjd_esoft.majorHasCoreUnit = [cits1401, cits2200, cits2200, cits3005]
-
-    cits3005.unitHasPrerequisite = [cits2200]
-    cits2200.unitHasPrerequisite = [cits1401]
-
-    # shapes file testing
-    null_degree = Degree("null") # Do not add a major; test the shape; each degree has at least one major
-
-    null_degree.degreeHasMajor = [mjd_esoft] # Validator returns true
 
 if __name__ == "__main__":
     # Add more here
 
     onto.save(file="university_ot.owl", format="rdfxml")
-    print(cits3005.unitHasPrerequisite)
 
-    sync_reasoner(w, infer_property_values=True) # Reports back inferred property values, writes them into the world w
-    print(cits3005.unitHasPrerequisite)
+    sync_reasoner(w, infer_property_values=True)
+    # sync_reasoner_pellet(w, infer_data_property_values=True, infer_property_values=True)
+
+    print(bPhil.degreeHasMajor)

@@ -1,18 +1,15 @@
 from owlready2 import *
 
-w = World() # Let w be a fresh world
-onto = w.get_ontology("http://uwa/uni.ot#") # IRI 
-
-
 class OntologySchema:
 
-    def __init__(self, world: World, ontology: Ontology):
+    def __init__(self, world: World, ontology: Ontology, file, format):
         self.w = world
         self.onto = ontology
 
         self.build_schema()
-    def build_schema(self):
+        self.save(file, format)
 
+    def build_schema(self):
         with self.onto:
             # Base and most abstracted attributes
             class Degree(Thing):
@@ -56,7 +53,7 @@ class OntologySchema:
             class degreeLocation(Degree >> Location, ObjectProperty): pass
 
             # Added after
-            class degreeHasStudyType(Degree >> StudyType, ObjectProperty, FunctionalProperty): pass
+            class degreeStudyType(Degree >> StudyType, ObjectProperty, FunctionalProperty): pass
 
             class combinedDegreeIncludes(Degree >> Degree, ObjectProperty, IrreflexiveProperty): pass
 
@@ -71,12 +68,16 @@ class OntologySchema:
 
             class majorOutcomes(Major >> str, DataProperty): pass
 
+            class majorBridgingUnits(Major >> Unit, ObjectProperty): pass
+
             # Added after
             class majorProgression(Major >> int, DataProperty): pass # Stores major level
 
             class majorCreditsAtLevel(Major >> int, DataProperty): pass # Stores the number of credits per major-level
 
             # UNIT SPECIFIC PROPERTIES ----------------------------------------------------------
+            class ContactType(Thing >> int, DataProperty, FunctionalProperty): pass # We can just use this as a general class for the contact types
+
             class Assessment(Thing): pass # Stores assessment modes, such as exam, research, etc.
 
             class unitCode(Unit >> str, DataProperty, FunctionalProperty): pass
@@ -131,7 +132,7 @@ class OntologySchema:
 
             # Philosophy
             bPhil = Degree("BH005")
-            bPhil.degreeHasStudyType = honours
+            bPhil.degreeStudyType = honours
 
             # SWRL CONSTRAINTS ------------------------------------------------------------------
 
@@ -142,13 +143,13 @@ class OntologySchema:
 
             # Any major of another bachelor's degree is a major in the bachelor of philosophy
             phil_major_rule = Imp().set_as_rule(
-                "degreeHasMajor(?d, ?m), Bachelor(?b), degreeHasStudyType(?d, ?b) -> degreeHasMajor(BH005, ?m)"
+                "degreeHasMajor(?d, ?m), Bachelor(?b), degreeStudyType(?d, ?b) -> degreeHasMajor(BH005, ?m)"
             ) # Any degree with a major is a major in philosophy
 
-            # A major of degree X is also a major of any combined degree involving X
-            combined_degree_has_major_rule =  Imp().set_as_rule(
-                "degreeHasMajor(?d, ?m), combinedDegreeIncludes(?c, ?d) -> degreeHasMajor(?c, ?m)"
-            ) # A degree with a major part of a combined degree means that the combined degree also has that major
+            # # A major of degree X is also a major of any combined degree involving X
+            # combined_degree_has_major_rule =  Imp().set_as_rule(
+            #     "degreeHasMajor(?d, ?m), combinedDegreeIncludes(?c, ?d) -> degreeHasMajor(?c, ?m)"
+            # ) # A degree with a major part of a combined degree means that the combined degree also has that major
 
             # A major must not exceed 48 credits at level 1
             # major_first_level_credit_limit_rule = Imp().set_as_rule(
@@ -156,9 +157,5 @@ class OntologySchema:
             # ) # Any major at level 1 cannot exceed 48 credits
                 
             # TESTING - DELETE THIS PRIOR TO SUBMISSION -----------------------------------------
-
-
-onto.save(file="university_ot.owl", format="rdfxml")
-
-sync_reasoner(w, infer_property_values=True)
-# sync_reasoner_pellet(w, infer_data_property_values=True, infer_property_values=True)
+    def save(self, f, fo):
+        self.onto.save(file=f, format=fo)

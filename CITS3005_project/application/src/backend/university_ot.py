@@ -76,9 +76,11 @@ class OntologySchema:
             class majorCreditsAtLevel(Major >> int, DataProperty): pass # Stores the number of credits per major-level
 
             # UNIT SPECIFIC PROPERTIES ----------------------------------------------------------
-            class ContactType(Thing >> int, DataProperty, FunctionalProperty): pass # We can just use this as a general class for the contact types
+            class ContactMode(Thing): pass
 
-            class Assessment(Thing): pass # Stores assessment modes, such as exam, research, etc.
+            class contactModeHours(ContactMode >> int, DataProperty, FunctionalProperty): pass
+
+            class contactModeType(ContactMode >> str, DataProperty, FunctionalProperty): pass
 
             class unitCode(Unit >> str, DataProperty, FunctionalProperty): pass
 
@@ -88,13 +90,13 @@ class OntologySchema:
 
             class unitLevel(Unit >> int, DataProperty, FunctionalProperty): pass
 
-            class unitDescription(Unit >> str, DataProperty): pass
+            class unitDescription(Unit >> str, DataProperty, FunctionalProperty): pass
 
             class unitAwardsCredits(Unit >> int, DataProperty, FunctionalProperty): pass
 
-            class unitSemesterAvailability(Unit >> int, DataProperty): pass
+            class unitSemesterAvailability(Unit >> str, DataProperty): pass
 
-            class unitOfferedAtLocation(Unit >> Location, ObjectProperty): pass
+            class unitLocation(Unit >> Location, ObjectProperty): pass
 
             class unitModes(Unit >> str, DataProperty): pass
 
@@ -102,9 +104,9 @@ class OntologySchema:
 
             class unitOutcomes(Unit >> str, DataProperty): pass
 
-            class unitAssessmentTypes(Unit >> Assessment, ObjectProperty): pass
+            class unitAssessmentTypes(Unit >> str, DataProperty): pass
 
-            class unitWeeklyContactHours(Unit >> int, DataProperty, FunctionalProperty): pass
+            class unitContactTypes(Unit >> ContactMode, ObjectProperty): pass
 
             # UNIT RELATIONS --------------------------------------------------------------------
             class unitHasPrerequisite(Unit >> Unit, ObjectProperty, TransitiveProperty): pass # Owl complains if something is transitive and irreflexive; this rule needs to be enforced elsehwere

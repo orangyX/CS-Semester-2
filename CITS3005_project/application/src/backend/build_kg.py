@@ -8,109 +8,124 @@ def build_graph():
     onto = world.get_ontology(BASE_IRI)
     ontology = OntologySchema(world, onto,"university.owl", "rdfxml")
 
-    load_data(world, onto)
-        
-    onto.save(file="university_ot.owl", format="rdfxml")
-    run_reasoner(world)
-
-def load_data(world: World, onto: Ontology) -> None:
     degrees = json.loads(DEGREES_JSON.read_text(encoding="utf-8"))
     majors = json.loads(MAJORS_JSON.read_text(encoding="utf-8"))
     units = json.loads(UNITS_JSON.read_text(encoding="utf-8"))
 
-    # THIS WILL CERTAINLY BE CLEANED, THIS IS JUST TO GET IT ROLLING
+    load_degrees(degrees, onto)
+    load_majors(majors, onto)
+    load_units(units, majors, onto)
+        
+    onto.save(file="university_ot.owl", format="rdfxml")
+    run_reasoner(world)
 
-    with onto:
-        # Load degree data
-        for deg_code, data in degrees.items():
-            # Classes we must instantiate prior
-            school = onto.School(data.get("school"))
-            location = onto.Location(data.get("location"))
-            study_type = onto.StudyType(data.get("study_type"))
-            avail_majors = data.get("majors")
-            none_major = onto.Major("None")
+def load_degrees(degrees: dict, onto: Ontology) -> None:
+    """
+        Reads from degrees.json, parses according to ontology structure
+    """
+    for deg_code, data in degrees.items():
+        # Classes we must instantiate prior
+        school = onto.School(clean(data.get("school")))
+        location = onto.Location(clean(data.get("locations")))
+        study_type = onto.StudyType(clean(data.get("study_type")))
 
-            degree = onto.Degree(deg_code) # A degree object, identified by its code
-            degree.degreeCode = deg_code
-            degree.degreeTitle = data.get("title")
-            degree.degreeSchool.append(school) # Non-functional, so append to a list
-            degree.degreeCreditsToComplete = int(data.get("total_points"))
-            degree.degreeFullTimeDuration = int(data.get("standard_full_time_completion")[0]) # Is a list of a single element
-            degree.degreeLocation.append(location)
-            degree.degreeStudyType = study_type
+        # A list of majors, which are to be iterated through
+        avail_majors = data.get("majors")
 
-            if avail_majors:
-                for m in avail_majors:
-                    major = onto.Major(m) # Convert each to a Major object, then append
-                    degree.degreeHasMajor.append(major)
-            else:
-                degree.degreeHasMajor = [none_major] # Some degrees are part of no majors
+        degree = onto.Degree(deg_code) # A degree object, identified by its code
+        degree.degreeCode = deg_code
+        degree.degreeTitle = data.get("title")
+        degree.degreeSchool.append(school) # Non-functional, so append to a list
+        degree.degreeCreditsToComplete = data.get("total_points")
+        degree.degreeFullTimeDuration = int(data.get("standard_full_time_completion")[0]) if data.get("standard_full_time_completion") else None # Is a list of a single element
+        degree.degreeLocation.append(location)
+        degree.degreeStudyType = study_type
 
-        for major_code, data in majors.items():
-            # Attached to IRI, so if they already exist, it fetches the iri "http://uwa/uni.ot#/Field"
-            school = onto.School(data.get("school"))
-            bridging_units = data.get("bridging")
+        if avail_majors: 
+            for m in avail_majors:
+                major = onto.Major(clean(m)) # Convert each to a Major object, then append
+                degree.degreeHasMajor.append(major)
 
-            major = onto.Major(major_code)
-            major.majorCode = major_code
-            major.majorTitle = data.get("title")
-            major.majorSchool.append(school)
-            major.majorDescription.append(data.get("description"))
+        # Every degree has at least one major; adding a degree that does not have any degrees will result in a violation
 
-            for o in data.get("outcomes"):
-                major.majorOutcomes.append(o)
+def load_majors(majors: dict, onto: Ontology) -> None:
+    """
+        Reads from majors.json, parses according to ontology structure
+    """
+    for major_code, data in majors.items():
+        # Attached to IRI, so if they already exist, it fetches the iri "http://uwa/uni.ot#/Field"
+        school = onto.School(clean(data.get("school")))
 
+        # The list of majors which act as bridging units for a particular unit
+        outcomes = data.get("outcomes")
+        bridging_units = data.get("bridging")
+
+        major = onto.Major(major_code)
+        major.majorCode = major_code
+        major.majorTitle = data.get("title")
+        major.majorSchool.append(school)
+        major.majorDescription.append(data.get("description"))
+
+        if outcomes:
+            major.majorOutcomes = [o for o in outcomes]
+
+        if bridging_units:
             for u in bridging_units:
-                unit = onto.Unit(u)
+                bridging_unit = onto.Unit(u)
 
-                major.majorBridgingUnits.append(unit)
+                major.majorBridgingUnits.append(bridging_unit)
 
-        for unit_code, data in units.items():
-            print(unit_code, data)
+def load_units(units: dict, majors: dict, onto: Ontology) -> None:
+    """
+        Reads from units.json, parses according to ontology structure
+    """
+    for unit_code, data in units.items():
+        unit = onto.Unit(unit_code)
 
-            unit_school = onto.School(data.get("school"))
-            unit_semesters = data.get("semester")
-            unit_locations = onto.Location(data.get("locations"))
-            unit_modes = data.get("modes")
-            unit_outcomes = data.get("outcomes")
-            assessments = data.get("assessment")
-            unit_majors = onto.Major(data.get("majors"))
-            preq_unit = data.get("prerequisite_units")
-            contact_types = data.get("contact") # Another dictionary, which needs processing
+        school = onto.School(clean(data.get("school")))
 
-            unit = onto.Unit(unit_code)
-            unit.unitCode = unit_code
-            unit.unitTitle = data.get("title")
-            unit.unitSchool.append(unit_school)
-            unit.unitLevel = int(data.get("level"))
-            unit.unitDescription.append(data.get("description"))
-            unit.unitAwardsCredits = int(data.get("credit"))
-            unit.unitOfferedAtLocation.append(unit_locations)
+        locations = data.get("locations")
+        contact_modes = data.get("contact")
+        semesters = data.get("semesters")
+        assessment_types = data.get("assessment")
+        outcomes = data.get("outcomes")
 
+        if semesters:
+            unit.unitSemesterAvailability = [s for s in semesters]
 
-            # MANY BUGS HERE THAT NEED FIXING (LATER); ALSO, CAN BE DONE IN ONE LOOP VIA ZIP
-            # if unit_semesters:
-            #     for s in unit_semesters:
-            #         unit.unitSemesterAvailability.append(s)
-            # else:
-            #     unit.unitSemesterAvailability.append(0)
+        if locations:
+            for l in locations:
+                location = onto.Location(clean(l))
 
-            # for m in unit_modes:
-            #     unit.unitModes.append(m)
+                unit.unitLocation.append(location)
 
-            # for o in unit_outcomes:
-            #     unit.unitOutcomes.append(o)
+        # Process the contact mode, along with the hours per week
+        if contact_modes:
+            for c_type, hour in contact_modes.items():
+                contact_mode = onto.ContactMode(unit_code + clean(c_type)) # This unit owns this contact mode
+                contact_mode.contactModeHours = hour
+                contact_mode.contactModeType = c_type
 
-            # for a in assessments:
-            #     unit.unitAssessmentTypes.append(a)
+                unit.unitContactTypes.append(contact_mode)
 
-            # for m in major:
-            #     major = onto.Major(m)
-            #     unit.unitPartOfMajor.append(major)
+        if assessment_types:
+            unit.unitAssessmentTypes = [a for a in assessment_types]
 
-            
+        if outcomes:
+            unit.unitOutcomes = [o for o in outcomes]
 
+        unit.unitCode = unit_code
+        unit.unitTitle = data.get("title")
+        unit.unitSchool.append(school)
+        unit.unitLevel = int(data.get("level")) if data.get("level") else None
+        unit.unitDescription = data.get("description")
+        unit.unitAwardsCredits = int(data.get("credit")) if data.get("credit") else None
 
+def clean(string: str) -> str:
+    """
+        Converts a string to an IRI-friendly format (no space, brackets)
+    """
+    return string.replace("(", "").replace(")", "").replace(" ", "").replace("'", "").replace(",", "")
 
 def run_reasoner(world):
     if REASONER == "pellet":

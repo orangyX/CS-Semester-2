@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}{{ title }}{% endblock %} - Handbook KG</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  {% block head %}{% endblock %}
+</head>
+<body>
+
+  {# Shared navigation. `browsable` comes from the context processor in app.py. #}
+  <nav>
+    <a href="{{ url_for('home') }}">Home</a>
+    <a href="{{ url_for('schema') }}">Schema</a>
+    {% for key in browsable %}
+      <a href="{{ url_for('browse', kind=key) }}">{{ key|capitalize }}</a>
+    {% endfor %}
+    <a href="{{ url_for('search') }}">Search</a>
+    <a href="{{ url_for('run_query') }}">Query</a>
+    <a href="{{ url_for('errors') }}">Errors</a>
+  </nav>
+
+  <h1>{% block heading %}{{ title }}{% endblock %}</h1>
+
+  {% for n in notices %}<p class="msg">{{ n }}</p>{% endfor %}
+
+  {# Each page fills this in with its own forms and results. #}
+  {% block content %}{% endblock %}
+
+</body>
+</html>

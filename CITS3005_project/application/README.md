@@ -87,3 +87,14 @@ git you can run the following to ensure packages are up to date.
 uv sync
 ```
 
+
+# To Do List / Pipeline
+
+Application requires
+
+Parsing of data,
+Ontology schema 
+Convert to knowledge graph,
+Validate Knowledge graph
+Flask frontend designa nd UI
+Responds through queries against the KG

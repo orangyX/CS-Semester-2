@@ -53,6 +53,28 @@ degree_sh = """
         sh:path :degreeHasMajor ;
         sh:minCount 1 ;
         sh:class :Major
+    ] ;
+
+    sh:property [
+        sh:path :degreeStudyType ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:class :StudyType
+    ] .
+"""
+
+cb_degree_sh = """
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix : <http://uwa/uni.ot#> .
+:CombinedBachelorShape a sh:NodeShape ;
+    sh:targetClass :CombinedBachelor ;
+
+    sh:property [
+        sh:path :combinedBachelorIncludes ;
+        sh:minCount 2 ;
+        sh:maxCount 2 ;
+        sh:class :Degree
     ] .
 """
 
@@ -74,7 +96,7 @@ major_sh = """
         sh:path :majorTitle ;
         sh:minCount 1 ;
         sh:maxCount 1 ;
-        sh:datatype
+        sh:datatype xsd:string
     ] ;
 
     sh:property [
@@ -96,6 +118,12 @@ major_sh = """
         sh:datatype xsd:string
     ] ;
 
+    sh:property [
+        sh:path :majorBridgingUnits ;
+        sh:minCount 0 ;
+        sh:class :Unit
+    ] .
+
 """
 
 # NOT DONE: ADD CREDIT RESTRICTION FOR LEVEL 1 MAJOR
@@ -106,6 +134,10 @@ unit_sh = """
 @prefix : <http://uwa/uni.ot#> .
 :UnitShape a sh:NodeShape ;
     sh:targetClass :Unit ;
+
+    sh:not [
+        sh:class :FloatingUnit
+    ] ;
 
     sh:property [
         sh:path :unitCode ;
@@ -137,6 +169,63 @@ unit_sh = """
     ] ;
 
     sh:property [
-        
-    ]
+        sh:path :unitDescription ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:string
+    ] ;
+
+    sh:property [
+        sh:path :unitAwardsCredits ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:minInclusive 0 ;
+        sh:maxInclusive 24 ;
+        sh:datatype xsd:integer
+    ] ;
+
+    sh:property [
+        sh:path :unitSemesterAvailability ;
+        sh:minCount 1 ;
+        sh:datatype xsd:string
+    ] ;
+
+    sh:property [
+        sh:path :unitLocation ;
+        sh:minCount 1 ;
+        sh:class :Location
+    ] ;
+
+    sh:property [
+        sh:path :unitOutcomes ;
+        sh:minCount 1 ;
+        sh:datatype xsd:string
+    ] ;
+    
+    sh:property [
+        sh:path :unitAssessmentTypes ;
+        sh:minCount 1 ;
+        sh:datatype xsd:string
+    ] ;
+
+    sh:property [
+        sh:path :unitContactTypes ;
+        sh:minCount 1 ;
+        sh:class :ContactMode
+    ] ;
+
+    sh:property [
+        sh:path :unitHasPrerequisite ;
+        sh:class :Unit
+    ] ;
+
+    sh:property [
+        sh:path :unitIsPrerequisiteOf ;
+        sh:class :Unit 
+    ] ;
+
+    sh:property [
+        sh:path :unitIsCoreInMajor ;
+        sh:class :Major
+    ] .
 """

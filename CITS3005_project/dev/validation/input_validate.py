@@ -2,7 +2,7 @@ from pyshacl import validate
 from rdflib import Graph
 from pathlib import Path
 from application.src.backend.university_ot import w, onto
-from shapes import degree_sh
+from shapes import degree_sh, major_sh, unit_sh
 
 class ShaclValidation:
     def __init__(self):
@@ -18,6 +18,8 @@ class ShaclValidation:
 
     def load_shapes(self):
         self.degree_rules = degree_sh
+        self.major_rules = major_sh
+        self.unit_rules = unit_sh
 
     def load_ot_graph(self):
         ont_data = w.as_rdflib_graph()

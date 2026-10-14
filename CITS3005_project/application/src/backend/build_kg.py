@@ -16,7 +16,7 @@ def build_graph() -> None:
     load_degrees(degrees, onto)
     load_majors(majors, onto)
     load_units(units, majors, onto)
-    fill_combined_degrees(degrees, onto)
+    fill_combined_bachelors(degrees, onto)
         
     onto.save(file="university_ot.owl", format="rdfxml")
     run_reasoner(world)
@@ -26,7 +26,7 @@ def build_graph() -> None:
     combined = [d for d in onto.Degree.instances() if isinstance(d.degreeStudyType, onto.CombinedBachelor)]
 
     for cb in combined:
-        degs = [d for d in cb.combinedDegreeIncludes]
+        degs = [d for d in cb.combinedBachelorIncludes]
 
         for d in degs:
             print(f"{cb} includes {d.degreeTitle}, total_points = {cb.degreeCreditsToComplete} over {cb.degreeFullTimeDuration} years")
@@ -164,14 +164,14 @@ def load_units(units: dict, majors: dict, onto: Ontology) -> None:
         unit.unitDescription = string_cleaner(data.get("description"))
         unit.unitAwardsCredits = int(data.get("credit")) if data.get("credit") else None
 
-def fill_combined_degrees(degrees: dict, onto: Ontology) -> None:
+def fill_combined_bachelors(degrees: dict, onto: Ontology) -> None:
     """
         Establishes a link between a combined degree and its degrees (already within owl, so fetch the object itself)
     """
-    combined_degrees = [d for d in onto.Degree.instances() if isinstance(d.degreeStudyType, onto.CombinedBachelor)]
+    combined_bachelors = [d for d in onto.Degree.instances() if isinstance(d.degreeStudyType, onto.CombinedBachelor)]
     title_degree_mapping = {data["title"]: code for code, data in degrees.items()}
 
-    for cb in combined_degrees:
+    for cb in combined_bachelors:
         titles = cb.degreeTitle.split("/ ") if "/" in cb.degreeTitle else cb.degreeTitle.split(" and ")
 
         for t in titles:
@@ -179,7 +179,7 @@ def fill_combined_degrees(degrees: dict, onto: Ontology) -> None:
             degree_constituent = onto[code] if code else None
 
             if degree_constituent:
-                cb.combinedDegreeIncludes.append(degree_constituent)            
+                cb.combinedBachelorIncludes.append(degree_constituent)            
 
 def name_cleaner(string: str) -> str:
     """

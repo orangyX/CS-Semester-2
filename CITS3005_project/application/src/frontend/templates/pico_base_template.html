@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="light dark">
+    <title>UWA Handbook Explorer</title>
+    <meta name="description" content="Browse and search through UWA degrees, majors, and units.">
+
+    <!-- Pico.css -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@picocss/pico@2.1.1/css/pico.min.css"
+    >
+  </head>
+
+  <body>
+    <!-- Header -->
+    <header class="container">
+      <hgroup>
+        <h1>UWA Handbook Explorer</h1>
+        <p>Browse and search through UWA degrees, majors, and units.</p>
+      </hgroup>
+      <nav>
+        <ul>
+          <li>
+          </li>
+        </ul>
+      </nav>
+    </header>
+    <!-- ./ Header -->
+
+    <!-- Main -->
+    <main class="container">
+      {% block content %}
+      {% endblock %}
+    </main>
+    <!-- ./ Main -->
+
+    <!-- Footer -->
+    <footer class="container">
+      <small
+        >Built with <a href="https://picocss.com">Pico</a> •
+        <a href="https://github.com/picocss/examples/blob/master/v2-html/index.html"
+          >Source code</a
+        ></small
+      >
+    </footer>
+    <!-- ./ Footer -->
+  </body>
+</html>

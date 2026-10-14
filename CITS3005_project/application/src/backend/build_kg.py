@@ -21,7 +21,6 @@ def build_graph() -> None:
     onto.save(file="university_ot.owl", format="rdfxml")
     run_reasoner(world)
 
-
     # TESTING ---------------------------------------------------------------------------
     combined = [d for d in onto.Degree.instances() if isinstance(d.degreeStudyType, onto.CombinedBachelor)]
 

@@ -1,0 +1,25 @@
+{% extends "pico_base_template.html" %}
+{% block content %}
+    <h2>{{ degree.title }} ({{ degree.code }})</h2>
+    <p>{{ degree.study_type }} | {{ degree.points }} credits to complete</p>
+    <h3>Majors</h3>
+    <table class="striped">
+    <thead>
+        <tr>
+            <th>Code</th>
+            <th>Title</th>
+            <th>Level</th>
+        </tr>
+    </thead>
+    <tbody>
+            <!-- A for loop; loop over all units and fetch the required information -->
+            {% for major in degree.majors %}
+            <tr>
+            <td><a href="/major/{{ major.code }}" class="contrast">{{ major.code }}</a></td>
+            <td>{{ major.title }}</td>
+            <td>{{ major.school }}</td>
+            </tr>   
+            {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

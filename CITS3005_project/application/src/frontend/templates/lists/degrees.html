@@ -1,0 +1,24 @@
+{% extends "pico_base_template.html" %}
+{% block content %}
+    <h2>Degrees</h2>
+    <table class="striped">
+        <thead>
+            <tr>
+                <th>Code</th>
+                <th>Title</th>
+                <th>Study type</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- This section will store the data; it is empty at the moment -->
+             <!-- A for loop; loop over all degrees and fetch the required information -->
+             {% for degree in degrees %}
+             <tr>
+                <td><a href="/degree/{{ degree.code }}" class="contrast"> {{ degree.code }}</a></td>
+                <td>{{ degree.title }}</td>
+                <td>{{ degree.study_type }}</td>
+             </tr>
+             {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

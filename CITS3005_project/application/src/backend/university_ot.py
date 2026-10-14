@@ -55,7 +55,7 @@ class OntologySchema:
             # Added after
             class degreeStudyType(Degree >> StudyType, ObjectProperty, FunctionalProperty): pass
 
-            class combinedDegreeIncludes(Degree >> Degree, ObjectProperty, IrreflexiveProperty): pass
+            class combinedBachelorIncludes(Degree >> Degree, ObjectProperty, IrreflexiveProperty): pass
 
             # MAJOR SPECIFIC PROPERTIES ---------------------------------------------------------
             class majorCode(Major >> str, DataProperty, FunctionalProperty): pass
@@ -139,7 +139,9 @@ class OntologySchema:
             ) # A unit core in a major with outcomes implies that that major also has the outcomes of the unit
 
             # Any major of another bachelor's degree is a major in the bachelor of philosophy
-            
+            philosophy_major_rule = Imp().set_as_rule(
+                "degreeHasMajor(?d, ?m), StudyType"
+            )
             # TESTING - DELETE THIS PRIOR TO SUBMISSION -----------------------------------------
     def save(self, f, fo):
         self.onto.save(file=f, format=fo)

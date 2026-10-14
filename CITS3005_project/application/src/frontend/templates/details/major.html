@@ -16,7 +16,7 @@
             <!-- A for loop; loop over all units and fetch the required information -->
             {% for unit in major.units %}
             <tr>
-            <td>{{ unit.code}}</td>
+            <td><a href="/unit/{{ unit.code }}" class="contrast">{{ unit.code }}</a></td>
             <td>{{ unit.title }}</td>
             <td>{{ unit.level }}</td>
             <td>{{ unit.credit }}</td>

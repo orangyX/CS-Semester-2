@@ -78,6 +78,8 @@ class OntologySchema:
             # UNIT SPECIFIC PROPERTIES ----------------------------------------------------------
             class ContactMode(Thing): pass
 
+            class FloatingUnit(Unit): pass # Units in prerequisite units which are not included in the units json file
+
             class contactModeHours(ContactMode >> int, DataProperty, FunctionalProperty): pass
 
             class contactModeType(ContactMode >> str, DataProperty, FunctionalProperty): pass
@@ -97,10 +99,6 @@ class OntologySchema:
             class unitSemesterAvailability(Unit >> str, DataProperty): pass
 
             class unitLocation(Unit >> Location, ObjectProperty): pass
-
-            class unitModes(Unit >> str, DataProperty): pass
-
-            class unitPartOfMajor(Unit >> Major, ObjectProperty): pass # This is ambiguous; we need to answer the question "a unit is core in a major"
 
             class unitOutcomes(Unit >> str, DataProperty): pass
 
@@ -127,14 +125,11 @@ class OntologySchema:
                 inverse_property = majorInDegree
 
             # PRE-INSTANTIATED INDIVUDLALS, REQUIRED FOR SWRL RULINGS ---------------------------
-            # Abstract information
-            bachelor = Bachelor("BP")
-            honours = Honours("BH")
-            combined = CombinedBachelor("CB")
+            bachelor = Bachelor("Bachelorscourse")
+            honour = Honours("Honourscourses")
+            combined_bachelor = CombinedBachelor("Combinedbachelorscourses")
 
-            # Philosophy
-            bPhil = Degree("BH005")
-            bPhil.degreeStudyType = honours
+            bachelor_philosophy = Degree("BH005")
 
             # SWRL CONSTRAINTS ------------------------------------------------------------------
 
@@ -144,20 +139,7 @@ class OntologySchema:
             ) # A unit core in a major with outcomes implies that that major also has the outcomes of the unit
 
             # Any major of another bachelor's degree is a major in the bachelor of philosophy
-            phil_major_rule = Imp().set_as_rule(
-                "degreeHasMajor(?d, ?m), Bachelor(?b), degreeStudyType(?d, ?b) -> degreeHasMajor(BH005, ?m)"
-            ) # Any degree with a major is a major in philosophy
-
-            # # A major of degree X is also a major of any combined degree involving X
-            # combined_degree_has_major_rule =  Imp().set_as_rule(
-            #     "degreeHasMajor(?d, ?m), combinedDegreeIncludes(?c, ?d) -> degreeHasMajor(?c, ?m)"
-            # ) # A degree with a major part of a combined degree means that the combined degree also has that major
-
-            # A major must not exceed 48 credits at level 1
-            # major_first_level_credit_limit_rule = Imp().set_as_rule(
-            #     # Stub for 13/10/2026
-            # ) # Any major at level 1 cannot exceed 48 credits
-                
+            
             # TESTING - DELETE THIS PRIOR TO SUBMISSION -----------------------------------------
     def save(self, f, fo):
         self.onto.save(file=f, format=fo)

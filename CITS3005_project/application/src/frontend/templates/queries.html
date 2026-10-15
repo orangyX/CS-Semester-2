@@ -38,12 +38,11 @@
         </div>
         <form action="/spec/outcomes">
             <fieldset role="group">
-                <input type="search" placeholder="e.g., artificial intelligence" required>
+                <input type="search" name="q" placeholder="e.g., artificial intelligence" required>
                 <input type="submit" value="Search" class="secondary">
             </fieldset>
         </form>
-    </div>
-</form>
+</div>
 
 {# ---------- Every query defined in queries.MakeQueries ---------- #}
 {% if queries %}

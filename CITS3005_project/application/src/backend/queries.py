@@ -36,7 +36,7 @@ from typing import Callable, Optional
 
 from rdflib.term import URIRef
 
-import config
+import backend.utility.config as config
 
 
 # =========================

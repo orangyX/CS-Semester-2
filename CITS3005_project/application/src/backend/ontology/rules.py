@@ -5,7 +5,7 @@ This is your rule set that you were adding to the function
 
 from owlready2 import *
  
-import config
+import backend.utility.config as config
 from utility import utils
  
  

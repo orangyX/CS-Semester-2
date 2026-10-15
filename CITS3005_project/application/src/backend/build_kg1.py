@@ -23,7 +23,7 @@ from pathlib import Path
 
 from owlready2 import * 
 
-import config 
+import backend.utility.config as config 
 from datasets import Dataset, schema_path
 
 

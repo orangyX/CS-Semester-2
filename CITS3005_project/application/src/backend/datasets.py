@@ -20,7 +20,7 @@ a fucked up graph
 import re
 from pathlib import Path
 
-import config
+import utility.config as config
 
 VALID_NAME = re.compile(r"^[A-Za-z0-9_-]+$")   # blocks names like "../x"
 

@@ -1,7 +1,7 @@
 from owlready2 import * 
 from university_ot import OntologySchema # The schema load
 import json
-from config import DEGREES_JSON, BASE_IRI, MAJORS_JSON, SCHEMA_FILE, INFER_PROPERTY_VALUES, REASONER, INFER_DATA_PROPERTY_VALUES, UNITS_JSON
+from backend.utility.config import DEGREES_JSON, BASE_IRI, MAJORS_JSON, SCHEMA_FILE, INFER_PROPERTY_VALUES, REASONER, INFER_DATA_PROPERTY_VALUES, UNITS_JSON
 import itertools
 
 def build_graph() -> None:

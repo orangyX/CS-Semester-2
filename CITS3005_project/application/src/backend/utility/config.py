@@ -15,12 +15,15 @@ BASE_IRI = "http://uwa/uni.ot#"         # classes, properties, rules
 SCHEMA_IRI = BASE_IRI 
 TEST_IRI = "http://uwa/test.ot#"        # IRI for tesing purposes
 DATA_IRI_BASE = "http://uwa/uni.data/"  # each dataset gets <base><name>#
+
 # =========================
 # PATHS
 # Note these will have to be constructed dependant on datasets 
 # and can be named after the dataset we are working with.
+# Assume runningin from application
 # =========================
-BASE_DIR = Path(__file__).resolve().parent # Create base data link 
+
+BASE_DIR = Path(__file__).resolve().parent.parent # Create base data link 
 DATA_DIR = BASE_DIR / "data"
 DATASETS_DIR = DATA_DIR / "datasets"
 SCHEMAS_DIR = DATA_DIR / "schemas"

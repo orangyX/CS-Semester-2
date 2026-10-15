@@ -90,6 +90,8 @@ uv sync
 
 # To Do List / Pipeline
 
+Sentiment analysis.
+
 Application requires
 
 Parsing of data,

@@ -6,12 +6,19 @@ repeatedly so that we can just call the function instead
 of writing heaps of the same code.
 """
 
+import re
+
 from owlready2 import World, sync_reasoner_hermit, sync_reasoner_pellet
  
-import config
+import utility.config as config
 from datasets import Dataset, schema_path
  
- 
+
+
+# Find any character that isnt a letter or digit
+# Use for string cleaning and formatting.
+NOT_ID_CHARS = re.compile(r"[^A-Za-z0-9]+")
+
 # =========================
 # SAVING
 # =========================
@@ -92,7 +99,18 @@ def missing_vocabulary(onto, names: list[str]) -> list[str]:
     Use before parsing to check a schema has everything the parser needs.
     """
     return [name for name in names if onto[name] is None]
- 
+
+def slug(label):
+    """
+    So i had to look this up as a solution to an issue.
+    
+    We want all characters to be in a format that can be used with IRIs
+    UWA (Perth) for example should be UWA_Perth. 
+    
+    The term slug is a weird interesting semantic term coined from newspapers
+    and eventaully used for safe web URLS
+    """
+    return NOT_ID_CHARS.sub("_", label).strip("_") or None if label else None
  
 # =========================
 # REASONING
@@ -119,3 +137,4 @@ def run_reasoner(world: World, store_in=None):
     else:
         with store_in:
             _reason()
+

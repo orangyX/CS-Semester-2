@@ -16,7 +16,7 @@ Handles:
 from flask import Flask, abort, render_template, request
 from owlready2 import *
 
-import config
+import backend.utility.config as config
 from utility import utils
 import queries
 from datasets import Dataset

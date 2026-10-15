@@ -4,7 +4,7 @@ Basic shared structure and expected minimal ontology
 
 from owlready2 import *
  
-import config
+import backend.utility.config as config
 from utility import utils
  
 

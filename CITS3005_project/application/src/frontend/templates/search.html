@@ -7,7 +7,7 @@
         <input type="submit" value="Search" class="secondary">
     </fieldset>
 </form>
-{% if q %}
+{% if q %}  
 {% if rows %}
 <table class="striped">
     <thead>
@@ -20,7 +20,7 @@
         <tbody>
             {% for row in rows %}
             <tr>
-                <td><a href="/unit/{{ row[0] }}" class="contrast">{{ row[0] }}</a></td>
+                <td><a href="/browse/unit/{{ row[0] }}" class="contrast">{{ row[0] }}</a></td>
                 <td>{{ row[1] }}</td>
                 <td>{{ row[2] }}</td>
                 <td>{{ row[3] }}</td>

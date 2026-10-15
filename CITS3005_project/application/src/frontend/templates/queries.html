@@ -1,14 +1,21 @@
 {% extends "pico_base_template.html" %}
 {% block content %}
-    <h2>Queries</h2>
-    <p>Query against degrees, majors, and units.</p>
-    <details class="dropdown">
-        <summary role="button" class="secondary">Location</summary>
-        <ul>
-            <li><a href="/spec/location?location=UWA+Perth">Perth (Crawley)</a></li>
-            <li><a href="/spec/location?location=Albany">Albany</a></li>
-        </ul>
-    </details>
-    <p><a role="button" class="secondary" href="/spec/foundational">Foundational units by degree</a></p>
-    <p><a role="button" class="secondary" href="/spec/average-majors">Average majors by degree</a></p>
+<h2>Queries</h2>
+<p>Query against degrees, majors, and units.</p>
+<details class="dropdown">
+    <summary role="button" class="secondary">Location</summary>
+    <ul>
+        <li><a href="/spec/location?location=UWA+Perth">Perth (Crawley)</a></li>
+        <li><a href="/spec/location?location=Albany">Albany</a></li>
+    </ul>
+</details>
+<p><a role="button" class="secondary" href="/spec/foundational">Foundational units by degree</a></p>
+<p><a role="button" class="secondary" href="/spec/average-majors">Average majors by degree</a></p>
+<h4>Majors by outcomes</h4>
+<form action="/spec/outcomes">
+    <fieldset role="group">
+        <input type="search" name="q" placeholder="e.g. knowledge representation">
+        <input type="submit" value="Find majors" class="secondary">
+    </fieldset>
+</form>
 {% endblock %}

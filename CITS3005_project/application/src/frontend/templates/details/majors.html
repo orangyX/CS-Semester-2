@@ -14,7 +14,7 @@
              <!-- A for loop; loop over all Majors and fetch the required information -->
              {% for major in majors %}
              <tr>
-                <td><a href="/major/{{ major.code }}" class="contrast">{{ major.code }}</a></td>
+                <td><a href="/browse/major/{{ major.code }}" class="contrast">{{ major.code }}</a></td>
                 <td>{{ major.title }}</td>
                 <td>{{ major.school }}</td>
              </tr>

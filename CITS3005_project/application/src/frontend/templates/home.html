@@ -1,0 +1,18 @@
+    {% extends "pico_base_template.html" %}
+    {% block content %}
+        <h2>Search</h2>
+        <!-- A search bar -->
+        <form action="/search">
+            <fieldset role="group">
+                <input type="search" name="q" placeholder="e.g. data analysis">
+                <input type="submit" value="Search", class="secondary">
+            </fieldset>
+        </form>
+        <h4>Or browse</h4>
+        <div role="group">
+            <!-- Degree, Major, and Unit buttons -->
+            <a role="button" href="/degrees" class="secondary">Degree</a>
+            <a role="button" href="/majors" class="secondary">Major</a>
+            <a role="button" href="/units" class="secondary">Unit</a>
+        </div>
+    {% endblock %}

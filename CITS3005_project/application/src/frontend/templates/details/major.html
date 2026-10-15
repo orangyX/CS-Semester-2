@@ -1,0 +1,27 @@
+{% extends "pico_base_template.html" %}
+{% block content %}
+    <h2>{{ major.title }} ({{ major.code }})</h2>
+    <p>{{ major.school }}</p>
+    <h3>Units</h3>
+    <table class="striped">
+    <thead>
+        <tr>
+            <th>Code</th>
+            <th>Title</th>
+            <th>Level</th>
+            <th>Credits</th>
+        </tr>
+    </thead>
+    <tbody>
+            <!-- A for loop; loop over all units and fetch the required information -->
+            {% for unit in major.units %}
+            <tr>
+            <td><a href="/unit/{{ unit.code }}" class="contrast">{{ unit.code }}</a></td>
+            <td>{{ unit.title }}</td>
+            <td>{{ unit.level }}</td>
+            <td>{{ unit.credit }}</td>
+            </tr>
+            {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

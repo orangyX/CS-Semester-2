@@ -1,0 +1,12 @@
+{% extends "pico_base_template.html" %}
+{% block content %}
+    <h2>Queries</h2>
+    <p>Query against degrees, majors, and units.</p>
+    <details class="dropdown">
+        <summary role="button" class="secondary">Location</summary>
+        <ul>
+            <li><a href="/query/location?location=UWAPerth">Perth (Crawley)</a></li>
+            <li><a href="/query/location?location=Albany">Albany</a></li>
+        </ul>
+    </details>
+{% endblock %}

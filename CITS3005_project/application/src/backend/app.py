@@ -251,7 +251,7 @@ def inferred_facts(name):
     Ask what objects are inferred or added by the reasoner.
     """
     before = set(run(Q.get_incoming(), ASSERTED, selectedEntity=data(name)))  
-    after  = run(Q.get_incoming(), GRAPH,    selectedEntity=data(name))  
+    after  = run(Q.get_incoming(), GRAPH, selectedEntity=data(name))  
 
     rows = []
     for subject, prop in after:

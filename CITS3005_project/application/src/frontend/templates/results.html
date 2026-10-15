@@ -1,6 +1,7 @@
 {% extends "pico_base_template.html" %}
 {% block content %}
-    <h2>{{ title }}</h2>    
+    <h2>{{ title }}</h2>
+    {% if rows %} 
     <table class="striped">
         <thead>
             <tr>
@@ -19,4 +20,7 @@
             {% endfor %}
         </tbody>
     </table>
+    {% else %}
+    <p>No results.</p>
+    {% endif %}
 {% endblock %}

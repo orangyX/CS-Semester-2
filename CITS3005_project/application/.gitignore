@@ -14,9 +14,9 @@ Thumbs.db
 !.env.example
 
 # Generated files
-#application/src/backend/data/schemas/*.owl    
-#application/src/backend/data/graphs/*.owl     
-#application/src/backend/data/datasets/*/parsed/  
-#application/src/backend/data/output/
-#application/src/backend/*.owl            
+src/backend/data/schemas/*.owl    
+src/backend/data/graphs/*.owl     
+src/backend/data/datasets/*/parsed/  
+src/backend/data/output/
+src/backend/*.owl            
 

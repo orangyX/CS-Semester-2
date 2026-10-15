@@ -345,7 +345,6 @@ def spec_average_majors():
     return table("Average majors per degree type (excluding BPhil)",
                  ["Degree type", "Average majors"], rows)
 
-
 @app.route("/spec/location")
 def spec_location():
     place = request.args.get("location", "").strip() or "Albany"

@@ -13,7 +13,7 @@ the issues at that time.
 from owlready2 import World
 
 from utility import utils
-from datasets import Dataset
+from utility.datasets import Dataset
 
 # Every class / property name the builder uses. A schema must define all of these.
 VOCABULARY = [

@@ -88,6 +88,53 @@ uv sync
 ```
 
 
+# File structure
+.
+├── __pycache__
+│   ├── app.cpython-314.pyc
+│   ├── config.cpython-314.pyc
+│   ├── datasets.cpython-314.pyc
+│   └── queries.cpython-314.pyc
+├── app.py
+├── build_kg.py
+├── build_kg1.py
+├── builder
+│   ├── __pycache__
+│   │   └── build.cpython-314.pyc
+│   └── build.py
+├── data
+│   ├── datasets
+│   │   └── raw
+│   │       ├── degrees.json
+│   │       ├── majors.json
+│   │       └── units.json
+│   ├── graphs
+│   │   └── raw.owl
+│   ├── output
+│   └── schemas
+│       └── base2.owl
+├── datasets.py
+├── main.py
+├── ontology
+│   ├── __init__.py
+│   ├── __pycache__
+│   │   ├── __init__.cpython-314.pyc
+│   │   └── base2.cpython-314.pyc
+│   ├── base.py
+│   ├── base2.py
+│   └── rules.py
+├── queries.py
+├── shapes
+│   ├── __init__.py
+│   └── shacl_rules.py
+└── utility
+    ├── config.py
+    ├── parser.py
+    └── utils.py
+
+15 directories, 37 files
+Deans-MacBook-Air:backend dean$ 
+
 # To Do List / Pipeline
 
 Sentiment analysis.

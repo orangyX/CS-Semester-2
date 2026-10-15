@@ -11,7 +11,7 @@ import re
 from owlready2 import World, sync_reasoner_hermit, sync_reasoner_pellet
  
 import utility.config as config
-from datasets import Dataset, schema_path
+from utility.datasets import Dataset, schema_path
  
 
 

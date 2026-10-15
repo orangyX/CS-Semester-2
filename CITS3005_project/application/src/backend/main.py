@@ -7,9 +7,9 @@ from utility import config
 from utility.parser import ParseDataSet
 from ontology.base2 import OntologyBase
 from builder.build import GraphBuilder
-from datasets import Dataset
+from utility.datasets import Dataset
 
-SCHEMA_NAME = "base2"
+SCHEMA_NAME = "university_ot"
 DATASET_NAME = "raw"
 
 

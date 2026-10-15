@@ -13,307 +13,228 @@ Handles:
 # =========================
 # IMPORTS
 # =========================
-from flask import Flask, abort, render_template, request
-from owlready2 import *
+from collections import Counter, defaultdict
 
-import backend.utility.config as config
-from utility import utils
+import rdflib
+from flask import Flask, abort, redirect, render_template, request, url_for
+from rdflib import Literal, URIRef
+
+import main as pipeline
 import queries
-from backend.utility.datasets import Dataset
+from shapes import shapes
+from utility import config, utils
+from utility.datasets import Dataset
+
 
 # =========================
 # SETTINGS
 # =========================
-SCHEMAS = ["test_base"]
-DATASET = Dataset(config.DEFAULT_DATASET)
-INFERRED_IRI = "http://uwa/uni.inferred#"
- 
-# Browse section -> schema class name.
-BROWSABLE = {
-    "degrees": "Degree",
-    "majors": "Major",
-    "units": "Unit",
-}
+Q = queries.MakeQueries
+
+DATASET = Dataset("raw")
+SCHEMAS = ["base", "rules"]
+
+ASSERTED = rdflib.Graph()     
+GRAPH = rdflib.Graph()        
+ERRORS = Counter()
+
+TITLE = LEVEL = CREDIT = SCHOOL = STUDY_TYPE = {}
 
 
 # =========================
-# KNOWLEDGE BASE
+# App entry
 # =========================
-class KnowledgeBase:
-    """
-    This is the core of the applicaiton so it owns 
-    all the required data to run and work from.
+
+app = Flask(__name__, template_folder="../frontend/templates", static_folder="../frontend")
+
+def load():
+    global ASSERTED, GRAPH, ERRORS, TITLE, LEVEL, CREDIT, SCHOOL, STUDY_TYPE
+    world, _, _ = utils.load_everything(DATASET, SCHEMAS)
+    ASSERTED = queries.to_graph(world)
+    utils.run_reasoner(world)
+    GRAPH = queries.to_graph(world)
+    _, ERRORS, _ = shapes.check(world)
+
+    TITLE = column("hasTitle")
+    LEVEL = column("hasLevel")
+    CREDIT = column("hasCredit")
+    SCHOOL = column("belongsTo")
+    STUDY_TYPE = column("hasStudyType")
     
-    """
-
-    def __init__(self, schema_names: list[str], dataset: Dataset):
-        self.schema_names = schema_names
-        self.dataset = dataset
-        self.world = World()           # RULE: everything goes through this world
-        self.schemas = []
-        self.graph = None
-        self.inferred = None
-        self.notices = []              # status messages shown on the home page
-        self.reasoning_error = None
-        self.asserted_types = {}       # individual -> set of classes before reasoning
-        self.asserted_values = {}      # individual -> {property: set of values}
-        self.engine = None
-        
-    def load(self):
-        self.schemas = utils.load_schemas(self.world, self.schema_names)
-        if self.dataset.is_built():
-            self.graph = utils.load_graph(self.world, self.dataset)
-        else:
-            self.notices.append(f"No graph built for dataset '{self.dataset.name}' yet. "
-                                "Showing the schema only.")
-            
-        self._snapshot_asserted()
-        self._reason()
-        self.engine = queries.QueryEngine(self.world, data_iri=self.dataset.iri)
- 
-    def _snapshot_asserted(self):
-        for ind in self.world.individuals():
-            self.asserted_types[ind] = set(ind.is_a)
-            self.asserted_values[ind] = {prop: set(prop[ind]) for prop in ind.get_properties()}
- 
-    def _reason(self):
-        self.inferred = self.world.get_ontology(INFERRED_IRI)
-        try:
-            utils.run_reasoner(self.world, store_in=self.inferred)
-        except OwlReadyInconsistentOntologyError:
-            self.reasoning_error = ("The ontology is inconsistent with this data. No inferences were added.")
-        except Exception as exc:
-            self.reasoning_error = (f"Reasoner failed ({exc}). Check Java is installed and configured.")
- 
-    def cls(self, name):
-        for onto in self.schemas:
-            found = onto[name]
-            if isinstance(found, ThingClass):
-                return found
-        return None
-
-    def describe(self, entity):
-        """Split an individual's types and property values into asserted vs inferred."""
-        before_types = self.asserted_types.get(entity, set())
-        before_values = self.asserted_values.get(entity, {})
-        types = {
-            "asserted": sorted(before_types, key=str),
-            "inferred": sorted(set(entity.is_a) - before_types, key=str),
-        }
-        properties = []
-        for prop in sorted(entity.get_properties(), key=lambda p: p.name):
-            before = before_values.get(prop, set())
-            for value in sorted(set(prop[entity]), key=str):
-                properties.append((prop, value, "asserted" if value in before else "inferred"))
-        return types, properties
-
 # =========================
-# DISPLAY HELPERS
+# BINDING HELPERS
 # =========================
-def cell(value) -> queries.Cell:
-    """Entity -> (name, iri) so it becomes a link; anything else -> plain text."""
-    if hasattr(value, "iri"):
-        return (getattr(value, "name", str(value)), value.iri)
-    return (str(value), None)
+def uni(name):
+    """Schema term, e.g. uni("Unit"), uni("hasLevel")"""
+    return URIRef(config.SCHEMA_IRI + name)
 
 
-def text(value) -> queries.Cell:
-    return (str(value), None)
+def data(name):
+    """Data individual, e.g. data("CITS3005")"""
+    return URIRef(DATASET.iri + name)
 
 
-def names(items) -> str:
-    """Readable comma list of classes / datatypes (e.g. a domain or range)."""
-    return ", ".join(getattr(i, "name", None) or getattr(i, "__name__", str(i)) for i in items)
- 
+def run(sparql, graph=None, **bindings):
+    if graph is None:
+        graph = GRAPH      
+    return queries.run(graph, DATASET, sparql, **bindings)
 
-def characteristics(prop) -> str:
-    """Functional, transitive, etc., plus the inverse if there is one."""
-    found = [c.__name__ for c in prop.is_a
-             if isinstance(c, type) and c.__name__.endswith("Property")
-             and c.__name__ not in ("ObjectProperty", "DataProperty")]
-    if getattr(prop, "inverse_property", None):
-        found.append(f"inverse of {prop.inverse_property.name}")
-    return ", ".join(found)
- 
-def section(heading=None, headers=(), rows=(), message=None, ok=True):
-    return {"heading": heading, "headers": list(headers), "rows": list(rows),
-            "message": message, "ok": ok}
- 
-def result_section(heading, result: queries.QueryResult):
-    return section(heading, result.headers, result.rows, result.message, result.ok)
- 
-def render(title, sections=(), notices=(), form=None):
-    return render_template("page.html", title=title, sections=sections,
-                           notices=list(notices), form=form)
+def column(prop):
+    """entity -> value for one property, e.g. column("hasLevel")["CITS3005"] -> "3" """
+    return dict(run(Q.query_by_relation(), selectedRelation=uni(prop)))
+
+
+def facts(name, graph=None):
+    """Every property of one entity: {"hasUnit": [...], "hasTitle": [...], ...}"""
+    result = defaultdict(list)
+    for prop, value in run(Q.get_properties(), graph, selectedEntity=data(name)):
+        result[prop].append(value)
+    return result
+
+def first(values):
+    return values[0] if values else ""
+
+TITLE = column("hasTitle")
+LEVEL = column("hasLevel")
+CREDIT = column("hasCredit")
+SCHOOL = column("belongsTo")
+STUDY_TYPE = column("hasStudyType")
+
+
+def listing(class_name):
+    """All entities of a class as (name, code, title) rows."""
+    return run(Q.list_by_entity_type(), selectedType=uni(class_name))
+
+
+def unit_row(name):
+    return {"code": name, "title": TITLE.get(name, ""),
+            "level": LEVEL.get(name, ""), "credit": CREDIT.get(name, "")}
+
+
+def major_row(name):
+    return {"code": name, "title": TITLE.get(name, ""), "school": SCHOOL.get(name, "")}
+
+
+def table(title, columns, rows):
+    return render_template("results.html", title=title, columns=columns, rows=rows)
 
 
 # =========================
-# APP + ROUTES
+# PAGES
 # =========================
-app = Flask(__name__, template_folder="../frontend", static_folder="../frontend")
-kb = KnowledgeBase(SCHEMAS, DATASET)
-kb.load()
-
-
-# Create list of browsable objects
-@app.context_processor
-def nav_context():
-    return {"browsable": BROWSABLE}
- 
- 
-# This is the home page. routing just adds a pages essentially
-# eg. http:// | 127.0.0.1 |:5000 |/page
-#    |protocol|Domain|Port|Page
-# we add a function after to run when that specific URL is reached
-# You always reach "/" so this is the home page
 @app.route("/")
 def home():
-    rows = []
-    for key, class_name in BROWSABLE.items():
-        cls = kb.cls(class_name)
-        count = len(list(cls.instances())) if cls else "class not found"
-        rows.append([text(key.capitalize()), text(count)])
- 
-    loaded = [[text(name), text(onto.base_iri)] for name, onto in zip(kb.schema_names, kb.schemas)]
-    status = kb.reasoning_error or f"Reasoner ({config.REASONER}) ran successfully."
-    return render("Handbook knowledge graph", [
-        section("Entities", ["Section", "Count"], rows),
-        section("Loaded schemas", ["Schema", "IRI"], loaded),
-    ], notices=[status, *kb.notices])
+    return render_template("home.html", built=DATASET.is_built())
+
+@app.route("/rebuild", methods=["POST"])
+def rebuild():
+    pipeline.build()
+    load()
+    return redirect(url_for("home"))
+
+@app.route("/degrees")
+def degrees():
+    rows = [{"code": code, "title": title, "study_type": STUDY_TYPE.get(name, "")}
+            for name, code, title in listing("Degree") if title]
+    return render_template("lists/degrees.html", degrees=rows)
 
 
-# Display the schema
-@app.route("/schema")
-def schema():
-    sections = []
-    for name, onto in zip(kb.schema_names, kb.schemas):
-        class_rows = [[cell(c),
-                       text(names(p for p in c.is_a if isinstance(p, ThingClass))),
-                       text(len(list(c.instances())))]
-                      for c in sorted(onto.classes(), key=lambda c: c.name)]
-        object_rows = [[cell(p), text(names(p.domain)), text(names(p.range)), text(characteristics(p))]
-                       for p in sorted(onto.object_properties(), key=lambda p: p.name)]
-        data_rows = [[cell(p), text(names(p.domain)), text(names(p.range)), text(characteristics(p))]
-                     for p in sorted(onto.data_properties(), key=lambda p: p.name)]
-        individual_rows = [[cell(i), text(names(i.is_a))]
-                           for i in sorted(onto.individuals(), key=lambda i: i.name)]
-        rule_rows = [[text(r)] for r in onto.rules()]
- 
-        sections += [
-            section(f"{name}: classes", ["Class", "Parents", "Instances"], class_rows,
-                    f"{len(class_rows)} classes"),
-            section(f"{name}: object properties", ["Property", "Domain", "Range", "Characteristics"],
-                    object_rows, f"{len(object_rows)} object properties"),
-            section(f"{name}: data properties", ["Property", "Domain", "Range", "Characteristics"],
-                    data_rows, f"{len(data_rows)} data properties"),
-            section(f"{name}: individuals", ["Individual", "Types"], individual_rows,
-                    f"{len(individual_rows)} individuals"),
-            section(f"{name}: rules", ["Rule"], rule_rows, f"{len(rule_rows)} rules"),
-        ]
-    return render("Schema", sections)
- 
+@app.route("/majors")
+def majors():
+    rows = [major_row(name) for name, code, title in listing("Major")]
+    return render_template("lists/majors.html", majors=rows)
 
-@app.route("/browse/<kind>")
-def browse(kind):
-    class_name = BROWSABLE.get(kind) or abort(404)
-    cls = kb.cls(class_name)
-    if cls is None:
-        return render(kind.capitalize(), notices=[f"Class '{class_name}' not found in the schema."])
- 
-    q = request.args.get("q", "").strip()
-    items = sorted(cls.instances(), key=lambda e: e.name)
-    if q:
-        needle = q.lower()
-        items = [e for e in items
-                 if needle in e.name.lower() or any(needle in str(l).lower() for l in e.label)]
- 
-    rows = [[cell(e), text(", ".join(map(str, e.label)))] for e in items]
-    return render(kind.capitalize(),
-                  [section(None, ["Entity", "Label"], rows, f"{len(rows)} entities")],
-                  form={"kind": "filter", "q": q})
 
-@app.route("/entity")
-def entity():
-    iri = request.args.get("iri", "")
-    target = kb.world[iri] if iri else None
-    if target is None:
+@app.route("/units")
+def units():
+    rows = [unit_row(name) for name, code, title in listing("Unit") if title]
+    return render_template("lists/units.html", units=rows)
+
+
+@app.route("/degree/<code>")
+def degree_details(code):
+    f = facts(code)
+    if not f:
         abort(404)
- 
-    if isinstance(target, ThingClass):
-        rows = [[cell(i)] for i in sorted(target.instances(), key=lambda e: e.name)]
-        return render(f"Class: {target.name}",
-                      [section("Instances (asserted + inferred)", ["Individual"], rows,
-                               f"{len(rows)} instances")], notices=[target.iri])
- 
-    if not isinstance(target, Thing):
-        return render(getattr(target, "name", iri),
-                      notices=[f"{iri}: no detail view for this kind of entity."])
- 
-    types, props = kb.describe(target)
-    type_rows = ([[cell(t), text("asserted")] for t in types["asserted"]] +
-                 [[cell(t), text("inferred")] for t in types["inferred"]])
-    prop_rows = [[cell(p), cell(v), text(source)] for p, v, source in props]
-    return render(target.name, [
-        section("Types", ["Class", "Source"], type_rows),
-        section("Properties", ["Property", "Value", "Source"], prop_rows),
-    ], notices=[target.iri])
- 
- 
+    degree = {
+        "code": code,
+        "title": first(f["hasTitle"]),
+        "study_type": first(f["hasStudyType"]),
+        "points": first(f["hasTotalPoints"]),
+        "majors": [major_row(m) for m in sorted(set(f["hasMajor"]))],
+    }
+    return render_template("details/degree.html", degree=degree)
+
+
+@app.route("/major/<code>")
+def major_details(code):
+    f = facts(code)
+    if not f:
+        abort(404)
+    major = {
+        "code": code,
+        "title": first(f["hasTitle"]),
+        "school": first(f["belongsTo"]),
+        "units": [unit_row(u) for u in sorted(set(f["hasUnit"]))],
+    }
+    return render_template("details/major.html", major=major)
+
+
+@app.route("/unit/<code>")
+def unit_details(code):
+    f = facts(code)
+    if not f:
+        abort(404)
+    direct = facts(code, ASSERTED)["hasPrerequisite"]     # asserted (from data)
+    every = f["hasPrerequisite"]                           # inferred (transitive)
+    unit = unit_row(code)
+    unit["direct_prereqs"] = [unit_row(p) for p in sorted(set(direct))]
+    unit["all_prereqs"] = [unit_row(p) for p in sorted(set(every))]
+    return render_template("details/unit.html", unit=unit)
+
+
+# =========================
+# QUERIES
+# =========================
+@app.route("/queries")
+def queries_page():
+    return render_template("queries.html")
+
+
+@app.route("/query/foundational")
+def foundational_query():
+    return table("Foundational units by degree", ["Degree", "Unit"],
+                 run(Q.foundational_units()))
+
+
+@app.route("/query/average-majors")
+def average_query():
+    return table("Average majors by degree type", ["Degree type", "Average majors"],
+                 run(Q.average_majors()))
+
+
+@app.route("/query/location")
+def location_query():
+    name = request.args.get("location", "")
+    rows = run(Q.majors_in_location(), selectedLocation=data("Location_" + utils.slug(name)))
+    return table(f"Majors available in {name}", ["Code", "Title"], rows)
+
+
 @app.route("/search")
 def search():
     q = request.args.get("q", "").strip()
-    form = {"kind": "search", "q": q}
-    if not q:
-        return render("Search", form=form)
- 
-    found = set(kb.world.search(iri=f"*{q}*", _case_sensitive=False))
-    found |= set(kb.world.search(label=f"*{q}*", _case_sensitive=False))
-    entity_rows = [[cell(e)] for e in sorted(found, key=lambda e: getattr(e, "name", str(e)))]
- 
-    outcomes = queries.run_named(queries.NAMED_QUERIES, "outcome_search", kb.engine, text=q)
-    return render("Search", [
-        section("Entities matching name or label", ["Entity"], entity_rows,
-                f"{len(entity_rows)} match(es)"),
-        result_section("Majors with matching outcomes", outcomes),
-    ], form=form)
- 
- 
-@app.route("/query")
-def run_query():
-    key = request.args.get("name", "")
-    sparql = request.args.get("sparql", "").strip()
-    params = {k: v for k, v in request.args.items() if k not in ("name", "sparql")}
- 
-    form = {"kind": "query", "named": list(queries.NAMED_QUERIES.values()), "key": key,
-            "params": params, "sparql": sparql, "prefixes": kb.engine.prefix_block()}
-    sections = []
-    if key:
-        title = queries.NAMED_QUERIES[key].title if key in queries.NAMED_QUERIES else key
-        result = queries.run_named(queries.NAMED_QUERIES, key, kb.engine, **params)
-        sections.append(result_section(title, result))
-    elif sparql:
-        sections.append(result_section("SPARQL result", kb.engine.run(sparql)))
-    return render("Query", sections, form=form)
- 
- 
-@app.route("/errors")
-def errors():
-    sections = [section("Reasoner",
-                        message=kb.reasoning_error or "The ontology is consistent with the data.",
-                        ok=kb.reasoning_error is None)]
- 
-    unsatisfiable = list(kb.world.inconsistent_classes())
-    sections.append(section("Unsatisfiable classes", ["Class"],
-                            [[cell(c)] for c in unsatisfiable],
-                            f"{len(unsatisfiable)} found", ok=not unsatisfiable))
- 
-    for nq in queries.ERROR_CHECKS.values():
-        result = queries.run_named(queries.ERROR_CHECKS, nq.key, kb.engine)
-        sections.append(result_section(nq.title, result))
-    return render("Data errors", sections)
- 
- 
+    rows = run(Q.outcome_search(), searchTerm=Literal(q)) if q else []
+    return table(f'Majors matching "{q}"', ["Code", "Title", "Matching outcome"], rows)
+
+
+@app.route("/validation")
+def validation():
+    return table("Data validation", ["Problem", "Count"], sorted(ERRORS.items()))
+
+
+if DATASET.is_built():
+    load()
+    
 if __name__ == "__main__":
-    # use_reloader=False: the debug reloader would load and reason twice.
-    # threaded=False: owlready2 isn't thread-safe; one request at a time is fine here.
-    app.run(debug=True, use_reloader=False, threaded=False)
+    # Apparently port 5000 is taken on Mac so using 5001
+    app.run(debug=True, use_reloader=False, threaded=False, port=5001)

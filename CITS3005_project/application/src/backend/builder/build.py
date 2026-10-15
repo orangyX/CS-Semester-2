@@ -32,7 +32,7 @@ VOCABULARY = [
     # Updated vocabulary
     "ContactMode",
     "hasComponentTitle", "listedInDegree", "listedInMajor", "hasMajorTitle",
-    "requiresDegree", "hasAdvice", "hasNote", "hasContact",
+    "requiresDegree", "hasAdvisedUnit", "hasNote", "hasContact",
     "contactType", "contactHours",
 ]
 
@@ -80,12 +80,24 @@ class GraphBuilder:
         A unit by code. 
         Codes not in the dataset become FloatingUnits.
         """
+        if code in self.clean["majors"] or code in self.clean["degrees"]:
+            return None
         if code in self.clean["units"]:
             return self.make("Unit", code)
         floating = self.make("FloatingUnit", code)
         floating.hasCode = code
         return floating
 
+    def units(self, codes) -> list:
+        """
+        Fix for units haveing multiple already existing units
+        """
+        result = []
+        for code in codes:
+            u = self.unit(code)
+            if u is not None:
+                result.append(u)
+        return result
     def school(self, label):
         return self.make("School", "School_" + utils.slug(label)) if label else None
 
@@ -129,11 +141,11 @@ class GraphBuilder:
             u.hasMode = r["modes"]
             u.hasAssessment = r["assessment"]
             u.locatedIn = [self.location(l) for l in r["locations"]]
-            u.hasPrerequisite = [self.unit(p) for p in r["prerequisites"]]
+            u.hasPrerequisite = self.units(r["prerequisites"])
             u.listedInMajor = [self.make("Major", c) for c in r["major_codes"]]
             u.hasMajorTitle = r["major_titles"]
             u.requiresDegree = [self.make("Degree", c) for c in r["prerequisite_degrees"]]
-            u.hasAdvice = r["advisable_prior_study"]
+            u.hasAdvisedUnit = self.units(r["advisable_prior_study"])
             u.hasNote = r["note"]
             u.hasContact = self.contacts(code, r["contact"])
 
@@ -145,8 +157,8 @@ class GraphBuilder:
             m.hasDescription = r["description"]
             m.belongsTo = self.school(r["school"])
             m.hasOutcome = r["outcomes"]
-            m.hasUnit = [self.unit(u) for u in r["units"]]
-            m.requiresBridging = [self.unit(u) for u in r["bridging"]]
+            m.hasUnit = self.units(r["units"])
+            m.requiresBridging = self.units(r["bridging"])
             m.listedInDegree = [self.make("Degree", c) for c in r["degrees"]]
             
     def build_degrees(self):
@@ -161,7 +173,6 @@ class GraphBuilder:
             d.locatedIn = [self.location(l) for l in r["locations"]]
             d.hasMajor = [self.make("Major", m) for m in r["majors"]]
             d.includesDegree = [self.make("Degree", c) for c in r["components"]]
-
     # =========================
     # SAVE
     # =========================

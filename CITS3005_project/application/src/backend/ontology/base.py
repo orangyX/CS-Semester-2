@@ -1,10 +1,13 @@
 """
 Basic shared structure and expected minimal ontology
+
+NOTE we are adding the addition functions but they should be moved OUT
+into an extension of the schema instead of directly 
 """
 
 from owlready2 import *
  
-import backend.utility.config as config
+import utility.config as config
 from utility import utils
  
 
@@ -31,135 +34,88 @@ class OntologyBase:
     def build(self):
         with self.onto:
             
-            # Most basic attributes.
-            # Potentially make 
-            # Enrollable -> degree/Major/ Unit
-            # Abstract out shared information here.
-            # code / name / school
+# --------------------------------------
+            class Enrollable(Thing): pass
+            class Degree(Enrollable): pass
+            class Major(Enrollable): pass
+            class Unit(Enrollable): pass
+
+            # Make sure these are disjoint sets
+            AllDisjoint([Degree, Major, Unit])
             
-            class Enrollable(Thing):
-                pass
-
-            class Degree(Enrollable):
-                pass
-
-            class Major(Enrollable):
-                pass
-
-            class Unit(Enrollable):
-                pass
+            # Prerequisite codes that aren't in the dataset
+            class FloatingUnit(Unit): pass
+# --------------------------------------  
+            class School(Thing): pass
+            class Location(Thing): pass
             
-            class Location(Thing):
-                pass
- 
-            # DEGREE SPECIFIC PROPERTIES --------------------------------------------------------
-            # Items that will certainly be reused several times will be classes
-            class School(Thing): pass # Stores the schools themselves
- 
-            class StudyType(Thing): pass # Stores Bachelors, Masters, PhD, etc.
- 
+# --------------------------------------
+            class StudyType(Thing): pass
             class Bachelor(StudyType): pass
- 
             class Honours(StudyType): pass
- 
-            class CombinedBachelor(StudyType): pass
- 
-            class Masters(StudyType): pass
- 
-            class PhD(StudyType): pass
- 
-            class degreeCode(Degree >> str, DataProperty, FunctionalProperty): pass
- 
-            class degreeTitle(Degree >> str, DataProperty, FunctionalProperty): pass
- 
-            class degreeSchool(Degree >> School, ObjectProperty): pass
- 
-            class degreeCreditsToComplete(Degree >> int, DataProperty, FunctionalProperty): pass
- 
-            class degreeFullTimeDuration(Degree >> int, DataProperty, FunctionalProperty): pass
- 
-            class degreeLocation(Degree >> Location, ObjectProperty): pass
- 
-            # Added after
-            class degreeStudyType(Degree >> StudyType, ObjectProperty, FunctionalProperty): pass
- 
-            class combinedDegreeIncludes(Degree >> Degree, ObjectProperty, IrreflexiveProperty): pass
- 
-            # MAJOR SPECIFIC PROPERTIES ---------------------------------------------------------
-            class majorCode(Major >> str, DataProperty, FunctionalProperty): pass
- 
-            class majorTitle(Major >> str, DataProperty, FunctionalProperty): pass
- 
-            class majorSchool(Major >> School, ObjectProperty): pass
- 
-            class majorDescription(Major >> str, DataProperty): pass
- 
-            class majorOutcomes(Major >> str, DataProperty): pass
- 
-            class majorBridgingUnits(Major >> Unit, ObjectProperty): pass
- 
-            # Added after
-            class majorProgression(Major >> int, DataProperty): pass # Stores major level
- 
-            class majorCreditsAtLevel(Major >> int, DataProperty): pass # Stores the number of credits per major-level
- 
-            # UNIT SPECIFIC PROPERTIES ----------------------------------------------------------
-            class ContactMode(Thing): pass
- 
-            class contactModeHours(ContactMode >> int, DataProperty, FunctionalProperty): pass
- 
-            class contactModeType(ContactMode >> str, DataProperty, FunctionalProperty): pass
- 
-            class unitCode(Unit >> str, DataProperty, FunctionalProperty): pass
- 
-            class unitTitle(Unit >> str, DataProperty, FunctionalProperty): pass
- 
-            class unitSchool(Unit >> School, ObjectProperty): pass
- 
-            class unitLevel(Unit >> int, DataProperty, FunctionalProperty): pass
- 
-            class unitDescription(Unit >> str, DataProperty, FunctionalProperty): pass
- 
-            class unitAwardsCredits(Unit >> int, DataProperty, FunctionalProperty): pass
- 
-            class unitSemesterAvailability(Unit >> str, DataProperty): pass
- 
-            class unitLocation(Unit >> Location, ObjectProperty): pass
- 
-            class unitModes(Unit >> str, DataProperty): pass
- 
-            class unitPartOfMajor(Unit >> Major, ObjectProperty): pass # This is ambiguous; we need to answer the question "a unit is core in a major"
- 
-            class unitOutcomes(Unit >> str, DataProperty): pass
- 
-            class unitAssessmentTypes(Unit >> str, DataProperty): pass
- 
-            class unitContactTypes(Unit >> ContactMode, ObjectProperty): pass
- 
-            # UNIT RELATIONS --------------------------------------------------------------------
-            class unitHasPrerequisite(Unit >> Unit, ObjectProperty, TransitiveProperty): pass # Owl complains if something is transitive and irreflexive; this rule needs to be enforced elsehwere
- 
-            class unitIsPrerequisiteOf(Unit >> Unit, ObjectProperty):
-                inverse_property = unitHasPrerequisite # Set it once, then it also applies to the other
- 
-            class unitIsCoreInMajor(Unit >> Major, ObjectProperty): pass # OWA; non-added info is unkown
- 
-            # MAJOR RELATIONS -------------------------------------------------------------------
-            class majorHasCoreUnit(Major >> Unit, ObjectProperty):
-                inverse_property = unitIsCoreInMajor
- 
-            class majorInDegree(Major >> Degree, ObjectProperty): pass
- 
-            # DEGREE RELATIONS ------------------------------------------------------------------
-            class degreeHasMajor(Degree >> Major, ObjectProperty): # Each deg. has at least one major
-                inverse_property = majorInDegree
- 
-            # STUDY-TYPE INDIVIDUALS ------------------------------------------------------------
-            # Shared vocabulary: the parser links each degree to one of these
-            bachelor = Bachelor("BP")
-            honours = Honours("BH")
-            combined = CombinedBachelor("CB")
- 
+            class Combined(StudyType): pass
+# --------------------------------------
+# Additional entities
+
+            class ContactMode(Thing): pass     
+# --------------------------------------
+# Addition entites for rule sets
+        
+# --------------------------------------
+            
+            # SHARED
+            class hasCode(Enrollable >> str, DataProperty, FunctionalProperty): pass
+            class hasTitle(Enrollable >> str, DataProperty, FunctionalProperty): pass
+            class belongsTo(Enrollable >> School, ObjectProperty, FunctionalProperty): pass
+            class hasDescription(Enrollable >> str, DataProperty, FunctionalProperty): pass
+            class hasOutcome(Enrollable >> str, DataProperty): pass
+            class locatedIn(Enrollable >> Location, ObjectProperty): pass
+
+            # DERGEES
+            class hasStudyType(Degree >> StudyType, ObjectProperty, FunctionalProperty): pass
+            class hasTotalPoints(Degree >> int, DataProperty, FunctionalProperty): pass
+            class hasDuration(Degree >> int, DataProperty, FunctionalProperty): pass
+            class hasMajor(Degree >> Major, ObjectProperty): pass
+            class includesDegree(Degree >> Degree, ObjectProperty): pass
+            class hasComponentTitle(Degree >> str, DataProperty): pass
+            
+            # MAJOR
+            class hasUnit(Major >> Unit, ObjectProperty): pass
+            class requiresBridging(Major >> Unit, ObjectProperty): pass
+            class listedInDegree(Major >> Degree, ObjectProperty): pass   
+            
+            # UNITS
+            class hasLevel(Unit >> int, DataProperty, FunctionalProperty): pass
+            class hasCredit(Unit >> int, DataProperty, FunctionalProperty): pass
+            class isAvailable(Unit >> bool, DataProperty, FunctionalProperty): pass
+            class hasPrerequisite(Unit >> Unit, ObjectProperty, TransitiveProperty): pass
+            class offeredIn(Unit >> str, DataProperty): pass
+            class hasMode(Unit >> str, DataProperty): pass
+            class hasAssessment(Unit >> str, DataProperty): pass
+            class hasPrerequisiteText(Unit >> str, DataProperty, FunctionalProperty): pass
+
+            class listedInMajor(Unit >> Major, ObjectProperty): pass      
+            class hasMajorTitle(Unit >> str, DataProperty): pass         
+            class requiresDegree(Unit >> Degree, ObjectProperty): pass    
+            class hasAdvisedUnit(Unit >> Unit, ObjectProperty): pass
+            class hasNote(Unit >> str, DataProperty, FunctionalProperty): pass
+            class hasContact(Unit >> ContactMode, ObjectProperty): pass
+
+            # Contact type information
+            class contactType(ContactMode >> str, DataProperty, FunctionalProperty): pass
+            class contactHours(ContactMode >> int, DataProperty, FunctionalProperty): pass
+            # ===========================
+            # INVERSES
+            # ===========================
+            class majorOf(Major >> Degree, ObjectProperty):
+                inverse_property = hasMajor
+
+            class unitOf(Unit >> Major, ObjectProperty):
+                inverse_property = hasUnit
+
+            class prerequisiteOf(Unit >> Unit, ObjectProperty):
+                inverse_property = hasPrerequisite
+
         return self.onto
  
  

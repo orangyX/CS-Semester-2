@@ -13,6 +13,7 @@ from pathlib import Path
 # =========================
 BASE_IRI = "http://uwa/uni.ot#"         # classes, properties, rules
 SCHEMA_IRI = BASE_IRI 
+RULES_IRI = "http://uwa/uni.rules#"
 TEST_IRI = "http://uwa/test.ot#"        # IRI for tesing purposes
 DATA_IRI_BASE = "http://uwa/uni.data/"  # each dataset gets <base><name>#
 
@@ -31,7 +32,7 @@ GRAPHS_DIR = DATA_DIR / "graphs"
 
 # Defaults when not input -> Will always load ATLEAST this
 DEFAULT_DATASET = "raw"
-DEFAULT_SCHEMA = "university"
+DEFAULT_SCHEMA = "base"
 
 # There are some datasets we dont want overwritten.
 # This is essentially the supplied dataset from project 
@@ -41,7 +42,7 @@ PROTECTED_SCHEMAS = {DEFAULT_SCHEMA}
 
 REASONER = "pellet"        # "hermit" (default) or "pellet"
 INFER_PROPERTY_VALUES = True
-INFER_DATA_PROPERTY_VALUES= True
+INFER_DATA_PROPERTY_VALUES= False
 
 # Both reasoners need Java. Leave as None if `java` is on the system PATH;
 # otherwise set the full path to the java executable.
@@ -50,3 +51,5 @@ JAVA_EXE = None            # e.g. r"C:\Program Files\Java\jdk-21\bin\java.exe"
 if JAVA_EXE:
     import owlready2
     owlready2.JAVA_EXE = JAVA_EXE
+    owlready2.reasoning.JAVA_MEMORY = 4000 
+    

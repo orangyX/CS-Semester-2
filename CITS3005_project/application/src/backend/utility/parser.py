@@ -253,7 +253,7 @@ class ParseDataSet:
                 "prerequisites": text_list(flatten(r.get("prerequisite_units"))),                                 
                 "prerequisite_degrees": text_list(r.get("prerequisite_courses")),
                 "prerequisites_text": text(r.get("prerequisites_text")),
-                "advisable_prior_study": text(r.get("advisable_prior_study")),
+                "advisable_prior_study": text_list(r.get("advisable_prior_study")),
                 "note": text(r.get("note")),
             }
         return units

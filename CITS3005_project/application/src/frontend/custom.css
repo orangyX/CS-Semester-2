@@ -1,0 +1,14 @@
+nav li button.nav-action {
+  --pico-color: var(--pico-contrast);
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  font: inherit;
+  margin: calc(var(--pico-nav-link-spacing-vertical) * -1) 0;
+  padding: var(--pico-nav-link-spacing-vertical) 0;
+  white-space: nowrap;
+}
+
+nav li form {
+  margin: 0;
+}

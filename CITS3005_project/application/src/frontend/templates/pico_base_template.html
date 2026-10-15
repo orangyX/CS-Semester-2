@@ -13,6 +13,8 @@
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/@picocss/pico@2.1.1/css/pico.min.css"
     >
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2.1.1/css/pico.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='custom.css') }}">
   </head>
 
   <body>
@@ -27,9 +29,23 @@
           <li><a href="/" class="contrast">Home</a></li>
           <li><a href="/queries" class="contrast">Queries</a></li>
           <li><a href="/validation" class="contrast">Validation</a></li>
-          <li><a href="/build_graph" class="contrast">Build graph</a></li>
+          <li>
+            <form action="/load" method="post">
+              <button type="submit" class="nav-action">Load graph</button>
+            </form>
+          </li>
+          <li>
+            <form action="/rebuild" method="post">
+              <button type="submit" class="nav-action">Rebuild</button>
+            </form>
+          </li>
         </ul>
       </nav>
+      {% if not loaded %}
+        <article>
+          <strong>Graph not loaded.</strong> Use the buttons above.
+        </article>
+      {% endif %}
     </header>
     <!-- ./ Header -->
 

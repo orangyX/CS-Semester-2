@@ -36,15 +36,19 @@ class OntologyBase:
             # Enrollable -> degree/Major/ Unit
             # Abstract out shared information here.
             # code / name / school
-            class Degree(Thing):
+            
+            class Enrollable(Thing):
                 pass
- 
-            class Major(Thing):
+
+            class Degree(Enrollable):
                 pass
- 
-            class Unit(Thing):
+
+            class Major(Enrollable):
                 pass
- 
+
+            class Unit(Enrollable):
+                pass
+            
             class Location(Thing):
                 pass
  

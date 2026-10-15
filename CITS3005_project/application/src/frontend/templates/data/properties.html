@@ -1,0 +1,20 @@
+{% extends "pico_base_template.html" %}
+{% block content %}
+    <h2>Properties</h2>
+    <table class="striped">
+    <thead>
+        <tr><th>Property</th><th>Times used</th></tr>
+    </thead>
+    <tbody>
+        {% for p in properties %}
+        <tr>
+            <td><a href="/browse/property/{{ p.name }}" class="contrast">{{ p.name }}</a></td>
+            <td>{{ p.count }}</td>
+        </tr>
+        {% else %}
+        <tr><td colspan="2">None</td></tr>
+        {% endfor %}
+    </tbody>
+    </table>
+{% endblock %}
+ 

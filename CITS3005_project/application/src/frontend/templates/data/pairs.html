@@ -1,0 +1,19 @@
+{% extends "pico_base_template.html" %}
+{% block content %}
+    <h2>{{ prop }}</h2>
+    <table class="striped">
+    <thead>
+        <tr><th>Subject</th><th>Value</th></tr>
+    </thead>
+    <tbody>
+        {% for p in pairs %}
+        <tr>
+            <td><a href="/search?q={{ p.subject }}" class="contrast">{{ p.subject }}</a></td>
+            <td>{{ p.value }}</td>
+        </tr>
+        {% else %}
+        <tr><td colspan="2">None</td></tr>
+        {% endfor %}
+    </tbody>
+    </table>
+{% endblock %}

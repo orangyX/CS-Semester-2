@@ -88,7 +88,6 @@ uv sync
 ```
 
 # File structure
-Deans-MacBook-Air:backend dean$ tree
 .
 ├── app.py
 ├── builder
@@ -145,11 +144,7 @@ Add the class name to the vocabulary list
 "Semester"
 
 # To Do List / Pipeline
-
-Sentiment analysis.
-
-Application requires
-
+Application requires:
 Parsing of data,
 Ontology schema 
 Convert to knowledge graph,

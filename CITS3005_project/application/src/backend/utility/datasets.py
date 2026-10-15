@@ -53,8 +53,8 @@ class Dataset:
         return f"{config.DATA_IRI_BASE}{self.name}#"    # namespace for its entities
     
     def is_built(self) -> bool:
-        return self.graph_file.is_file()
-
+        return self.graph_file.exists()
+    
 def schema_path(name: str) -> Path:
     return config.SCHEMAS_DIR / f"{check_name(name)}.owl"
 

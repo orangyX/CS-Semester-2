@@ -1,0 +1,24 @@
+{% extends "pico_base_template.html" %}
+{% block content %}
+<h2>Search</h2>
+<form action="/search">
+    <fieldset role="group">
+        <input type="search" name="q" placeholder="e.g. data analysis">
+        <input type="submit" value="Search", class="secondary">
+    </fieldset>
+</form>
+{% if q %}
+<table class="striped">
+    <thead>
+        <tr>
+            {% for col in columns %}
+            <th>{{ col }}</th>
+            {% endfor %}
+            <th>
+
+            </th>
+        </tr>
+    </thead>
+</table>
+{% endif %}
+{% endblock %}

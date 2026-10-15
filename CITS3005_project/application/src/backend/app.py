@@ -143,7 +143,7 @@ def rebuild():
     pipeline.build()
     return redirect(url_for("home"))
 
-@app.route("/load", methods=["POST"])
+@app.route("/reason", methods=["POST"])
 def load():
     """
     Load all the information ready for app to use.
@@ -191,8 +191,8 @@ def search():
             keep.add(entity)
             
         rows = [row for row in rows if row[0] in keep]
-        
-    return table(f'Result for "{q}"', ["Entity", "Title", "Property", "Value"], rows)
+    return render_template("search.html", q=q, columns=["Entity", "Title", "Property", "Value"], rows=rows)
+    # return table(f'Result for "{q}"', ["Entity", "Title", "Property", "Value"], rows)
 
 def available_queries():
     """

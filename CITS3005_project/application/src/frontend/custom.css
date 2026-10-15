@@ -9,6 +9,14 @@ nav li button.nav-action {
   white-space: nowrap;
 }
 
+.full-width {
+  width: 100%;
+}
+
+input[type=search] {
+  --pico-border-radius: 0.25rem;
+}
+
 nav li form {
   margin: 0;
 }

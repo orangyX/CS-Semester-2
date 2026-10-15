@@ -56,7 +56,8 @@ def load_schema(world: World, name: str):
     path = schema_path(name)
     if not path.is_file():
         raise FileNotFoundError(f"No schema named {name!r} at {path}")
-    return world.get_ontology(path.as_uri()).load()
+    with open(path, "rb") as f:
+        return world.get_ontology(path.as_uri()).load(fileobj=f)
  
  
 def load_schemas(world: World, names: list[str]) -> list:

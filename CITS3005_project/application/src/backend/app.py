@@ -19,7 +19,7 @@ from owlready2 import *
 import backend.utility.config as config
 from utility import utils
 import queries
-from datasets import Dataset
+from backend.utility.datasets import Dataset
 
 # =========================
 # SETTINGS

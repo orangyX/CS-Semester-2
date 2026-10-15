@@ -89,18 +89,10 @@ uv sync
 
 
 # File structure
+Deans-MacBook-Air:backend dean$ tree
 .
-├── __pycache__
-│   ├── app.cpython-314.pyc
-│   ├── config.cpython-314.pyc
-│   ├── datasets.cpython-314.pyc
-│   └── queries.cpython-314.pyc
 ├── app.py
-├── build_kg.py
-├── build_kg1.py
 ├── builder
-│   ├── __pycache__
-│   │   └── build.cpython-314.pyc
 │   └── build.py
 ├── data
 │   ├── datasets
@@ -110,30 +102,25 @@ uv sync
 │   │       └── units.json
 │   ├── graphs
 │   │   └── raw.owl
-│   ├── output
 │   └── schemas
-│       └── base2.owl
-├── datasets.py
+│       ├── base2.owl
+│       └── university_ot.owl
 ├── main.py
 ├── ontology
-│   ├── __init__.py
-│   ├── __pycache__
-│   │   ├── __init__.cpython-314.pyc
-│   │   └── base2.cpython-314.pyc
 │   ├── base.py
 │   ├── base2.py
-│   └── rules.py
+│   ├── rules.py
+│   └── university_ot.py
 ├── queries.py
 ├── shapes
-│   ├── __init__.py
 │   └── shacl_rules.py
 └── utility
     ├── config.py
+    ├── datasets.py
     ├── parser.py
     └── utils.py
 
-15 directories, 37 files
-Deans-MacBook-Air:backend dean$ 
+
 
 # To Do List / Pipeline
 

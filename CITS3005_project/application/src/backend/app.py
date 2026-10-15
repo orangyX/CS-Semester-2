@@ -118,6 +118,14 @@ def major_row(name):
 def table(title, columns, rows):
     return render_template("results.html", title=title, columns=columns, rows=rows)
 
+def binding(value):
+    if value.startswith("uni:"):
+        return uni(value[4:])
+    if value.startswith("data:"):
+        return data(value[5:])
+    if value.isdigit():
+        return Literal(int(value))
+    return Literal(value)
 
 # =========================
 # PAGES
@@ -131,6 +139,16 @@ def rebuild():
     pipeline.build()
     load()
     return redirect(url_for("home"))
+
+
+@app.route("/run/<name>")
+def run_query(name):
+    method = getattr(Q, name, None)
+    if name.startswith("_") or not callable(method):
+        abort(404)
+    sparql = method()
+    bindings = {key: binding(value) for key, value in request.args.items()}
+    return table(name, queries.headers(DATASET, sparql), run(sparql, **bindings))
 
 @app.route("/degrees")
 def degrees():

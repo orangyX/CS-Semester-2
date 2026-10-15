@@ -74,7 +74,9 @@ def load_graph(world: World, dataset: Dataset):
     """
     if not dataset.is_built():
         raise FileNotFoundError(f"Dataset {dataset.name!r} has no built graph at {dataset.graph_file}")
-    return world.get_ontology(dataset.graph_file.as_uri()).load()
+    path = dataset.graph_file
+    with open(path, "rb") as f:
+        return world.get_ontology(path.as_uri()).load(fileobj=f)
  
  
 def load_everything(dataset: Dataset, schema_names: list[str]) -> tuple:

@@ -143,7 +143,7 @@ def rebuild():
     pipeline.build()
     return redirect(url_for("home"))
 
-@app.route("/load", methods=["POST"])
+@app.route("/reason", methods=["POST"])
 def load():
     """
     Load all the information ready for app to use.

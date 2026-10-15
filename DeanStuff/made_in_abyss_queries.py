@@ -22,6 +22,131 @@ Reference for me:
 https://www.w3.org/TR/sparql11-query/
 """
 
+
+    # # ===============================
+    # # Pattern Query Functions
+    # # ===============================
+    # @staticmethod
+    # def missing_property():
+    #     """
+    #     bind: selectedType, selectedPredicate
+    #     Members of a class that have NO value for a property.
+
+    #     e.g. selectedType=uni:Unit, selectedPredicate=uni:hasPrerequisite -> entry units
+    #          selectedType=uni:Unit, selectedPredicate=uni:hasOutcome      -> units with no outcomes
+    #          selectedType=uni:Unit, selectedPredicate=uni:hasCredit       -> units with no credits
+    #     """
+    #     query = """
+    #     SELECT DISTINCT ?entity ?title
+    #     WHERE {
+    #         ?entity rdf:type/rdfs:subClassOf* ?selectedType .
+    #         FILTER NOT EXISTS { ?entity ?selectedPredicate ?anything }
+    #         OPTIONAL { ?entity uni:hasTitle ?title }
+    #     }
+    #     ORDER BY ?entity
+    #     """
+    #     return query
+
+    # @staticmethod
+    # def count_links():
+    #     """
+    #     bind: selectedPredicate
+    #     How many values each subject has for a property, most first.
+
+    #     e.g. uni:hasPrerequisite -> units with the longest prerequisite chains (after reasoning)
+    #          uni:hasUnit         -> biggest majors
+    #          uni:hasMajor        -> degrees with the most majors
+    #     """
+    #     query = """
+    #     SELECT ?subject (COUNT(DISTINCT ?object) AS ?count)
+    #     WHERE {
+    #         ?subject ?selectedPredicate ?object .
+    #     }
+    #     GROUP BY ?subject
+    #     ORDER BY DESC(?count)
+    #     """
+    #     return query
+
+    # @staticmethod
+    # def shared_objects():
+    #     """
+    #     bind: selectedPredicate
+    #     Values shared by more than one subject, and how many.
+
+    #     e.g. uni:hasUnit         -> units that appear in several majors
+    #          uni:hasPrerequisite -> units most often required by others
+    #     """
+    #     query = """
+    #     SELECT ?object (COUNT(DISTINCT ?subject) AS ?count)
+    #     WHERE {
+    #         ?subject ?selectedPredicate ?object .
+    #     }
+    #     GROUP BY ?object
+    #     HAVING (COUNT(DISTINCT ?subject) > 1)
+    #     ORDER BY DESC(?count)
+    #     """
+    #     return query
+
+    # @staticmethod
+    # def common_values():
+    #     """
+    #     bind: selectedEntity, selectedOther, selectedPredicate
+    #     Values two entities have in common for a property.
+
+    #     e.g. two majors + uni:hasUnit         -> units in both majors
+    #          two units  + uni:hasPrerequisite -> prerequisites they share
+    #     """
+    #     query = """
+    #     SELECT DISTINCT ?value ?title
+    #     WHERE {
+    #         ?selectedEntity ?selectedPredicate ?value .
+    #         ?selectedOther  ?selectedPredicate ?value .
+    #         OPTIONAL { ?value uni:hasTitle ?title }
+    #     }
+    #     ORDER BY ?value
+    #     """
+    #     return query
+
+    # @staticmethod
+    # def links_to_type():
+    #     """
+    #     bind: selectedPredicate, selectedType
+    #     Subjects whose property points at a member of a class.
+
+    #     e.g. uni:hasPrerequisite + uni:FloatingUnit -> units requiring a unit not in the dataset
+    #          uni:hasMajor + uni:Major               -> sanity check that every link is a major
+    #     """
+    #     query = """
+    #     SELECT DISTINCT ?subject ?object
+    #     WHERE {
+    #         ?subject ?selectedPredicate ?object .
+    #         ?object rdf:type/rdfs:subClassOf* ?selectedType .
+    #     }
+    #     ORDER BY ?subject ?object
+    #     """
+    #     return query
+
+    # @staticmethod
+    # def credits_at_level():
+    #     """
+    #     bind: selectedLevel
+    #     Total credit points per major at one level, most first.
+
+    #     e.g. 1 -> the numbers behind the 48-point rule (anything over 48 breaks it)
+    #     """
+    #     query = """
+    #     SELECT ?major (SUM(?credit) AS ?points)
+    #     WHERE {
+    #         ?major a uni:Major ;
+    #                uni:hasUnit ?unit .
+    #         ?unit uni:hasLevel ?selectedLevel ;
+    #               uni:hasCredit ?credit .
+    #     }
+    #     GROUP BY ?major
+    #     ORDER BY DESC(?points)
+    #     """
+    #     return query
+
 from rdflib import Graph, Namespace, RDF, RDFS, Literal
 
 g = Graph()

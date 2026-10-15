@@ -102,23 +102,25 @@ Deans-MacBook-Air:backend dean$ tree
 │   ├── graphs
 │   │   └── raw.owl
 │   └── schemas
-│       ├── base2.owl
+│       ├── base.owl
+│       ├── rules.owl
 │       └── university_ot.owl
 ├── main.py
 ├── ontology
 │   ├── base.py
-│   ├── base2.py
 │   ├── rules.py
 │   └── university_ot.py
 ├── queries.py
 ├── shapes
-│   └── shacl_rules.py
+│   ├── shacl_rules.py
+│   └── shapes.py
 └── utility
+    ├── caching.py
     ├── config.py
     ├── datasets.py
     ├── parser.py
     └── utils.py
-
+    
 # Schema Changes 
 If you want to add a new entity and type and retrieve from data specifically
 e.g. Your masters found in some codes 

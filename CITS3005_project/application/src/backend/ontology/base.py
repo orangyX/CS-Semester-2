@@ -24,7 +24,7 @@ class OntologyBase:
     And can explore options in Basic formatting.
     """
     def __init__(self, iri: str):
-        self.world = World()                       # own world, isolated from any data
+        self.world = World()                     
         self.onto = self.world.get_ontology(iri)
         self.build()
 

@@ -9,10 +9,7 @@ import rdflib
 
 from utility import config
 from utility.datasets import Dataset
-
-SCHEMA_NAME = "base"
-RULES_NAME = "rules"
-DATASET_NAME = "raw"
+from rdflib.plugins.sparql import prepareQuery   
 
 # =========================
 # HELPERS
@@ -25,6 +22,22 @@ def prefixes(dataset: Dataset) -> str:
         f"PREFIX rules: <{config.RULES_IRI}>\n"
         f"PREFIX data:  <{dataset.iri}>\n"
     )
+
+
+def headers(dataset, sparql: str) -> list[str]:
+    """
+    Now this is neat. 
+    Because we allow dynamic querying, the outcome doent know
+    what the headers of each column will be in advance. 
+    
+    This plug in just allows us to pull the selected objects
+    and return the names to be used as queries.
+    """
+    parsed = prepareQuery(prefixes(dataset) + sparql)
+    names = []
+    for variable in parsed.algebra["PV"]:
+        names.append(str(variable))
+    return names
 
 def to_graph(world) -> rdflib.Graph:
     """
@@ -117,11 +130,15 @@ class MakeQueries:
         """
         Looks at entites as an rdf type for all rdf types
         return the type and the count of it
+        
+        Filter for strings that start with string type of OWNED schema
+        Not rdflib just our made items.
         """
         query = """
         SELECT ?type (COUNT(*) AS ?count)
         WHERE {
             ?entity rdf:type ?type .
+            FILTER(STRSTARTS(STR(?type), STR(uni:)) || STRSTARTS(STR(?type), STR(rules:)))
         }
         GROUP BY ?type
         ORDER BY DESC(?count)
@@ -149,7 +166,7 @@ class MakeQueries:
     def count_property_values():
         """
         Get a propertty value and return 
-        count of property.
+        count of property. 
         """
         query = """
         SELECT DISTINCT ?value (COUNT(*) as ?count)
@@ -178,7 +195,12 @@ class MakeQueries:
     
     @staticmethod
     def query_by_relation():
-        """bind: selectedRelation (URIRef)"""
+        """
+        bind: selectedRelation 
+        
+        return a subject object pair from graph
+        subject <relation chosen> object
+        """
         query = """
         SELECT ?subject ?object
         WHERE {
@@ -188,54 +210,129 @@ class MakeQueries:
         """
         return query
 
-
-    # ===============================
-    # List Query Functions
-    # ===============================
     @staticmethod
-    def list_entities():
-        return """
-        SELECT DISTINCT ?entity ?label
-        WHERE {
-            { ?entity ?predicate ?object . }
-            UNION { ?subject ?predicate ?entity . }
-            FILTER(isIRI(?entity))
-            OPTIONAL { ?entity uni:hasTitle ?label . }
-        }
-        ORDER BY ?entity
+    def filter_contains():
         """
-
+        bind: selectedPredicate 
+        
+        Entities whose field contains selected predicate.
+        """
+        query = """
+        SELECT DISTINCT ?entity
+        WHERE {
+            ?entity ?selectedPredicate ?value .
+            BIND(IF(isIRI(?value), REPLACE(STR(?value), "^.*#", ""), STR(?value)) AS ?text)
+            FILTER(CONTAINS(LCASE(?text), LCASE(?searchTerm)))
+        }
+        """
+        return query
+    
     @staticmethod
-    def list_entity_types():
-        return """
+    def get_parents():
+        """
+        bind: selectedEntity
+        
+        return every class the entity belongs to.
+        """
+    
+        query = """
         SELECT DISTINCT ?type
         WHERE {
-            ?entity rdf:type ?type .
+            ?selectedEntity rdf:type ?directType .
+            ?directType rdfs:subClassOf* ?type .
         }
-        ORDER BY ?type
+        """
+        return query
+    
+    # ===============================
+    # Spec Query Functions
+    # ===============================
+    @staticmethod
+    def foundational_units():
+        """
+        bind: selectedDegree 
+        
+        return all units in every major of the degree.
+        
+        Note in called version it binds to a premade degree from the project outline
+        
+        We want an intersection of majors such that the units are available to all majors
+        under a specific degree. 
+        """
+        query = """
+        SELECT DISTINCT ?selectedDegree ?unit
+        WHERE {
+            ?selectedDegree uni:hasMajor ?anyMajor .
+            ?anyMajor uni:hasUnit ?unit .
+            FILTER NOT EXISTS {
+                ?selectedDegree uni:hasMajor ?major .
+                FILTER NOT EXISTS { ?major uni:hasUnit ?unit }
+            }
+        }
+        
+        ORDER BY ?selectedDegree ?unit
+        """
+        return query
+
+    @staticmethod
+    def average_majors():
+        """
+        Average majors per study type, BPhil excluded.
+        """
+        query =  """
+        SELECT ?type (AVG(?count) AS ?average)
+        WHERE {
+            {
+            SELECT ?degree ?type (COUNT(DISTINCT ?major) AS ?count)
+            WHERE {
+                ?degree uni:hasStudyType ?type .
+                OPTIONAL { ?degree uni:hasMajor ?major }
+                FILTER NOT EXISTS { ?degree a rules:BachelorOfPhilosophy }
+            }
+            GROUP BY ?degree ?type
+            }
+        }
+        GROUP BY ?type
+        """
+        return query
+
+    @staticmethod
+    def majors_in_location():
+        """
+        bind: selectedLocation 
+        
+        Every unit of the major is at that location.
+        """
+        return """
+        SELECT DISTINCT ?major ?title
+        WHERE {
+            ?major a uni:Major;
+                   uni:hasTitle ?title ;
+                   uni:hasUnit ?any.
+            FILTER NOT EXISTS {
+                ?major uni:hasUnit ?unit .
+                FILTER NOT EXISTS { ?unit uni:locatedIn ?selectedLocation }
+            }
+        }
+        ORDER BY ?title
         """
 
     @staticmethod
-    def list_by_entity_type():
-        """bind: selectedType (URIRef) e.g. uni:Unit"""
-        return """
-        SELECT ?entity ?code ?title
-        WHERE {
-            ?entity rdf:type/rdfs:subClassOf* ?selectedType ;
-                    uni:hasCode ?code .
-            OPTIONAL { ?entity uni:hasTitle ?title . }
-        }
-        ORDER BY ?code
+    def outcome_search():
         """
-
-    @staticmethod
-    def list_relations():
-        return """
-        SELECT DISTINCT ?relation
-        WHERE {
-            ?subject ?relation ?object .
-            FILTER(?relation != rdf:type)
-        }
-        ORDER BY ?relation
+        bind: searchTerm 
+        Major outcomes plus its units' outcomes.
         """
-
+        query = """
+        SELECT DISTINCT ?major ?title ?outcome
+        WHERE {
+            ?major a uni:Major ;
+                   uni:hasTitle ?title .
+            { ?major uni:hasOutcome ?outcome }
+            UNION
+            { ?major uni:hasUnit ?unit . ?unit uni:hasOutcome ?outcome }
+            FILTER(CONTAINS(LCASE(STR(?outcome)), LCASE(?searchTerm)))
+        }
+        ORDER BY ?title
+        """
+        return query

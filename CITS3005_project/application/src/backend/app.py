@@ -333,7 +333,6 @@ def unit_details(code):
 # =========================
 @app.route("/spec/foundational")
 def spec_foundational():
-
     degree = request.args.get("degree", "").strip()
     bindings = {"selectedDegree": data(degree)} if degree else {}
     rows = run(Q.foundational_units(), **bindings)

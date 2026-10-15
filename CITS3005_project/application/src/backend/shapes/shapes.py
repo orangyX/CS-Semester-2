@@ -157,7 +157,7 @@ SHAPES = '''
     ] ;
 
     sh:sparql [
-        sh:message "Unit requires a unit that is not in the dataset" ;
+        sh:message "Unit requires (directly or indirectly) a unit that is not in the dataset" ;
         sh:select """
             PREFIX : <SCHEMA_IRI>
             SELECT $this ?value WHERE {

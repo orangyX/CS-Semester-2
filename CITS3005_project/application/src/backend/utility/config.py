@@ -40,7 +40,7 @@ DEFAULT_SCHEMA = "base"
 PROTECTED_DATASETS = {DEFAULT_DATASET}
 PROTECTED_SCHEMAS = {DEFAULT_SCHEMA}
 
-REASONER = "pellet"        # "hermit" (default) or "pellet"
+REASONER = "hermit"        # "hermit" (default) or "pellet"
 INFER_PROPERTY_VALUES = True
 INFER_DATA_PROPERTY_VALUES= False
 

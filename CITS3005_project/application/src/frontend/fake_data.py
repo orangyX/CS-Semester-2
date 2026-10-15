@@ -82,3 +82,30 @@ FAKE_UNITS = {
         "all_prereqs":    [{"code": "MATH1011", "title": "Multivariable Calculus"}],
     },
 }
+
+FAKE_LOCATION_RESULTS = {
+    "Albany":   [["MJD-ANTHR", "Anthropology"], ["MJD-HISTY", "History"]],
+    "UWAPerth": [["MJD-CMPSC", "Computer Science"], ["MJD-ESOFT", "Software Engineering"]],
+}
+
+FAKE_SEARCH_RESULTS = [
+    ["MJD-CMPSC", "Computer Science", "apply data analysis techniques to …"],
+    ["MJD-DATSC", "Data Science", "perform data analysis and visualisation …"],
+]   
+
+FAKE_FOUNDATIONAL = [
+    ["BP004", "SCIE1104"],
+    ["BH011", "GENG1000"],
+]
+
+FAKE_AVERAGE = [
+    ["Bachelor", "21.3"], 
+    ["Combined", "9.3"], 
+    ["Honours", "6.5"]
+]
+
+FAKE_VIOLATIONS = [
+    ["MUSC2751", "Unit is its own prerequisite", "unitHasPrerequisite"],
+    ["MUSC3751", "Unit is its own prerequisite", "unitHasPrerequisite"],
+    ["BH005", "Degree has no major (before reasoning)", "degreeHasMajor"],
+]

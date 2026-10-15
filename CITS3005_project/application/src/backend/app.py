@@ -333,7 +333,6 @@ def unit_details(code):
 # =========================
 @app.route("/spec/foundational")
 def spec_foundational():
-
     degree = request.args.get("degree", "").strip()
     bindings = {"selectedDegree": data(degree)} if degree else {}
     rows = run(Q.foundational_units(), **bindings)
@@ -344,7 +343,6 @@ def spec_average_majors():
     rows = run(Q.average_majors())
     return table("Average majors per degree type (excluding BPhil)",
                  ["Degree type", "Average majors"], rows)
-
 
 @app.route("/spec/location")
 def spec_location():

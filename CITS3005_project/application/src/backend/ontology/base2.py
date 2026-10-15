@@ -52,7 +52,10 @@ class OntologyBase:
             class Honours(StudyType): pass
             class Combined(StudyType): pass
 # --------------------------------------
+# Additional entities
 
+            class ContactMode(Thing): pass     
+# --------------------------------------
             # SHARED
             class hasCode(Enrollable >> str, DataProperty, FunctionalProperty): pass
             class hasTitle(Enrollable >> str, DataProperty, FunctionalProperty): pass
@@ -67,11 +70,13 @@ class OntologyBase:
             class hasDuration(Degree >> int, DataProperty, FunctionalProperty): pass
             class hasMajor(Degree >> Major, ObjectProperty): pass
             class includesDegree(Degree >> Degree, ObjectProperty): pass
+            class hasComponentTitle(Degree >> str, DataProperty): pass
             
             # MAJOR
             class hasUnit(Major >> Unit, ObjectProperty): pass
             class requiresBridging(Major >> Unit, ObjectProperty): pass
-
+            class listedInDegree(Major >> Degree, ObjectProperty): pass   
+            
             # UNITS
             class hasLevel(Unit >> int, DataProperty, FunctionalProperty): pass
             class hasCredit(Unit >> int, DataProperty, FunctionalProperty): pass
@@ -82,6 +87,16 @@ class OntologyBase:
             class hasAssessment(Unit >> str, DataProperty): pass
             class hasPrerequisiteText(Unit >> str, DataProperty, FunctionalProperty): pass
 
+            class listedInMajor(Unit >> Major, ObjectProperty): pass      
+            class hasMajorTitle(Unit >> str, DataProperty): pass         
+            class requiresDegree(Unit >> Degree, ObjectProperty): pass    
+            class hasAdvice(Unit >> str, DataProperty, FunctionalProperty): pass
+            class hasNote(Unit >> str, DataProperty, FunctionalProperty): pass
+            class hasContact(Unit >> ContactMode, ObjectProperty): pass
+
+            # Contact type information
+            class contactType(ContactMode >> str, DataProperty, FunctionalProperty): pass
+            class contactHours(ContactMode >> int, DataProperty, FunctionalProperty): pass
             # ===========================
             # INVERSES
             # ===========================

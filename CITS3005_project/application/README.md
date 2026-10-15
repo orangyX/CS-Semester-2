@@ -87,7 +87,6 @@ git you can run the following to ensure packages are up to date.
 uv sync
 ```
 
-
 # File structure
 Deans-MacBook-Air:backend dean$ tree
 .
@@ -120,7 +119,28 @@ Deans-MacBook-Air:backend dean$ tree
     ├── parser.py
     └── utils.py
 
+# Schema Changes 
+If you want to add a new entity and type and retrieve from data specifically
+e.g. Your masters found in some codes 
 
+in schema file:
+Add entity
+    class Semester(Thing): pass
+
+before and after of rule change
+    class offeredIn(Unit >> str, DataProperty): pass
+    class offeredIn(Unit >> Semester, ObjectProperty): pass
+
+In build.py add a helper function
+    def semester(self, label):
+        return self.make("Semester", "Semester_" + utils.slug(label))
+
+Update in actual code block thing
+    # was: u.offeredIn = r["semesters"]
+    u.offeredIn = [self.semester(s) for s in r["semesters"]]  
+
+Add the class name to the vocabulary list
+"Semester"
 
 # To Do List / Pipeline
 

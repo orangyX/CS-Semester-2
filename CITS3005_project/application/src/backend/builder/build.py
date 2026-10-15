@@ -29,6 +29,11 @@ VOCABULARY = [
     # unit
     "hasLevel", "hasCredit", "isAvailable", "hasPrerequisite",
     "offeredIn", "hasMode", "hasAssessment", "hasPrerequisiteText",
+    # Updated vocabulary
+    "ContactMode",
+    "hasComponentTitle", "listedInDegree", "listedInMajor", "hasMajorTitle",
+    "requiresDegree", "hasAdvice", "hasNote", "hasContact",
+    "contactType", "contactHours",
 ]
 
 
@@ -87,6 +92,15 @@ class GraphBuilder:
     def location(self, label):
         return self.make("Location", "Location_" + utils.slug(label))
 
+    def contacts(self, unit_code: str, contact: dict) -> list:
+        modes = []
+        for i, (kind, hours) in enumerate(contact.items()):
+            kind_id = utils.slug(kind) if kind else None
+            c = self.make("ContactMode", f"{unit_code}_contact_{kind_id or i}")
+            c.contactType = kind
+            c.contactHours = hours
+            modes.append(c)
+        return modes
     # =========================
     # BUILD
     # =========================
@@ -116,6 +130,12 @@ class GraphBuilder:
             u.hasAssessment = r["assessment"]
             u.locatedIn = [self.location(l) for l in r["locations"]]
             u.hasPrerequisite = [self.unit(p) for p in r["prerequisites"]]
+            u.listedInMajor = [self.make("Major", c) for c in r["major_codes"]]
+            u.hasMajorTitle = r["major_titles"]
+            u.requiresDegree = [self.make("Degree", c) for c in r["prerequisite_degrees"]]
+            u.hasAdvice = r["advisable_prior_study"]
+            u.hasNote = r["note"]
+            u.hasContact = self.contacts(code, r["contact"])
 
     def build_majors(self):
         for code, r in self.clean["majors"].items():
@@ -127,7 +147,8 @@ class GraphBuilder:
             m.hasOutcome = r["outcomes"]
             m.hasUnit = [self.unit(u) for u in r["units"]]
             m.requiresBridging = [self.unit(u) for u in r["bridging"]]
-
+            m.listedInDegree = [self.make("Degree", c) for c in r["degrees"]]
+            
     def build_degrees(self):
         for code, r in self.clean["degrees"].items():
             d = self.make("Degree", code)

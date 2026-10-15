@@ -3,6 +3,8 @@ This runs the full pipeline in parsing and
 creating the graph
 """
 
+import queries
+from utility.caching import Cache
 from utility import utils
 from ontology.rules import Rules
 from utility import config
@@ -17,7 +19,7 @@ RULES_NAME = "rules"
 DATASET_NAME = "raw"
 
 
-def main():
+def build():
     
     
     schema_path = OntologyBase(config.SCHEMA_IRI).save(SCHEMA_NAME)
@@ -33,15 +35,29 @@ def main():
     builder.build()
     print(f"Graph saved to {builder.save()}")
     
-    world, schemas, graph = utils.load_everything(Dataset(DATASET_NAME), [SCHEMA_NAME, RULES_NAME])
+
+def reason(dataset, schemas):
+    cache = Cache(dataset)
+    if cache.is_fresh():
+        print("Using cached reasoning results")
+        return cache.read()
+
+    world, _, _ = utils.load_everything(dataset, schemas)
+    asserted = queries.to_graph(world)          # before reasoning
     utils.run_reasoner(world)
-    conforms, summary, report = shapes.check(world)
+    reasoned = queries.to_graph(world)          # after reasoning
+    conforms, errors, report = shapes.check(world)
+
     print("SHACL: all checks pass" if conforms else "SHACL problems:")
-    for message, count in summary.items():
+    for message, count in errors.items():
         print(f"  {count:4}  {message}")
-   
-def build():
-    main()
+
+    cache.save(asserted, reasoned, errors)      # after the loop, not inside it
+    return asserted, reasoned, errors
+
+def main():
+    build()
+    reason(Dataset(DATASET_NAME), [SCHEMA_NAME, RULES_NAME])
          
 if __name__ == "__main__":
     main()

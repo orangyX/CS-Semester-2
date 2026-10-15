@@ -151,15 +151,7 @@ def load():
     """
     global ASSERTED, GRAPH, ERRORS, TITLE, LEVEL, CREDIT, SCHOOL, STUDY_TYPE
     
-    if CACHE.is_fresh():
-        ASSERTED, GRAPH, ERRORS = CACHE.read()
-    else:
-        world, _, _ = utils.load_everything(DATASET, SCHEMAS)
-        ASSERTED = queries.to_graph(world)
-        utils.run_reasoner(world)
-        GRAPH = queries.to_graph(world)
-        _, ERRORS, _ = shapes.check(world)
-        CACHE.save(ASSERTED, GRAPH, ERRORS)
+    ASSERTED, GRAPH, ERRORS = pipeline.reason(DATASET, SCHEMAS)
     
     # Basic relations that ALWAYS get returned with an object 
     # CITS3005 -> return title, level etc.

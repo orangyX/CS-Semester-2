@@ -247,6 +247,7 @@ class MakeQueries:
     
     # ===============================
     # Spec Query Functions
+    # Queries required by specification of project
     # ===============================
     @staticmethod
     def foundational_units():

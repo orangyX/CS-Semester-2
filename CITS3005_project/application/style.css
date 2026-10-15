@@ -1,0 +1,11 @@
+.nav-action {
+  background: transparent;
+  border: none;
+  padding: 0;
+  color: inherit;
+  font: inherit;
+}
+
+nav form {
+  margin: 0;
+}

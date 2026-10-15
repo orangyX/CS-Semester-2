@@ -3,22 +3,33 @@
 <h2>Search</h2>
 <form action="/search">
     <fieldset role="group">
-        <input type="search" name="q" placeholder="e.g. data analysis">
-        <input type="submit" value="Search", class="secondary">
+        <input type="search" name="q" placeholder="e.g. data analysis" value="{{ q }}">
+        <input type="submit" value="Search" class="secondary">
     </fieldset>
 </form>
 {% if q %}
+{% if rows %}
 <table class="striped">
     <thead>
         <tr>
             {% for col in columns %}
             <th>{{ col }}</th>
             {% endfor %}
-            <th>
-
-            </th>
         </tr>
-    </thead>
-</table>
+        </thead>
+        <tbody>
+            {% for row in rows %}
+            <tr>
+                <td><a href="/unit/{{ row[0] }}" class="contrast">{{ row[0] }}</a></td>
+                <td>{{ row[1] }}</td>
+                <td>{{ row[2] }}</td>
+                <td>{{ row[3] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <p>Your search "{{ q }}" did not match any results.</p>
+{% endif %}
 {% endif %}
 {% endblock %}

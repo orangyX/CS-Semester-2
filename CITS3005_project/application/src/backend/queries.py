@@ -240,6 +240,7 @@ class MakeQueries:
         WHERE {
             ?selectedEntity rdf:type ?directType .
             ?directType rdfs:subClassOf* ?type .
+            FILTER(STRSTARTS(STR(?type), STR(uni:)) || STRSTARTS(STR(?type), STR(rules:)))
         }
         """
         return query
@@ -336,3 +337,4 @@ class MakeQueries:
         ORDER BY ?title
         """
         return query
+    

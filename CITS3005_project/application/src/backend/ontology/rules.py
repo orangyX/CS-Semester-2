@@ -33,14 +33,51 @@ class Rules:
             
             b.Degree.is_a.append(b.hasMajor.some(b.Major))
             
+            # Any degree is also a BHPhil
             class BachelorOfPhilosophy(b.Degree):
                 equivalent_to = [b.Degree & b.hasTitle.value("Bachelor of Philosophy (Honours)")]
 
+            # Transitive property
+            # A degree offers any unit available to a major the degree owns
+            class offersUnit(b.Degree >> b.Unit, ObjectProperty):
+                pass
+            offersUnit.property_chain.append(PropertyChain([b.hasMajor, b.hasUnit]))
+
+            # A major is dependent of ALL prerequisites of its units.
+            # even outside the major
+            class dependsOnUnit(b.Major >> b.Unit, ObjectProperty):
+                pass
+            dependsOnUnit.property_chain.append(PropertyChain([b.hasUnit, b.hasPrerequisite]))
+
+            # This just makes sure mapped values are correct.
+            # Create classes
+            class FirstYearUnit(b.Unit):
+                equivalent_to = [b.Unit & b.hasLevel.value(1)]
+
+            class SecondYearUnit(b.Unit):
+                equivalent_to = [b.Unit & b.hasLevel.value(2)]
+
+            class ThirdYearUnit(b.Unit):
+                equivalent_to = [b.Unit & b.hasLevel.value(3)]
+
+            # Any unit that is above level 3 is considered a post grad unit.
+            class PostgradUnit(b.Unit):
+                equivalent_to = [b.Unit & b.hasLevel.some(ConstrainedDatatype(int, min_inclusive=4))]
             Imp().set_as_rule(
                 'hasMajor(?d, ?m), hasStudyType(?d, ?t), Bachelor(?t), '
                 'hasTitle(?p, "Bachelor of Philosophy (Honours)") -> hasMajor(?p, ?m)',
                 namespaces=ns,
             )
+            
+            # An outcome of a core unit is an outcome of it's major.
+            Imp().set_as_rule(
+                'hasUnit(?m, ?u), hasOutcome(?u, ?o) -> hasOutcome(?m, ?o)',
+                namespaces=ns,
+            )
+            
+            
+            
+
             
             b.hasMajor.property_chain.append(PropertyChain([b.includesDegree, b.hasMajor]))
 

@@ -51,5 +51,3 @@ JAVA_EXE = None            # e.g. r"C:\Program Files\Java\jdk-21\bin\java.exe"
 if JAVA_EXE:
     import owlready2
     owlready2.JAVA_EXE = JAVA_EXE
-    owlready2.reasoning.JAVA_MEMORY = 4000 
-    

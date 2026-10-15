@@ -26,6 +26,7 @@ import main as pipeline
 import queries
 from shapes import shapes
 from utility import config, utils
+from utility.caching import Cache
 from utility.datasets import Dataset
 
 
@@ -36,6 +37,7 @@ Q = queries.MakeQueries
 
 DATASET = Dataset("raw")
 SCHEMAS = ["base", "rules"]
+CACHE = Cache(DATASET)
 
 ASSERTED = rdflib.Graph()     
 GRAPH = rdflib.Graph()        
@@ -107,6 +109,12 @@ def binding(value):
         return Literal(int(value))
     return Literal(value)
 
+@app.context_processor
+def check_loaded():
+    """
+    Small fix for flag that resets every page change.
+    """
+    return {"loaded": len(GRAPH) > 0, "built": DATASET.is_built()}
 # =========================
 # END POINTS
 # =========================
@@ -142,11 +150,16 @@ def load():
     This pulls the 2 graphs asserted and inferred and other objects like errors from shapes
     """
     global ASSERTED, GRAPH, ERRORS, TITLE, LEVEL, CREDIT, SCHOOL, STUDY_TYPE
-    world, _, _ = utils.load_everything(DATASET, SCHEMAS)
-    ASSERTED = queries.to_graph(world)
-    utils.run_reasoner(world)
-    GRAPH = queries.to_graph(world)
-    _, ERRORS, _ = shapes.check(world)
+    
+    if CACHE.is_fresh():
+        ASSERTED, GRAPH, ERRORS = CACHE.read()
+    else:
+        world, _, _ = utils.load_everything(DATASET, SCHEMAS)
+        ASSERTED = queries.to_graph(world)
+        utils.run_reasoner(world)
+        GRAPH = queries.to_graph(world)
+        _, ERRORS, _ = shapes.check(world)
+        CACHE.save(ASSERTED, GRAPH, ERRORS)
     
     # Basic relations that ALWAYS get returned with an object 
     # CITS3005 -> return title, level etc.
@@ -264,6 +277,36 @@ def asserted_facts(name):
     return table(f"Asserted facts pointing at {name}", ["Subject", "Property"], rows)
 
 
+@app.route("/query/classes/<name>")
+def entity_classes(name):
+    """
+    Every class an entity belongs to asserted or inferred
+    """
+    before = set(run(Q.get_parents(), ASSERTED, selectedEntity=data(name)))
+    after = run(Q.get_parents(), GRAPH, selectedEntity=data(name))
+
+    rows = []
+    for (cls,) in after:
+        source = "asserted" if (cls,) in before else "inferred"
+        rows.append((cls, source))
+
+    return table(f"Classes of {name}", ["Class", "Source"], rows)
+
+@app.route("/query/classes")
+def inferred_classes():
+    """
+    Every entity thats inferred
+    """
+    before = set(run(Q.query_by_relation(), ASSERTED, selectedRelation=rdflib.RDF.type))
+    after = run(Q.query_by_relation(), GRAPH, selectedRelation=rdflib.RDF.type)
+
+    rows = []
+    for entity, cls in after:
+        if (entity, cls) not in before:
+            rows.append((entity, cls))
+
+    return table("Inferred classes", ["Entity", "Inferred class"], rows)
+
 @app.route("/validation")
 def validation():
     return table("Data validation", ["Problem", "Count"], sorted(ERRORS.items()))
@@ -341,8 +384,7 @@ def spec_foundational():
 @app.route("/spec/average-majors")
 def spec_average_majors():
     rows = run(Q.average_majors())
-    return table("Average majors per degree type (excluding BPhil)",
-                 ["Degree type", "Average majors"], rows)
+    return table("Average majors per degree type (excluding BPhil)", ["Degree type", "Average majors"], rows)
 
 @app.route("/spec/location")
 def spec_location():
@@ -354,8 +396,7 @@ def spec_location():
 def spec_outcomes():
     text = request.args.get("q", "").strip() or "data analysis"
     rows = run(Q.outcome_search(), searchTerm=Literal(text))
-    return table(f'Majors with outcomes matching "{text}"',
-                 ["Major", "Title", "Outcome"], rows)
+    return table(f'Majors with outcomes matching "{text}"', ["Major", "Title", "Outcome"], rows)
     
     
 if __name__ == "__main__":

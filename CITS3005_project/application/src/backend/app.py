@@ -327,6 +327,39 @@ def unit_details(code):
     return render_template("details/unit.html", unit=unit)
 
     
+# =========================
+# SPEC QUERIES 
+# These are just the specified queries from the task sheet
+# =========================
+@app.route("/spec/foundational")
+def spec_foundational():
+
+    degree = request.args.get("degree", "").strip()
+    bindings = {"selectedDegree": data(degree)} if degree else {}
+    rows = run(Q.foundational_units(), **bindings)
+    return table("Foundational units by degree", ["Degree", "Unit"], rows)
+
+@app.route("/spec/average-majors")
+def spec_average_majors():
+    rows = run(Q.average_majors())
+    return table("Average majors per degree type (excluding BPhil)",
+                 ["Degree type", "Average majors"], rows)
+
+
+@app.route("/spec/location")
+def spec_location():
+    place = request.args.get("location", "").strip() or "Albany"
+    rows = run(Q.majors_in_location(), selectedLocation=data("Location_" + utils.slug(place)))
+    return table(f"Majors completable in {place}", ["Major", "Title"], rows)
+
+@app.route("/spec/outcomes")
+def spec_outcomes():
+    text = request.args.get("q", "").strip() or "data analysis"
+    rows = run(Q.outcome_search(), searchTerm=Literal(text))
+    return table(f'Majors with outcomes matching "{text}"',
+                 ["Major", "Title", "Outcome"], rows)
+    
+    
 if __name__ == "__main__":
     # Apparently port 5000 is taken on Mac so using 5001
     app.run(debug=True, use_reloader=False, threaded=False, port=5001)

@@ -19,6 +19,7 @@ DATASET_NAME = "raw"
 
 def main():
     
+    
     schema_path = OntologyBase(config.SCHEMA_IRI).save(SCHEMA_NAME)
     print(f"Schema saved to {schema_path}")
 
@@ -38,6 +39,9 @@ def main():
     print("SHACL: all checks pass" if conforms else "SHACL problems:")
     for message, count in summary.items():
         print(f"  {count:4}  {message}")
-        
+   
+def build():
+    main()
+         
 if __name__ == "__main__":
     main()

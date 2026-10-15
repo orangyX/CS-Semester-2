@@ -56,6 +56,11 @@ def run(sparql, graph=None, **bindings):
         graph = GRAPH      
     return queries.run(graph, DATASET, sparql, **bindings)
 
+def uni(name):
+    """
+    Convert a value into a IRI
+    """
+    return URIRef(config.SCHEMA_IRI + name)
 # =========================
 # END POINTS
 # =========================
@@ -82,12 +87,27 @@ def load():
     _, ERRORS, _ = shapes.check(world)
     return redirect(url_for("home"))
     
-
 @app.route("/search")
 def search():
     q = request.args.get("q", "").strip()
-    rows = run(Q.outcome_search(), searchTerm=Literal(q)) if q else []
-    return table(f'Majors matching "{q}"', ["Code", "Title", "Matching outcome"], rows)
+    fields = request.args.getlist("field")   
+    values = request.args.getlist("value")
+    
+    rows = run(Q.search_all(), searchTerm=Literal(q)) if q else []
+    
+    # Filter values
+    for field, value in zip(fields, values):
+        value = value.strip()
+        if not field or not value:
+            continue     
+                           
+        keep = {e for (e,) in run(Q.filter_contains(),
+                                  selectedPredicate=uni(field),
+                                  searchTerm=Literal(value))}
+        
+        rows = [row for row in rows if row[0] in keep]
+        
+    return table(f'Result for "{q}"', ["Entity", "Title", "Property", "Value"], rows)
 
 
 @app.route("/query")

@@ -219,73 +219,24 @@ class MakeQueries:
         ORDER BY ?subject ?object
         """
 
-    # ===============================
-    # Spec Query Functions
-    # ===============================
     @staticmethod
-    def foundational_units():
-        """optional bind: selectedDegree (URIRef). Unit in every major of the degree."""
-        return """
-        SELECT DISTINCT ?selectedDegree ?unit
-        WHERE {
-            ?selectedDegree uni:hasMajor ?anyMajor .
-            ?anyMajor uni:hasUnit ?unit .
-            FILTER NOT EXISTS {
-                ?selectedDegree uni:hasMajor ?major .
-                FILTER NOT EXISTS { ?major uni:hasUnit ?unit }
-            }
-        }
-        ORDER BY ?selectedDegree ?unit
+    def search_all():
         """
-
-    @staticmethod
-    def average_majors():
-        """Average majors per study type, BPhil excluded."""
-        return """
-        SELECT ?type (AVG(?count) AS ?average)
-        WHERE {
-            {
-                SELECT ?degree ?type (COUNT(DISTINCT ?major) AS ?count)
-                WHERE {
-                    ?degree uni:hasStudyType ?type .
-                    OPTIONAL { ?degree uni:hasMajor ?major }
-                    FILTER NOT EXISTS { ?degree a rules:BachelorOfPhilosophy }
-                }
-                GROUP BY ?degree ?type
-            }
-        }
-        GROUP BY ?type
+        bind: searchTerm 
+        Should be a literal string. 
+        
+        Will search for ANYTHING that contains that term.
+        
+        Filtering can be applied seperately. 
         """
-
-    @staticmethod
-    def majors_in_location():
-        """bind: selectedLocation (URIRef). Every unit of the major is at that location."""
+        
         return """
-        SELECT DISTINCT ?major ?title
+        SELECT DISTINCT ?entity ?title ?property ?value
         WHERE {
-            ?major a uni:Major ;
-                   uni:hasTitle ?title ;
-                   uni:hasUnit ?any .
-            FILTER NOT EXISTS {
-                ?major uni:hasUnit ?unit .
-                FILTER NOT EXISTS { ?unit uni:locatedIn ?selectedLocation }
-            }
+            ?entity ?property ?value .
+            BIND(IF(isIRI(?value), REPLACE(STR(?value), "^.*#", ""), STR(?value)) AS ?text)
+            FILTER(CONTAINS(LCASE(?text), LCASE(?searchTerm)))
+            OPTIONAL { ?entity uni:hasTitle ?title }
         }
-        ORDER BY ?title
-        """
-
-    @staticmethod
-    def outcome_search():
-        """bind: searchTerm (Literal). Major outcomes plus its units' outcomes."""
-        return """
-        SELECT DISTINCT ?major ?title ?outcome
-        WHERE {
-            ?major a uni:Major ;
-                   uni:hasTitle ?title .
-            { ?major uni:hasOutcome ?outcome }
-            UNION
-            { ?major uni:hasUnit ?unit . ?unit uni:hasOutcome ?outcome }
-            FILTER(CONTAINS(LCASE(STR(?outcome)), LCASE(?searchTerm)))
-        }
-        ORDER BY ?title
+        ORDER BY ?entity ?property
         """

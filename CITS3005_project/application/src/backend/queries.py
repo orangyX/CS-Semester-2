@@ -1,5 +1,9 @@
 
+"""
+Alot of these queries have been imported over from homework 2 and just intergrated to fit the system
+With a few additions project requirements.
 
+"""
 
 import rdflib
 
@@ -9,12 +13,6 @@ from utility.datasets import Dataset
 SCHEMA_NAME = "base"
 RULES_NAME = "rules"
 DATASET_NAME = "raw"
-
-from rdflib.plugins.sparql import prepareQuery
-
-def headers(dataset, sparql: str) -> list[str]:
-    """Column names from the query's SELECT, e.g. ["entity", "title"]"""
-    return [str(v) for v in prepareQuery(prefixes(dataset) + sparql).algebra["PV"]]
 
 # =========================
 # HELPERS
@@ -48,12 +46,22 @@ def short(term) -> str:
 
 def run(graph, dataset, sparql: str, **bindings) -> list[tuple]:
     """
-    Run a query over the graph; keyword arguments fill the ?selected... variables.
+    Run a query over the graph; 
+    keyword arguments fill the ?selected... variables.
+    
     Missing OPTIONAL values come back as "".
     """
     rows = graph.query(prefixes(dataset) + sparql, initBindings=bindings)
-    return [tuple("" if v is None else short(v) for v in row) for row in rows]
-
+    results = []
+    for row in rows:                        
+        cells = []
+        for value in row:                       
+            if value is None:                   
+                cells.append("")
+            else:
+                cells.append(short(value))     
+        results.append(tuple(cells))
+    return results
 
 # ===============================
 # SPARQL Query Functions
@@ -64,34 +72,53 @@ class MakeQueries:
     # FILTER Query Functions
     # ===============================
     @staticmethod
-    def filter_by_name():
-        """bind: searchTerm (Literal)"""
-        return """
-        SELECT ?entity ?title
-        WHERE {
-            ?entity uni:hasTitle ?title .
-            FILTER(CONTAINS(LCASE(STR(?title)), LCASE(?searchTerm)))
-        }
-        ORDER BY ?title
+    def search_all():
         """
-
+        bind: searchTerm 
+        Should be a literal string. 
+        
+        Will search for ANYTHING that contains that term.
+        
+        Filtering can be applied seperately. 
+        """
+        
+        query = """
+        SELECT DISTINCT ?entity ?title ?property ?value
+        WHERE {
+            ?entity ?property ?value .
+            BIND(IF(isIRI(?value), REPLACE(STR(?value), "^.*#", ""), STR(?value)) AS ?text)
+            FILTER(CONTAINS(LCASE(?text), LCASE(?searchTerm)))
+            OPTIONAL { ?entity uni:hasTitle ?title }
+        }
+        ORDER BY ?entity ?property
+        """
+        return query
+        
     @staticmethod
-    def filter_by_property_value():
-        """bind: selectedPredicate (URIRef), selectedValue (URIRef or Literal)"""
-        return """
-        SELECT DISTINCT ?entity
-        WHERE {
-            ?entity ?selectedPredicate ?selectedValue .
-        }
-        ORDER BY ?entity
+    def get_incoming():
         """
-
+        bind: selectedEntity (URIRef) - 
+        Find facts pointing to that entity.
+        """
+        query = """
+        SELECT ?subject ?property
+        WHERE {
+            ?subject ?property ?selectedEntity .
+        }
+        ORDER BY ?property ?subject
+        """
+        return query
+    
     # ===============================
     # Aggregation Query Functions
     # ===============================
     @staticmethod
     def count_all_entities():
-        return """
+        """
+        Looks at entites as an rdf type for all rdf types
+        return the type and the count of it
+        """
+        query = """
         SELECT ?type (COUNT(*) AS ?count)
         WHERE {
             ?entity rdf:type ?type .
@@ -99,64 +126,68 @@ class MakeQueries:
         GROUP BY ?type
         ORDER BY DESC(?count)
         """
-
+        return query
+    
     @staticmethod
-    def count_all_properties():
-        return """
-        SELECT ?property (COUNT(*) AS ?count)
+    def count_all_relations():
+        """
+        before it would return embedded graph relations
+        so we can filter out relations that are from owl.
+        """
+        query = """
+        SELECT ?relation (COUNT(*) AS ?count)
         WHERE {
-            ?subject ?property ?object .
-            FILTER(?property != rdf:type)
+            ?subject ?relation ?object .
+            FILTER(STRSTARTS(STR(?relation), STR(uni:)))
         }
-        GROUP BY ?property
+        GROUP BY ?relation
         ORDER BY DESC(?count)
         """
+        return query
 
-    # ===============================
-    # UTILITY Query Functions
-    # ===============================
     @staticmethod
-    def list_property_values():
-        """bind: selectedPredicate (URIRef)"""
-        return """
-        SELECT DISTINCT ?value
+    def count_property_values():
+        """
+        Get a propertty value and return 
+        count of property.
+        """
+        query = """
+        SELECT DISTINCT ?value (COUNT(*) as ?count)
         WHERE {
             ?entity ?selectedPredicate ?value .
         }
-        ORDER BY ?value
+        GROUP BY ?value
+        ORDER BY DESC(?count)
         """
-
-    @staticmethod
-    def get_label():
-        """bind: selectedObject (URIRef)"""
-        return """
-        SELECT ?label
-        WHERE {
-            ?selectedObject uni:hasTitle ?label .
-        }
-        """
-
-    @staticmethod
-    def get_parents():
-        """bind: selectedEntity (URIRef)"""
-        return """
-        SELECT DISTINCT ?type
-        WHERE {
-            ?selectedEntity rdf:type ?directType .
-            ?directType rdfs:subClassOf* ?type .
-        }
-        """
+        return query
 
     @staticmethod
     def get_properties():
-        """bind: selectedEntity (URIRef) - every fact about one entity (detail pages)"""
-        return """
+        """
+        bind: selectedEntity 
+        return a property value pair 
+        """
+        query = """
         SELECT ?property ?value
         WHERE {
             ?selectedEntity ?property ?value .
         }
         ORDER BY ?property
         """
+        return query
+    
+    @staticmethod
+    def query_by_relation():
+        """bind: selectedRelation (URIRef)"""
+        query = """
+        SELECT ?subject ?object
+        WHERE {
+            ?subject ?selectedRelation ?object .
+        }
+        ORDER BY ?subject ?object
+        """
+        return query
+
 
     # ===============================
     # List Query Functions
@@ -208,35 +239,3 @@ class MakeQueries:
         ORDER BY ?relation
         """
 
-    @staticmethod
-    def query_by_relation():
-        """bind: selectedRelation (URIRef)"""
-        return """
-        SELECT ?subject ?object
-        WHERE {
-            ?subject ?selectedRelation ?object .
-        }
-        ORDER BY ?subject ?object
-        """
-
-    @staticmethod
-    def search_all():
-        """
-        bind: searchTerm 
-        Should be a literal string. 
-        
-        Will search for ANYTHING that contains that term.
-        
-        Filtering can be applied seperately. 
-        """
-        
-        return """
-        SELECT DISTINCT ?entity ?title ?property ?value
-        WHERE {
-            ?entity ?property ?value .
-            BIND(IF(isIRI(?value), REPLACE(STR(?value), "^.*#", ""), STR(?value)) AS ?text)
-            FILTER(CONTAINS(LCASE(?text), LCASE(?searchTerm)))
-            OPTIONAL { ?entity uni:hasTitle ?title }
-        }
-        ORDER BY ?entity ?property
-        """

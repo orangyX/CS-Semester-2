@@ -191,8 +191,8 @@ def search():
             keep.add(entity)
             
         rows = [row for row in rows if row[0] in keep]
-        
-    return table(f'Result for "{q}"', ["Entity", "Title", "Property", "Value"], rows)
+    return render_template("search.html", q=q, columns=["Entity", "Title", "Property", "Value"], rows=rows)
+    # return table(f'Result for "{q}"', ["Entity", "Title", "Property", "Value"], rows)
 
 def available_queries():
     """

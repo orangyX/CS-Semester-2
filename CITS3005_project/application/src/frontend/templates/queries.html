@@ -1,21 +1,110 @@
 {% extends "pico_base_template.html" %}
 {% block content %}
 <h2>Queries</h2>
-<p>Query against degrees, majors, and units.</p>
-<details class="dropdown">
-    <summary role="button" class="secondary">Location</summary>
-    <ul>
-        <li><a href="/spec/location?location=UWA+Perth">Perth (Crawley)</a></li>
-        <li><a href="/spec/location?location=Albany">Albany</a></li>
-    </ul>
-</details>
-<p><a role="button" class="secondary" href="/spec/foundational">Foundational units by degree</a></p>
-<p><a role="button" class="secondary" href="/spec/average-majors">Average majors by degree</a></p>
-<h4>Majors by outcomes</h4>
-<form action="/spec/outcomes">
-    <fieldset role="group">
-        <input type="search" name="q" placeholder="e.g. knowledge representation">
-        <input type="submit" value="Find majors" class="secondary">
-    </fieldset>
+
+{# ---------- The four queries required by the project spec ---------- #}
+<h3>Core queries</h3>
+    <div class="grid">
+        <div>
+            <strong>Majors by location</strong><br>
+            <small>Majors and units offered at a specific campus.</small>
+        </div>
+        <div role="group">
+            <a role="button" class="secondary" href="/spec/location?location=UWA+Perth">Perth</a>
+            <a role="button" class="secondary" href="/spec/location?location=Albany">Albany</a>
+        </div>
+    </div>
+    <hr>
+    <div class="grid">
+        <div>
+        <strong>Foundational units by degree</strong><br>
+        <small>Find core to every major in a specific.</small>
+        </div>
+        <a role="button" class="secondary" href="/spec/foundational">Run</a>
+    </div>
+    <hr>
+    <div class="grid">
+        <div>
+            <strong>Average majors by degree</strong><br>
+            <small>Find average majors per degree.</small>
+        </div>
+        <a role="button" class="secondary" href="/spec/average-majors">Run</a>
+    </div>
+    <hr>
+    <div class="grid">
+        <div>
+            <strong>Search by outcomes</strong><br>
+            <small>Search by outcomes throughout the entire dataset.</small>
+        </div>
+        <form action="/spec/outcomes">
+            <fieldset role="group">
+                <input type="search" placeholder="e.g., artificial intelligence" required>
+                <input type="submit" value="Search" class="secondary">
+            </fieldset>
+        </form>
+    </div>
 </form>
+
+{# ---------- Every query defined in queries.MakeQueries ---------- #}
+{% if queries %}
+{# Example input shown in each box, so users know what format to type #}
+{% set examples = {
+    "selectedEntity":    "data:CITS3005",
+    "selectedDegree":    "data:BP001",
+    "selectedLocation":  "data:Location_Albany",
+    "selectedPredicate": "uni:hasLevel",
+    "selectedRelation":  "uni:hasPrerequisite",
+    "searchTerm":        "text, e.g. data",
+} %}
+{# Short user-facing descriptions; queries not listed fall back to their docstring #}
+{% set blurbs = {
+    "average_majors":        "Average number of majors per degree type (BPhil excluded).",
+    "count_all_entities":    "How many individuals of each class are in the graph.",
+    "count_all_relations":   "How many times each property is used.",
+    "count_property_values": "Each distinct value of a property, with counts.",
+    "filter_contains":       "Entities whose given property contains some text.",
+    "foundational_units":    "Units that are core to every major of a degree.",
+    "get_incoming":          "Everything in the graph that points at an entity.",
+    "get_parents":           "Every class an entity belongs to, including inferred ones.",
+    "get_properties":        "All properties and values of an entity.",
+    "majors_in_location":    "Majors whose units are all offered at a location.",
+    "outcome_search":        "Majors whose outcomes, or their units' outcomes, mention some text.",
+    "query_by_relation":     "Every pair of things linked by a property.",
+    "search_all":            "Anything in the graph that contains some text.",
+} %}
+
+<details>
+    <summary><strong>All queries ({{ queries|length }})</strong></summary>
+    <p><small>
+        Graph items need a prefix: <code>data:</code> for degrees, majors, units and
+        locations, <code>uni:</code> for properties. Search terms are plain text.
+    </small></p>
+
+    {% for query in queries %}
+    <div class="grid">
+        <div>
+            <strong>{{ query.name.replace("_", " ")|capitalize }}</strong><br>
+            <small>
+            {%- if query.name in blurbs -%}
+                {{ blurbs[query.name] }}
+            {%- else -%}
+                {%- for line in query.description.splitlines() if line.strip() and not line.strip().startswith("bind") -%}
+                    {%- if loop.first %}{{ line.strip() }}{% endif -%}
+                {%- endfor -%}
+            {%- endif -%}
+            </small>
+        </div>
+        <form action="/query/{{ query.name }}">
+            <fieldset role="group">
+                {% for p in query.params %}
+                <input type="text" name="{{ p }}" placeholder="{{ examples.get(p, p) }}" aria-label="{{ p }}" required>
+                {% endfor %}
+                <input type="submit" value="Run" class="secondary">
+            </fieldset>
+        </form>
+    </div>
+    {% if not loop.last %}<hr>{% endif %}
+    {% endfor %}
+</details>
+{% endif %}
 {% endblock %}

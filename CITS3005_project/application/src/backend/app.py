@@ -45,6 +45,7 @@ ERRORS = Counter()
 
 TITLE = LEVEL = CREDIT = SCHOOL = STUDY_TYPE = {}
 BINDING = re.compile(r"\?(selected\w+|searchTerm)\b")
+SCHEMA_PARAMS = ("selectedType", "selectedPredicate", "selectedRelation")
 
 # =========================
 # App entry
@@ -79,11 +80,12 @@ def data(name):
     return URIRef(DATASET.iri + name)
 
 def column(prop):
-    return dict(run(Q.query_by_relation(), selectedRelation=uni(prop)))
+    rows = run(Q.query_by_relation(), selectedRelation=uni(prop))
+    return {subject: obj for subject, _relation, obj in rows}
 
 def facts(name, graph=None):
     result = defaultdict(list)
-    for prop, value in run(Q.get_properties(), graph, selectedEntity=data(name)):
+    for _entity, prop, value in run(Q.get_outgoing(), graph, selectedEntity=data(name)):
         result[prop].append(value)
     return result
 
@@ -97,7 +99,14 @@ def unit_row(name):
 def major_row(name):
     return {"code": name, "title": TITLE.get(name, ""), "school": SCHOOL.get(name, "")}
 
-def binding(value):
+def schema_term(name):
+    for namespace in (config.SCHEMA_IRI, config.RULES_IRI):
+        term = URIRef(namespace + name)
+        if (term, None, None) in GRAPH or (None, term, None) in GRAPH or (None, None, term) in GRAPH:
+            return term
+    abort(404)
+    
+def binding(param, value):
     """
     Attempt to match the input to some kind of known IRI
     """
@@ -107,7 +116,28 @@ def binding(value):
         return data(value[5:])
     if value.isdigit():
         return Literal(int(value))
-    return Literal(value)
+    
+    # Which namespace to try first depends on what the binding is for
+    if param in SCHEMA_PARAMS:
+        makers = (uni, data)
+    else:
+        makers = (data, uni)
+
+    for make in makers:
+        for name in (value, value.upper()): 
+            term = make(name)
+            if in_graph(term):
+                return term
+
+    return Literal(value)    
+
+def in_graph(term):
+    """
+    True if the term appears anywhere in the graph (as subject, property or object).
+    """
+    return ((term, None, None) in GRAPH
+            or (None, term, None) in GRAPH
+            or (None, None, term) in GRAPH)
 
 @app.context_processor
 def check_loaded():
@@ -233,7 +263,7 @@ def run_query(name):
     for param in set(BINDING.findall(sparql)):
         value = request.args.get(param, "").strip()
         if value:
-            bindings[param] = binding(value)
+            bindings[param] = binding(param, value)
 
     return table(name, queries.headers(DATASET, sparql), run(sparql, **bindings))
 
@@ -304,23 +334,61 @@ def validation():
     return table("Data validation", ["Problem", "Count"], sorted(ERRORS.items()))
 
 
-@app.route("/browse/class")
+@app.route("/browse/classes")
 def browse_class():
-    """
-    Count every class in the graph and count members.
-    """
-    rows = run(Q.count_all_entities())
-    return table("Browse the graph", ["Class", "Count"], rows)
+    classes = [{"name": name, "count": count} for name, count in run(Q.count_all_entities())]
+    return render_template("data/classes.html", classes=classes)
 
+
+@app.route("/browse/class/<name>")
+def class_members(name):
+    members = [{"name": entity, "title": title}
+               for entity, title in run(Q.list_members(), selectedType=schema_term(name))]
+    return render_template("data/members.html", cls=name, members=members)
 
 @app.route("/browse/property")
 def browse_property():
-    """
-    Count every property in the graph and count members.
-    """
-    rows = run(Q.count_all_relations())
-    return table("Browse the graph", ["Relation", "Count"], rows)
+    properties = [{"name": name, "count": count} for name, count in run(Q.count_all_relations())]
+    return render_template("data/properties.html", properties=properties)
 
+
+@app.route("/browse/property/<name>")
+def property_pairs(name):
+    pairs = [{"subject": subject, "value": obj}
+             for subject, _relation, obj in run(Q.query_by_relation(), selectedRelation=schema_term(name))]
+    return render_template("data/pairs.html", prop=name, pairs=pairs)
+
+@app.route("/browse/degrees")
+def browse_degrees():
+    degrees = []
+    for name, title in run(Q.list_members(), selectedType=uni("Degree")):
+        if title:
+            degrees.append({"code": name, "title": title,
+                            "study_type": STUDY_TYPE.get(name, "")})
+    return render_template("data/degree.html", degrees=degrees)
+
+@app.route("/browse/major")
+def browse_majors():
+    """
+    Every major with its school.
+    """
+    majors = []
+    for name, title in run(Q.list_members(), selectedType=uni("Major")):
+        majors.append(major_row(name))
+    return render_template("data/major.html", majors=majors)
+
+
+@app.route("/browse/unit")
+def browse_units():
+    """
+    Every unit with its level and credit points.
+    Units only referenced as prerequisites (no title) are skipped.
+    """
+    units = []
+    for name, title in run(Q.list_members(), selectedType=uni("Unit")):
+        if title:
+            units.append(unit_row(name))
+    return render_template("data/unit.html", units=units)
 
 @app.route("/browse/degree/<code>")
 def degree_details(code):

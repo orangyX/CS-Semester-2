@@ -1,0 +1,20 @@
+{% extends "pico_base_template.html" %}
+{% block content %}
+    <h2>Classes</h2>
+    <table class="striped">
+    <thead>
+        <tr><th>Class</th><th>Members</th></tr>
+    </thead>
+    <tbody>
+        {% for c in classes %}
+        <tr>
+            <td><a href="/browse/class/{{ c.name }}" class="contrast">{{ c.name }}</a></td>
+            <td>{{ c.count }}</td>
+        </tr>
+        {% else %}
+        <tr><td colspan="2">None</td></tr>
+        {% endfor %}
+    </tbody>
+    </table>
+{% endblock %}
+ 

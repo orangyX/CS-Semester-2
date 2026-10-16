@@ -1,0 +1,45 @@
+{% extends "pico_base_template.html" %}
+{% block content %}
+    <h2>{{ unit.title }} ({{ unit.code }})</h2>
+    <p>Level {{ unit.level }} | {{ unit.credit }} credits</p>
+    <h3>Direct prerequisites</h3>
+    <table class="striped">
+    <thead>
+        <tr>
+            <th>Code</th>
+            <th>Title</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for p in unit.direct_prereqs %}
+            <!-- A for loop; loop over all units and fetch the required information -->
+            <tr>
+                <td><a href="/browse/unit/{{ p.code }}" class="contrast">{{ p.code }}</a></td>
+                <td>{{ p.title }}</td>
+            </tr>
+        {% else %}
+            <tr><td colspan="2">None</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+<h3>All prerequisites</h3>
+    <table class="striped">
+    <thead>
+        <tr>
+            <th>Code</th>
+            <th>Title</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for p in unit.all_prereqs %}
+            <!-- A for loop; loop over all units and fetch the required information -->
+            <tr>
+                <td><a href="/browse/unit/{{ p.code }}" class="contrast">{{ p.code }}</a></td>
+                <td>{{ p.title }}</td>
+            </tr>
+        {% else %}
+            <tr><td colspan="2">None</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

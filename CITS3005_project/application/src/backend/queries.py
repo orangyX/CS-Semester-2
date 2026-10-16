@@ -114,14 +114,28 @@ class MakeQueries:
         Find facts pointing to that entity.
         """
         query = """
-        SELECT ?subject ?property
+        SELECT ?subject ?property ?selectedEntity
         WHERE {
             ?subject ?property ?selectedEntity .
         }
         ORDER BY ?property ?subject
         """
         return query
-    
+
+    @staticmethod
+    def get_outgoing():
+        """
+        bind: selectedEntity
+        Find facts going out of that entity 
+        """
+        query = """
+        SELECT ?selectedEntity ?property ?value
+        WHERE {
+            ?selectedEntity ?property ?value .
+        }
+        ORDER BY ?property ?value
+        """
+        return query
     # ===============================
     # Aggregation Query Functions
     # ===============================
@@ -169,7 +183,7 @@ class MakeQueries:
         count of property. 
         """
         query = """
-        SELECT DISTINCT ?value (COUNT(*) as ?count)
+        SELECT DISTINCT ?selectedPredicate ?value (COUNT(*) as ?count)
         WHERE {
             ?entity ?selectedPredicate ?value .
         }
@@ -185,9 +199,10 @@ class MakeQueries:
         return a property value pair 
         """
         query = """
-        SELECT ?property ?value
+        SELECT ?selectedEntity ?property ?value
         WHERE {
             ?selectedEntity ?property ?value .
+            FILTER(isLiteral(?value))
         }
         ORDER BY ?property
         """
@@ -202,7 +217,7 @@ class MakeQueries:
         subject <relation chosen> object
         """
         query = """
-        SELECT ?subject ?object
+        SELECT ?subject ?selectedRelation ?object
         WHERE {
             ?subject ?selectedRelation ?object .
         }
@@ -218,7 +233,7 @@ class MakeQueries:
         Entities whose field contains selected predicate.
         """
         query = """
-        SELECT DISTINCT ?entity
+        SELECT DISTINCT ?entity ?selectedPredicate ?value
         WHERE {
             ?entity ?selectedPredicate ?value .
             BIND(IF(isIRI(?value), REPLACE(STR(?value), "^.*#", ""), STR(?value)) AS ?text)
@@ -236,7 +251,7 @@ class MakeQueries:
         """
     
         query = """
-        SELECT DISTINCT ?type
+        SELECT DISTINCT ?type 
         WHERE {
             ?selectedEntity rdf:type ?directType .
             ?directType rdfs:subClassOf* ?type .
@@ -244,7 +259,22 @@ class MakeQueries:
         }
         """
         return query
-    
+
+    @staticmethod
+    def list_members():
+        """
+        bind: selectedType
+        Every member of a class (including subclasses), with its title if it has one.
+        """
+        query = """
+        SELECT DISTINCT ?entity ?title
+        WHERE {
+            ?entity rdf:type/rdfs:subClassOf* ?selectedType .
+            OPTIONAL { ?entity uni:hasTitle ?title }
+        }
+        ORDER BY ?entity
+        """
+        return query
     # ===============================
     # Spec Query Functions
     # Queries required by specification of project

@@ -14,8 +14,9 @@ Thumbs.db
 !.env.example
 
 # Generated files
-src/backend/data/schemas/*.owl     # built schemas (base2.owl, rules ...)
-src/backend/data/graphs/*.owl      # built knowledge graphs (raw.owl)
-src/backend/data/datasets/*/parsed/   # parser.save() output, if used
+src/backend/data/schemas/*.owl    
+src/backend/data/graphs/*.owl     
+src/backend/data/datasets/*/parsed/  
 src/backend/data/output/
-src/backend/*.owl                  # university.owl, university_ot.owl
+src/backend/*.owl            
+

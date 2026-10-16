@@ -49,6 +49,3 @@ Natural language through audio???
 
 Can we induce a ruleset? Allow users to add specific ideas.
 We can have direct prerequisitve vs topological inference
-
-
-Ask Chelsea about research, examples, communities. And available times 

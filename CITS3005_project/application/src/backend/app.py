@@ -24,7 +24,6 @@ from rdflib import Literal, URIRef
 
 import main as pipeline
 import queries
-from shapes import shapes
 from utility import config, utils
 from utility.caching import Cache
 from utility.datasets import Dataset
@@ -35,13 +34,14 @@ from utility.datasets import Dataset
 # =========================
 Q = queries.MakeQueries
 
-DATASET = Dataset("raw")
-SCHEMAS = ["base", "rules"]
+DATASET = Dataset(config.DATASET_NAME)
+SCHEMAS = [config.SCHEMA_NAME, config.RULES_NAME]
 CACHE = Cache(DATASET)
 
 ASSERTED = rdflib.Graph()     
 GRAPH = rdflib.Graph()        
 ERRORS = Counter()
+ERRORS_BEFORE = Counter()
 
 TITLE = LEVEL = CREDIT = SCHOOL = STUDY_TYPE = {}
 BINDING = re.compile(r"\?(selected\w+|searchTerm)\b")
@@ -179,9 +179,9 @@ def load():
     Load all the information ready for app to use.
     This pulls the 2 graphs asserted and inferred and other objects like errors from shapes
     """
-    global ASSERTED, GRAPH, ERRORS, TITLE, LEVEL, CREDIT, SCHOOL, STUDY_TYPE
+    global ASSERTED, GRAPH, ERRORS, ERRORS_BEFORE, TITLE, LEVEL, CREDIT, SCHOOL, STUDY_TYPE
     
-    ASSERTED, GRAPH, ERRORS = pipeline.reason(DATASET, SCHEMAS)
+    ASSERTED, GRAPH, ERRORS, ERRORS_BEFORE = pipeline.reason(DATASET, SCHEMAS)
     
     # Basic relations that ALWAYS get returned with an object 
     # CITS3005 -> return title, level etc.
@@ -331,8 +331,11 @@ def inferred_classes():
 
 @app.route("/validation")
 def validation():
-    return table("Data validation", ["Problem", "Count"], sorted(ERRORS.items()))
-
+    """SHACL problems before and after reasoning."""
+    rows = []
+    for message in sorted(set(ERRORS_BEFORE) | set(ERRORS)):
+        rows.append((message, ERRORS_BEFORE.get(message, 0), ERRORS.get(message, 0)))
+    return table("Data validation", ["Problem", "Before reasoning", "After reasoning"], rows)
 
 @app.route("/browse/classes")
 def browse_class():

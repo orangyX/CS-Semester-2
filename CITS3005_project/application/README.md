@@ -91,7 +91,7 @@ uv sync
 .
 ├── app.py
 ├── builder
-│   └── build.py
+│   └── build.py.           # Collaborated by both 
 ├── data
 │   ├── datasets
 │   │   └── raw
@@ -101,25 +101,27 @@ uv sync
 │   ├── graphs
 │   │   └── raw.owl
 │   └── schemas
-│       ├── base.owl
-│       ├── rules.owl
+│       ├── base.owl        # Collaborated by both
+│       ├── rules.owl       # Collaborated by both
 │       └── university_ot.owl
-├── main.py
+├── main.py                 # Collaborated by both 
 ├── ontology
-│   ├── base.py
-│   ├── rules.py
-│   └── university_ot.py
-├── queries.py
+│   ├── base.py             # Collaborated by both          
+│   ├── rules.py            # Collaborated by both
+│   └── university_ot.py    # Justin
+├── queries.py              # Collaborated by both
 ├── shapes
-│   ├── shacl_rules.py
-│   └── shapes.py
+│   ├── shacl_rules.py      # Justin
+│   └── shapes.py           # Collaborated by both
 └── utility
-    ├── caching.py
-    ├── config.py
-    ├── datasets.py
-    ├── parser.py
-    └── utils.py
-    
+    ├── caching.py          # Dean
+    ├── config.py           # Dean
+    ├── datasets.py         # Dean
+    ├── parser.py           # Collaborated by both 
+    └── utils.py            # Dean
+
+Frontend                    # Justin
+
 # Schema Changes 
 If you want to add a new entity and type and retrieve from data specifically
 e.g. Your masters found in some codes 

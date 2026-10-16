@@ -59,10 +59,10 @@ class OntologyBase:
 
             class ContactMode(Thing): pass     
 # --------------------------------------
-# Addition entites for rule sets
+
         
 # --------------------------------------
-            
+# Handle relations   
             # SHARED
             class hasCode(Enrollable >> str, DataProperty, FunctionalProperty): pass
             class hasTitle(Enrollable >> str, DataProperty, FunctionalProperty): pass
@@ -118,9 +118,5 @@ class OntologyBase:
 
         return self.onto
  
- 
-if __name__ == "__main__":
-    # OPEN: switch to config.SCHEMA_IRI and "base" once this is the final schema
-    path = OntologyBase(config.TEST_IRI).save("test_base")
-    print(f"Base schema saved to {path}")
+
  

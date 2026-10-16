@@ -14,9 +14,9 @@ from builder.build import GraphBuilder
 from utility.datasets import Dataset
 from shapes import shapes
 
-SCHEMA_NAME = "base"
-RULES_NAME = "rules"
-DATASET_NAME = "raw"
+SCHEMA_NAME = config.SCHEMA_NAME
+RULES_NAME = config.RULES_NAME
+DATASET_NAME = config.DATASET_NAME
 
 
 def build():
@@ -44,16 +44,24 @@ def reason(dataset, schemas):
 
     world, _, _ = utils.load_everything(dataset, schemas)
     asserted = queries.to_graph(world)          # before reasoning
+    conforms_before, errors_before, report_before = shapes.check(world)
+    
     utils.run_reasoner(world)
     reasoned = queries.to_graph(world)          # after reasoning
     conforms, errors, report = shapes.check(world)
 
+    # Before reasoning
+    print("SHACL: all checks pass" if conforms_before else "SHACL problems:")
+    for message, count in errors_before.items():
+        print(f"  {count:4}  {message}")
+    
+    # After reasoning
     print("SHACL: all checks pass" if conforms else "SHACL problems:")
     for message, count in errors.items():
         print(f"  {count:4}  {message}")
 
-    cache.save(asserted, reasoned, errors)      # after the loop, not inside it
-    return asserted, reasoned, errors
+    cache.save(asserted, reasoned, errors, errors_before)      # after the loop, not inside it
+    return asserted, reasoned, errors, errors_before
 
 def main():
     build()

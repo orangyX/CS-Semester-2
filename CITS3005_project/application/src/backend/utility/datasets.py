@@ -16,7 +16,8 @@ Fixed settings (IRIs, root folders) come from config.py.
 A note is while this will accept a dataset, a schema thats not compatible will return
 a fucked up graph
 
-
+Update this was reduced in scope to handle pathing of data and outputs 
+and avoiding basic clashing.
 """
 
 import re

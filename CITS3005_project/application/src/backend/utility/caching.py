@@ -22,7 +22,8 @@ class Cache:
         self.asserted_file = config.GRAPHS_DIR / f"{dataset.name}_asserted.nt"
         self.reasoned_file = config.GRAPHS_DIR / f"{dataset.name}_reasoned.nt"
         self.errors_file = config.GRAPHS_DIR / f"{dataset.name}_errors.json"
-        self.files = [self.asserted_file, self.reasoned_file, self.errors_file]
+        self.errors_before_file = config.GRAPHS_DIR / f"{dataset.name}_errors_before.json"
+        self.files = [self.asserted_file, self.reasoned_file, self.errors_file, self.errors_before_file]
 
 
     def is_fresh(self):
@@ -35,13 +36,15 @@ class Cache:
                 return False
         return True
 
-    def save(self, asserted, reasoned, errors):
+    def save(self, asserted, reasoned, errors, errors_before):
         asserted.serialize(destination=str(self.asserted_file), format="nt")
         reasoned.serialize(destination=str(self.reasoned_file), format="nt")
         self.errors_file.write_text(json.dumps(dict(errors)))
+        self.errors_before_file.write_text(json.dumps(dict(errors_before)))
 
     def read(self):
         asserted = rdflib.Graph().parse(str(self.asserted_file), format="nt")
         reasoned = rdflib.Graph().parse(str(self.reasoned_file), format="nt")
         errors = Counter(json.loads(self.errors_file.read_text()))
-        return asserted, reasoned, errors
+        errors_before = Counter(json.loads(self.errors_before_file.read_text()))
+        return asserted, reasoned, errors, errors_before

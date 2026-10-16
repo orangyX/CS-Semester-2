@@ -98,6 +98,7 @@ class GraphBuilder:
             if u is not None:
                 result.append(u)
         return result
+    
     def school(self, label):
         return self.make("School", "School_" + utils.slug(label)) if label else None
 

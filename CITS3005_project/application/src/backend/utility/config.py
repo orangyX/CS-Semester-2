@@ -1,12 +1,15 @@
 """
 Config just holds basic set objects.
 
-################
-LEAVE THIS FILE AS IS
-################
 """
 
 from pathlib import Path
+
+# Which dataset and schemas the pipeline and app use.
+# Change these to run on a different dataset (data/datasets/<DATASET_NAME>/).
+DATASET_NAME = "raw"
+SCHEMA_NAME = "base"
+RULES_NAME = "rules"
 
 # =========================
 # NAMESPACES (IRIs)
@@ -30,23 +33,11 @@ DATASETS_DIR = DATA_DIR / "datasets"
 SCHEMAS_DIR = DATA_DIR / "schemas"
 GRAPHS_DIR = DATA_DIR / "graphs"
 
-# Defaults when not input -> Will always load ATLEAST this
-DEFAULT_DATASET = "raw"
-DEFAULT_SCHEMA = "base"
-
-# There are some datasets we dont want overwritten.
-# This is essentially the supplied dataset from project 
-# and the schema we are finalising before sending.
-PROTECTED_DATASETS = {DEFAULT_DATASET}
-PROTECTED_SCHEMAS = {DEFAULT_SCHEMA}
-
 REASONER = "hermit"        # "hermit" (default) or "pellet"
 INFER_PROPERTY_VALUES = True
-INFER_DATA_PROPERTY_VALUES= False
+INFER_DATA_PROPERTY_VALUES= True
 
-# Both reasoners need Java. Leave as None if `java` is on the system PATH;
-# otherwise set the full path to the java executable.
-JAVA_EXE = None            # e.g. r"C:\Program Files\Java\jdk-21\bin\java.exe"
+JAVA_EXE = None          
 
 if JAVA_EXE:
     import owlready2

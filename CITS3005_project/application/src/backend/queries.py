@@ -146,7 +146,7 @@ class MakeQueries:
         return the type and the count of it
         
         Filter for strings that start with string type of OWNED schema
-        Not rdflib just our made items.
+        Not rdflib just our made items.  Either of namespace uni: or rules:
         """
         query = """
         SELECT ?type (COUNT(*) AS ?count)
@@ -187,7 +187,7 @@ class MakeQueries:
         WHERE {
             ?entity ?selectedPredicate ?value .
         }
-        GROUP BY ?value
+        GROUP BY ?selectedPredicate ?value
         ORDER BY DESC(?count)
         """
         return query

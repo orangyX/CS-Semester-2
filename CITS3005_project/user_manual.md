@@ -110,11 +110,10 @@ Relations are added to match the data formatting. These are directly assigned to
 - **Unit levels:** defined classes: FirstYearUnit, SecondYearUnit, ThirdYearUnit and PostgradUnit.
 - **Core units:** every unit listed in a major is considered core . A CoreUnit is any unit core to at least one major.
 - **Core unit outcomes are major outcomes**: A major recieves the outcomes of its core units.
+- **Prerequisites are transitive**: hasPrerequisite is a transitive property.
+- **A unit can't be its own prerequisite**: SHACL check.
+- **At most 48 level-1 credit points per major**: SHACL check.
 
-**Elsewhere**
-- **Prerequisites are transitive** (spec): `hasPrerequisite` is a transitive property (`base.py`).
-- **A unit can't be its own prerequisite** (spec): SHACL check, reported on the validation page (`shapes.py`).
-- **At most 48 level-1 credit points per major** (spec): SHACL check (`shapes.py`).
 ## 3. Example Queries and how to run them
 
 Querying is built into the application for ease of use. You can find them in ```127.0.0.1:5001/query```
@@ -285,6 +284,7 @@ graph structure if requested.
 
 ## Contribution to files
 # File structure
+```
 .
 ├── app.py                  # Collaborated by both       
 ├── builder
@@ -318,3 +318,4 @@ graph structure if requested.
     └── utils.py            # Dean
 
 Frontend                    # Justin
+```

@@ -340,7 +340,7 @@ def validation():
 @app.route("/browse/classes")
 def browse_class():
     classes = [{"name": name, "count": count} for name, count in run(Q.count_all_entities())]
-    return render_template("data/classes.html", classes=classes)
+    return render_template("data/class.html", classes=classes)
 
 
 @app.route("/browse/class/<name>")
@@ -381,7 +381,7 @@ def browse_majors():
     return render_template("data/major.html", majors=majors)
 
 
-@app.route("/browse/unit")
+@app.route("/browse/units")
 def browse_units():
     """
     Every unit with its level and credit points.

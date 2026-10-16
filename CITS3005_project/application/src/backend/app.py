@@ -356,7 +356,7 @@ def browse_property():
 
 @app.route("/browse/property/<name>")
 def property_pairs(name):
-    pairs = [{"subject": subject, "value": obj}
+    pairs = [{"subject": subject, "relation": name, "value": obj}
              for subject, _relation, obj in run(Q.query_by_relation(), selectedRelation=schema_term(name))]
     return render_template("data/pairs.html", prop=name, pairs=pairs)
 
@@ -404,7 +404,7 @@ def degree_details(code):
         "points": first(f["hasTotalPoints"]),
         "majors": [major_row(m) for m in sorted(set(f["hasMajor"]))],
     }
-    return render_template("details/degree.html", degree=degree)
+    return render_template("details/degrees.html", degree=degree)
 
 @app.route("/browse/major/<code>")
 def major_details(code):
@@ -417,7 +417,7 @@ def major_details(code):
         "school": first(f["belongsTo"]),
         "units": [unit_row(u) for u in sorted(set(f["hasUnit"]))],
     }
-    return render_template("details/major.html", major=major)
+    return render_template("details/majors.html", major=major)
 
 @app.route("/browse/unit/<code>")
 def unit_details(code):
@@ -429,7 +429,7 @@ def unit_details(code):
     unit = unit_row(code)
     unit["direct_prereqs"] = [unit_row(p) for p in sorted(set(direct))]
     unit["all_prereqs"] = [unit_row(p) for p in sorted(set(every))]
-    return render_template("details/unit.html", unit=unit)
+    return render_template("details/units.html", unit=unit)
 
     
 # =========================

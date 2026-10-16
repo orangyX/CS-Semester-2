@@ -12,11 +12,3 @@ Thumbs.db
 .env
 .env.*
 !.env.example
-
-# Generated files
-src/backend/data/schemas/*.owl    
-src/backend/data/graphs/*.owl     
-src/backend/data/datasets/*/parsed/  
-src/backend/data/output/
-src/backend/*.owl            
-

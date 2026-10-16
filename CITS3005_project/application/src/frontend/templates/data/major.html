@@ -1,29 +1,24 @@
 {% extends "pico_base_template.html" %}
 {% block content %}
-    <h2>{{ major.title }} ({{ major.code }})</h2>
-    <p>{{ major.school }}</p>
-    <h3>Units</h3>
+    <h2>Majors</h2>
     <table class="striped">
-    <thead>
-        <tr>
-            <th>Code</th>
-            <th>Title</th>
-            <th>Level</th>
-            <th>Credits</th>
-        </tr>
-    </thead>
-    <tbody>
-            <!-- A for loop; loop over all units and fetch the required information -->
-            {% for unit in major.units %}
+        <thead>
             <tr>
-            <td><a href="/browse/unit/{{ unit.code }}" class="contrast">{{ unit.code }}</a></td>
-            <td>{{ unit.title }}</td>
-            <td>{{ unit.level }}</td>
-            <td>{{ unit.credit }}</td>
+                <th>Code</th>
+                <th>Title</th>
+                <th>School</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for major in majors %}
+            <tr>
+                <td><a href="/browse/major/{{ major.code }}" class="contrast">{{ major.code }}</a></td>
+                <td>{{ major.title }}</td>
+                <td>{{ major.school|replace("School_", "")|replace("_", " ") }}</td>
             </tr>
             {% else %}
-                <tr><td colspan="4">None</td></tr>
+            <tr><td colspan="3">None</td></tr>
             {% endfor %}
-    </tbody>
-</table>
+        </tbody>
+    </table>
 {% endblock %}

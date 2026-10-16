@@ -342,14 +342,13 @@ def browse_class():
     classes = [{"name": name, "count": count} for name, count in run(Q.count_all_entities())]
     return render_template("data/classes.html", classes=classes)
 
-
 @app.route("/browse/class/<name>")
 def class_members(name):
     members = [{"name": entity, "title": title}
                for entity, title in run(Q.list_members(), selectedType=schema_term(name))]
     return render_template("data/members.html", cls=name, members=members)
 
-@app.route("/browse/property")
+@app.route("/browse/properties")
 def browse_property():
     properties = [{"name": name, "count": count} for name, count in run(Q.count_all_relations())]
     return render_template("data/properties.html", properties=properties)
@@ -370,7 +369,7 @@ def browse_degrees():
                             "study_type": STUDY_TYPE.get(name, "")})
     return render_template("data/degree.html", degrees=degrees)
 
-@app.route("/browse/major")
+@app.route("/browse/majors")
 def browse_majors():
     """
     Every major with its school.
@@ -381,7 +380,7 @@ def browse_majors():
     return render_template("data/major.html", majors=majors)
 
 
-@app.route("/browse/unit")
+@app.route("/browse/units")
 def browse_units():
     """
     Every unit with its level and credit points.

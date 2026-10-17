@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>CITS3001 Lecture 18 worksheet — String Matching</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<style>
+  :root{
+    color-scheme:light;
+    --bg:#faf2e4; --bg-fade:rgba(250,242,228,.95); --card:#fffbf2; --ans-bg:#f6ecdb;
+    --ink:#2f221c; --muted:#75594d; --line:#e6d6be; --line-2:#cdb99c; --rule:#8f2e21;
+    --code:#b23f27; --code-bg:#f0bcac; --code-fg:#7d1d12;
+    --trace:#b8661c; --trace-bg:#f7dab9; --trace-fg:#8a3f0d;
+    --reason:#a2802a; --reason-bg:#faeee1; --reason-fg:#7a5540;
+    --accent:#a63125;
+    --btn-bg:#fffbf2; --btn-hover:#f6ead6;
+    --ansbtn-bd:#d9a28e; --ansbtn-fg:#8f2e21; --ansbtn-hover:#fbe6dc;
+    --hint-bg:#fdf0e3; --th-bg:#efe2c9; --mono-bg:#f0e4cd; --pre-bg:#f4ead8;
+    --warn-bd:#c7952f; --warn-bg:#fbf2dd; --hit:#f7dab9;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth; background:var(--bg); min-height:100%;}
+  body{margin:0; background:var(--bg); min-height:100vh; color:var(--ink); font-family:var(--serif); font-size:16.5px; line-height:1.55;}
+  .wrap{max-width:900px; margin:0 auto; padding:0 22px 100px;}
+  main{display:block;}
+
+  .bar{position:sticky; top:0; z-index:30; background:var(--bg-fade); border-bottom:1px solid var(--line); backdrop-filter:blur(8px);}
+  .bar-in{max-width:900px; margin:0 auto; padding:9px 22px; display:flex; flex-wrap:wrap; align-items:center; gap:8px 12px; font-family:var(--sans); font-size:12.5px; color:var(--muted);}
+  .bar a{color:var(--muted); text-decoration:none; font-weight:600;}
+  .bar a:hover{color:var(--accent);}
+  .bar .btn{padding:4px 9px; font-size:11.5px; margin-left:auto;}
+
+  header.top{padding:34px 0 6px;}
+  .eyebrow{font-family:var(--sans); font-size:11.5px; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:var(--accent); margin:0 0 8px;}
+  h1{font-size:31px; line-height:1.18; font-weight:600; margin:0 0 6px; letter-spacing:-.01em;}
+  .sub{color:var(--muted); font-size:15px; margin:0 0 22px;}
+
+  .howto{background:var(--card); border:1px solid var(--line); border-radius:12px; padding:16px 18px; margin:0 0 10px;}
+  .howto h3{font-family:var(--sans); font-size:12px; letter-spacing:.09em; text-transform:uppercase; color:var(--muted); margin:0 0 10px; font-weight:700;}
+  .howto p{margin:0 0 9px; font-size:15.5px;}
+  .howto p:last-child{margin-bottom:0;}
+  .key{display:flex; flex-wrap:wrap; gap:16px; margin:12px 0 4px; font-size:14.5px;}
+  .key div{display:flex; align-items:baseline; gap:7px;}
+  .flag{border-left:3px solid var(--code); padding-left:12px; margin-top:14px; font-size:14.5px; color:var(--muted);}
+  .flag ul{margin:6px 0 0; padding-left:20px;}
+  .flag li{margin:4px 0;}
+
+  section.part{margin:44px 0 0; scroll-margin-top:56px;}
+  .parthead{display:flex; align-items:baseline; gap:12px; border-bottom:2px solid var(--rule); padding-bottom:7px; margin-bottom:4px;}
+  .parthead h2{font-size:22px; font-weight:600; margin:0; letter-spacing:-.005em;}
+  .parthead .meta{margin-left:auto; font-family:var(--sans); font-size:12px; color:var(--muted); white-space:nowrap;}
+  .partcount{font-weight:700; color:var(--ink);}
+  .lead{color:var(--muted); font-size:15px; margin:10px 0 4px;}
+
+  .q{background:var(--card); border:1px solid var(--line); border-left:4px solid var(--line); border-radius:10px; padding:15px 17px; margin:16px 0; scroll-margin-top:56px;}
+  .q[data-t="code"]{border-left-color:var(--code);}
+  .q[data-t="trace"]{border-left-color:var(--trace);}
+  .q[data-t="reason"]{border-left-color:var(--reason);}
+  .qtop{display:flex; align-items:center; gap:9px; margin-bottom:9px;}
+  .qid{font-family:var(--sans); font-size:13px; font-weight:700; letter-spacing:.05em;}
+  .ptitle{font-family:var(--sans); font-size:13.5px; font-weight:700;}
+  .limits{margin-left:auto; font-family:var(--sans); font-size:11.5px; color:var(--muted);}
+  .tag{font-family:var(--sans); font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.09em; padding:2.5px 8px; border-radius:99px;}
+  .tag.code{background:var(--code-bg); color:var(--code-fg);}
+  .tag.trace{background:var(--trace-bg); color:var(--trace-fg);}
+  .tag.reason{background:var(--reason-bg); color:var(--reason-fg);}
+  .q p{margin:0 0 9px;}
+  .q ol,.q ul{margin:6px 0 9px; padding-left:22px;}
+  .q li{margin:4px 0;}
+  ol.parts{list-style:none; padding-left:0; counter-reset:pp;}
+  ol.parts > li{counter-increment:pp; position:relative; padding-left:28px; margin:6px 0;}
+  ol.parts > li::before{content:"(" counter(pp,lower-alpha) ")"; position:absolute; left:0; color:var(--muted); font-family:var(--sans); font-size:13px; top:1px;}
+
+  .sec{font-family:var(--sans); font-size:11px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); display:block; margin:12px 0 4px;}
+  .io{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:6px 0 10px;}
+  .io .lab{font-family:var(--sans); font-size:11px; font-weight:600; color:var(--muted); margin:0 0 3px;}
+  pre{background:var(--pre-bg); border:1px solid var(--line); border-radius:7px; padding:9px 11px; margin:0; font-family:var(--mono); font-size:13.5px; line-height:1.45; overflow-x:auto; color:var(--ink);}
+  .ans pre{margin:6px 0 10px;}
+  pre code{background:none; padding:0; font-size:inherit;}
+
+  .btns{display:flex; gap:8px; margin-top:11px; flex-wrap:wrap;}
+  .btn{font-family:var(--sans); font-size:12.5px; font-weight:600; border:1px solid var(--line-2); background:var(--btn-bg); color:var(--ink); padding:6px 12px; border-radius:7px; cursor:pointer; transition:background .12s, border-color .12s;}
+  .btn:hover{background:var(--btn-hover); border-color:var(--rule);}
+  .btn:focus-visible{outline:2px solid var(--accent); outline-offset:2px;}
+  .btn.ansbtn{border-color:var(--ansbtn-bd); color:var(--ansbtn-fg);}
+  .btn.ansbtn:hover{background:var(--ansbtn-hover); border-color:var(--code);}
+
+  .hint{margin-top:11px; padding:10px 13px; border-left:3px solid var(--reason); background:var(--hint-bg); border-radius:0 7px 7px 0; font-size:15.5px;}
+  .hint p{margin:0;}
+  .ans{margin-top:11px; padding:13px 15px; background:var(--ans-bg); border:1px solid var(--line); border-radius:9px; font-size:15.5px;}
+  .ans p{margin:0 0 9px;}
+  .ans p:last-child{margin-bottom:0;}
+  .ans .step{font-family:var(--sans); font-size:11px; font-weight:700; letter-spacing:.07em; text-transform:uppercase; color:var(--muted); display:block; margin:12px 0 4px;}
+  .ans .step:first-child{margin-top:0;}
+  .q table{border-collapse:collapse; margin:8px 0 10px; font-size:14.5px;}
+  .q th,.q td{border:1px solid var(--line); padding:4px 9px; text-align:center;}
+  .q th{background:var(--th-bg); font-family:var(--sans); font-size:12px; font-weight:600;}
+  .q td.l{text-align:left;}
+  .q tr.hit td{background:var(--hit);}
+  .q td.acc{background:var(--hit); font-weight:700;}
+  .tablewrap{overflow-x:auto; margin:8px 0 10px;}
+  .figwrap{overflow-x:auto; margin:8px 0 4px; background:var(--card); border:1px solid var(--line); border-radius:8px; padding:6px;}
+  svg.fsa{display:block; width:100%; min-width:420px; height:auto;}
+  .fsa-lab{font-family:var(--mono); font-size:14px; fill:var(--ink);}
+  .fsa-reset{fill:var(--muted);}
+  .fsa-node{font-family:var(--sans); font-size:15px; font-weight:700; fill:var(--ink);}
+  .figcap{font-size:13.5px; color:var(--muted); margin:2px 0 10px;}
+  .tablewrap table{margin:0;}
+  .mono{font-family:var(--mono); font-size:14.5px; letter-spacing:.04em;}
+  .warn{border-left:3px solid var(--warn-bd); background:var(--warn-bg); padding:9px 12px; border-radius:0 7px 7px 0; margin:10px 0;}
+  .warn p{margin:0;}
+  code{font-family:var(--mono); font-size:14px; background:var(--mono-bg); padding:1px 5px; border-radius:4px;}
+  .katex{font-size:1.02em;}
+  footer.end{margin-top:52px; padding-top:16px; border-top:1px solid var(--line); font-size:13.5px; color:var(--muted);}
+
+  @media(max-width:640px){
+    body{font-size:16px;} .wrap{padding:0 15px 80px;} h1{font-size:25px;}
+    .bar-in{padding:8px 15px;} .qtop{flex-wrap:wrap;} .io{grid-template-columns:1fr;}
+    .limits{margin-left:0; width:100%;}
+  }
+  @media print{
+    body{-webkit-print-color-adjust:exact; print-color-adjust:exact;}
+    .bar,.btns{display:none !important;}
+    .ans,.hint{display:block !important;}
+    .q{break-inside:avoid;}
+  }
+  @media (prefers-reduced-motion:reduce){ *{transition:none !important; scroll-behavior:auto !important;} }
+</style>
+</head>
+<body>
+
+<div class="bar">
+  <div class="bar-in">
+    <a href="#partA">A · Rabin–Karp</a>
+    <a href="#partB">B · Automaton</a>
+    <a href="#partC">C · KMP</a>
+    <a href="#partD">D · Boyer–Moore</a>
+    <a href="#partE">E · Mixed</a>
+    <button class="btn" id="hideall">Hide all answers</button>
+  </div>
+</div>
+
+<div class="wrap">
+<header class="top">
+  <p class="eyebrow">CITS3001 · Lecture 18 · finals revision</p>
+  <h1>String Matching</h1>
+  <p class="sub">18 problems on Rabin–Karp, the matching automaton, Knuth–Morris–Pratt and Boyer–Moore, in lecture order. Every answer is a full worked solution, and every judge problem comes with a tested reference program.</p>
+
+  <div class="howto">
+    <h3>How to use this</h3>
+    <p>The whole sheet is about three hours. Split it into three sittings: Parts A and B (~80 min), Parts C and D (~80 min), then Part E (~25 min). Hand-traces suit morning blocks; judge problems need a laptop.</p>
+    <p>Hand-trace on paper before opening the answer, writing the table out in full. For judge problems, write and run your program against both samples before you look at the reference; it reads from standard input and prints to standard output exactly as DOMjudge expects, with no type annotations.</p>
+    <div class="key">
+      <div><span class="tag reason">reason</span> <span>why it works, what it costs</span></div>
+      <div><span class="tag trace">trace</span> <span>by hand, on a given string and pattern</span></div>
+      <div><span class="tag code">code</span> <span>judge-style implementation</span></div>
+    </div>
+    <div class="flag"><strong>Three things in the slides to watch.</strong>
+      <ul>
+        <li>Slide 5: the highlighted line under the running example is a different, 35-character string (it has six occurrences of <code>aab</code>, not four). The text printed above it is the real one; B2 uses it.</li>
+        <li>Slide 11: the Rabin–Karp table shows four of the twelve windows and skips the second valid shift at $s=11$. The full output is valid $\{1, 11\}$, spurious $\{10\}$.</li>
+        <li>Slide 16 indexes $\pi$ by prefix <em>length</em> ($q = 1..m$); the code on slide 17 indexes by 0-based <em>position</em>. Same values, shifted by one. Part C uses the code's convention throughout.</li>
+      </ul>
+    </div>
+  </div>
+</header>
+
+<main>
+<section class="part" id="partA">
+  <div class="parthead">
+    <h2>Part A · Rabin–Karp</h2>
+    <div class="meta"><span class="partcount">3</span> questions · ~40 min</div>
+  </div>
+  <p class="lead">Slides 9–12. The one idea to hold onto: a hash mismatch proves the window is wrong, a hash match proves nothing. A2 is the highest-value item, because the rolling update with a negative intermediate is exactly where hand-traces go wrong in an exam.</p>
+
+<div class="q" data-id="A1" data-t="trace">
+  <div class="qtop"><span class="qid">A1</span><span class="tag trace">trace</span></div>
+  <p>Text over the alphabet $\{a, b, c\}$. Give each letter a value, $a = 0$, $b = 1$, $c = 2$. With three letters the base is $d = 3$, so a 4-letter window is a base-3 number: for example <span class="mono">bbcb</span> $= 1\cdot 27 + 1\cdot 9 + 2\cdot 3 + 1 = 43$. Use $q = 11$.</p>
+  <p class="mono">T = bbcbccbabcabba &nbsp;&nbsp; P = ccba</p>
+  <p>The pattern has $m = 4$ letters and the text has $n = 14$, so there are $n - m + 1 = 11$ windows: the 4-letter blocks $T[s..s+3]$ for $s = 0$ to $10$. The first is <span class="mono">bbcb</span>, the next <span class="mono">bcbc</span>, and so on.</p>
+  <ol class="parts">
+    <li>Convert $P$ to its base-3 value and compute $p' = (\text{value of } P) \bmod 11$. This is the number every window gets compared against.</li>
+    <li>For every window, compute $z' = (\text{value of window}) \bmod 11$. Do the first one directly, then use the rolling update for the rest (A2 practises the update in detail).</li>
+    <li>Compare each $z'$ with $p'$ and mark the window: <em>skip</em> if $z' \ne p'$; if $z' = p'$, compare the window with $P$ letter by letter and mark it <em>valid</em> or <em>spurious</em>. How many windows needed that letter-by-letter check?</li>
+  </ol>
+  <div class="btns"><button class="btn hintbtn">Hint</button><button class="btn ansbtn">Show answer</button></div>
+  <div class="hint" hidden><p>Precompute $h = 3^{3} \bmod 11$ once; every update then needs only small numbers. No window is worth more than <span class="mono">cccc</span> $= 80$, so checking any $z'$ directly is quick.</p></div>
+  <div class="ans" hidden>
+    <span class="step">Set-up</span>
+    <p><span class="mono">ccba</span> $= 2\cdot 27 + 2\cdot 9 + 1\cdot 3 + 0 = 75$, so $p' = 75 \bmod 11 = 9$ (since $11 \times 6 = 66$). The leading-letter weight is $h = 3^3 \bmod 11 = 27 \bmod 11 = 5$. First window: $43 \bmod 11 = 10$.</p>
+    <p>The slide 12 code does exactly this with <code>ord(c)</code> as the letter value and $d = 256$; the steps are identical, the numbers are just bigger.</p>
+    <span class="step">Table</span>
+    <div class="tablewrap"><table><tr><th>$s$</th><th>window</th><th>base-3 value</th><th>$z'$</th><th>outcome</th></tr><tr><td>0</td><td class="mono">bbcb</td><td>43</td><td>10</td><td>skip</td></tr><tr><td>1</td><td class="mono">bcbc</td><td>50</td><td>6</td><td>skip</td></tr><tr><td>2</td><td class="mono">cbcc</td><td>71</td><td>5</td><td>skip</td></tr><tr><td>3</td><td class="mono">bccb</td><td>52</td><td>8</td><td>skip</td></tr><tr class="hit"><td>4</td><td class="mono">ccba</td><td>75</td><td>9</td><td>valid</td></tr><tr class="hit"><td>5</td><td class="mono">cbab</td><td>64</td><td>9</td><td>spurious</td></tr><tr><td>6</td><td class="mono">babc</td><td>32</td><td>10</td><td>skip</td></tr><tr><td>7</td><td class="mono">abca</td><td>15</td><td>4</td><td>skip</td></tr><tr><td>8</td><td class="mono">bcab</td><td>46</td><td>2</td><td>skip</td></tr><tr><td>9</td><td class="mono">cabb</td><td>58</td><td>3</td><td>skip</td></tr><tr><td>10</td><td class="mono">abba</td><td>12</td><td>1</td><td>skip</td></tr></table></div>
+    <span class="step">Result</span>
+    <p>Two windows hash to 9 and get checked letter by letter: $s = 4$ is <span class="mono">ccba</span>, the one valid shift; $s = 5$ is <span class="mono">cbab</span>, a spurious hit. The other 9 windows were rejected with one integer comparison each.</p>
+    <span class="step">Checks</span>
+    <p><span class="mono">cbab</span> $= 2\cdot 27 + 1\cdot 9 + 0\cdot 3 + 1 = 64$, and $64 - 55 = 9$ ✓, so it really does collide with $p'$. And $s = 4$ is the window $P$ itself, so it must give $p'$ ✓.</p>
+  </div>
+</div>
+
+<div class="q" data-id="A2" data-t="trace">
+  <div class="qtop"><span class="qid">A2</span><span class="tag trace">trace</span></div>
+  <p>Same $T$, $P$, $q$ as A1. Starting only from $z'_0 = 10$ and $h = 3^3 \bmod 11 = 5$, use the update formula (no recomputing from scratch) to get $z'_1$, $z'_2$, $z'_3$. Show every intermediate value, and say what goes wrong at $z'_3$ if this were written in C or Java with <code>%</code>.</p>
+  <div class="btns"><button class="btn ansbtn">Show answer</button></div>
+  <div class="ans" hidden>
+    <span class="step">Formula</span>
+    <p>$z'_{s+1} = \big((z'_s - v(T[s])\cdot h)\cdot 3 + v(T[s+4])\big) \bmod 11$, where $v$ is the letter's value.</p>
+    <span class="step">$s = 0 \to 1$</span>
+    <p>Drop $T[0] = b$ (1), add $T[4] = c$ (2): $(10 - 1\cdot 5)\cdot 3 + 2 = 17$, and $17 \bmod 11 = 6$.</p>
+    <span class="step">$s = 1 \to 2$</span>
+    <p>Drop $T[1] = b$ (1), add $T[5] = c$ (2): $(6 - 1\cdot 5)\cdot 3 + 2 = 5$, so $z'_2 = 5$.</p>
+    <span class="step">$s = 2 \to 3$</span>
+    <p>Drop $T[2] = c$ (2), add $T[6] = b$ (1): $(5 - 2\cdot 5)\cdot 3 + 1 = -14$. The mathematical residue is $-14 + 2\cdot 11 = 8$, so $z'_3 = 8$.</p>
+    <span class="step">Checks</span>
+    <p>All three agree with the A1 table (6, 5, 8) ✓, and directly <span class="mono">bccb</span> $= 27 + 18 + 6 + 1 = 52 = 4\times 11 + 8$ ✓.</p>
+    <span class="step">The language trap</span>
+    <p>Python's <code>%</code> always returns a value in $[0, q)$, so <code>-14 % 11</code> is <code>8</code> and the slide code is correct as written. In C or Java, <code>-14 % 11</code> is <code>-3</code>; comparing $-3$ with $p'$ would silently miss matches. The fix there is <code>((x % q) + q) % q</code>.</p>
+    <p><strong>How to use this:</strong> on paper, whenever the subtraction goes negative, add multiples of $q$ until it is back in range before continuing.</p>
+  </div>
+</div>
+
+<div class="q" data-id="A3" data-t="code">
+  <div class="qtop"><span class="qid">A3</span><span class="tag code">code</span><span class="ptitle">Spurious Hits</span><span class="limits">Time limit 2 s</span></div>
+  <p>Text over the first $d$ lowercase letters is hashed by giving <code>a</code> the value 0, <code>b</code> the value 1, and so on, and reading each window as a base-$d$ number. Run Rabin–Karp with the given prime modulus $q$ and report how many shifts are valid and how many are spurious hits (the window's residue equals the pattern's residue but the window differs from the pattern).</p>
+  <span class="sec">Input</span>
+  <p>Line 1: two integers $d$ and $q$ ($2 \le d \le 26$; $q$ prime, $2 \le q \le 10^9+7$). Line 2: the text $T$. Line 3: the pattern $P$. Both strings use only the first $d$ lowercase letters, with $1 \le |P| \le 10^5$ and $1 \le |T| \le 10^6$.</p>
+  <span class="sec">Output</span>
+  <p>One line with two integers: the number of valid shifts and the number of spurious hits. If $|P| \gt |T|$, print <code>0 0</code>.</p>
+  <div class="io"><div><p class="lab">Sample input 1</p><pre>3 11
+bbcbccbabcabba
+ccba</pre></div><div><p class="lab">Sample output 1</p><pre>1 1</pre></div></div>
+  <div class="io"><div><p class="lab">Sample input 2</p><pre>26 13
+abracadabra
+abra</pre></div><div><p class="lab">Sample output 2</p><pre>2 2</pre></div></div>
+  <div class="btns"><button class="btn hintbtn">Hint</button><button class="btn ansbtn">Show answer</button></div>
+  <div class="hint" hidden><p>A letter's value is <code>ord(c) - ord('a')</code>. Reduce mod $q$ after every update so the hash never grows past one machine word.</p></div>
+  <div class="ans" hidden>
+    <span class="step">Approach</span>
+    <p>The slide 12 code with the given $d$ and letter values <code>ord(c) - 97</code> in place of <code>ord(c)</code>, counting the two outcomes of each check instead of collecting shifts. One pass, $O(n + m\cdot\text{hits})$.</p>
+    <span class="step">Reference solution</span>
+    <pre><code>import sys
+
+def main():
+    data = sys.stdin.read().split()
+    d, q = int(data[0]), int(data[1])
+    text, pattern = data[2], data[3]
+    n, m = len(text), len(pattern)
+    if m &gt; n:
+        print(0, 0)
+        return
+    high = pow(d, m - 1, q)
+    p = z = 0
+    for j in range(m):
+        p = (d * p + ord(pattern[j]) - 97) % q
+        z = (d * z + ord(text[j]) - 97) % q
+    valid = spurious = 0
+    for s in range(n - m + 1):
+        if p == z:
+            if text[s:s + m] == pattern:
+                valid += 1
+            else:
+                spurious += 1
+        if s &lt; n - m:
+            z = (d * (z - (ord(text[s]) - 97) * high) + ord(text[s + m]) - 97) % q
+    print(valid, spurious)
+
+main()</code></pre>
+    <span class="step">Checks</span>
+    <p>Sample 1 is A1 (one valid, one spurious) ✓. Sample 2: <span class="mono">abra</span> occurs at shifts 0 and 7, and two other windows collide with it mod 13. Tested against a brute-force residue count on 300 random cases; a $10^6$-letter text runs well inside the limit.</p>
+  </div>
+</div>
+
+</section>
+<section class="part" id="partB">
+  <div class="parthead">
+    <h2>Part B · The matching automaton</h2>
+    <div class="meta"><span class="partcount">4</span> questions · ~40 min</div>
+  </div>
+  <p class="lead">Slides 13–14. The one idea to hold onto: state $k$ means "the longest prefix of $P$ that ends right here has length $k$." Every transition is computed from that sentence. B4 is the highest-value item: it is the "careful implementation" the slide mentions without showing, and it is KMP in disguise.</p>
+
+<div class="q" data-id="B1" data-t="trace">
+  <div class="qtop"><span class="qid">B1</span><span class="tag trace">trace</span></div>
+  <p>Write the full transition table for $P = $ <span class="mono">aab</span> over $\Sigma = \{a, b, c\}$. For each entry, name the string whose longest $P$-prefix-suffix you computed. Then draw the automaton as a state diagram.</p>
+  <div class="btns"><button class="btn ansbtn">Show answer</button></div>
+  <div class="ans" hidden>
+    <div class="tablewrap"><table>
+      <tr><th>state</th><th>$a$</th><th>$b$</th><th>$c$</th></tr>
+      <tr><td>0 &nbsp;$\varepsilon$</td><td>1</td><td>0</td><td>0</td></tr>
+      <tr><td>1 &nbsp;<span class="mono">a</span></td><td>2</td><td>0</td><td>0</td></tr>
+      <tr><td>2 &nbsp;<span class="mono">aa</span></td><td>2</td><td>3</td><td>0</td></tr>
+      <tr><td>3 &nbsp;<span class="mono">aab</span></td><td>1</td><td>0</td><td>0</td></tr>
+    </table></div>
+    <span class="step">Diagram</span>
+    <div class="figwrap"><svg class="fsa" viewBox="0 0 460 282" role="img" aria-label="" xmlns="http://www.w3.org/2000/svg"><defs><marker id="ah-aab" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="var(--ink)"/></marker><marker id="ahm-aab" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="var(--muted)"/></marker></defs><line x1="-5.0" y1="132.0" x2="23.0" y2="132.0" stroke="var(--ink)" stroke-width="1.6" marker-end="url(#ah-aab)"/><line x1="75.0" y1="132.0" x2="144.0" y2="132.0" stroke="var(--ink)" stroke-width="1.6" marker-end="url(#ah-aab)"/><text x="110.0" y="125.0" text-anchor="middle" class="fsa-lab">a</text><line x1="195.0" y1="132.0" x2="264.0" y2="132.0" stroke="var(--ink)" stroke-width="1.6" marker-end="url(#ah-aab)"/><text x="230.0" y="125.0" text-anchor="middle" class="fsa-lab">a</text><line x1="315.0" y1="132.0" x2="384.0" y2="132.0" stroke="var(--ink)" stroke-width="1.6" marker-end="url(#ah-aab)"/><text x="350.0" y="125.0" text-anchor="middle" class="fsa-lab">b</text><path d="M395.7,111.5 C395.7,11.5 184.3,11.5 184.3,111.5" fill="none" stroke="var(--ink)" stroke-width="1.4" marker-end="url(#ah-aab)"/><text x="290.0" y="30.5" text-anchor="middle" class="fsa-lab">a</text><path d="M155.7,152.5 C155.7,218.5 74.1,204.5 74.1,138.5" fill="none" stroke="var(--muted)" stroke-width="1.15" marker-end="url(#ahm-aab)"/><text x="160.4" y="176.8" text-anchor="start" class="fsa-lab fsa-reset">b,c</text><path d="M275.7,152.5 C275.7,254.5 50.0,259.0 50.0,157.0" fill="none" stroke="var(--muted)" stroke-width="1.15" marker-end="url(#ahm-aab)"/><text x="274.7" y="189.0" text-anchor="start" class="fsa-lab fsa-reset">c</text><path d="M395.7,152.5 C395.7,290.5 25.9,276.5 25.9,138.5" fill="none" stroke="var(--muted)" stroke-width="1.15" marker-end="url(#ahm-aab)"/><text x="389.0" y="199.6" text-anchor="start" class="fsa-lab fsa-reset">b,c</text><path d="M38.3,109.9 C25.3,70.0 74.7,70.0 61.7,109.9" fill="none" stroke="var(--ink)" stroke-width="1.4" marker-end="url(#ah-aab)"/><text x="50.0" y="74.0" text-anchor="middle" class="fsa-lab">b,c</text><path d="M278.3,109.9 C265.3,70.0 314.7,70.0 301.7,109.9" fill="none" stroke="var(--ink)" stroke-width="1.4" marker-end="url(#ah-aab)"/><text x="290.0" y="74.0" text-anchor="middle" class="fsa-lab">a</text><circle cx="50" cy="132.0" r="25" fill="var(--card)" stroke="var(--ink)" stroke-width="1.6"/><text x="50" y="137.0" text-anchor="middle" class="fsa-node">0</text><circle cx="170" cy="132.0" r="25" fill="var(--card)" stroke="var(--ink)" stroke-width="1.6"/><text x="170" y="137.0" text-anchor="middle" class="fsa-node">1</text><circle cx="290" cy="132.0" r="25" fill="var(--card)" stroke="var(--ink)" stroke-width="1.6"/><text x="290" y="137.0" text-anchor="middle" class="fsa-node">2</text><circle cx="410" cy="132.0" r="25" fill="var(--hit)" stroke="var(--ink)" stroke-width="1.6"/><circle cx="410" cy="132.0" r="21" fill="none" stroke="var(--ink)" stroke-width="1.2"/><text x="410" y="137.0" text-anchor="middle" class="fsa-node">3</text></svg></div><p class="figcap">States: 0 = $\varepsilon$, 1 = <span class="mono">a</span>, 2 = <span class="mono">aa</span>, 3 = <span class="mono">aab</span>. Double circle = accepting. Grey arrows underneath are resets to state 0.</p>
+    <p>Read it like the table: every state has exactly one arrow per symbol. Forward arrows along the middle are the matches; arrows over the top fall back to a non-zero state; arrows underneath reset to 0.</p>
+    <span class="step">Reasoning for the non-obvious entries</span>
+    <p>$\delta(1,b)$: <span class="mono">ab</span> ends in neither <span class="mono">a</span> nor <span class="mono">aa</span>, so 0. $\delta(2,a)$: <span class="mono">aaa</span> ends in <span class="mono">aa</span>, so stay at 2; this self-loop is what lets the machine find <span class="mono">aab</span> inside <span class="mono">aaab</span>. $\delta(3,a)$: <span class="mono">aaba</span> ends in <span class="mono">a</span>, so 1, as slide 13 says. $\delta(3,b)$: <span class="mono">aabb</span>, nothing, so 0. Every $c$ goes to 0 because $c$ never appears in $P$.</p>
+    <div class="warn"><p>Slide 13's diagram draws only $a$ and $b$ arrows, but the running example text contains <span class="mono">c</span>. The machine needs the third column, all zeros, to run on that text.</p></div>
+  </div>
+</div>
+
+<div class="q" data-id="B2" data-t="trace">
+  <div class="qtop"><span class="qid">B2</span><span class="tag trace">trace</span></div>
+  <p>Run your B1 automaton over the running example from slide 5,</p>
+  <p class="mono">T = abaaabacccaabbaccaababacaababaac</p>
+  <p>Write the state after each character, then read off the valid shifts and compare with the slide's $\{3, 10, 17, 24\}$.</p>
+  <div class="btns"><button class="btn ansbtn">Show answer</button></div>
+  <div class="ans" hidden>
+    <div class="tablewrap"><table><tr><th>$i$</th><td>0</td><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td><td>8</td><td>9</td><td>10</td><td>11</td><td>12</td><td>13</td><td>14</td><td>15</td></tr><tr><th>$T[i]$</th><td class="mono">a</td><td class="mono">b</td><td class="mono">a</td><td class="mono">a</td><td class="mono">a</td><td class="mono">b</td><td class="mono">a</td><td class="mono">c</td><td class="mono">c</td><td class="mono">c</td><td class="mono">a</td><td class="mono">a</td><td class="mono">b</td><td class="mono">b</td><td class="mono">a</td><td class="mono">c</td></tr><tr><th>state</th><td>1</td><td>0</td><td>1</td><td>2</td><td>2</td><td class="acc">3</td><td>1</td><td>0</td><td>0</td><td>0</td><td>1</td><td>2</td><td class="acc">3</td><td>0</td><td>1</td><td>0</td></tr></table></div><div class="tablewrap"><table><tr><th>$i$</th><td>16</td><td>17</td><td>18</td><td>19</td><td>20</td><td>21</td><td>22</td><td>23</td><td>24</td><td>25</td><td>26</td><td>27</td><td>28</td><td>29</td><td>30</td><td>31</td></tr><tr><th>$T[i]$</th><td class="mono">c</td><td class="mono">a</td><td class="mono">a</td><td class="mono">b</td><td class="mono">a</td><td class="mono">b</td><td class="mono">a</td><td class="mono">c</td><td class="mono">a</td><td class="mono">a</td><td class="mono">b</td><td class="mono">a</td><td class="mono">b</td><td class="mono">a</td><td class="mono">a</td><td class="mono">c</td></tr><tr><th>state</th><td>0</td><td>1</td><td>2</td><td class="acc">3</td><td>1</td><td>0</td><td>1</td><td>0</td><td>1</td><td>2</td><td class="acc">3</td><td>1</td><td>0</td><td>1</td><td>2</td><td>0</td></tr></table></div>
+    <span class="step">Result</span>
+    <p>State 3 is reached after $i = 5, 12, 19, 26$, so the shifts are $i - 2 = 3, 10, 17, 24$, matching slide 5 ✓.</p>
+    <span class="step">Checks</span>
+    <p>Every 3 comes straight after a 2, i.e. the text there reads <span class="mono">…aab</span>. Spot-check $s = 17$: $T[17..19]$ = <span class="mono">aab</span> ✓. Every <span class="mono">c</span> resets to 0, as it must.</p>
+    <div class="warn"><p>Don't check against the highlighted line on slide 5: it is a different 35-character string (with shifts $\{3,11,18,21,26,29\}$), not the $T$ printed above it.</p></div>
+  </div>
+</div>
+
+<div class="q" data-id="B3" data-t="trace">
+  <div class="qtop"><span class="qid">B3</span><span class="tag trace">trace</span></div>
+  <p>Build the transition table for $P = $ <span class="mono">ababaca</span> over $\Sigma = \{a, b, c\}$ (8 states), then draw it as a state diagram with every transition: 8 states × 3 symbols = 24 arrows, labels combined where two symbols go to the same state.</p>
+  <div class="btns"><button class="btn hintbtn">Hint</button><button class="btn ansbtn">Show answer</button></div>
+  <div class="hint" hidden><p>Fill the "match" diagonal $\delta(k, P[k]) = k+1$ first. Every other entry is a failure, and its value is never more than the length of the longest border you can see.</p></div>
+  <div class="ans" hidden>
+    <div class="tablewrap"><table><tr><th>state</th><th>matched</th><th>$a$</th><th>$b$</th><th>$c$</th></tr><tr><td>0</td><td>$\varepsilon$</td><td>1</td><td>0</td><td>0</td></tr><tr><td>1</td><td><span class="mono">a</span></td><td>1</td><td>2</td><td>0</td></tr><tr><td>2</td><td><span class="mono">ab</span></td><td>3</td><td>0</td><td>0</td></tr><tr><td>3</td><td><span class="mono">aba</span></td><td>1</td><td>4</td><td>0</td></tr><tr><td>4</td><td><span class="mono">abab</span></td><td>5</td><td>0</td><td>0</td></tr><tr><td>5</td><td><span class="mono">ababa</span></td><td>1</td><td>4</td><td>6</td></tr><tr><td>6</td><td><span class="mono">ababac</span></td><td>7</td><td>0</td><td>0</td></tr><tr><td>7</td><td><span class="mono">ababaca</span></td><td>1</td><td>2</td><td>0</td></tr></table></div>
+    <span class="step">Diagram</span>
+    <div class="figwrap"><svg class="fsa" viewBox="0 0 940 449" role="img" aria-label="" xmlns="http://www.w3.org/2000/svg"><defs><marker id="ah-ababaca" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="var(--ink)"/></marker><marker id="ahm-ababaca" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="var(--muted)"/></marker></defs><line x1="-5.0" y1="222.0" x2="23.0" y2="222.0" stroke="var(--ink)" stroke-width="1.6" marker-end="url(#ah-ababaca)"/><line x1="75.0" y1="222.0" x2="144.0" y2="222.0" stroke="var(--ink)" stroke-width="1.6" marker-end="url(#ah-ababaca)"/><text x="110.0" y="215.0" text-anchor="middle" class="fsa-lab">a</text><line x1="195.0" y1="222.0" x2="264.0" y2="222.0" stroke="var(--ink)" stroke-width="1.6" marker-end="url(#ah-ababaca)"/><text x="230.0" y="215.0" text-anchor="middle" class="fsa-lab">b</text><line x1="315.0" y1="222.0" x2="384.0" y2="222.0" stroke="var(--ink)" stroke-width="1.6" marker-end="url(#ah-ababaca)"/><text x="350.0" y="215.0" text-anchor="middle" class="fsa-lab">a</text><line x1="435.0" y1="222.0" x2="504.0" y2="222.0" stroke="var(--ink)" stroke-width="1.6" marker-end="url(#ah-ababaca)"/><text x="470.0" y="215.0" text-anchor="middle" class="fsa-lab">b</text><line x1="555.0" y1="222.0" x2="624.0" y2="222.0" stroke="var(--ink)" stroke-width="1.6" marker-end="url(#ah-ababaca)"/><text x="590.0" y="215.0" text-anchor="middle" class="fsa-lab">a</text><line x1="675.0" y1="222.0" x2="744.0" y2="222.0" stroke="var(--ink)" stroke-width="1.6" marker-end="url(#ah-ababaca)"/><text x="710.0" y="215.0" text-anchor="middle" class="fsa-lab">c</text><line x1="795.0" y1="222.0" x2="864.0" y2="222.0" stroke="var(--ink)" stroke-width="1.6" marker-end="url(#ah-ababaca)"/><text x="830.0" y="215.0" text-anchor="middle" class="fsa-lab">a</text><path d="M395.7,201.5 C395.7,101.5 194.5,116.8 194.5,216.8" fill="none" stroke="var(--ink)" stroke-width="1.4" marker-end="url(#ah-ababaca)"/><text x="295.1" y="128.2" text-anchor="middle" class="fsa-lab">a</text><path d="M647.8,197.1 C647.8,37.1 188.6,45.3 188.6,205.3" fill="none" stroke="var(--ink)" stroke-width="1.4" marker-end="url(#ah-ababaca)"/><text x="418.2" y="75.2" text-anchor="middle" class="fsa-lab">a</text><path d="M628.3,209.5 C628.3,139.5 544.3,131.5 544.3,201.5" fill="none" stroke="var(--ink)" stroke-width="1.4" marker-end="url(#ah-ababaca)"/><text x="586.3" y="147.0" text-anchor="middle" class="fsa-lab">b</text><path d="M887.8,197.1 C887.8,-22.9 177.7,-21.8 177.7,198.2" fill="none" stroke="var(--ink)" stroke-width="1.4" marker-end="url(#ah-ababaca)"/><text x="532.8" y="26.7" text-anchor="middle" class="fsa-lab">a</text><path d="M868.3,209.5 C868.3,19.5 304.3,11.5 304.3,201.5" fill="none" stroke="var(--ink)" stroke-width="1.4" marker-end="url(#ah-ababaca)"/><text x="586.3" y="57.0" text-anchor="middle" class="fsa-lab">b</text><path d="M155.7,242.5 C155.7,302.5 74.1,288.5 74.1,228.5" fill="none" stroke="var(--muted)" stroke-width="1.15" marker-end="url(#ahm-ababaca)"/><text x="160.4" y="264.9" text-anchor="start" class="fsa-lab fsa-reset">c</text><path d="M275.7,242.5 C275.7,332.5 67.7,329.7 67.7,239.7" fill="none" stroke="var(--muted)" stroke-width="1.15" marker-end="url(#ahm-ababaca)"/><text x="275.4" y="274.9" text-anchor="start" class="fsa-lab fsa-reset">b,c</text><path d="M395.7,242.5 C395.7,362.5 56.5,366.1 56.5,246.1" fill="none" stroke="var(--muted)" stroke-width="1.15" marker-end="url(#ahm-ababaca)"/><text x="390.2" y="284.6" text-anchor="start" class="fsa-lab fsa-reset">c</text><path d="M515.7,242.5 C515.7,392.5 43.5,396.1 43.5,246.1" fill="none" stroke="var(--muted)" stroke-width="1.15" marker-end="url(#ahm-ababaca)"/><text x="504.9" y="294.1" text-anchor="start" class="fsa-lab fsa-reset">b,c</text><path d="M755.7,242.5 C755.7,452.5 32.3,449.7 32.3,239.7" fill="none" stroke="var(--muted)" stroke-width="1.15" marker-end="url(#ahm-ababaca)"/><text x="734.9" y="312.9" text-anchor="start" class="fsa-lab fsa-reset">b,c</text><path d="M875.7,242.5 C875.7,482.5 25.9,468.5 25.9,228.5" fill="none" stroke="var(--muted)" stroke-width="1.15" marker-end="url(#ahm-ababaca)"/><text x="849.9" y="322.0" text-anchor="start" class="fsa-lab fsa-reset">c</text><path d="M38.3,199.9 C25.3,160.0 74.7,160.0 61.7,199.9" fill="none" stroke="var(--ink)" stroke-width="1.4" marker-end="url(#ah-ababaca)"/><text x="50.0" y="164.0" text-anchor="middle" class="fsa-lab">b,c</text><path d="M145.7,216.0 C107.4,198.9 140.4,162.1 161.4,198.5" fill="none" stroke="var(--ink)" stroke-width="1.4" marker-end="url(#ah-ababaca)"/><text x="131.3" y="181.2" text-anchor="middle" class="fsa-lab">a</text><circle cx="50" cy="222.0" r="25" fill="var(--card)" stroke="var(--ink)" stroke-width="1.6"/><text x="50" y="227.0" text-anchor="middle" class="fsa-node">0</text><circle cx="170" cy="222.0" r="25" fill="var(--card)" stroke="var(--ink)" stroke-width="1.6"/><text x="170" y="227.0" text-anchor="middle" class="fsa-node">1</text><circle cx="290" cy="222.0" r="25" fill="var(--card)" stroke="var(--ink)" stroke-width="1.6"/><text x="290" y="227.0" text-anchor="middle" class="fsa-node">2</text><circle cx="410" cy="222.0" r="25" fill="var(--card)" stroke="var(--ink)" stroke-width="1.6"/><text x="410" y="227.0" text-anchor="middle" class="fsa-node">3</text><circle cx="530" cy="222.0" r="25" fill="var(--card)" stroke="var(--ink)" stroke-width="1.6"/><text x="530" y="227.0" text-anchor="middle" class="fsa-node">4</text><circle cx="650" cy="222.0" r="25" fill="var(--card)" stroke="var(--ink)" stroke-width="1.6"/><text x="650" y="227.0" text-anchor="middle" class="fsa-node">5</text><circle cx="770" cy="222.0" r="25" fill="var(--card)" stroke="var(--ink)" stroke-width="1.6"/><text x="770" y="227.0" text-anchor="middle" class="fsa-node">6</text><circle cx="890" cy="222.0" r="25" fill="var(--hit)" stroke="var(--ink)" stroke-width="1.6"/><circle cx="890" cy="222.0" r="21" fill="none" stroke="var(--ink)" stroke-width="1.2"/><text x="890" y="227.0" text-anchor="middle" class="fsa-node">7</text></svg></div><p class="figcap">States: 0 = $\varepsilon$, 1 = <span class="mono">a</span>, 2 = <span class="mono">ab</span>, 3 = <span class="mono">aba</span>, 4 = <span class="mono">abab</span>, 5 = <span class="mono">ababa</span>, 6 = <span class="mono">ababac</span>, 7 = <span class="mono">ababaca</span>. Double circle = accepting. Grey arrows underneath are resets to state 0.</p>
+    <span class="step">Checks</span>
+    <p>The diagonal $\delta(k, P[k]) = k + 1$ reads $1,2,3,4,5,6,7$ down the table ✓. Every $c$ entry is 0 except at state 5, the only place $c$ continues the pattern ✓. Row 7 equals row $\pi = 1$ on its failures, as B4 predicts.</p>
+  </div>
+</div>
+
+<div class="q" data-id="B4" data-t="reason">
+  <div class="qtop"><span class="qid">B4</span><span class="tag reason">reason</span></div>
+  <p>Let $\pi(k)$ be the length of the longest proper border of $P[0..k-1]$ (proper prefix that is also a suffix).</p>
+  <ol class="parts">
+    <li>Argue that for $k \lt m$ and $a \ne P[k]$, $\;\delta(k, a) = \delta(\pi(k), a)$; and that $\delta(m, a) = \delta(\pi(m), a)$ for every $a$.</li>
+    <li>Check the rule on three failure entries of B3: $\delta(5,b)$, $\delta(5,a)$, $\delta(7,b)$.</li>
+    <li>Explain why this gives the whole table in $O(m\,|\Sigma|)$ time, as slide 14 claims.</li>
+  </ol>
+  <div class="btns"><button class="btn hintbtn">Hint</button><button class="btn ansbtn">Show answer</button></div>
+  <div class="hint" hidden><p>Any prefix of $P$ that is a suffix of $P[0..k-1]\,a$ and has length at most $k$ must, after dropping $a$, be a border of $P[0..k-1]$ — and every border of $P[0..k-1]$ is a suffix of $P[0..\pi(k)-1]$.</p></div>
+  <div class="ans" hidden>
+    <span class="step">(a)</span>
+    <p>In state $k$ the relevant suffix is $P[0..k-1]$. Reading $a \ne P[k]$ cannot reach $k+1$, so the answer is some $j \le k$ where $P[0..j-1]$ is a suffix of $P[0..k-1]a$. If $j \ge 1$, then $P[0..j-2]$ is a suffix of $P[0..k-1]$ of length $\lt k$, so it is a border and therefore a suffix of $P[0..\pi(k)-1]$, the longest border. So the candidates are exactly the same whether we start from $P[0..k-1]$ or from $P[0..\pi(k)-1]$: both strings give the same answer after appending $a$, which is the statement $\delta(k,a) = \delta(\pi(k),a)$. <strong>This step is exactly where $a \ne P[k]$ is used</strong>: without it, $k+1$ would be a candidate that $\pi(k)$ cannot see. State $m$ has no "match" move at all, so the same argument applies to every $a$.</p>
+    <span class="step">(b)</span>
+    <p>$\pi(5)$ for <span class="mono">ababa</span> is 3 (<span class="mono">aba</span>); $\pi(7)$ for <span class="mono">ababaca</span> is 1.</p>
+    <p>$\delta(5,b) = \delta(3,b) = 4$ ✓. &nbsp; $\delta(5,a) = \delta(3,a) = 1$ ✓. &nbsp; $\delta(7,b) = \delta(1,b) = 2$ ✓.</p>
+    <span class="step">(c)</span>
+    <p>Since $\pi(k) \lt k$, row $\pi(k)$ is already built when row $k$ is reached, so each entry is either "$k+1$" or one table lookup: $O(1)$ per entry, $(m+1)|\Sigma|$ entries. The state $x = \pi(k)$ itself is maintained by running the half-built machine over $P[1..]$, one step per row.</p>
+    <p><strong>Why this matters:</strong> KMP is this same rule applied lazily — instead of storing $\delta(\pi(k), a)$ for all $a$, it follows the $\pi$ link at match time, for only the symbol that actually arrived.</p>
+  </div>
+</div>
+
+</section>
+<section class="part" id="partC">
+  <div class="parthead">
+    <h2>Part C · Prefix function and KMP</h2>
+    <div class="meta"><span class="partcount">4</span> questions · ~40 min</div>
+  </div>
+  <p class="lead">Slides 15–18. The one idea to hold onto: on a mismatch, $\pi$ tells you the longest part of what you already matched that could still be the start of an occurrence, so the text pointer never moves backwards. C2 is the highest-value item; a KMP trace with a cascading fallback is the standard exam question on this lecture.</p>
+
+<div class="q" data-id="C1" data-t="trace">
+  <div class="qtop"><span class="qid">C1</span><span class="tag trace">trace</span></div>
+  <p>Using slide 17's convention, <code>pi[i]</code> is the length of the longest proper prefix of $P[0..i]$ that is also a suffix of $P[0..i]$. Compute <code>pi</code> for each pattern.</p>
+  <ol class="parts">
+    <li><span class="mono">ababaca</span></li>
+    <li><span class="mono">aabaaab</span></li>
+    <li><span class="mono">abacabab</span></li>
+  </ol>
+  <div class="btns"><button class="btn ansbtn">Show answer</button></div>
+  <div class="ans" hidden>
+    <span class="step">(a)</span>
+    <div class="tablewrap"><table><tr><th>$i$</th><td>0</td><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td></tr><tr><th>$P[i]$</th><td class="mono">a</td><td class="mono">b</td><td class="mono">a</td><td class="mono">b</td><td class="mono">a</td><td class="mono">c</td><td class="mono">a</td></tr><tr><th><code>pi[i]</code></th><td>0</td><td>0</td><td>1</td><td>2</td><td>3</td><td>0</td><td>1</td></tr></table></div>
+    <span class="step">(b)</span>
+    <div class="tablewrap"><table><tr><th>$i$</th><td>0</td><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td></tr><tr><th>$P[i]$</th><td class="mono">a</td><td class="mono">a</td><td class="mono">b</td><td class="mono">a</td><td class="mono">a</td><td class="mono">a</td><td class="mono">b</td></tr><tr><th><code>pi[i]</code></th><td>0</td><td>1</td><td>0</td><td>1</td><td>2</td><td>2</td><td>3</td></tr></table></div>
+    <span class="step">(c)</span>
+    <div class="tablewrap"><table><tr><th>$i$</th><td>0</td><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td></tr><tr><th>$P[i]$</th><td class="mono">a</td><td class="mono">b</td><td class="mono">a</td><td class="mono">c</td><td class="mono">a</td><td class="mono">b</td><td class="mono">a</td><td class="mono">b</td></tr><tr><th><code>pi[i]</code></th><td>0</td><td>0</td><td>1</td><td>0</td><td>1</td><td>2</td><td>3</td><td>2</td></tr></table></div>
+    <span class="step">Checks</span>
+    <p>Values never rise by more than 1 from one index to the next, and <code>pi[0]</code> is always 0 ✓. In (c) the last value drops from 3 to 2: the border <span class="mono">aba</span> can't extend with $b$ (needs $c$), so it falls back to <span class="mono">a</span> and extends to <span class="mono">ab</span>.</p>
+    <div class="warn"><p>Slide 16 indexes $\pi$ by prefix <em>length</em>, so its $\pi[q]$ is the code's <code>pi[q-1]</code>. For <span class="mono">abbabaa</span> both give the seven numbers <code>0, 0, 0, 1, 2, 1, 1</code>. KMP's <code>q = pi[q - 1]</code> uses the code convention; in an exam, say which one you are using.</p></div>
+  </div>
+</div>
+
+<div class="q" data-id="C2" data-t="trace">
+  <div class="qtop"><span class="qid">C2</span><span class="tag trace">trace</span></div>
+  <p>Run the slide 18 KMP code with</p>
+  <p class="mono">T = abababcabababab &nbsp;&nbsp; P = ababab</p>
+  <ol class="parts">
+    <li>Compute <code>pi</code> for $P$.</li>
+    <li>For each $i$, record the fallbacks taken in the <code>while</code> loop and the value of $q$ at the end of the iteration. When a full match occurs, record both $q = 6$ and the reset value.</li>
+    <li>List the reported shifts. Are any overlapping?</li>
+  </ol>
+  <div class="btns"><button class="btn hintbtn">Hint</button><button class="btn ansbtn">Show answer</button></div>
+  <div class="hint" hidden><p>At $i = 6$ the text has a $c$, which appears nowhere in $P$. Follow the chain of <code>pi</code> links all the way down.</p></div>
+  <div class="ans" hidden>
+    <span class="step">(a)</span>
+    <p><code>pi = [0, 0, 1, 2, 3, 4]</code>.</p>
+    <span class="step">(b)</span>
+    <div class="tablewrap"><table><tr><th>$i$</th><th>$T[i]$</th><th>fallbacks</th><th>$q$ after</th><th>note</th></tr><tr><td>0</td><td class="mono">a</td><td>—</td><td>1</td><td class="l"></td></tr><tr><td>1</td><td class="mono">b</td><td>—</td><td>2</td><td class="l"></td></tr><tr><td>2</td><td class="mono">a</td><td>—</td><td>3</td><td class="l"></td></tr><tr><td>3</td><td class="mono">b</td><td>—</td><td>4</td><td class="l"></td></tr><tr><td>4</td><td class="mono">a</td><td>—</td><td>5</td><td class="l"></td></tr><tr class="hit"><td>5</td><td class="mono">b</td><td>—</td><td>6</td><td class="l">match at $s = 0$; reset $q = 4$</td></tr><tr><td>6</td><td class="mono">c</td><td>4 → 2 → 0</td><td>0</td><td class="l"></td></tr><tr><td>7</td><td class="mono">a</td><td>—</td><td>1</td><td class="l"></td></tr><tr><td>8</td><td class="mono">b</td><td>—</td><td>2</td><td class="l"></td></tr><tr><td>9</td><td class="mono">a</td><td>—</td><td>3</td><td class="l"></td></tr><tr><td>10</td><td class="mono">b</td><td>—</td><td>4</td><td class="l"></td></tr><tr><td>11</td><td class="mono">a</td><td>—</td><td>5</td><td class="l"></td></tr><tr class="hit"><td>12</td><td class="mono">b</td><td>—</td><td>6</td><td class="l">match at $s = 7$; reset $q = 4$</td></tr><tr><td>13</td><td class="mono">a</td><td>—</td><td>5</td><td class="l"></td></tr><tr class="hit"><td>14</td><td class="mono">b</td><td>—</td><td>6</td><td class="l">match at $s = 9$; reset $q = 4$</td></tr></table></div>
+    <span class="step">(c)</span>
+    <p>Matches end at $i = 5, 12, 14$, so the shifts are $0, 7, 9$. Shifts 7 and 9 overlap: after the match at 7, the reset to $q = $ <code>pi[5]</code> $= 4$ keeps <span class="mono">abab</span> as matched, and only two more characters are needed.</p>
+    <span class="step">Checks</span>
+    <p>$T[9..14]$ = <span class="mono">ababab</span> ✓. Total fallbacks: 2, both at $i = 6$ (from $q=4$ to $2$, then $2$ to $0$), against 15 outer iterations.</p>
+  </div>
+</div>
+
+<div class="q" data-id="C3" data-t="reason">
+  <div class="qtop"><span class="qid">C3</span><span class="tag reason">reason</span></div>
+  <p>Slide 18 says KMP's nested loops still run in $O(n+m)$ time because "the inner loop only ever undoes progress the outer loop has already made."</p>
+  <ol class="parts">
+    <li>Turn that sentence into an argument that the matching phase does at most $n$ iterations of the <code>while</code> loop in total, by tracking the value of $q$.</li>
+    <li>Confirm the bound against C2.</li>
+    <li>Why doesn't the same argument show that each individual text character is compared $O(1)$ times?</li>
+  </ol>
+  <div class="btns"><button class="btn hintbtn">Hint</button><button class="btn ansbtn">Show answer</button></div>
+  <div class="hint" hidden><p>Ask: how much can $q$ increase per outer iteration, how much does each inner iteration decrease it, and can it ever go below zero?</p></div>
+  <div class="ans" hidden>
+    <span class="step">(a)</span>
+    <p>Track $q$. It starts at 0 and is never negative. Each outer iteration increases $q$ by at most 1 (the single <code>q += 1</code>). Each <code>while</code> iteration sets $q$ to <code>pi[q-1]</code> $\lt q$, so it decreases $q$ by at least 1; the post-match reset decreases it too. Total decrease cannot exceed total increase, which is at most $n$. So there are at most $n$ inner iterations over the whole run, and $O(n)$ total work. The same argument with $k$ bounds <code>prefix_function</code> by $O(m)$.</p>
+    <span class="step">(b)</span>
+    <p>C2: $n = 15$; $q$ increases on 14 iterations (every character except the $c$), and the inner loop runs twice in total ✓.</p>
+    <span class="step">(c)</span>
+    <p>The bound is on the <em>total</em>, not per character. In C2 the character $T[6] = c$ was compared three times (at $q = 4$, $2$, $0$). One character can be compared up to $O(m)$ times; it is the earlier cheap characters that paid for it. This is an amortised argument.</p>
+    <p><strong>The moral:</strong> "nested loops" is not the same as "quadratic". Ask what quantity the inner loop consumes and who produced it.</p>
+  </div>
+</div>
+
+<div class="q" data-id="C4" data-t="code">
+  <div class="qtop"><span class="qid">C4</span><span class="tag code">code</span><span class="ptitle">Every Occurrence</span><span class="limits">Time limit 2 s</span></div>
+  <p>Find every position where the pattern $P$ occurs in the text $T$, including occurrences that overlap. Implement KMP yourself: build <code>pi</code> for $P$, then scan $T$ once with the slide 18 matching loop. Built-ins such as <code>str.find</code> or <code>re</code> defeat the point of the exercise.</p>
+  <span class="sec">Input</span>
+  <p>Two lines: the text $T$, then the pattern $P$. Both are lowercase letters only, with $1 \le |P| \le |T| \le 10^6$.</p>
+  <span class="sec">Output</span>
+  <p>Line 1: the number of occurrences. Line 2: their starting positions (0-based shifts) in increasing order, separated by spaces. If there are no occurrences, print only line 1.</p>
+  <div class="io"><div><p class="lab">Sample input 1</p><pre>abababcabababab
+ababab</pre></div><div><p class="lab">Sample output 1</p><pre>3
+0 7 9</pre></div></div>
+  <div class="io"><div><p class="lab">Sample input 2</p><pre>aaaaa
+aa</pre></div><div><p class="lab">Sample output 2</p><pre>4
+0 1 2 3</pre></div></div>
+  <div class="io"><div><p class="lab">Sample input 3</p><pre>abcabc
+abd</pre></div><div><p class="lab">Sample output 3</p><pre>0</pre></div></div>
+  <div class="btns"><button class="btn hintbtn">Hint</button><button class="btn ansbtn">Show answer</button></div>
+  <div class="hint" hidden><p>Write <code>prefix_function</code> first and check it against C1. The matching loop then has the same shape with $i$ reading the text and $q$ counting matched characters; the only new line is what to do when $q$ reaches $m$. Debug by printing $i$, $T[i]$ and $q$ to <code>sys.stderr</code> on sample 1 and checking against the C2 table.</p></div>
+  <div class="ans" hidden>
+    <span class="step">Approach</span>
+    <p>Two phases. <strong>Preprocess</strong>: <code>prefix_function(P)</code>, $O(m)$. <strong>Match</strong>: one pass over $T$. For each $i$, drop $q$ with <code>q = pi[q - 1]</code> while $q \gt 0$ and $P[q] \ne T[i]$; then, if $P[q] = T[i]$, increase $q$. When $q = m$, record the shift $i - m + 1$ and reset <code>q = pi[q - 1]</code> so the next, possibly overlapping, occurrence can reuse what was just matched. $i$ never moves backwards, so the whole run is $O(n + m)$ (C3).</p>
+    <span class="step">Reference solution</span>
+    <pre><code>import sys
+
+def prefix_function(p):
+    m = len(p)
+    pi = [0] * m
+    k = 0
+    for q in range(1, m):
+        while k &gt; 0 and p[k] != p[q]:
+            k = pi[k - 1]
+        if p[k] == p[q]:
+            k += 1
+        pi[q] = k
+    return pi
+
+def kmp(text, pattern):
+    m = len(pattern)
+    pi = prefix_function(pattern)
+    shifts = []
+    q = 0
+    for i in range(len(text)):
+        while q &gt; 0 and pattern[q] != text[i]:
+            q = pi[q - 1]
+        if pattern[q] == text[i]:
+            q += 1
+        if q == m:
+            shifts.append(i - m + 1)
+            q = pi[q - 1]
+    return shifts
+
+data = sys.stdin.read().split()
+text, pattern = data[0], data[1]
+shifts = kmp(text, pattern)
+print(len(shifts))
+if shifts:
+    print(&quot; &quot;.join(map(str, shifts)))</code></pre>
+    <span class="step">Checks</span>
+    <p>Sample 1 is C2: shifts 0, 7, 9, where 9 overlaps 7 and is only found because of the reset to <code>pi[5] = 4</code> ✓. Sample 2 is all overlaps: <span class="mono">aa</span> in <span class="mono">aaaaa</span> at 0, 1, 2, 3; resetting $q$ to 0 after a match would find only 0 and 2 ✗. Sample 3 has none, so one line. Tested against a brute-force search on 400 random cases; $T = a^{10^6}$ with $P = a^{1000}$ (999,001 matches) runs in about 0.3 s.</p>
+    <div class="warn"><p>The two bugs this catches are the two easiest to make on paper: resetting $q$ to 0 after a full match (misses overlaps, fails sample 2), and using <code>pi[q]</code> instead of <code>pi[q - 1]</code> (index error at $q = m$, or wrong fallbacks).</p></div>
+  </div>
+</div>
+
+</section>
+<section class="part" id="partD">
+  <div class="parthead">
+    <h2>Part D · Boyer–Moore</h2>
+    <div class="meta"><span class="partcount">4</span> questions · ~45 min</div>
+  </div>
+  <p class="lead">Slides 19–25. The one idea to hold onto: compare right-to-left, and on a mismatch ask each heuristic "what is the smallest shift that could possibly still work?", then take the larger answer. D3 is the highest-value item: a full Boyer–Moore trace where the two heuristics take turns winning.</p>
+
+<div class="q" data-id="D1" data-t="trace">
+  <div class="qtop"><span class="qid">D1</span><span class="tag trace">trace</span></div>
+  <p>Slide 20's example: <span class="mono">T = "once we noticed that"</span>, <span class="mono">P = "imbalance"</span>.</p>
+  <ol class="parts">
+    <li>Build $\lambda$ for $P$. Watch the repeated letter.</li>
+    <li>Take $s = 5$. Compare right-to-left: at which $j$ is the first mismatch, and what is the bad character?</li>
+    <li>Compute the bad-character shift, the good-suffix shift $\gamma$ (the code's <code>gs[j+1]</code> is 9 here; say why), and the shift Boyer–Moore actually makes.</li>
+  </ol>
+  <div class="btns"><button class="btn ansbtn">Show answer</button></div>
+  <div class="ans" hidden>
+    <span class="step">(a)</span>
+    <div class="tablewrap"><table><tr><th>$c$</th><td class="mono">i</td><td class="mono">m</td><td class="mono">b</td><td class="mono">l</td><td class="mono">a</td><td class="mono">n</td><td class="mono">c</td><td class="mono">e</td><td>other</td></tr><tr><th>$\lambda(c)$</th><td>0</td><td>1</td><td>2</td><td>4</td><td>5</td><td>6</td><td>7</td><td>8</td><td>$-1$</td></tr></table></div>
+    <p>$a$ occurs at 3 and 5; the table keeps the rightmost, 5. Every other character (including space) gets $-1$.</p>
+    <span class="step">(b)</span>
+    <p>The window is $T[5..13]$ = <span class="mono">we notice</span>. $j=8$: $e = e$; $j=7$: $c = c$; $j=6$: $P[6] = n$ against $T[11] = i$, mismatch. Bad character $i$, good suffix <span class="mono">ce</span>.</p>
+    <span class="step">(c)</span>
+    <p>Bad character: $j - \lambda(i) = 6 - 0 = 6$, lining up the $i$ in $T$ with the $i$ at the front of $P$. Good suffix: <span class="mono">ce</span> appears nowhere else in $P$, and no prefix of $P$ (starting with $i$) is a suffix of <span class="mono">ce</span>, so no partial overlap can survive either: shift the whole length, 9. Boyer–Moore takes $\max(6, 9) = 9$.</p>
+    <p><strong>The moral:</strong> the slide shows the bad-character move, but at this alignment the good-suffix rule is the one that wins.</p>
+  </div>
+</div>
+
+<div class="q" data-id="D2" data-t="trace">
+  <div class="qtop"><span class="qid">D2</span><span class="tag trace">trace</span></div>
+  <p>Slide 22's example: <span class="mono">T = "the late edition of"</span>, <span class="mono">P = "edited"</span>. The slide 24 code gives</p>
+  <p class="mono">gs = [4, 4, 4, 4, 4, 6, 1]</p>
+  <ol class="parts">
+    <li>At $s = 5$, find the mismatch and confirm the slide's shift of 4 from both heuristics.</li>
+    <li>Explain <code>gs[6] = 1</code> and <code>gs[0] = 4</code>.</li>
+    <li>Explain <code>gs[5] = 6</code>: a mismatch at $j = 4$, with only <span class="mono">d</span> matched. The <span class="mono">d</span> at index 1 suggests a shift of 4. Why does the code refuse it?</li>
+  </ol>
+  <div class="btns"><button class="btn hintbtn">Hint</button><button class="btn ansbtn">Show answer</button></div>
+  <div class="hint" hidden><p>For (c): after the mismatch at $j=4$, what do you know about the text character at that position? What character would the shift-by-4 alignment put there?</p></div>
+  <div class="ans" hidden>
+    <span class="step">(a)</span>
+    <p>Window $T[5..10]$ = <span class="mono">ate ed</span>. $j=5$: $d=d$; $j=4$: $e=e$; $j=3$: $P[3] = t$ against a space. Bad character: space $\notin P$, so $3 - (-1) = 4$. Good suffix <span class="mono">ed</span> recurs at the front of $P$, a shift of 4: <code>gs[4] = 4</code>. Both give 4 ✓.</p>
+    <span class="step">(b)</span>
+    <p><code>gs[6]</code> is used when $j = 5$, i.e. nothing matched: no information, so shift 1 (the bad-character rule supplies anything bigger). <code>gs[0]</code> is used after a full match: shift to the next place $P$ could overlap itself, which is the length minus the longest border, $6 - 2 = 4$ (border <span class="mono">ed</span>).</p>
+    <span class="step">(c)</span>
+    <p>At $j = 4$ the text character under $P[4] = e$ is known <em>not</em> to be $e$. Shifting by 4 would place $P[0] = e$ on that very character, so it is guaranteed to fail. The code's rule only accepts a recurrence of the good suffix whose preceding character differs from $P[j]$; there is none, and the longest prefix of $P$ that is a suffix of <span class="mono">d</span> is empty, so it shifts the full 6.</p>
+    <div class="warn"><p>Slide 22's sentence describes the weaker rule ("matches all the characters it still overlaps"), which would give 4 here. The slide 24 code implements the stronger rule, which also uses the mismatched character. The two agree whenever the recurrence is preceded by a different character or by nothing at all, as in (a).</p></div>
+  </div>
+</div>
+
+<div class="q" data-id="D3" data-t="trace">
+  <div class="qtop"><span class="qid">D3</span><span class="tag trace">trace</span></div>
+  <p>Run the slide 25 Boyer–Moore code on</p>
+  <p class="mono">T = "here is a simple example" &nbsp;&nbsp; P = "example"</p>
+  <p>The good-suffix table is <code>gs = [6, 6, 6, 6, 6, 6, 6, 1]</code>. For each alignment record $s$, the mismatch position $j$, the bad character, both suggested shifts and the shift taken. Count the alignments and the character comparisons.</p>
+  <div class="btns"><button class="btn hintbtn">Hint</button><button class="btn ansbtn">Show answer</button></div>
+  <div class="hint" hidden><p>Number the text from 0 and write the indices under it before starting. The spaces are characters.</p></div>
+  <div class="ans" hidden>
+    <span class="step">Last-occurrence table</span>
+    <div class="tablewrap"><table><tr><th>$c$</th><td class="mono">x</td><td class="mono">a</td><td class="mono">m</td><td class="mono">p</td><td class="mono">l</td><td class="mono">e</td><td>other</td></tr><tr><th>$\lambda(c)$</th><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>$-1$</td></tr></table></div>
+    <span class="step">Trace</span>
+    <div class="tablewrap"><table><tr><th>$s$</th><th>window</th><th>$j$</th><th>bad char</th><th>$j-\lambda$</th><th><code>gs[j+1]</code></th><th>shift</th></tr><tr><td>0</td><td class="mono">here␣is</td><td>6</td><td class="mono">s</td><td>$7$</td><td>1</td><td><strong>7</strong></td></tr><tr><td>7</td><td class="mono">␣a␣simp</td><td>6</td><td class="mono">p</td><td>$2$</td><td>1</td><td><strong>2</strong></td></tr><tr><td>9</td><td class="mono">␣simple</td><td>2</td><td class="mono">i</td><td>$3$</td><td>6</td><td><strong>6</strong></td></tr><tr><td>15</td><td class="mono">e␣examp</td><td>6</td><td class="mono">p</td><td>$2$</td><td>1</td><td><strong>2</strong></td></tr><tr class="hit"><td>17</td><td class="mono">example</td><td>match</td><td>—</td><td>—</td><td><code>gs[0]</code> $=6$</td><td>6</td></tr></table></div>
+    <span class="step">Result</span>
+    <p>Five alignments, one occurrence at $s = 17$, and 15 character comparisons against a text of 24 characters.</p>
+    <span class="step">Checks</span>
+    <p>At $s = 9$ the window is <span class="mono">" simple"</span>: <span class="mono">mple</span> matched and $P[2] = a$ met $i$. Bad character gives only 3, but the good suffix <span class="mono">mple</span> ends in $e$, a prefix of <span class="mono">example</span>, so <code>gs[3] = 6</code> wins. $T[17..23]$ = <span class="mono">example</span> ✓. Comparisons: $1 + 1 + 5 + 1 + 7 = 15$ ✓.</p>
+  </div>
+</div>
+
+<div class="q" data-id="D4" data-t="code">
+  <div class="qtop"><span class="qid">D4</span><span class="tag code">code</span><span class="ptitle">Bad Characters</span><span class="limits">Time limit 2 s</span></div>
+  <p>A simplified Boyer–Moore uses the bad-character rule alone, made safe with a floor of 1. Compare right-to-left; on a mismatch at index $j$ with text character $c$, shift by $\max\big(1, j - \lambda(c)\big)$ where $\lambda(c)$ is the rightmost index of $c$ in $P$ or $-1$; after a full match, shift by 1. Report how many occurrences it finds and how many alignments it tries.</p>
+  <span class="sec">Input</span>
+  <p>Two lines: the text $T$ and the pattern $P$, each of printable ASCII and possibly containing spaces (read whole lines, not tokens). $1 \le |P| \le |T| \le 10^5$.</p>
+  <span class="sec">Output</span>
+  <p>Two lines: the number of occurrences of $P$ in $T$, then the number of alignments tried.</p>
+  <div class="io"><div><p class="lab">Sample input 1</p><pre>here is a simple example
+example</pre></div><div><p class="lab">Sample output 1</p><pre>1
+5</pre></div></div>
+  <div class="io"><div><p class="lab">Sample input 2</p><pre>aaaaaa
+aa</pre></div><div><p class="lab">Sample output 2</p><pre>5
+5</pre></div></div>
+  <div class="btns"><button class="btn hintbtn">Hint</button><button class="btn ansbtn">Show answer</button></div>
+  <div class="hint" hidden><p>Strip only the newline from each line; <code>input().split()</code> or <code>strip()</code> will eat significant spaces.</p></div>
+  <div class="ans" hidden>
+    <span class="step">Approach</span>
+    <p>Slide 23's <code>last_occurrence</code> plus slide 25's loop with the good-suffix term replaced by 1. Count an alignment each time the outer loop starts a comparison.</p>
+    <span class="step">Reference solution</span>
+    <pre><code>import sys
+
+def main():
+    text = sys.stdin.readline().rstrip(&quot;\n&quot;)
+    pattern = sys.stdin.readline().rstrip(&quot;\n&quot;)
+    n, m = len(text), len(pattern)
+    last = {}
+    for i, c in enumerate(pattern):
+        last[c] = i
+    s = 0
+    found = 0
+    tried = 0
+    while s &lt;= n - m:
+        tried += 1
+        j = m - 1
+        while j &gt;= 0 and pattern[j] == text[s + j]:
+            j -= 1
+        if j &lt; 0:
+            found += 1
+            s += 1
+        else:
+            s += max(1, j - last.get(text[s + j], -1))
+    print(found)
+    print(tried)
+
+main()</code></pre>
+    <span class="step">Checks</span>
+    <p>Sample 1 is the D3 input: 5 alignments, the same count as full Boyer–Moore though by a different path (at $s = 9$ it shifts only 3; at $s = 12$ the text's $x$ gives 5). Sample 2 is the worst case: $n - m + 1 = 5$ alignments, every one a full match. Occurrence counts tested against a brute-force count on 300 random cases with spaces.</p>
+  </div>
+</div>
+
+</section>
+<section class="part" id="partE">
+  <div class="parthead">
+    <h2>Part E · Choosing, mixed and recall</h2>
+    <div class="meta"><span class="partcount">3</span> questions · ~25 min</div>
+  </div>
+  <p class="lead">Slide 26 and everything before it, unsignposted. E2 is the highest-value item: each false claim is a sentence an exam could ask you to refute.</p>
+
+<div class="q" data-id="E1" data-t="reason">
+  <div class="qtop"><span class="qid">E1</span><span class="tag reason">reason</span></div>
+  <p>Pick Rabin–Karp, the automaton, KMP or Boyer–Moore for each situation, with a one-line reason.</p>
+  <ol class="parts">
+    <li>Find a 20-base primer in a 3-billion-base genome ($\Sigma = \{A, C, G, T\}$).</li>
+    <li>A text editor's "find" for an English word in a long document.</li>
+    <li>Scan a network byte stream for an attack signature. The stream can't be re-read, and an attacker controls its contents.</li>
+    <li>Check every 50-character window of 10,000 submissions against a list of 500 different 50-character fingerprints.</li>
+    <li>Search for $a^{1000}$ in a text that is almost entirely $a$'s.</li>
+    <li>Repeatedly search Unicode text ($|\Sigma| \approx 150{,}000$) for a 1000-character pattern.</li>
+  </ol>
+  <div class="btns"><button class="btn ansbtn">Show answer</button></div>
+  <div class="ans" hidden>
+    <span class="step">(a) Automaton or KMP</span>
+    <p>With $|\Sigma| = 4$ the automaton's table is only $21 \times 4$, and matching is one lookup per base. Boyer–Moore skips little on a 4-letter alphabet, since almost every text character occurs in the pattern.</p>
+    <span class="step">(b) Boyer–Moore</span>
+    <p>Large alphabet, ordinary text, most text characters rare in the pattern: long skips, sublinear in practice.</p>
+    <span class="step">(c) KMP</span>
+    <p>Worst-case $O(n)$ that an adversary can't break, and the text pointer only moves forward, one character at a time. Boyer–Moore's $O(nm)$ worst case is exactly what a hostile input would target.</p>
+    <span class="step">(d) Rabin–Karp</span>
+    <p>Hash each window once and look the residue up in a set of the 500 fingerprint hashes; verify only on a hit. The other algorithms handle one pattern at a time.</p>
+    <span class="step">(e) KMP</span>
+    <p>Matches everywhere: Boyer–Moore does $m$ comparisons at each of the $n-m+1$ alignments, and Rabin–Karp verifies every window in full. KMP's reset to <code>pi[m-1]</code> $= m-1$ makes each further match $O(1)$.</p>
+    <span class="step">(f) KMP (or Boyer–Moore)</span>
+    <p>The automaton's table would be $1001 \times 150{,}000 \approx 1.5\times 10^8$ entries. KMP's preprocessing is $O(m)$ regardless of alphabet; Boyer–Moore is also attractive here with $\lambda$ stored as a dictionary.</p>
+    <p><strong>The discriminating questions:</strong> do I need a worst-case guarantee, how large is the alphabet, and how many patterns are there?</p>
+  </div>
+</div>
+
+<div class="q" data-id="E2" data-t="reason">
+  <div class="qtop"><span class="qid">E2</span><span class="tag reason">reason</span></div>
+  <p>Each claim is false. For each, name the mistake and give a concrete counterexample from this sheet.</p>
+  <ol class="parts">
+    <li>"If the pattern's hash equals the window's hash, $P$ occurs at that shift."</li>
+    <li>"Rabin–Karp runs in $O(n + m)$ time."</li>
+    <li>"KMP never examines the same text character twice."</li>
+    <li>"The automaton matches in $O(n)$, like KMP, so it is never the worse choice."</li>
+    <li>"The bad-character rule is a correct matcher on its own; the good-suffix rule just makes it faster."</li>
+    <li>"Boyer–Moore is always at least as fast as KMP, because it can skip characters."</li>
+  </ol>
+  <div class="btns"><button class="btn ansbtn">Show answer</button></div>
+  <div class="ans" hidden>
+    <span class="step">(a) hash equality is necessary, not sufficient</span>
+    <p>A1: window <span class="mono">cbab</span> (value 64) has residue 9 mod 11, the same as <span class="mono">ccba</span> (value 75), but is not the pattern. Equal residues only license verification.</p>
+    <span class="step">(b) expected, not worst case</span>
+    <p>$O(n+m)$ is the expected bound with a good $q$ and few matches. $T = a^n$, $P = a^m$ verifies every window: $m(n-m+1)$.</p>
+    <span class="step">(c) amortised, not per character</span>
+    <p>C2: $T[6] = c$ is compared three times. The true statement is that the <em>total</em> number of comparisons is at most about $2n$ (C3).</p>
+    <span class="step">(d) ignores preprocessing</span>
+    <p>Matching is $O(n)$, but building the table is $O(m|\Sigma|)$. E1(f): about $1.5\times 10^8$ entries before reading a single text character.</p>
+    <span class="step">(e) the shift can be non-positive</span>
+    <p><span class="mono">drab</span> on <span class="mono">brabham</span>: at $s = 0$ the mismatch is at $j = 0$ on $b$, and $\lambda(b) = 3$ gives $0 - 3 = -3$. Used alone without a $\max(1, \cdot)$ guard, the matcher moves backwards or loops forever.</p>
+    <span class="step">(f) best case is not worst case</span>
+    <p>$a^{10}$ against $a^3$ costs Boyer–Moore 24 comparisons; KMP does it with one comparison per text character. On repetitive input, the skips vanish.</p>
+  </div>
+</div>
+
+<div class="q" data-id="E3" data-t="reason">
+  <div class="qtop"><span class="qid">E3</span><span class="tag reason">reason</span></div>
+  <p>Closed book. Write out each from memory, then check.</p>
+  <ol class="parts">
+    <li>The pattern-matching problem and the definition of a valid shift.</li>
+    <li>Rabin–Karp's rolling update, why it works mod $q$, and what a spurious hit is.</li>
+    <li>The automaton's state invariant and the rule $\delta(k,a) = \delta(\pi(k),a)$ with its condition.</li>
+    <li>The definition of <code>pi</code>, its two easy properties, and KMP's update after a mismatch and after a full match.</li>
+    <li>The bad-character shift, the good-suffix idea, and how Boyer–Moore combines them.</li>
+    <li>The preprocessing and matching costs of all four algorithms.</li>
+  </ol>
+  <div class="btns"><button class="btn ansbtn">Show answer</button></div>
+  <div class="ans" hidden>
+    <span class="step">(a)</span>
+    <p>Given text $T$ (length $n$) and pattern $P$ (length $m$) over $\Sigma$, find the shifts $s$ with $T[s+j] = P[j]$ for all $0 \le j \lt m$ (slide 4).</p>
+    <span class="step">(b)</span>
+    <p>$z' = \big((z - T[s]\, d^{m-1})\, d + T[s+m]\big) \bmod q$. Mod $q$ keeps values in a word; equality mod $q$ is implied by string equality, so different residues reject safely. Spurious hit: equal residues, different strings.</p>
+    <span class="step">(c)</span>
+    <p>State $k$: $P[0..k-1]$ is the longest prefix of $P$ that is a suffix of the text read. For $a \ne P[k]$ (or $k = m$), $\delta(k,a) = \delta(\pi(k),a)$.</p>
+    <span class="step">(d)</span>
+    <p><code>pi[i]</code> = length of the longest proper prefix of $P[0..i]$ that is also its suffix. <code>pi[0] = 0</code>; <code>pi[i] ≤ pi[i-1] + 1</code>. Mismatch: <code>q = pi[q-1]</code> repeatedly while $q \gt 0$; full match: report $i - m + 1$, then <code>q = pi[m-1]</code>.</p>
+    <span class="step">(e)</span>
+    <p>Bad character: $j - \lambda(T[s+j])$, with $\lambda$ the rightmost index in $P$ or $-1$; may be $\le 0$. Good suffix: smallest shift that realigns the already-matched suffix $P[j+1..]$ with another copy of itself in $P$ (or with a prefix of $P$ that overlaps it), from table <code>gs[j+1]</code>, always $\ge 1$. Shift by the maximum; after a full match shift <code>gs[0]</code>.</p>
+    <span class="step">(f)</span>
+    <div class="tablewrap"><table>
+      <tr><th>algorithm</th><th>preprocessing</th><th>matching</th></tr>
+      <tr><td class="l">Rabin–Karp</td><td>$O(m)$</td><td>$O(n)$ expected, $O(m(n-m+1))$ worst</td></tr>
+      <tr><td class="l">Automaton</td><td>$O(m\,|\Sigma|)$</td><td>$O(n)$</td></tr>
+      <tr><td class="l">KMP</td><td>$O(m)$</td><td>$O(n)$</td></tr>
+      <tr><td class="l">Boyer–Moore</td><td>$O(m + |\Sigma|)$</td><td>sublinear best, $O(nm)$ worst</td></tr>
+    </table></div>
+  </div>
+</div>
+
+</section>
+</main>
+
+<footer class="end">
+  <p>Built from CITS3001 Lecture 18, String Matching (Department of Computer Science and Software Engineering, UWA), following CLRS §32. Slide numbers in part leads match the lecture PDF, and algorithm code is referenced by the slide it appears on.</p>
+  <p>Every table, shift and sample output was generated by running the slide code or the reference programs, and each reference program was checked against a brute-force solution on 300 random cases. Reference programs avoid type annotations so they run on DOMjudge's Python.</p>
+</footer>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<script>
+(function(){
+  "use strict";
+
+  function all(sel, root){ return Array.prototype.slice.call((root || document).querySelectorAll(sel)); }
+
+  function renderMath(){
+    if (typeof window.renderMathInElement !== "function") return;
+    try {
+      window.renderMathInElement(document.body, {
+        delimiters: [
+          {left: "$$", right: "$$", display: true},
+          {left: "\\[", right: "\\]", display: true},
+          {left: "$", right: "$", display: false}
+        ],
+        ignoredTags: ["script", "noscript", "style", "textarea", "option", "pre", "code"],
+        throwOnError: false
+      });
+    } catch (e) { /* raw LaTeX stays readable if this fails */ }
+  }
+
+  document.addEventListener("click", function(ev){
+    var t = ev.target;
+    if (!t.classList) return;
+    if (t.classList.contains("ansbtn") || t.classList.contains("hintbtn")) {
+      var card = t.closest(".q");
+      if (!card) return;
+      var isHint = t.classList.contains("hintbtn");
+      var box = card.querySelector(isHint ? ".hint" : ".ans");
+      if (!box) return;
+      if (box.hasAttribute("hidden")) {
+        box.removeAttribute("hidden");
+        t.textContent = isHint ? "Hide hint" : "Hide answer";
+      } else {
+        box.setAttribute("hidden", "");
+        t.textContent = isHint ? "Hint" : "Show answer";
+      }
+    }
+  });
+
+  document.getElementById("hideall").addEventListener("click", function(){
+    all(".ans, .hint").forEach(function(b){ b.setAttribute("hidden", ""); });
+    all(".ansbtn").forEach(function(b){ b.textContent = "Show answer"; });
+    all(".hintbtn").forEach(function(b){ b.textContent = "Hint"; });
+  });
+
+  renderMath();
+})();
+</script>
+</body>
+</html>

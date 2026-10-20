@@ -1,0 +1,1021 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>CITS3005 Lectures 2–3 worksheet — Propositional logic, FOL and logic programming</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<style>
+  :root{
+    color-scheme:light;
+    --bg:#faf2e4; --bg-fade:rgba(250,242,228,.95); --card:#fffbf2; --ans-bg:#f6ecdb;
+    --ink:#2f221c; --muted:#6f564b; --line:#e6d6be; --line-2:#a58b66; --rule:#8f2e21;
+    --prove:#b23a22; --prove-bg:#f0bcac; --prove-fg:#7d1d12;
+    --compute:#b4601a; --compute-bg:#f7dab9; --compute-fg:#8a3f0d;
+    --recall:#9c7a22; --recall-bg:#faeee1; --recall-fg:#7a5540;
+    --accent:#a63125;
+    --btn-bg:#fffbf2; --btn-hover:#f4e9d5;
+    --ansbtn-bd:#d9a08c; --ansbtn-fg:#8f2e21; --ansbtn-hover:#fbe6dc;
+    --hint-bg:#fdf0e3; --th-bg:#efe2c9; --code-bg:#f0e4cd; --pre-bg:#f3e9d6;
+    --warn-bd:#c7952f; --warn-bg:#fbf2dd;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth; background:var(--bg); min-height:100%;}
+  body{margin:0; background:var(--bg); min-height:100vh; color:var(--ink); font-family:var(--serif); font-size:16.5px; line-height:1.55;}
+  .wrap{max-width:900px; margin:0 auto; padding:0 22px 100px;}
+  main{display:block;}
+
+  .bar{position:sticky; top:0; z-index:30; background:var(--bg-fade); border-bottom:1px solid var(--line); backdrop-filter:blur(8px);}
+  .bar-in{max-width:900px; margin:0 auto; padding:9px 22px; display:flex; flex-wrap:wrap; align-items:center; gap:8px 12px; font-family:var(--sans); font-size:12.5px; color:var(--muted);}
+  .bar .btn{padding:4px 9px; font-size:11.5px;}
+  .bar a{color:var(--muted); text-decoration:none; font-weight:600;}
+  .bar a:hover{color:var(--accent);}
+
+  header.top{padding:34px 0 6px;}
+  .eyebrow{font-family:var(--sans); font-size:11.5px; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:var(--accent); margin:0 0 8px;}
+  h1{font-size:31px; line-height:1.18; font-weight:600; margin:0 0 6px; letter-spacing:-.01em;}
+  .sub{color:var(--muted); font-size:15px; margin:0 0 22px;}
+
+  .howto{background:var(--card); border:1px solid var(--line); border-radius:12px; padding:16px 18px; margin:0 0 10px;}
+  .howto h3{font-family:var(--sans); font-size:12px; letter-spacing:.09em; text-transform:uppercase; color:var(--muted); margin:0 0 10px; font-weight:700;}
+  .howto p{margin:0 0 9px; font-size:15.5px;}
+  .howto p:last-child{margin-bottom:0;}
+  .howto ul{margin:4px 0 0; padding-left:20px; font-size:14.5px;}
+  .key{display:flex; flex-wrap:wrap; gap:16px; margin:12px 0 4px; font-size:14.5px;}
+  .key div{display:flex; align-items:baseline; gap:7px;}
+  .flag{border-left:3px solid var(--prove); padding-left:12px; margin-top:14px; font-size:14.5px; color:var(--muted);}
+
+  section.part{margin:44px 0 0; scroll-margin-top:56px;}
+  .parthead{display:flex; align-items:baseline; gap:12px; border-bottom:2px solid var(--rule); padding-bottom:7px; margin-bottom:4px;}
+  .parthead h2{font-size:22px; font-weight:600; margin:0; letter-spacing:-.005em;}
+  .parthead .meta{margin-left:auto; font-family:var(--sans); font-size:12px; color:var(--muted); white-space:nowrap;}
+  .partcount{font-weight:700; color:var(--ink);}
+  .lead{color:var(--muted); font-size:15px; margin:10px 0 4px;}
+
+  .q{background:var(--card); border:1px solid var(--line); border-left:4px solid var(--line); border-radius:10px; padding:15px 17px; margin:16px 0;}
+  .q[data-t="prove"]{border-left-color:var(--prove);}
+  .q[data-t="compute"]{border-left-color:var(--compute);}
+  .q[data-t="recall"]{border-left-color:var(--recall);}
+  .qtop{display:flex; align-items:center; gap:9px; margin-bottom:9px;}
+  .qid{font-family:var(--sans); font-size:13px; font-weight:700; letter-spacing:.05em;}
+  .marks{margin-left:auto; font-family:var(--sans); font-size:11.5px; color:var(--muted);}
+  .tag{font-family:var(--sans); font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.09em; padding:2.5px 8px; border-radius:99px;}
+  .tag.prove{background:var(--prove-bg); color:var(--prove-fg);}
+  .tag.compute{background:var(--compute-bg); color:var(--compute-fg);}
+  .tag.recall{background:var(--recall-bg); color:var(--recall-fg);}
+  .q p{margin:0 0 9px;}
+  .q ol,.q ul{margin:6px 0 9px; padding-left:22px;}
+  .q li{margin:4px 0;}
+  ol.parts{list-style:none; padding-left:0; counter-reset:pp;}
+  ol.parts > li{counter-increment:pp; position:relative; padding-left:28px; margin:6px 0;}
+  ol.parts > li::before{content:"(" counter(pp,lower-alpha) ")"; position:absolute; left:0; color:var(--muted); font-family:var(--sans); font-size:13px; top:1px;}
+  ol.roman{list-style:none; padding-left:0; counter-reset:rr;}
+  ol.roman > li{counter-increment:rr; position:relative; padding-left:34px; margin:6px 0;}
+  ol.roman > li::before{content:"(" counter(rr,lower-roman) ")"; position:absolute; left:0; color:var(--muted); font-family:var(--sans); font-size:13px; top:1px;}
+
+  .btns{display:flex; gap:8px; margin-top:11px; flex-wrap:wrap;}
+  .btn{font-family:var(--sans); font-size:12.5px; font-weight:600; border:1px solid var(--line-2); background:var(--btn-bg); color:var(--ink); padding:6px 12px; border-radius:7px; cursor:pointer; transition:background .12s, border-color .12s;}
+  .btn:hover{background:var(--btn-hover); border-color:var(--rule);}
+  .btn:focus-visible{outline:2px solid var(--accent); outline-offset:2px;}
+  .btn.ansbtn{border-color:var(--ansbtn-bd); color:var(--ansbtn-fg);}
+  .btn.ansbtn:hover{background:var(--ansbtn-hover); border-color:var(--prove);}
+
+  .hint{margin-top:11px; padding:10px 13px; border-left:3px solid var(--recall); background:var(--hint-bg); border-radius:0 7px 7px 0; font-size:15.5px;}
+  .hint p{margin:0;}
+  .ans{margin-top:11px; padding:13px 15px; background:var(--ans-bg); border:1px solid var(--line); border-radius:9px; font-size:15.5px;}
+  .ans p{margin:0 0 9px;}
+  .ans p:last-child{margin-bottom:0;}
+  .ans .step{font-family:var(--sans); font-size:11px; font-weight:700; letter-spacing:.07em; text-transform:uppercase; color:var(--muted); display:block; margin:12px 0 4px;}
+  .ans .step:first-child{margin-top:0;}
+  .ans table,.q table{border-collapse:collapse; margin:8px 0 10px; font-size:14.5px;}
+  .ans th,.ans td,.q th,.q td{border:1px solid var(--line); padding:4px 10px; text-align:center;}
+  .ans th,.q th{background:var(--th-bg); font-family:var(--sans); font-size:12px; font-weight:600;}
+  .tablewrap{overflow-x:auto; margin:8px 0 10px;}
+  .tablewrap table{margin:0;}
+  td.l,th.l{text-align:left !important;}
+
+  /* natural deduction proofs (Fitch style) */
+  .ans table.nd,.q table.nd{font-size:15px; margin:2px 0;}
+  .ans table.nd td,.q table.nd td{border:none; padding:1px 8px; text-align:left; vertical-align:middle;}
+  table.nd td.ln{color:var(--muted); font-family:var(--sans); font-size:12px; text-align:right; width:28px; padding-right:4px;}
+  table.nd td.rl{color:var(--muted); font-size:14px; white-space:nowrap; padding-left:18px;}
+  table.nd td.fm{white-space:nowrap;}
+  .bx{border-left:2px solid var(--line-2); padding:1px 0 1px 11px;}
+  .asf{display:inline-block; border-bottom:1px solid var(--line-2); padding-bottom:2px;}
+  .ndnote{font-family:var(--sans); font-size:12px; color:var(--prove-fg); margin-left:6px;}
+  .bad td{background:var(--prove-bg);}
+
+  .warn{border-left:3px solid var(--warn-bd); background:var(--warn-bg); padding:9px 12px; border-radius:0 7px 7px 0; margin:10px 0;}
+  .warn p{margin:0;}
+  code{font-family:var(--mono); font-size:14px; background:var(--code-bg); padding:1px 5px; border-radius:4px;}
+  pre.pl{font-family:var(--mono); font-size:13.5px; line-height:1.45; background:var(--pre-bg); border:1px solid var(--line); border-radius:7px; padding:9px 12px; margin:8px 0 10px; overflow-x:auto; white-space:pre;}
+  .katex{font-size:1.02em;}
+  footer.end{margin-top:52px; padding-top:16px; border-top:1px solid var(--line); font-size:13.5px; color:var(--muted);}
+
+  @media(max-width:640px){
+    body{font-size:16px;} .wrap{padding:0 15px 80px;} h1{font-size:25px;}
+    .bar-in{padding:8px 15px;} .qtop{flex-wrap:wrap;}
+  }
+  @media print{
+    body{-webkit-print-color-adjust:exact; print-color-adjust:exact;}
+    .bar,.btns{display:none !important;}
+    .ans,.hint{display:block !important;}
+    .q{break-inside:avoid;}
+  }
+  @media (prefers-reduced-motion:reduce){ *{transition:none !important; scroll-behavior:auto !important;} }
+</style>
+</head>
+<body>
+
+<div class="bar">
+  <div class="bar-in">
+    <a href="#partA">A</a><a href="#partB">B</a><a href="#partC">C</a><a href="#partD">D</a><a href="#partE">E</a><a href="#partF">F</a><a href="#partG">G</a>
+    <button class="btn" id="hideall">Hide all answers</button>
+  </div>
+</div>
+
+<div class="wrap">
+<header class="top">
+  <p class="eyebrow">CITS3005 · Lectures 2–3 · Exam revision</p>
+  <h1>Propositional logic, first-order logic and logic programming</h1>
+  <p class="sub">35 problems on Lectures 2 and 3, in lecture order, finishing under exam conditions. Every answer is a full worked solution, not just a final verdict.</p>
+
+  <div class="howto">
+    <h3>How to use this</h3>
+    <p>Do a part, not the sheet. Seven parts, about two and a quarter hours in total. Parts B and D (natural deduction) are the heavy ones, so give each its own sitting.</p>
+    <p>On derivation questions, write the full numbered proof on paper before opening the answer: every line gets its rule and the line numbers it uses, exactly as the exam expects. Marks in brackets are calibrated to the 2025 paper.</p>
+    <div class="key">
+      <div><span class="tag recall">recall</span> <span>state, define, explain</span></div>
+      <div><span class="tag compute">compute</span> <span>translate, evaluate, trace</span></div>
+      <div><span class="tag prove">prove</span> <span>write the derivation properly</span></div>
+    </div>
+    <p class="flag"><strong>Errata in the slides.</strong> L2 slide 13 writes the interpretation $I(x)=T,\ I(y)=F,\ I(z)=F$ as the set $\{x,y\}$; it should be $\{x\}$, and the slip flips the truth value of the example formula (A3). L3 slide 32 says the Tube knowledge base lets us derive that Bond Street and Charing Cross are <em>not</em> nearby, but the query succeeds, as slide 35's own trace shows (E3).</p>
+  </div>
+</header>
+
+<main>
+
+<section class="part" id="partA">
+  <div class="parthead">
+    <h2>Part A · Semantics of propositional logic</h2>
+    <div class="meta"><span class="partcount">4</span> questions · ~12 min</div>
+  </div>
+  <p class="lead">L2 slides 9–16. The one idea to hold onto: an interpretation is just the set of atoms that are true, and $\models$ is computed by recursion on the formula. A4 is the highest-value item. A countermodel is the only way to show that an entailment fails.</p>
+
+  <div class="q" data-id="A1" data-t="compute">
+    <div class="qtop"><span class="qid">A1</span><span class="tag compute">compute</span><span class="marks">[4 marks]</span></div>
+    <p>Label each formula <em>valid</em>, <em>satisfiable but not valid</em>, or <em>unsatisfiable</em>. For each satisfiable-but-not-valid formula, give one falsifying interpretation as a set of atoms.</p>
+    <ol class="parts">
+      <li>$(x \land y) \to z$</li>
+      <li>$x \to y$</li>
+      <li>$x \land \neg x$</li>
+      <li>$(x \to y) \lor (y \to x)$</li>
+      <li>$(x \to y) \to (\neg y \to \neg x)$</li>
+      <li>$x \leftrightarrow \neg x$</li>
+      <li>$((x \to y) \to x) \to x$</li>
+      <li>$(x \to y) \to (y \to x)$</li>
+    </ol>
+    <div class="btns"><button class="btn hintbtn">Hint</button><button class="btn ansbtn">Show answer</button></div>
+    <div class="hint" hidden><p>Don't write eight-row truth tables. To refute, find one row that makes the formula false. To show validity, split on a single atom and show both cases come out true.</p></div>
+    <div class="ans" hidden>
+      <div class="tablewrap"><table>
+        <tr><th></th><th>status</th><th class="l">falsifying $I$ / reason</th></tr>
+        <tr><td>(a)</td><td>satisfiable</td><td class="l">$I=\{x,y\}$: antecedent true, $z$ false</td></tr>
+        <tr><td>(b)</td><td>satisfiable</td><td class="l">$I=\{x\}$</td></tr>
+        <tr><td>(c)</td><td>unsatisfiable</td><td class="l">needs $x\in I$ and $x\notin I$</td></tr>
+        <tr><td>(d)</td><td>valid</td><td class="l">if $y\in I$ the left disjunct holds; if $y\notin I$ the right one does</td></tr>
+        <tr><td>(e)</td><td>valid</td><td class="l">contrapositive (proved in B4)</td></tr>
+        <tr><td>(f)</td><td>unsatisfiable</td><td class="l">both sides always differ</td></tr>
+        <tr><td>(g)</td><td>valid</td><td class="l">Peirce's law (see below)</td></tr>
+        <tr><td>(h)</td><td>satisfiable</td><td class="l">$I=\{y\}$: $x\to y$ true, $y \to x$ false</td></tr>
+      </table></div>
+      <span class="step">Case split for (g)</span>
+      <p>If $x\in I$, the consequent $x$ is true, so the whole implication is true. If $x\notin I$, then $x\to y$ is true (false antecedent), so $(x\to y)\to x$ is $T\to F = F$, and an implication with a false antecedent is true. Both cases are true, so it is valid.</p>
+      <p><strong>Why this matters:</strong> (g) is valid classically, but it has no intuitionistic proof. In natural deduction you'd need PBC, LEM or DNE (L2 slide 25). That's the same pattern as B6.</p>
+    </div>
+  </div>
+
+  <div class="q" data-id="A2" data-t="compute">
+    <div class="qtop"><span class="qid">A2</span><span class="tag compute">compute</span><span class="marks">[3 marks]</span></div>
+    <p>L2 slide 14 evaluates $x \to (y \land z)$ under $I=\{y,z\}$.</p>
+    <ol class="parts">
+      <li>Carry the evaluation through using the recursive definition of $\models$, naming the clause used at each step.</li>
+      <li>The slide asks "what other interpretations would work here?" List every interpretation over $\{x,y,z\}$ that satisfies the formula.</li>
+    </ol>
+    <div class="btns"><button class="btn ansbtn">Show answer</button></div>
+    <div class="ans" hidden>
+      <span class="step">(a)</span>
+      <p>$I\models x\to(y\land z) \iff I\models y\land z$ or $I\nvDash x$ (clause for $\to$). Next, $I\models y\land z \iff I\models y$ and $I\models z$ (clause for $\land$). Then $I\models y\iff y\in I$, and likewise for $z$ (atom clause). Both $y$ and $z$ are in $I$, so the left disjunct holds and the formula is true. (The right disjunct holds too, since $x\notin I$.)</p>
+      <span class="step">(b)</span>
+      <p>The formula is false exactly when $x\in I$ and $y\land z$ fails. That is three interpretations: $\{x\},\{x,y\},\{x,z\}$. Every other interpretation satisfies it:</p>
+      <p>$\emptyset,\ \{y\},\ \{z\},\ \{y,z\},\ \{x,y,z\}$</p>
+      <p><span class="step">Checks</span>$5$ models $+\ 3$ non-models $= 8 = 2^3$ ✓</p>
+    </div>
+  </div>
+
+  <div class="q" data-id="A3" data-t="compute">
+    <div class="qtop"><span class="qid">A3</span><span class="tag compute">compute</span><span class="marks">[3 marks]</span></div>
+    <p>L2 slide 13 gives the interpretation $I(x)=T$, $I(y)=F$, $I(z)=F$ for the formula $\alpha \equiv \neg(x\land y)\to z$.</p>
+    <ol class="parts">
+      <li>Write $I$ as a subset of $\mathcal{P}=\{x,y,z\}$.</li>
+      <li>Evaluate $\alpha$ and $\beta \equiv (x\land y)\to z$ under $I$.</li>
+      <li>List every model of $\alpha$.</li>
+    </ol>
+    <div class="btns"><button class="btn ansbtn">Show answer</button></div>
+    <div class="ans" hidden>
+      <div class="warn"><p><strong>Slide erratum.</strong> The slide writes this interpretation as $\{x,y\}$. Only $x$ is assigned true, so the set is $\{x\}$. The slip matters: $\alpha$ is <em>true</em> under $\{x,y\}$ but <em>false</em> under $\{x\}$. The slide also calls $\alpha$ "the formula from the previous slide", but slide 12's formula is $\beta$, without the negation.</p></div>
+      <span class="step">(a)</span>
+      <p>$I=\{x\}$, the atoms assigned $T$.</p>
+      <span class="step">(b)</span>
+      <p>$x\land y$ is false because $y\notin I$, so $\neg(x\land y)$ is true. With $z$ false, $\alpha$ is $T\to F=F$. For $\beta$, the antecedent $x\land y$ is false, so $\beta$ is true.</p>
+      <span class="step">(c)</span>
+      <p>$\alpha$ is false exactly when $\neg(x\land y)$ is true and $z$ is false. That is $z\notin I$ and not both of $x,y$: the interpretations $\emptyset,\{x\},\{y\}$. The models are the other five:</p>
+      <p>$\{z\},\ \{x,z\},\ \{y,z\},\ \{x,y\},\ \{x,y,z\}$</p>
+      <p><span class="step">Checks</span>$\{x,y\}$ is on the list, which confirms the slide's set makes $\alpha$ true. $5+3=8$ ✓</p>
+    </div>
+  </div>
+
+  <div class="q" data-id="A4" data-t="compute">
+    <div class="qtop"><span class="qid">A4</span><span class="tag compute">compute</span><span class="marks">[6 marks]</span></div>
+    <p>For each, decide whether $S\models\alpha$. If it holds, give a one-line semantic argument. If it fails, give a countermodel.</p>
+    <ol class="parts">
+      <li>$\{p\to q,\ \neg q\}\models\neg p$</li>
+      <li>$\{p\to q,\ q\}\models p$</li>
+      <li>$\{p\lor q,\ \neg p\}\models q$</li>
+      <li>$\{p\to q\}\models q\to p$</li>
+      <li>$\{p\to (q\lor r)\}\models p\to q$</li>
+      <li>$\{(p\land q)\to r\}\models (p\to r)\lor(q\to r)$</li>
+    </ol>
+    <div class="btns"><button class="btn hintbtn">Hint</button><button class="btn ansbtn">Show answer</button></div>
+    <div class="hint" hidden><p>For (f), suppose the conclusion is false and see what that forces each atom to be.</p></div>
+    <div class="ans" hidden>
+      <div class="tablewrap"><table>
+        <tr><th></th><th>holds?</th><th class="l">argument / countermodel</th></tr>
+        <tr><td>(a)</td><td>yes</td><td class="l">a model of $\neg q$ has $q$ false; if $p$ were true, $p\to q$ would be false. So $p$ is false. (Modus tollens.)</td></tr>
+        <tr><td>(b)</td><td>no</td><td class="l">$I=\{q\}$: both premises true, $p$ false (affirming the consequent)</td></tr>
+        <tr><td>(c)</td><td>yes</td><td class="l">$p$ is false, so $p\lor q$ forces $q$ true (disjunctive syllogism)</td></tr>
+        <tr><td>(d)</td><td>no</td><td class="l">$I=\{q\}$: $p\to q$ true, $q\to p$ false (the converse)</td></tr>
+        <tr><td>(e)</td><td>no</td><td class="l">$I=\{p,r\}$: premise true via $r$, $p\to q$ false</td></tr>
+        <tr><td>(f)</td><td>yes</td><td class="l">conclusion false means $p\to r$ and $q\to r$ both false, so $p,q$ true and $r$ false. Then $(p\land q)\to r$ is false. No model of the premise falsifies the conclusion.</td></tr>
+      </table></div>
+      <p><strong>Why this matters:</strong> (f) surprises most people, which is exactly why you check semantically before trying to prove anything. A failed proof attempt never shows non-entailment; a countermodel does. By soundness, a countermodel also shows that no proof can exist (see B7).</p>
+    </div>
+  </div>
+</section>
+
+<section class="part" id="partB">
+  <div class="parthead">
+    <h2>Part B · Natural deduction: propositional</h2>
+    <div class="meta"><span class="partcount">7</span> questions · ~25 min</div>
+  </div>
+  <p class="lead">L2 slides 18–25 and 29. Use the line-by-line format from slide 20: line number, formula, rule, line references. Indented bars are open assumption boxes, and the underlined formula opens a box. The exam provides the rule sheet, so the skill being tested is choosing rules, not remembering them. B7 is the highest-value item: it plants exactly the mistakes the Homework 1 feedback called out.</p>
+
+  <div class="q" data-id="B1" data-t="prove">
+    <div class="qtop"><span class="qid">B1</span><span class="tag prove">prove</span><span class="marks">[2 marks]</span></div>
+    <p>Warm-up. Show $\alpha\land(\beta\land\gamma)\vdash(\alpha\land\beta)\land\gamma$.</p>
+    <div class="btns"><button class="btn ansbtn">Show answer</button></div>
+    <div class="ans" hidden>
+      <div class="tablewrap"><table class="nd"><tr><td class="ln">1</td><td class="fm">$\alpha \land (\beta \land \gamma)$</td><td class="rl">hyp</td></tr><tr><td class="ln">2</td><td class="fm">$\alpha$</td><td class="rl">${\land}E_l$ 1</td></tr><tr><td class="ln">3</td><td class="fm">$\beta \land \gamma$</td><td class="rl">${\land}E_r$ 1</td></tr><tr><td class="ln">4</td><td class="fm">$\beta$</td><td class="rl">${\land}E_l$ 3</td></tr><tr><td class="ln">5</td><td class="fm">$\gamma$</td><td class="rl">${\land}E_r$ 3</td></tr><tr><td class="ln">6</td><td class="fm">$\alpha \land \beta$</td><td class="rl">${\land}I$ 2, 4</td></tr><tr><td class="ln">7</td><td class="fm">$\alpha \land \beta \land \gamma$</td><td class="rl">${\land}I$ 6, 5</td></tr></table></div>
+      <p><strong>How to use this:</strong> pure elimination-then-introduction. Break everything apart with the $\land E$ rules, then rebuild with $\land I$. The right column must cite the lines used. Homework 1 lost marks for leaving it blank.</p>
+    </div>
+  </div>
+
+  <div class="q" data-id="B2" data-t="prove">
+    <div class="qtop"><span class="qid">B2</span><span class="tag prove">prove</span><span class="marks">[4 marks]</span></div>
+    <p>Show both directions of "currying":</p>
+    <ol class="parts">
+      <li>$\alpha\to(\beta\to\gamma)\vdash(\alpha\land\beta)\to\gamma$</li>
+      <li>$(\alpha\land\beta)\to\gamma\vdash\alpha\to(\beta\to\gamma)$</li>
+    </ol>
+    <div class="btns"><button class="btn ansbtn">Show answer</button></div>
+    <div class="ans" hidden>
+      <span class="step">(a)</span>
+      <div class="tablewrap"><table class="nd"><tr><td class="ln">1</td><td class="fm">$\alpha \to \beta \to \gamma$</td><td class="rl">hyp</td></tr><tr><td class="ln">2</td><td class="fm"><div class="bx"><span class="asf">$\alpha \land \beta$</span></div></td><td class="rl">assm</td></tr><tr><td class="ln">3</td><td class="fm"><div class="bx">$\alpha$</div></td><td class="rl">${\land}E_l$ 2</td></tr><tr><td class="ln">4</td><td class="fm"><div class="bx">$\beta$</div></td><td class="rl">${\land}E_r$ 2</td></tr><tr><td class="ln">5</td><td class="fm"><div class="bx">$\beta \to \gamma$</div></td><td class="rl">${\to}E$ 3, 1</td></tr><tr><td class="ln">6</td><td class="fm"><div class="bx">$\gamma$</div></td><td class="rl">${\to}E$ 4, 5</td></tr><tr><td class="ln">7</td><td class="fm">$\alpha \land \beta \to \gamma$</td><td class="rl">${\to}I$ 2–6</td></tr></table></div>
+      <span class="step">(b)</span>
+      <div class="tablewrap"><table class="nd"><tr><td class="ln">1</td><td class="fm">$\alpha \land \beta \to \gamma$</td><td class="rl">hyp</td></tr><tr><td class="ln">2</td><td class="fm"><div class="bx"><span class="asf">$\alpha$</span></div></td><td class="rl">assm</td></tr><tr><td class="ln">3</td><td class="fm"><div class="bx"><div class="bx"><span class="asf">$\beta$</span></div></div></td><td class="rl">assm</td></tr><tr><td class="ln">4</td><td class="fm"><div class="bx"><div class="bx">$\alpha \land \beta$</div></div></td><td class="rl">${\land}I$ 2, 3</td></tr><tr><td class="ln">5</td><td class="fm"><div class="bx"><div class="bx">$\gamma$</div></div></td><td class="rl">${\to}E$ 4, 1</td></tr><tr><td class="ln">6</td><td class="fm"><div class="bx">$\beta \to \gamma$</div></td><td class="rl">${\to}I$ 3–5</td></tr><tr><td class="ln">7</td><td class="fm">$\alpha \to \beta \to \gamma$</td><td class="rl">${\to}I$ 2–6</td></tr></table></div>
+      <p><strong>The moral:</strong> work backwards from the goal (slide 23). The goal is an implication, so the last line is $\to I$, and that tells you what to assume. In (b) the goal nests two implications, so you open two nested boxes and close them innermost first.</p>
+    </div>
+  </div>
+
+  <div class="q" data-id="B3" data-t="prove">
+    <div class="qtop"><span class="qid">B3</span><span class="tag prove">prove</span><span class="marks">[4 marks]</span></div>
+    <p>Show $(\alpha\lor\beta)\land\gamma\vdash(\alpha\land\gamma)\lor(\beta\land\gamma)$.</p>
+    <div class="btns"><button class="btn hintbtn">Hint</button><button class="btn ansbtn">Show answer</button></div>
+    <div class="hint" hidden><p>$\lor E$ needs two boxes that each end in <em>the same</em> formula. Decide that formula first: it's the goal.</p></div>
+    <div class="ans" hidden>
+      <div class="tablewrap"><table class="nd"><tr><td class="ln">1</td><td class="fm">$(\alpha \lor \beta) \land \gamma$</td><td class="rl">hyp</td></tr><tr><td class="ln">2</td><td class="fm">$\alpha \lor \beta$</td><td class="rl">${\land}E_l$ 1</td></tr><tr><td class="ln">3</td><td class="fm">$\gamma$</td><td class="rl">${\land}E_r$ 1</td></tr><tr><td class="ln">4</td><td class="fm"><div class="bx"><span class="asf">$\alpha$</span></div></td><td class="rl">assm</td></tr><tr><td class="ln">5</td><td class="fm"><div class="bx">$\alpha \land \gamma$</div></td><td class="rl">${\land}I$ 4, 3</td></tr><tr><td class="ln">6</td><td class="fm"><div class="bx">$\alpha \land \gamma \lor \beta \land \gamma$</div></td><td class="rl">${\lor}I_l$ 5</td></tr><tr><td class="ln">7</td><td class="fm"><div class="bx"><span class="asf">$\beta$</span></div></td><td class="rl">assm</td></tr><tr><td class="ln">8</td><td class="fm"><div class="bx">$\beta \land \gamma$</div></td><td class="rl">${\land}I$ 7, 3</td></tr><tr><td class="ln">9</td><td class="fm"><div class="bx">$\alpha \land \gamma \lor \beta \land \gamma$</div></td><td class="rl">${\lor}I_r$ 8</td></tr><tr><td class="ln">10</td><td class="fm">$\alpha \land \gamma \lor \beta \land \gamma$</td><td class="rl">${\lor}E$ 2, 4–6, 7–9</td></tr></table></div>
+      <p>Line 3 ($\gamma$) is derived <em>outside</em> both boxes, so it stays accessible inside each of them.</p>
+      <p><strong>The common error:</strong> closing $\lor E$ with only one case, or with the two boxes ending in different formulas. Both are errors, and B7(c) is one of them.</p>
+    </div>
+  </div>
+
+  <div class="q" data-id="B4" data-t="prove">
+    <div class="qtop"><span class="qid">B4</span><span class="tag prove">prove</span><span class="marks">[3 marks]</span></div>
+    <p>Show $\alpha\to\beta\vdash\neg\beta\to\neg\alpha$.</p>
+    <div class="btns"><button class="btn ansbtn">Show answer</button></div>
+    <div class="ans" hidden>
+      <div class="tablewrap"><table class="nd"><tr><td class="ln">1</td><td class="fm">$\alpha \to \beta$</td><td class="rl">hyp</td></tr><tr><td class="ln">2</td><td class="fm"><div class="bx"><span class="asf">$\neg \beta$</span></div></td><td class="rl">assm</td></tr><tr><td class="ln">3</td><td class="fm"><div class="bx"><div class="bx"><span class="asf">$\alpha$</span></div></div></td><td class="rl">assm</td></tr><tr><td class="ln">4</td><td class="fm"><div class="bx"><div class="bx">$\beta$</div></div></td><td class="rl">${\to}E$ 3, 1</td></tr><tr><td class="ln">5</td><td class="fm"><div class="bx"><div class="bx">$\bot$</div></div></td><td class="rl">${\neg}E$ 4, 2</td></tr><tr><td class="ln">6</td><td class="fm"><div class="bx">$\neg \alpha$</div></td><td class="rl">${\neg}I$ 3–5</td></tr><tr><td class="ln">7</td><td class="fm">$\neg \beta \to \neg \alpha$</td><td class="rl">${\to}I$ 2–6</td></tr></table></div>
+      <p><strong>How to use this:</strong> to prove a negation $\neg\alpha$, assume $\alpha$ and derive $\bot$ ($\neg I$). The contradiction itself comes from $\neg E$ applied to a formula and its negation, here $\beta$ (line 4) and $\neg\beta$ (line 2).</p>
+    </div>
+  </div>
+
+  <div class="q" data-id="B5" data-t="prove">
+    <div class="qtop"><span class="qid">B5</span><span class="tag prove">prove</span><span class="marks">[4 marks]</span></div>
+    <p>Show the De Morgan law $\neg(\alpha\lor\beta)\vdash\neg\alpha\land\neg\beta$.</p>
+    <div class="btns"><button class="btn ansbtn">Show answer</button></div>
+    <div class="ans" hidden>
+      <div class="tablewrap"><table class="nd"><tr><td class="ln">1</td><td class="fm">$\neg (\alpha \lor \beta)$</td><td class="rl">hyp</td></tr><tr><td class="ln">2</td><td class="fm"><div class="bx"><span class="asf">$\alpha$</span></div></td><td class="rl">assm</td></tr><tr><td class="ln">3</td><td class="fm"><div class="bx">$\alpha \lor \beta$</div></td><td class="rl">${\lor}I_l$ 2</td></tr><tr><td class="ln">4</td><td class="fm"><div class="bx">$\bot$</div></td><td class="rl">${\neg}E$ 3, 1</td></tr><tr><td class="ln">5</td><td class="fm">$\neg \alpha$</td><td class="rl">${\neg}I$ 2–4</td></tr><tr><td class="ln">6</td><td class="fm"><div class="bx"><span class="asf">$\beta$</span></div></td><td class="rl">assm</td></tr><tr><td class="ln">7</td><td class="fm"><div class="bx">$\alpha \lor \beta$</div></td><td class="rl">${\lor}I_r$ 6</td></tr><tr><td class="ln">8</td><td class="fm"><div class="bx">$\bot$</div></td><td class="rl">${\neg}E$ 7, 1</td></tr><tr><td class="ln">9</td><td class="fm">$\neg \beta$</td><td class="rl">${\neg}I$ 6–8</td></tr><tr><td class="ln">10</td><td class="fm">$\neg \alpha \land \neg \beta$</td><td class="rl">${\land}I$ 5, 9</td></tr></table></div>
+      <p>The two boxes are siblings, not nested. The first one closes at line 5 before the second opens at line 6.</p>
+    </div>
+  </div>
+
+  <div class="q" data-id="B6" data-t="prove">
+    <div class="qtop"><span class="qid">B6</span><span class="tag prove">prove</span><span class="marks">[4 marks]</span></div>
+    <p>Show $\neg\beta\to\neg\alpha\vdash\alpha\to\beta$, then name the one step that is not intuitionistically valid.</p>
+    <div class="btns"><button class="btn hintbtn">Hint</button><button class="btn ansbtn">Show answer</button></div>
+    <div class="hint" hidden><p>After assuming $\alpha$, nothing in hand produces $\beta$ directly. Assume what you'd need to refute.</p></div>
+    <div class="ans" hidden>
+      <div class="tablewrap"><table class="nd"><tr><td class="ln">1</td><td class="fm">$\neg \beta \to \neg \alpha$</td><td class="rl">hyp</td></tr><tr><td class="ln">2</td><td class="fm"><div class="bx"><span class="asf">$\alpha$</span></div></td><td class="rl">assm</td></tr><tr><td class="ln">3</td><td class="fm"><div class="bx"><div class="bx"><span class="asf">$\neg \beta$</span></div></div></td><td class="rl">assm</td></tr><tr><td class="ln">4</td><td class="fm"><div class="bx"><div class="bx">$\neg \alpha$</div></div></td><td class="rl">${\to}E$ 3, 1</td></tr><tr><td class="ln">5</td><td class="fm"><div class="bx"><div class="bx">$\bot$</div></div></td><td class="rl">${\neg}E$ 2, 4</td></tr><tr><td class="ln">6</td><td class="fm"><div class="bx">$\beta$</div></td><td class="rl">PBC 3–5</td></tr><tr><td class="ln">7</td><td class="fm">$\alpha \to \beta$</td><td class="rl">${\to}I$ 2–6</td></tr></table></div>
+      <p>Line 6 uses <strong>PBC</strong> (slide 25). It concludes $\beta$ from a refutation of $\neg\beta$, which is classical reasoning. Compare B4: going the other way, from $\alpha\to\beta$ to $\neg\beta\to\neg\alpha$, needs only intuitionistic rules.</p>
+      <p><strong>How to use this:</strong> when you need to prove an atom you can't build, PBC is the move. Assume its negation, then hunt for a contradiction among the formulas you already have.</p>
+    </div>
+  </div>
+
+  <div class="q" data-id="B7" data-t="compute">
+    <div class="qtop"><span class="qid">B7</span><span class="tag compute">compute</span><span class="marks">[6 marks]</span></div>
+    <p>Each "proof" below is wrong. For each: name the line that breaks a rule and say exactly why, then decide whether the claimed sequent is valid at all. If it is, give a correct proof. If it isn't, give a countermodel.</p>
+    <ol class="parts">
+      <li>(L2 slide 29) Claim: $p\to q,\ q\to r\vdash r$.
+        <div class="tablewrap"><table class="nd"><tr><td class="ln">1</td><td class="fm">$p \to q$</td><td class="rl">hyp</td></tr><tr><td class="ln">2</td><td class="fm">$q \to r$</td><td class="rl">hyp</td></tr><tr><td class="ln">3</td><td class="fm"><div class="bx"><span class="asf">$p$</span></div></td><td class="rl">assm</td></tr><tr><td class="ln">4</td><td class="fm"><div class="bx">$q$</div></td><td class="rl">${\to}E$ 3, 1</td></tr><tr><td class="ln">5</td><td class="fm"><div class="bx">$r$</div></td><td class="rl">${\to}E$ 4, 2</td></tr><tr><td class="ln">6</td><td class="fm">$p \to r$</td><td class="rl">${\to}I$ 3–5</td></tr><tr><td class="ln">7</td><td class="fm">$r$</td><td class="rl">${\to}E$ 6, 3</td></tr></table></div></li>
+      <li>Claim: $\alpha\to\beta\vdash\neg\alpha\lor\beta$.
+        <div class="tablewrap"><table class="nd"><tr><td class="ln">1</td><td class="fm">$\alpha \to \beta$</td><td class="rl">hyp</td></tr><tr><td class="ln">2</td><td class="fm">$\neg \alpha \lor \beta$</td><td class="rl">impl. equiv. 1</td></tr></table></div></li>
+      <li>Claim: $\alpha\lor\beta\vdash\alpha$.
+        <div class="tablewrap"><table class="nd"><tr><td class="ln">1</td><td class="fm">$\alpha \lor \beta$</td><td class="rl">hyp</td></tr><tr><td class="ln">2</td><td class="fm"><div class="bx"><span class="asf">$\alpha$</span></div></td><td class="rl">assm</td></tr><tr><td class="ln">3</td><td class="fm"><div class="bx">$\alpha$</div></td><td class="rl">reit 2</td></tr><tr><td class="ln">4</td><td class="fm">$\alpha$</td><td class="rl">${\lor}E$ 1, 2–3</td></tr></table></div></li>
+    </ol>
+    <div class="btns"><button class="btn hintbtn">Hint</button><button class="btn ansbtn">Show answer</button></div>
+    <div class="hint" hidden><p>Check three things on every line: is the rule a real ND rule, is each cited line still in scope, and does the rule have all of its premises?</p></div>
+    <div class="ans" hidden>
+      <span class="step">(a) Scope violation</span>
+      <p><strong>Line 7</strong> cites line 3 ($p$), but line 3 is an assumption whose box closed at line 6, when $\to I$ discharged it. Once a box closes, nothing inside it can be cited.</p>
+      <p>The sequent is <strong>not valid</strong>. Under $I=\emptyset$ ($p,q,r$ all false), both premises are $F\to F=T$ and $r$ is false. By <em>soundness</em>, no correct proof can exist. That's the point of slide 29: a proof checker (or a careful marker) catches exactly this.</p>
+      <span class="step">(b) Mixing proof systems</span>
+      <p><strong>Line 2</strong> uses the equivalence $\alpha\to\beta\equiv\neg\alpha\lor\beta$, which is not a natural deduction rule. Homework 1 feedback flags this explicitly. The sequent <strong>is valid</strong>, and it needs LEM:</p>
+      <div class="tablewrap"><table class="nd"><tr><td class="ln">1</td><td class="fm">$\alpha \to \beta$</td><td class="rl">hyp</td></tr><tr><td class="ln">2</td><td class="fm">$\alpha \lor \neg \alpha$</td><td class="rl">LEM</td></tr><tr><td class="ln">3</td><td class="fm"><div class="bx"><span class="asf">$\alpha$</span></div></td><td class="rl">assm</td></tr><tr><td class="ln">4</td><td class="fm"><div class="bx">$\beta$</div></td><td class="rl">${\to}E$ 3, 1</td></tr><tr><td class="ln">5</td><td class="fm"><div class="bx">$\neg \alpha \lor \beta$</div></td><td class="rl">${\lor}I_r$ 4</td></tr><tr><td class="ln">6</td><td class="fm"><div class="bx"><span class="asf">$\neg \alpha$</span></div></td><td class="rl">assm</td></tr><tr><td class="ln">7</td><td class="fm"><div class="bx">$\neg \alpha \lor \beta$</div></td><td class="rl">${\lor}I_l$ 6</td></tr><tr><td class="ln">8</td><td class="fm">$\neg \alpha \lor \beta$</td><td class="rl">${\lor}E$ 2, 3–5, 6–7</td></tr></table></div>
+      <span class="step">(c) Incomplete $\lor E$</span>
+      <p><strong>Line 4</strong> applies $\lor E$ with only the $\alpha$ case. The rule needs a second box assuming $\beta$ that also ends in $\alpha$. The sequent is <strong>not valid</strong>: $I=\{\beta\}$ makes $\alpha\lor\beta$ true and $\alpha$ false.</p>
+      <p><strong>Why this matters:</strong> in each case the semantic check from Part A tells you whether to fix the proof or abandon the claim. Do that check first in the exam. It takes seconds.</p>
+    </div>
+  </div>
+</section>
+
+<section class="part" id="partC">
+  <div class="parthead">
+    <h2>Part C · First-order logic: translation and models</h2>
+    <div class="meta"><span class="partcount">5</span> questions · ~20 min</div>
+  </div>
+  <p class="lead">L3 slides 6–18. Translation is worth 5 marks on its own in 2025 Q1(b)(i), and every resolution or deduction question afterwards inherits your translation. C3 is the highest-value item: the four classic translation errors side by side.</p>
+
+  <div class="q" data-id="C1" data-t="compute">
+    <div class="qtop"><span class="qid">C1</span><span class="tag compute">compute</span><span class="marks">[4 marks]</span></div>
+    <p>(L3 slide 9.) Over the natural numbers, with constant $0$, function $\mathit{succ}$, infix function $\times$, and predicates $\mathit{even}$, $\mathit{odd}$, $\mathit{prime}$, $=$, $\lt$, express:</p>
+    <ol class="parts">
+      <li>Every even number is followed by an odd number.</li>
+      <li>For every number there is always a prime larger than it.</li>
+      <li>Every number is the square of some different number.</li>
+      <li>Is (c) true in $\mathbb{N}$? Justify with one witness.</li>
+    </ol>
+    <div class="btns"><button class="btn ansbtn">Show answer</button></div>
+    <div class="ans" hidden>
+      <span class="step">(a)</span>
+      <p>$\forall X.\,(\mathit{even}(X)\to\mathit{odd}(\mathit{succ}(X)))$</p>
+      <span class="step">(b)</span>
+      <p>$\forall X.\,\exists Y.\,(\mathit{prime}(Y)\land X\lt Y)$. The order of the quantifiers matters. $\exists Y.\,\forall X$ would claim one prime larger than every number, which is false.</p>
+      <span class="step">(c)</span>
+      <p>$\forall X.\,\exists Y.\,(\neg(Y=X)\land X=Y\times Y)$</p>
+      <span class="step">(d)</span>
+      <p>False. Take $X=2$: no natural number squares to $2$. ($X=0$ and $X=1$ also fail, because they are only squares of <em>themselves</em>, and "different" rules that out.)</p>
+      <p><strong>How to use this:</strong> "followed by" is a function ($\mathit{succ}$), not a predicate. When the language offers a function symbol, use it. A predicate like $\mathit{next}(X,Y)$ would need extra axioms to say each number has exactly one successor.</p>
+    </div>
+  </div>
+
+  <div class="q" data-id="C2" data-t="compute">
+    <div class="qtop"><span class="qid">C2</span><span class="tag compute">compute</span><span class="marks">[5 marks]</span></div>
+    <p>(L3 slides 12 and 16.) Language: constants $\mathit{tim}, \mathit{cits3005}$; unary predicates $\mathit{student}, \mathit{unit}$; $\mathit{studies}(S,U)$; $\mathit{prereq}(U,V)$ meaning "$V$ is a prerequisite of $U$"; $=$; and a function $\mathit{uc}$ giving a unit's coordinator. Translate:</p>
+    <ol class="parts">
+      <li>Every unit Tim coordinates has at least one student studying it.</li>
+      <li>Anyone who studies a unit studies all of its prerequisites.</li>
+      <li>Some unit has no prerequisites.</li>
+      <li>Tim coordinates exactly one unit.</li>
+    </ol>
+    <div class="btns"><button class="btn ansbtn">Show answer</button></div>
+    <div class="ans" hidden>
+      <span class="step">(a)</span>
+      <p>$\forall U.\,(\mathit{unit}(U)\land \mathit{uc}(U)=\mathit{tim}\to\exists S.\,(\mathit{student}(S)\land\mathit{studies}(S,U)))$</p>
+      <span class="step">(b)</span>
+      <p>$\forall S.\,\forall U.\,\forall V.\,(\mathit{studies}(S,U)\land\mathit{prereq}(U,V)\to\mathit{studies}(S,V))$</p>
+      <span class="step">(c)</span>
+      <p>$\exists U.\,(\mathit{unit}(U)\land\neg\exists V.\,\mathit{prereq}(U,V))$</p>
+      <span class="step">(d)</span>
+      <p>$\exists U.\,(\mathit{unit}(U)\land\mathit{uc}(U)=\mathit{tim}\land\forall V.\,(\mathit{unit}(V)\land\mathit{uc}(V)=\mathit{tim}\to V=U))$</p>
+      <p>"Exactly one" is "at least one" (the $\exists$), plus "any other one is the same one" (the $\forall\ldots\to V=U$).</p>
+      <p><strong>The moral:</strong> $\forall$ pairs with $\to$, and $\exists$ pairs with $\land$. Keep the translation as short as the English allows. Homework 1 feedback says over-complicated FOL made the later proofs much longer than necessary.</p>
+    </div>
+  </div>
+
+  <div class="q" data-id="C3" data-t="compute">
+    <div class="qtop"><span class="qid">C3</span><span class="tag compute">compute</span><span class="marks">[5 marks]</span></div>
+    <p>Intended meaning: "Every student studies some unit." Which of these are correct translations? For each wrong one, give a small interpretation on which it and the intended meaning disagree.</p>
+    <ol class="roman">
+      <li>$\forall S.\,(\mathit{student}(S)\to\exists U.\,(\mathit{unit}(U)\land\mathit{studies}(S,U)))$</li>
+      <li>$\forall S.\,(\mathit{student}(S)\land\exists U.\,(\mathit{unit}(U)\land\mathit{studies}(S,U)))$</li>
+      <li>$\exists U.\,(\mathit{unit}(U)\land\forall S.\,(\mathit{student}(S)\to\mathit{studies}(S,U)))$</li>
+      <li>$\forall S.\,(\mathit{student}(S)\to\exists U.\,(\mathit{unit}(U)\to\mathit{studies}(S,U)))$</li>
+      <li>$\forall S.\,\exists U.\,(\mathit{student}(S)\to\mathit{unit}(U)\land\mathit{studies}(S,U))$</li>
+    </ol>
+    <div class="btns"><button class="btn ansbtn">Show answer</button></div>
+    <div class="ans" hidden>
+      <p><strong>Correct:</strong> (i) and (v). In (v), $\mathit{student}(S)$ does not mention $U$, so $\exists U.\,(A\to B)$ is equivalent to $A\to\exists U.\,B$ over any non-empty domain. Write (i) in the exam, because it's the form a marker expects.</p>
+      <div class="tablewrap"><table>
+        <tr><th></th><th class="l">what goes wrong</th><th class="l">interpretation where they disagree</th></tr>
+        <tr><td>(ii)</td><td class="l">$\forall$ with $\land$: claims <em>everything</em> is a student</td><td class="l">$D=\{\mathit{ann},u_1\}$, $\mathit{student}=\{\mathit{ann}\}$, $\mathit{unit}=\{u_1\}$, $\mathit{studies}=\{(\mathit{ann},u_1)\}$. Intended: true. (ii): false, because $u_1$ is not a student.</td></tr>
+        <tr><td>(iii)</td><td class="l">quantifiers swapped: one unit that <em>every</em> student studies</td><td class="l">$D=\{\mathit{ann},\mathit{bo},u_1,u_2\}$, $\mathit{student}=\{\mathit{ann},\mathit{bo}\}$, $\mathit{unit}=\{u_1,u_2\}$, $\mathit{studies}=\{(\mathit{ann},u_1),(\mathit{bo},u_2)\}$. Intended: true. (iii): false.</td></tr>
+        <tr><td>(iv)</td><td class="l">$\exists$ with $\to$: vacuously satisfied by any non-unit</td><td class="l">$D=\{\mathit{ann},u_1\}$, $\mathit{student}=\{\mathit{ann}\}$, $\mathit{unit}=\{u_1\}$, $\mathit{studies}=\emptyset$. Intended: false. (iv): true, by taking $U=\mathit{ann}$, since $\mathit{unit}(\mathit{ann})$ is false.</td></tr>
+      </table></div>
+      <p><span class="step">Checks</span>All three interpretations were evaluated mechanically, and the two formulas give opposite truth values in each one ✓</p>
+      <p><strong>Why this matters:</strong> (ii) and (iv) are the two mistakes markers see most. Before you move on, check every quantifier against the rule "$\forall\to$, $\exists\land$".</p>
+    </div>
+  </div>
+
+  <div class="q" data-id="C4" data-t="compute">
+    <div class="qtop"><span class="qid">C4</span><span class="tag compute">compute</span><span class="marks">[6 marks]</span></div>
+    <p>(L3 slides 11–16.) Interpretation $I$: domain $D^I=\{\mathit{tim},\mathit{chelsea},\mathit{jane},\mathit{ali},\mathit{cits3001},\mathit{cits3005}\}$, with each constant denoting the element of the same name; $\mathit{student}^I=\{\mathit{jane},\mathit{ali}\}$; $\mathit{unit}^I=\{\mathit{cits3001},\mathit{cits3005}\}$; $\mathit{studies}^I=\{(\mathit{jane},\mathit{cits3005}),(\mathit{ali},\mathit{cits3005})\}$. Finally, $\mathit{uc}^I(\mathit{cits3001})=\mathit{tim}$, $\mathit{uc}^I(\mathit{cits3005})=\mathit{chelsea}$, and $\mathit{uc}^I(d)=d$ for every other $d$.</p>
+    <ol class="parts">
+      <li>Why does $\mathit{uc}^I$ have to give a value for $\mathit{tim}$ at all?</li>
+      <li>Evaluate each sentence under $I$:<br>
+        $\varphi_1=\forall U.\,(\mathit{uc}(U)=\mathit{tim}\to\exists S.\,\mathit{studies}(S,U))$ (slide 16)<br>
+        $\varphi_2=\forall U.\,(\mathit{unit}(U)\land\mathit{uc}(U)=\mathit{tim}\to\exists S.\,(\mathit{student}(S)\land\mathit{studies}(S,U)))$<br>
+        $\varphi_3=\exists S.\,(\mathit{student}(S)\land\forall U.\,(\mathit{unit}(U)\to\mathit{studies}(S,U)))$<br>
+        $\varphi_4=\forall S.\,(\mathit{student}(S)\to\mathit{studies}(S,\mathit{cits3005}))$<br>
+        $\varphi_5=\exists U.\,(\mathit{unit}(U)\land\neg\exists S.\,\mathit{studies}(S,U))$</li>
+      <li>Add the single fact $(\mathit{jane},\mathit{cits3001})$ to $\mathit{studies}^I$ and re-evaluate all five.</li>
+    </ol>
+    <div class="btns"><button class="btn hintbtn">Hint</button><button class="btn ansbtn">Show answer</button></div>
+    <div class="hint" hidden><p>For $\varphi_1$, the quantifier ranges over the <em>whole</em> domain, people included. Work out $\mathit{uc}^I(\mathit{tim})$.</p></div>
+    <div class="ans" hidden>
+      <span class="step">(a)</span>
+      <p>An interpretation of a function symbol of arity 1 is a <em>total</em> function $\mathit{uc}^I:D^I\to D^I$ (slide 11). It must give every domain element a value, people included, even though "the coordinator of Tim" is meaningless.</p>
+      <span class="step">(b)</span>
+      <div class="tablewrap"><table>
+        <tr><th></th><th>value</th><th class="l">reason</th></tr>
+        <tr><td>$\varphi_1$</td><td>F</td><td class="l">fails at $U=\mathit{cits3001}$ (nobody studies it) <em>and</em> at $U=\mathit{tim}$: $\mathit{uc}^I(\mathit{tim})=\mathit{tim}$, and nobody "studies" Tim</td></tr>
+        <tr><td>$\varphi_2$</td><td>F</td><td class="l">fails at $U=\mathit{cits3001}$</td></tr>
+        <tr><td>$\varphi_3$</td><td>F</td><td class="l">no student studies both units</td></tr>
+        <tr><td>$\varphi_4$</td><td>T</td><td class="l">both students study cits3005</td></tr>
+        <tr><td>$\varphi_5$</td><td>T</td><td class="l">witness $U=\mathit{cits3001}$</td></tr>
+      </table></div>
+      <span class="step">(c)</span>
+      <p>$\varphi_1$ F, $\varphi_2$ T, $\varphi_3$ T (witness jane), $\varphi_4$ T, $\varphi_5$ F.</p>
+      <p>$\varphi_1$ is <strong>still false</strong>, now only because of $U=\mathit{tim}$. The unguarded slide formula depends on whatever junk value the total function assigns to non-units.</p>
+      <p><strong>The moral:</strong> guard quantified variables with their type ($\mathit{unit}(U)\land\ldots$). That's what made $\varphi_2$ behave.</p>
+    </div>
+  </div>
+
+  <div class="q" data-id="C5" data-t="compute">
+    <div class="qtop"><span class="qid">C5</span><span class="tag compute">compute</span><span class="marks">[6 marks]</span></div>
+    <p>For each: valid, or give a countermodel (domain plus predicate extensions). The valid ones get proved in Part D.</p>
+    <ol class="parts">
+      <li>$\forall X.\,\exists Y.\,p(X,Y)\to\exists Y.\,\forall X.\,p(X,Y)$</li>
+      <li>$\exists Y.\,\forall X.\,p(X,Y)\to\forall X.\,\exists Y.\,p(X,Y)$</li>
+      <li>$\forall X.\,(p(X)\lor q(X))\to(\forall X.\,p(X))\lor(\forall X.\,q(X))$</li>
+      <li>$\exists X.\,(p(X)\land q(X))\to(\exists X.\,p(X))\land(\exists X.\,q(X))$</li>
+      <li>$(\exists X.\,p(X))\land(\exists X.\,q(X))\to\exists X.\,(p(X)\land q(X))$</li>
+      <li>$\forall X.\,(p(X)\to q(X)),\ \exists X.\,q(X)\ \models\ \exists X.\,p(X)$?</li>
+    </ol>
+    <div class="btns"><button class="btn ansbtn">Show answer</button></div>
+    <div class="ans" hidden>
+      <div class="tablewrap"><table>
+        <tr><th></th><th>verdict</th><th class="l">countermodel / where proved</th></tr>
+        <tr><td>(a)</td><td>invalid</td><td class="l">$D=\{a,b\}$, $p=\{(a,b),(b,a)\}$: everyone has a partner, but no single $Y$ works for both</td></tr>
+        <tr><td>(b)</td><td>valid</td><td class="l">D2</td></tr>
+        <tr><td>(c)</td><td>invalid</td><td class="l">$D=\{a,b\}$, $p=\{a\}$, $q=\{b\}$</td></tr>
+        <tr><td>(d)</td><td>valid</td><td class="l">D5</td></tr>
+        <tr><td>(e)</td><td>invalid</td><td class="l">$D=\{a,b\}$, $p=\{a\}$, $q=\{b\}$</td></tr>
+        <tr><td>(f)</td><td>no</td><td class="l">$D=\{a\}$, $p=\emptyset$, $q=\{a\}$ (affirming the consequent, lifted to FOL)</td></tr>
+      </table></div>
+      <p><span class="step">Checks</span>Each countermodel was evaluated mechanically, and an exhaustive search of all interpretations up to size 3 found none for (b) or (d) ✓</p>
+      <p><strong>Why this matters:</strong> L3 slide 18 says FOL validity is <em>undecidable but semi-decidable</em>. A proof confirms validity and a countermodel refutes it, but no procedure is guaranteed to settle every formula. (A small finite search finding nothing does <em>not</em> prove validity, since some formulas fail only on infinite domains. That's why (b) and (d) still need the proofs in Part D.)</p>
+    </div>
+  </div>
+</section>
+
+<section class="part" id="partD">
+  <div class="parthead">
+    <h2>Part D · Natural deduction: quantifiers</h2>
+    <div class="meta"><span class="partcount">7</span> questions · ~30 min</div>
+  </div>
+  <p class="lead">L3 slides 19–20. Four new rules, and two side conditions carry most of the marks: in $\forall I$ the variable must be fresh (not free in any open hypothesis), and in $\exists E$ the witness variable must be fresh <em>and</em> must not appear in the conclusion. Homework 1 feedback singles these out. D6 is the highest-value item, and D7 is 2025 Q1(b) re-done in natural deduction.</p>
+
+  <div class="q" data-id="D1" data-t="prove">
+    <div class="qtop"><span class="qid">D1</span><span class="tag prove">prove</span><span class="marks">[3 marks]</span></div>
+    <p>Show $\forall X.\,(p(X)\land q(X))\vdash(\forall X.\,p(X))\land(\forall X.\,q(X))$.</p>
+    <div class="btns"><button class="btn ansbtn">Show answer</button></div>
+    <div class="ans" hidden>
+      <div class="tablewrap"><table class="nd"><tr><td class="ln">1</td><td class="fm">$\forall X.\,(p(X) \land q(X))$</td><td class="rl">hyp</td></tr><tr><td class="ln">2</td><td class="fm">$p(Y) \land q(Y)$</td><td class="rl">${\forall}E$ 1</td></tr><tr><td class="ln">3</td><td class="fm">$p(Y)$</td><td class="rl">${\land}E_l$ 2</td></tr><tr><td class="ln">4</td><td class="fm">$\forall X.\,p(X)$</td><td class="rl">${\forall}I$ 3</td></tr><tr><td class="ln">5</td><td class="fm">$q(Y)$</td><td class="rl">${\land}E_r$ 2</td></tr><tr><td class="ln">6</td><td class="fm">$\forall X.\,q(X)$</td><td class="rl">${\forall}I$ 5</td></tr><tr><td class="ln">7</td><td class="fm">$(\forall X.\,p(X)) \land (\forall X.\,q(X))$</td><td class="rl">${\land}I$ 4, 6</td></tr></table></div>
+      <p><strong>Side condition at lines 4 and 6:</strong> $Y$ is not free in any hypothesis. Line 1 mentions only the bound $X$, so $\forall I$ is allowed. Write "$Y$ fresh" next to the rule in the exam. It's one of the marks.</p>
+    </div>
+  </div>
+
+  <div class="q" data-id="D2" data-t="prove">
+    <div class="qtop"><span class="qid">D2</span><span class="tag prove">prove</span><span class="marks">[4 marks]</span></div>
+    <p>Show $\exists Y.\,\forall X.\,p(X,Y)\vdash\forall X.\,\exists Y.\,p(X,Y)$. (C5(a) showed that the converse fails.)</p>
+    <div class="btns"><button class="btn hintbtn">Hint</button><button class="btn ansbtn">Show answer</button></div>
+    <div class="hint" hidden><p>Open the $\exists E$ box first, naming the witness with a brand-new variable, then do all the work inside it.</p></div>
+    <div class="ans" hidden>
+      <div class="tablewrap"><table class="nd"><tr><td class="ln">1</td><td class="fm">$\exists Y.\,\forall X.\,p(X, Y)$</td><td class="rl">hyp</td></tr><tr><td class="ln">2</td><td class="fm"><div class="bx"><span class="asf">$\forall X.\,p(X, W)$</span></div></td><td class="rl">assm</td></tr><tr><td class="ln">3</td><td class="fm"><div class="bx">$p(Z, W)$</div></td><td class="rl">${\forall}E$ 2</td></tr><tr><td class="ln">4</td><td class="fm"><div class="bx">$\exists Y.\,p(Z, Y)$</div></td><td class="rl">${\exists}I$ 3</td></tr><tr><td class="ln">5</td><td class="fm"><div class="bx">$\forall X.\,\exists Y.\,p(X, Y)$</div></td><td class="rl">${\forall}I$ 4</td></tr><tr><td class="ln">6</td><td class="fm">$\forall X.\,\exists Y.\,p(X, Y)$</td><td class="rl">${\exists}E$ 1, 2–5</td></tr></table></div>
+      <p><strong>Side conditions:</strong> at line 5, $Z$ is not free in the open assumption (line 2 mentions only $W$), so $\forall I$ is allowed. At line 6, $W$ does not occur in the conclusion $\forall X.\,\exists Y.\,p(X,Y)$ or in line 1, so $\exists E$ is allowed.</p>
+      <p>Compare D6(b), which tries the converse. The same steps run into the $\forall I$ condition.</p>
+    </div>
+  </div>
+
+  <div class="q" data-id="D3" data-t="prove">
+    <div class="qtop"><span class="qid">D3</span><span class="tag prove">prove</span><span class="marks">[4 marks]</span></div>
+    <p>Show $\forall X.\,(p(X)\to q(X)),\ \forall X.\,(q(X)\to r(X))\vdash\forall X.\,(p(X)\to r(X))$.</p>
+    <div class="btns"><button class="btn ansbtn">Show answer</button></div>
+    <div class="ans" hidden>
+      <div class="tablewrap"><table class="nd"><tr><td class="ln">1</td><td class="fm">$\forall X.\,(p(X) \to q(X))$</td><td class="rl">hyp</td></tr><tr><td class="ln">2</td><td class="fm">$\forall X.\,(q(X) \to r(X))$</td><td class="rl">hyp</td></tr><tr><td class="ln">3</td><td class="fm">$p(Y) \to q(Y)$</td><td class="rl">${\forall}E$ 1</td></tr><tr><td class="ln">4</td><td class="fm">$q(Y) \to r(Y)$</td><td class="rl">${\forall}E$ 2</td></tr><tr><td class="ln">5</td><td class="fm"><div class="bx"><span class="asf">$p(Y)$</span></div></td><td class="rl">assm</td></tr><tr><td class="ln">6</td><td class="fm"><div class="bx">$q(Y)$</div></td><td class="rl">${\to}E$ 5, 3</td></tr><tr><td class="ln">7</td><td class="fm"><div class="bx">$r(Y)$</div></td><td class="rl">${\to}E$ 6, 4</td></tr><tr><td class="ln">8</td><td class="fm">$p(Y) \to r(Y)$</td><td class="rl">${\to}I$ 5–7</td></tr><tr><td class="ln">9</td><td class="fm">$\forall X.\,(p(X) \to r(X))$</td><td class="rl">${\forall}I$ 8</td></tr></table></div>
+      <p><strong>How to use this:</strong> this is the shape of nearly every "all A are B, all B are C" exam scenario. Instantiate every hypothesis at the same fresh $Y$ ($\forall E$), do the propositional reasoning, then generalise once at the end ($\forall I$).</p>
+    </div>
+  </div>
+
+  <div class="q" data-id="D4" data-t="prove">
+    <div class="qtop"><span class="qid">D4</span><span class="tag prove">prove</span><span class="marks">[3 marks]</span></div>
+    <p>Show $\neg\exists X.\,p(X)\vdash\forall X.\,\neg p(X)$.</p>
+    <div class="btns"><button class="btn ansbtn">Show answer</button></div>
+    <div class="ans" hidden>
+      <div class="tablewrap"><table class="nd"><tr><td class="ln">1</td><td class="fm">$\neg (\exists X.\,p(X))$</td><td class="rl">hyp</td></tr><tr><td class="ln">2</td><td class="fm"><div class="bx"><span class="asf">$p(Y)$</span></div></td><td class="rl">assm</td></tr><tr><td class="ln">3</td><td class="fm"><div class="bx">$\exists X.\,p(X)$</div></td><td class="rl">${\exists}I$ 2</td></tr><tr><td class="ln">4</td><td class="fm"><div class="bx">$\bot$</div></td><td class="rl">${\neg}E$ 3, 1</td></tr><tr><td class="ln">5</td><td class="fm">$\neg p(Y)$</td><td class="rl">${\neg}I$ 2–4</td></tr><tr><td class="ln">6</td><td class="fm">$\forall X.\,\neg p(X)$</td><td class="rl">${\forall}I$ 5</td></tr></table></div>
+      <p>At line 6, $Y$ appeared free in the assumption $p(Y)$, but that box closed at line 5. Only line 1 is still open, and it doesn't mention $Y$. So $\forall I$ is allowed. <strong>The side condition looks at the hypotheses that are open at the moment you apply the rule</strong>, not at every line above it.</p>
+    </div>
+  </div>
+
+  <div class="q" data-id="D5" data-t="prove">
+    <div class="qtop"><span class="qid">D5</span><span class="tag prove">prove</span><span class="marks">[4 marks]</span></div>
+    <p>Show $\exists X.\,(p(X)\land q(X))\vdash(\exists X.\,p(X))\land(\exists X.\,q(X))$.</p>
+    <div class="btns"><button class="btn ansbtn">Show answer</button></div>
+    <div class="ans" hidden>
+      <div class="tablewrap"><table class="nd"><tr><td class="ln">1</td><td class="fm">$\exists X.\,(p(X) \land q(X))$</td><td class="rl">hyp</td></tr><tr><td class="ln">2</td><td class="fm"><div class="bx"><span class="asf">$p(Y) \land q(Y)$</span></div></td><td class="rl">assm</td></tr><tr><td class="ln">3</td><td class="fm"><div class="bx">$p(Y)$</div></td><td class="rl">${\land}E_l$ 2</td></tr><tr><td class="ln">4</td><td class="fm"><div class="bx">$\exists X.\,p(X)$</div></td><td class="rl">${\exists}I$ 3</td></tr><tr><td class="ln">5</td><td class="fm"><div class="bx">$q(Y)$</div></td><td class="rl">${\land}E_r$ 2</td></tr><tr><td class="ln">6</td><td class="fm"><div class="bx">$\exists X.\,q(X)$</div></td><td class="rl">${\exists}I$ 5</td></tr><tr><td class="ln">7</td><td class="fm"><div class="bx">$(\exists X.\,p(X)) \land (\exists X.\,q(X))$</div></td><td class="rl">${\land}I$ 4, 6</td></tr><tr><td class="ln">8</td><td class="fm">$(\exists X.\,p(X)) \land (\exists X.\,q(X))$</td><td class="rl">${\exists}E$ 1, 2–7</td></tr></table></div>
+      <p>The conclusion of the box (line 7) contains no $Y$, so it can leave the box by $\exists E$. C5(e) showed the converse is invalid.</p>
+    </div>
+  </div>
+
+  <div class="q" data-id="D6" data-t="compute">
+    <div class="qtop"><span class="qid">D6</span><span class="tag compute">compute</span><span class="marks">[6 marks]</span></div>
+    <p>Each "proof" proves something invalid. Name the line and the side condition it breaks, then give a countermodel to the claim.</p>
+    <ol class="parts">
+      <li>Claim: $\exists X.\,p(X)\vdash\forall X.\,p(X)$.
+        <div class="tablewrap"><table class="nd"><tr><td class="ln">1</td><td class="fm">$\exists X.\,p(X)$</td><td class="rl">hyp</td></tr><tr><td class="ln">2</td><td class="fm"><div class="bx"><span class="asf">$p(Y)$</span></div></td><td class="rl">assm</td></tr><tr><td class="ln">3</td><td class="fm"><div class="bx">$\forall X.\,p(X)$</div></td><td class="rl">${\forall}I$ 2</td></tr><tr><td class="ln">4</td><td class="fm">$\forall X.\,p(X)$</td><td class="rl">${\exists}E$ 1, 2–3</td></tr></table></div></li>
+      <li>Claim: $\forall X.\,\exists Y.\,p(X,Y)\vdash\exists Y.\,\forall X.\,p(X,Y)$.
+        <div class="tablewrap"><table class="nd"><tr><td class="ln">1</td><td class="fm">$\forall X.\,\exists Y.\,p(X, Y)$</td><td class="rl">hyp</td></tr><tr><td class="ln">2</td><td class="fm">$\exists Y.\,p(Z, Y)$</td><td class="rl">${\forall}E$ 1</td></tr><tr><td class="ln">3</td><td class="fm"><div class="bx"><span class="asf">$p(Z, W)$</span></div></td><td class="rl">assm</td></tr><tr><td class="ln">4</td><td class="fm"><div class="bx">$\forall X.\,p(X, W)$</div></td><td class="rl">${\forall}I$ 3</td></tr><tr><td class="ln">5</td><td class="fm"><div class="bx">$\exists Y.\,\forall X.\,p(X, Y)$</div></td><td class="rl">${\exists}I$ 4</td></tr><tr><td class="ln">6</td><td class="fm">$\exists Y.\,\forall X.\,p(X, Y)$</td><td class="rl">${\exists}E$ 2, 3–5</td></tr></table></div></li>
+      <li>Claim: $\exists X.\,p(X),\ \forall X.\,(p(X)\to q(X))\vdash\forall X.\,q(X)$.
+        <div class="tablewrap"><table class="nd"><tr><td class="ln">1</td><td class="fm">$\exists X.\,p(X)$</td><td class="rl">hyp</td></tr><tr><td class="ln">2</td><td class="fm">$\forall X.\,(p(X) \to q(X))$</td><td class="rl">hyp</td></tr><tr><td class="ln">3</td><td class="fm"><div class="bx"><span class="asf">$p(Y)$</span></div></td><td class="rl">assm</td></tr><tr><td class="ln">4</td><td class="fm"><div class="bx">$p(Y) \to q(Y)$</div></td><td class="rl">${\forall}E$ 2</td></tr><tr><td class="ln">5</td><td class="fm"><div class="bx">$q(Y)$</div></td><td class="rl">${\to}E$ 3, 4</td></tr><tr><td class="ln">6</td><td class="fm">$q(Y)$</td><td class="rl">${\exists}E$ 1, 3–5</td></tr><tr><td class="ln">7</td><td class="fm">$\forall X.\,q(X)$</td><td class="rl">${\forall}I$ 6</td></tr></table></div></li>
+    </ol>
+    <div class="btns"><button class="btn ansbtn">Show answer</button></div>
+    <div class="ans" hidden>
+      <span class="step">(a)</span>
+      <p><strong>Line 3</strong>: $\forall I$ generalises over $Y$, but $Y$ is free in the open assumption $p(Y)$ at line 2. Inside the box, $Y$ names <em>one particular</em> witness, not an arbitrary element. Countermodel: $D=\{a,b\}$, $p=\{a\}$.</p>
+      <span class="step">(b)</span>
+      <p><strong>Line 4</strong>: $\forall I$ generalises over $Z$, but $Z$ is free in the open assumption $p(Z,W)$ at line 3. Countermodel: $D=\{a,b\}$, $p=\{(a,b),(b,a)\}$, as in C5(a).</p>
+      <span class="step">(c)</span>
+      <p><strong>Line 6</strong>: $\exists E$ lets the witness $Y$ escape into the conclusion $q(Y)$. The rule needs $Y$ not free in $\beta$. Line 7's $\forall I$ is then built on a line that should never have existed. Countermodel: $D=\{a,b\}$, $p=q=\{a\}$. Both premises are true and $\forall X.\,q(X)$ is false.</p>
+      <p><strong>The moral:</strong> before every $\forall I$, list the hypotheses that are open at that line and check that the variable is in none of them. At every $\exists E$, check that the conclusion doesn't mention the witness.</p>
+    </div>
+  </div>
+
+  <div class="q" data-id="D7" data-t="prove">
+    <div class="qtop"><span class="qid">D7</span><span class="tag prove">prove</span><span class="marks">[10 marks]</span></div>
+    <p>(2025 Q1(b), with natural deduction in place of resolution.) Consider:</p>
+    <ul>
+      <li>Every question in this exam examines material covered in one or more lectures.</li>
+      <li>If a student attends a lecture, and an exam question assesses material covered in that lecture, then the student gets marks for that question.</li>
+      <li>Oscar got no marks for question 1.</li>
+    </ul>
+    <ol class="parts">
+      <li>Express these in FOL using $\mathit{question}(Q)$, $\mathit{lecture}(L)$, $\mathit{covers}(L,Q)$, $\mathit{attends}(S,L)$, $\mathit{marks}(S,Q)$ and constants $\mathit{oscar}$, $\mathit{q1}$. Include any fact the argument silently needs.</li>
+      <li>Use natural deduction to show that Oscar did not attend some lecture.</li>
+    </ol>
+    <div class="btns"><button class="btn hintbtn">Hint</button><button class="btn ansbtn">Show answer</button></div>
+    <div class="hint" hidden><p>The lecture you need comes from an $\exists$, so open an $\exists E$ box with a fresh name for it. Inside, prove $\neg\mathit{attends}(\mathit{oscar},M)$ by $\neg I$.</p></div>
+    <div class="ans" hidden>
+      <span class="step">(a)</span>
+      <p>$\forall Q.\,(\mathit{question}(Q)\to\exists L.\,(\mathit{lecture}(L)\land\mathit{covers}(L,Q)))$</p>
+      <p>$\forall S.\,\forall L.\,\forall Q.\,(\mathit{attends}(S,L)\land\mathit{covers}(L,Q)\to\mathit{marks}(S,Q))$</p>
+      <p>$\neg\mathit{marks}(\mathit{oscar},\mathit{q1})$, plus the silent fact $\mathit{question}(\mathit{q1})$. Without it, the first sentence never applies to $\mathit{q1}$.</p>
+      <span class="step">(b)</span>
+      <div class="tablewrap"><table class="nd"><tr><td class="ln">1</td><td class="fm">$\forall Q.\,(\mathit{question}(Q) \to (\exists L.\,(\mathit{lecture}(L) \land \mathit{covers}(L, Q))))$</td><td class="rl">hyp</td></tr><tr><td class="ln">2</td><td class="fm">$\forall S.\,\forall L.\,\forall Q.\,(\mathit{attends}(S, L) \land \mathit{covers}(L, Q) \to \mathit{marks}(S, Q))$</td><td class="rl">hyp</td></tr><tr><td class="ln">3</td><td class="fm">$\mathit{question}(\mathit{q1})$</td><td class="rl">hyp</td></tr><tr><td class="ln">4</td><td class="fm">$\neg \mathit{marks}(\mathit{oscar}, \mathit{q1})$</td><td class="rl">hyp</td></tr><tr><td class="ln">5</td><td class="fm">$\mathit{question}(\mathit{q1}) \to (\exists L.\,(\mathit{lecture}(L) \land \mathit{covers}(L, \mathit{q1})))$</td><td class="rl">${\forall}E$ 1</td></tr><tr><td class="ln">6</td><td class="fm">$\exists L.\,(\mathit{lecture}(L) \land \mathit{covers}(L, \mathit{q1}))$</td><td class="rl">${\to}E$ 3, 5</td></tr><tr><td class="ln">7</td><td class="fm"><div class="bx"><span class="asf">$\mathit{lecture}(M) \land \mathit{covers}(M, \mathit{q1})$</span></div></td><td class="rl">assm</td></tr><tr><td class="ln">8</td><td class="fm"><div class="bx">$\mathit{lecture}(M)$</div></td><td class="rl">${\land}E_l$ 7</td></tr><tr><td class="ln">9</td><td class="fm"><div class="bx">$\mathit{covers}(M, \mathit{q1})$</div></td><td class="rl">${\land}E_r$ 7</td></tr><tr><td class="ln">10</td><td class="fm"><div class="bx">$\forall L.\,\forall Q.\,(\mathit{attends}(\mathit{oscar}, L) \land \mathit{covers}(L, Q) \to \mathit{marks}(\mathit{oscar}, Q))$</div></td><td class="rl">${\forall}E$ 2</td></tr><tr><td class="ln">11</td><td class="fm"><div class="bx">$\forall Q.\,(\mathit{attends}(\mathit{oscar}, M) \land \mathit{covers}(M, Q) \to \mathit{marks}(\mathit{oscar}, Q))$</div></td><td class="rl">${\forall}E$ 10</td></tr><tr><td class="ln">12</td><td class="fm"><div class="bx">$\mathit{attends}(\mathit{oscar}, M) \land \mathit{covers}(M, \mathit{q1}) \to \mathit{marks}(\mathit{oscar}, \mathit{q1})$</div></td><td class="rl">${\forall}E$ 11</td></tr><tr><td class="ln">13</td><td class="fm"><div class="bx"><div class="bx"><span class="asf">$\mathit{attends}(\mathit{oscar}, M)$</span></div></div></td><td class="rl">assm</td></tr><tr><td class="ln">14</td><td class="fm"><div class="bx"><div class="bx">$\mathit{attends}(\mathit{oscar}, M) \land \mathit{covers}(M, \mathit{q1})$</div></div></td><td class="rl">${\land}I$ 13, 9</td></tr><tr><td class="ln">15</td><td class="fm"><div class="bx"><div class="bx">$\mathit{marks}(\mathit{oscar}, \mathit{q1})$</div></div></td><td class="rl">${\to}E$ 14, 12</td></tr><tr><td class="ln">16</td><td class="fm"><div class="bx"><div class="bx">$\bot$</div></div></td><td class="rl">${\neg}E$ 15, 4</td></tr><tr><td class="ln">17</td><td class="fm"><div class="bx">$\neg \mathit{attends}(\mathit{oscar}, M)$</div></td><td class="rl">${\neg}I$ 13–16</td></tr><tr><td class="ln">18</td><td class="fm"><div class="bx">$\mathit{lecture}(M) \land \neg \mathit{attends}(\mathit{oscar}, M)$</div></td><td class="rl">${\land}I$ 8, 17</td></tr><tr><td class="ln">19</td><td class="fm"><div class="bx">$\exists L.\,(\mathit{lecture}(L) \land \neg \mathit{attends}(\mathit{oscar}, L))$</div></td><td class="rl">${\exists}I$ 18</td></tr><tr><td class="ln">20</td><td class="fm">$\exists L.\,(\mathit{lecture}(L) \land \neg \mathit{attends}(\mathit{oscar}, L))$</td><td class="rl">${\exists}E$ 6, 7–19</td></tr></table></div>
+      <p><strong>Side condition at line 20:</strong> the witness $M$ is not free in line 6, in the conclusion, or in any hypothesis. That is what lets the result leave the box. Lines 10–12 instantiate the three $\forall$s one at a time: $S{:=}\mathit{oscar}$, $L{:=}M$, $Q{:=}\mathit{q1}$.</p>
+      <p><strong>Exam strategy:</strong> read the conclusion "some lecture" as $\exists L.\,(\mathit{lecture}(L)\land\neg\mathit{attends}(\mathit{oscar},L))$. Writing just $\exists L.\,\neg\mathit{attends}(\mathit{oscar},L)$ is weaker, because $L$ could be anything in the domain. Keep the type guard, as in C4.</p>
+    </div>
+  </div>
+</section>
+
+<section class="part" id="partE">
+  <div class="parthead">
+    <h2>Part E · Prolog knowledge bases</h2>
+    <div class="meta"><span class="partcount">6</span> questions · ~20 min</div>
+  </div>
+  <p class="lead">L2 slides 34–41 and L3 slides 23–36. Predict every answer on paper first, then check it in SWI-Prolog if you have it open. Every answer below was produced by actually running the code. E3 is the highest-value item: it covers an error in the slides and the closed-world point the 2025 big-picture questions like to probe.</p>
+
+  <div class="q" data-id="E1" data-t="recall">
+    <div class="qtop"><span class="qid">E1</span><span class="tag recall">recall</span><span class="marks">[3 marks]</span></div>
+    <p>(L3 slide 29.) Classify each term as atom, number, variable or compound. For compound terms, give the functor and arity and describe the arguments.</p>
+    <ol class="parts">
+      <li><code>Nationality</code></li>
+      <li><code>eq(zero, zero)</code></li>
+      <li><code>eq(next(X), next(Y))</code></li>
+      <li><code>'Nationality'</code></li>
+      <li><code>or(P, Q)</code></li>
+      <li><code>one</code></li>
+      <li><code>1</code></li>
+    </ol>
+    <div class="btns"><button class="btn ansbtn">Show answer</button></div>
+    <div class="ans" hidden>
+      <div class="tablewrap"><table>
+        <tr><th></th><th class="l">kind</th><th class="l">detail</th></tr>
+        <tr><td>(a)</td><td class="l">variable</td><td class="l">starts with a capital letter</td></tr>
+        <tr><td>(b)</td><td class="l">compound</td><td class="l"><code>eq/2</code>, both arguments the atom <code>zero</code></td></tr>
+        <tr><td>(c)</td><td class="l">compound</td><td class="l"><code>eq/2</code>, both arguments compound <code>next/1</code> terms, containing variables <code>X</code> and <code>Y</code></td></tr>
+        <tr><td>(d)</td><td class="l">atom</td><td class="l">quotes make it an atom despite the capital letter</td></tr>
+        <tr><td>(e)</td><td class="l">compound</td><td class="l"><code>or/2</code> with two variable arguments. It's a data structure, <em>not</em> a disjunction; Prolog's "or" is <code>;</code></td></tr>
+        <tr><td>(f)</td><td class="l">atom</td><td class="l">lower-case name</td></tr>
+        <tr><td>(g)</td><td class="l">number (integer)</td><td class="l">atomic, but not an atom: <code>atom(1)</code> fails</td></tr>
+      </table></div>
+      <p><span class="step">Checks</span>Confirmed in SWI-Prolog with <code>var/1</code>, <code>atom/1</code>, <code>integer/1</code>, <code>compound/1</code> and <code>functor/3</code> ✓</p>
+    </div>
+  </div>
+
+  <div class="q" data-id="E2" data-t="compute">
+    <div class="qtop"><span class="qid">E2</span><span class="tag compute">compute</span><span class="marks">[4 marks]</span></div>
+    <p>(L3 slide 24.)</p>
+<pre class="pl">red(apple).
+green(apple).
+red(tomato).
+fruit(apple).
+redFruit(X) :- fruit(X), red(X).</pre>
+    <ol class="parts">
+      <li>Write the rule as an FOL sentence and list the constants and predicates.</li>
+      <li>Give every answer, in order, to <code>?- redFruit(X).</code> and to <code>?- red(X).</code> (pressing <code>;</code> each time).</li>
+      <li><code>?- redFruit(tomato).</code> answers <code>false</code>. What does that <code>false</code> actually mean?</li>
+      <li>SWI-Prolog prints a warning when it loads exactly this file. What is it, and how do you silence it properly?</li>
+    </ol>
+    <div class="btns"><button class="btn ansbtn">Show answer</button></div>
+    <div class="ans" hidden>
+      <span class="step">(a)</span>
+      <p>$\forall X.\,(\mathit{fruit}(X)\land\mathit{red}(X)\to\mathit{redFruit}(X))$. The constants are $\mathit{apple}, \mathit{tomato}$. The predicates are $\mathit{red}, \mathit{green}, \mathit{fruit}, \mathit{redFruit}$, all of arity 1.</p>
+      <span class="step">(b)</span>
+      <p><code>redFruit(X)</code>: <code>X = apple</code>, then <code>false</code>. <code>red(X)</code>: <code>X = apple</code>; <code>X = tomato</code>.</p>
+      <span class="step">(c)</span>
+      <p>It means "not derivable from this knowledge base". Here that's because <code>fruit(tomato)</code> isn't a fact. It is not a claim that tomatoes aren't red fruit. This is the closed-world reading of failure, which comes back as negation-as-failure in Lecture 4.</p>
+      <span class="step">(d)</span>
+      <p>SWI-Prolog warns that the clauses of <code>red/1</code> are not together, because <code>green(apple)</code> sits between them. Fix it by grouping all <code>red/1</code> clauses together, or by declaring <code>:- discontiguous red/1.</code> The file still loads either way.</p>
+    </div>
+  </div>
+
+  <div class="q" data-id="E3" data-t="compute">
+    <div class="qtop"><span class="qid">E3</span><span class="tag compute">compute</span><span class="marks">[7 marks]</span></div>
+    <p>(L3 slides 31–35.) The Tube knowledge base: the 11 <code>connected/3</code> facts from slide 31, plus</p>
+<pre class="pl">nearby(X,Y) :- connected(X,Y,_L).
+nearby(X,Y) :- connected(X,Z,L), connected(Z,Y,L).</pre>
+    <ol class="parts">
+      <li>Give every answer, in order, to <code>?- connected(green_park, X, L).</code></li>
+      <li>Slide 32 says we "can derive that Bond Street and Charing Cross are not nearby". What does <code>?- nearby(bond_street, charing_cross).</code> actually return? Name the clause and the facts used.</li>
+      <li>What does <code>?- nearby(charing_cross, bond_street).</code> return, and why?</li>
+      <li>Fix (c) by making adjacency symmetric. Explain why adding <code>connected(X,Y,L) :- connected(Y,X,L).</code> is the wrong fix.</li>
+      <li>Slide 32: why can't this knowledge base tell us that Subiaco and Leederville are not nearby?</li>
+    </ol>
+    <div class="btns"><button class="btn hintbtn">Hint</button><button class="btn ansbtn">Show answer</button></div>
+    <div class="hint" hidden><p>For (d), think about what that rule does with a query that has no answer.</p></div>
+    <div class="ans" hidden>
+      <span class="step">(a)</span>
+      <p>In fact order: <code>charing_cross, jubilee</code>; <code>piccadilly_circus, piccadilly</code>; <code>oxford_circus, victoria</code>.</p>
+      <span class="step">(b)</span>
+      <div class="warn"><p><strong>Slide erratum.</strong> The query <strong>succeeds</strong>. The first clause fails (no direct connection). The second clause backtracks past <code>connected(bond_street, oxford_circus, central)</code>, because Oxford Circus doesn't continue to Charing Cross on the Central line, and then succeeds with <code>connected(bond_street, green_park, jubilee)</code> and <code>connected(green_park, charing_cross, jubilee)</code>. Slide 35's own trace shows <code>true</code>.</p></div>
+      <span class="step">(c)</span>
+      <p><code>false</code>. The facts are directed: <code>connected(X,Y,L)</code> only says you can go from <code>X</code> to <code>Y</code>, and nothing leaves Charing Cross.</p>
+      <span class="step">(d)</span>
+<pre class="pl">link(X,Y,L) :- connected(X,Y,L).
+link(X,Y,L) :- connected(Y,X,L).
+near2(X,Y)  :- link(X,Y,_).
+near2(X,Y)  :- link(X,Z,L), link(Z,Y,L), X \= Y.</pre>
+      <p><code>?- near2(charing_cross, bond_street).</code> now succeeds. The guard <code>X \= Y</code> stops "go one stop and come back" from counting. Adding the recursive rule to <code>connected/3</code> itself makes every <em>failing</em> query loop: Prolog keeps swapping the arguments and calling itself. Tested: <code>?- connected(a,c,l1).</code> never returns. Always put the symmetric rule on a new predicate.</p>
+      <span class="step">(e)</span>
+      <p>The knowledge base has no facts about either station, so the query simply fails. Failure only means "not provable here" (the closed-world reading), so it can't distinguish "not nearby" from "outside what the knowledge base describes". For Bond Street and a <em>listed</em> station, the closed-world assumption is reasonable. For stations the knowledge base doesn't cover, it isn't.</p>
+    </div>
+  </div>
+
+  <div class="q" data-id="E4" data-t="compute">
+    <div class="qtop"><span class="qid">E4</span><span class="tag compute">compute</span><span class="marks">[4 marks]</span></div>
+    <p>(L3 slide 35.) Write the sequence of Call / Exit / Fail / Redo ports SWI-Prolog's <code>trace</code> shows for <code>?- nearby(oxford_circus, charing_cross).</code> using the same knowledge base. (Ignore variable numbering.)</p>
+    <div class="btns"><button class="btn ansbtn">Show answer</button></div>
+    <div class="ans" hidden>
+<pre class="pl">Call: nearby(oxford_circus, charing_cross)
+ Call: connected(oxford_circus, charing_cross, _)
+ Fail: connected(oxford_circus, charing_cross, _)
+Redo: nearby(oxford_circus, charing_cross)
+ Call: connected(oxford_circus, _Z, _L)
+ Exit: connected(oxford_circus, tottenham_court_road, central)
+ Call: connected(tottenham_court_road, charing_cross, central)
+ Fail: connected(tottenham_court_road, charing_cross, central)
+ Redo: connected(oxford_circus, _Z, _L)
+ Exit: connected(oxford_circus, piccadilly_circus, bakerloo)
+ Call: connected(piccadilly_circus, charing_cross, bakerloo)
+ Exit: connected(piccadilly_circus, charing_cross, bakerloo)
+Exit: nearby(oxford_circus, charing_cross)
+true.</pre>
+      <p><span class="step">Checks</span>This is the actual SWI-Prolog 9 trace, with its extra <code>Unify</code> lines removed ✓</p>
+      <p><strong>How to read it:</strong> once the second goal binds <code>L = central</code>, the third goal can only match a Central-line fact. The <code>Redo</code> is where backtracking undoes that binding and tries the next <code>connected(oxford_circus, _, _)</code> fact. This is exactly the shape of an SLD tree branch, which is next lecture's material.</p>
+    </div>
+  </div>
+
+  <div class="q" data-id="E5" data-t="compute">
+    <div class="qtop"><span class="qid">E5</span><span class="tag compute">compute</span><span class="marks">[8 marks]</span></div>
+    <p>(L3 slide 36.) Arithmetic modulo 3, with numbers written as $0,\ f(0),\ f(f(0)),\ \ldots$:</p>
+<pre class="pl">limit((f(f(f(zero))))).
+sum(X, zero, Y)  :- reduce(X,Y).
+sum(X, f(Y), Z)  :- sum(X,Y,W), reduce(f(W),Z).
+equals(zero,zero).
+equals(f(X),f(Y)) :- reduce(X,A), reduce(Y,B), equals(A,B).
+reduce(zero,zero).
+reduce(X,zero) :- limit(X).
+reduce(f(X),f(Y)) :- reduce(X,Y).</pre>
+    <ol class="parts">
+      <li>Give <em>all</em> answers (pressing <code>;</code>) for: <code>?- sum(f(zero), f(f(zero)), Z).</code> · <code>?- reduce(f(f(f(f(zero)))), R).</code> · <code>?- equals(zero, f(f(f(zero)))).</code></li>
+      <li>Identify three separate defects in this program as an implementation of mod-3 arithmetic.</li>
+      <li>Rewrite <code>reduce/2</code> and <code>equals/2</code> to fix all three.</li>
+    </ol>
+    <div class="btns"><button class="btn hintbtn">Hint</button><button class="btn ansbtn">Show answer</button></div>
+    <div class="hint" hidden><p>For each input, ask how many <code>reduce</code> clauses can match it. Then try <code>reduce</code> on a number of size 6.</p></div>
+    <div class="ans" hidden>
+      <span class="step">(a)</span>
+      <p><code>sum(...)</code>: <code>Z = zero ; Z = f(f(f(zero)))</code>. <code>reduce(...)</code>: <code>R = f(zero) ; R = f(f(f(f(zero))))</code>. <code>equals(...)</code>: <code>false</code>.</p>
+      <span class="step">(b)</span>
+      <ol class="roman">
+        <li><strong>Unreduced answers on backtracking.</strong> Clauses 2 and 3 of <code>reduce</code> both apply to $f(f(f(0)))$, so every reduction also yields the unreduced original as a second answer.</li>
+        <li><strong>Only one round of reduction.</strong> <code>limit</code> only matches exactly $f^3(0)$, so <code>?- reduce(</code>$f^6(0)$<code>, R).</code> first answers $f^3(0)$, which is not reduced. Anything of size 6 or more comes out wrong.</li>
+        <li><strong><code>equals</code> can't compare $0$ with a non-zero representative.</strong> Its second clause needs <em>both</em> arguments to start with <code>f</code>, so <code>equals(zero, f(f(f(zero))))</code> fails even though $0\equiv 3$.</li>
+      </ol>
+      <span class="step">(c)</span>
+<pre class="pl">reduce(zero, zero).
+reduce(f(zero), f(zero)).
+reduce(f(f(zero)), f(f(zero))).
+reduce(f(f(f(X))), Y) :- reduce(X, Y).
+equals(X, Y) :- reduce(X, R), reduce(Y, R).</pre>
+      <p>Every term matches exactly one <code>reduce</code> clause, and the recursive clause strips any number of complete multiples of 3. <code>sum/3</code> can stay as written.</p>
+      <p><span class="step">Checks</span>Run in SWI-Prolog. The fixed program gives single answers: <code>sum(f(zero),f(f(zero)),Z)</code> → <code>zero</code>; <code>reduce(</code>$f^7(0)$<code>,R)</code> → <code>f(zero)</code>; <code>equals(zero,f(f(f(zero))))</code> → <code>true</code>; <code>equals(f(zero),f(f(zero)))</code> → <code>false</code> ✓</p>
+      <p><strong>The moral:</strong> when you write Prolog, make clause heads mutually exclusive. Overlapping heads produce extra answers on backtracking, which is a common source of exam "describe what this computes" subtleties.</p>
+    </div>
+  </div>
+
+  <div class="q" data-id="E6" data-t="compute">
+    <div class="qtop"><span class="qid">E6</span><span class="tag compute">compute</span><span class="marks">[3 marks]</span></div>
+    <p>(L2 slide 35.)</p>
+<pre class="pl">sum([], 0).
+sum([H|T], N) :- sum(T,M), N is M+H.</pre>
+    <ol class="parts">
+      <li>What does <code>?- sum([3,1,4], N).</code> return, and in what order are the additions performed?</li>
+      <li>What happens with <code>?- sum(L, 8).</code>, and why?</li>
+    </ol>
+    <div class="btns"><button class="btn ansbtn">Show answer</button></div>
+    <div class="ans" hidden>
+      <span class="step">(a)</span>
+      <p><code>N = 8</code>. The recursion reaches <code>sum([], 0)</code> first, so the additions happen on the way back out: $0+4=4$, then $4+1=5$, then $5+3=8$.</p>
+      <span class="step">(b)</span>
+      <p>It raises an error, <code>is/2: Arguments are not sufficiently instantiated</code>. The first clause fails ($8\ne 0$). The second calls <code>sum(T, M)</code> with <code>T</code> unbound, which succeeds with <code>T = [], M = 0</code>. Then it reaches <code>8 is 0+H</code> with <code>H</code> unbound. <code>is/2</code> evaluates its right-hand side and cannot solve for unknowns.</p>
+      <p><strong>Why this matters:</strong> the declarative reading on slide 35 ("the sum of a list is …") is only half the story. Built-ins like <code>is/2</code> fix which arguments must be bound. This is one way Prolog departs from pure logic, alongside the side-effecting operators on L3 slide 30.</p>
+    </div>
+  </div>
+</section>
+
+<section class="part" id="partF">
+  <div class="parthead">
+    <h2>Part F · Clausal logic</h2>
+    <div class="meta"><span class="partcount">3</span> questions · ~12 min</div>
+  </div>
+  <p class="lead">L3 slides 37–42. A clause is a disjunction of literals, and a definite clause has exactly one positive literal, which is precisely a Prolog rule. F2 is the highest-value item: reasoning about models of a clause set is the bridge to resolution in Lecture 4.</p>
+
+  <div class="q" data-id="F1" data-t="compute">
+    <div class="qtop"><span class="qid">F1</span><span class="tag compute">compute</span><span class="marks">[5 marks]</span></div>
+    <p>For each clause, give (i) the FOL sentence, quantifiers included, and (ii) the clause as a disjunction of literals. Then say whether it is <em>definite</em> (so legal Prolog), <em>indefinite</em>, or has <em>no</em> positive literal.</p>
+    <ol class="parts">
+      <li><code>nearby(X,Y) :- connected(X,Z,L), connected(Z,Y,L).</code></li>
+      <li><code>teaches(X,course(Z)); supervises(X,Z) :- student_of(X,Z).</code></li>
+      <li><code>:- married(X).</code></li>
+      <li><code>married(peter); bachelor(peter).</code></li>
+      <li><code>likes(peter,S) :- student_of(S,peter).</code></li>
+    </ol>
+    <div class="btns"><button class="btn hintbtn">Hint</button><button class="btn ansbtn">Show answer</button></div>
+    <div class="hint" hidden><p>Every variable in a clause is universally quantified over the whole clause. Variables that appear only in the body are the interesting case in (a).</p></div>
+    <div class="ans" hidden>
+      <span class="step">(a) definite</span>
+      <p>$\forall X.\forall Y.\forall Z.\forall L.\,(\mathit{connected}(X,Z,L)\land\mathit{connected}(Z,Y,L)\to\mathit{nearby}(X,Y))$</p>
+      <p>$\neg\mathit{connected}(X,Z,L)\lor\neg\mathit{connected}(Z,Y,L)\lor\mathit{nearby}(X,Y)$</p>
+      <p>Because $Z,L$ occur only in the body, $\forall Z.\forall L.\,(B\to H)\equiv(\exists Z.\exists L.\,B)\to H$. That's why slide 37 writes the body with $\exists$.</p>
+      <span class="step">(b) indefinite: two positive literals, not Prolog</span>
+      <p>$\forall X.\forall Z.\,(\mathit{student\_of}(X,Z)\to\mathit{teaches}(X,\mathit{course}(Z))\lor\mathit{supervises}(X,Z))$</p>
+      <p>$\neg\mathit{student\_of}(X,Z)\lor\mathit{teaches}(X,\mathit{course}(Z))\lor\mathit{supervises}(X,Z)$</p>
+      <span class="step">(c) no positive literal: a constraint / goal, not a program clause</span>
+      <p>$\forall X.\,\neg\mathit{married}(X)$, i.e. the clause $\neg\mathit{married}(X)$. As a program clause it says nobody is married, and slide 42 rules it out of definite programs. The same shape typed at the prompt (<code>?- married(X).</code>) is how Prolog <em>asks</em> a query.</p>
+      <span class="step">(d) indefinite</span>
+      <p>$\mathit{married}(\mathit{peter})\lor\mathit{bachelor}(\mathit{peter})$. This is a ground clause, so there are no quantifiers.</p>
+      <span class="step">(e) definite</span>
+      <p>$\forall S.\,(\mathit{student\_of}(S,\mathit{peter})\to\mathit{likes}(\mathit{peter},S))$, i.e. $\neg\mathit{student\_of}(S,\mathit{peter})\lor\mathit{likes}(\mathit{peter},S)$</p>
+    </div>
+  </div>
+
+  <div class="q" data-id="F2" data-t="compute">
+    <div class="qtop"><span class="qid">F2</span><span class="tag compute">compute</span><span class="marks">[5 marks]</span></div>
+    <p>(L3 slide 40.) The propositional clausal program $P$:</p>
+<pre class="pl">awake; sleeping :- person.
+sleeping; young :- bored.
+bored :- old.
+:- young, old.
+:- awake, sleeping.
+awake.</pre>
+    <ol class="parts">
+      <li>Give one model of $P$, as a set of atoms.</li>
+      <li>Show that $\mathit{old}$ is false in <em>every</em> model of $P$.</li>
+      <li>What does $P$ entail about $\mathit{sleeping}$, and about $\mathit{bored}$?</li>
+      <li>Which clauses stop $P$ from being a Prolog (definite) program?</li>
+    </ol>
+    <div class="btns"><button class="btn ansbtn">Show answer</button></div>
+    <div class="ans" hidden>
+      <span class="step">(a)</span>
+      <p>$\{\mathit{awake}\}$. Every rule body is false, so each rule holds vacuously; neither constraint's body is true; and the fact is satisfied. This is in fact the <em>only</em> minimal model.</p>
+      <span class="step">(b)</span>
+      <p>Suppose $\mathit{old}$ is true in a model. Then $\mathit{bored}$ is true (clause 3), so $\mathit{sleeping}\lor\mathit{young}$ is true (clause 2). $\mathit{young}$ is ruled out by clause 4, because it would make $\mathit{young}\land\mathit{old}$ true. So $\mathit{sleeping}$ is true. But $\mathit{awake}$ is a fact, and clause 5 forbids $\mathit{awake}\land\mathit{sleeping}$. That's a contradiction, so $\mathit{old}$ is false in every model.</p>
+      <span class="step">(c)</span>
+      <p>$P\models\neg\mathit{sleeping}$ (from the fact and clause 5). So clause 2 reduces to $P\models\mathit{bored}\to\mathit{young}$. $P$ doesn't settle $\mathit{bored}$ itself: $\{\mathit{awake}\}$ and $\{\mathit{awake},\mathit{bored},\mathit{young}\}$ are both models.</p>
+      <span class="step">(d)</span>
+      <p>Clauses 1 and 2 have two heads each (indefinite). Clauses 4 and 5 have no head. Only clauses 3 and 6 are definite.</p>
+      <p><span class="step">Checks</span>All $2^6=64$ interpretations were enumerated: $P$ has 6 models, none containing $\mathit{old}$ or $\mathit{sleeping}$, with unique minimal model $\{\mathit{awake}\}$ ✓</p>
+    </div>
+  </div>
+
+  <div class="q" data-id="F3" data-t="compute">
+    <div class="qtop"><span class="qid">F3</span><span class="tag compute">compute</span><span class="marks">[4 marks]</span></div>
+    <p>(L3 slides 41–42.) Full clausal logic:</p>
+<pre class="pl">teaches(X,course(Z)); supervises(X,Z) :- student_of(X,Z).
+likes(peter,S) :- student_of(S,peter).
+student_of(maria,peter).</pre>
+    <ol class="parts">
+      <li>Which of these are entailed: <code>likes(peter,maria)</code>; <code>teaches(maria,course(peter))</code>; <code>supervises(maria,peter)</code>; their disjunction?</li>
+      <li>Slide 42 lists three consequences of restricting to definite clauses. State them, and say which one is the reason Prolog makes the restriction.</li>
+    </ol>
+    <div class="btns"><button class="btn ansbtn">Show answer</button></div>
+    <div class="ans" hidden>
+      <span class="step">(a)</span>
+      <p><code>likes(peter,maria)</code>: yes, from clause 2 with $S{:=}\mathit{maria}$. Each disjunct on its own: no. The disjunction $\mathit{teaches}(\mathit{maria},\mathit{course}(\mathit{peter}))\lor\mathit{supervises}(\mathit{maria},\mathit{peter})$: yes, from clause 1 with $X{:=}\mathit{maria}, Z{:=}\mathit{peter}$. There are models where only one disjunct holds, so neither is entailed alone.</p>
+      <span class="step">(b)</span>
+      <p>Definite clauses (i) <strong>reduce expressive power</strong>: you can no longer state disjunctive knowledge like clause 1. They (ii) <strong>do not change soundness, completeness or decidability</strong> relative to clausal logic. And they (iii) <strong>give a clear, systematic way to apply resolution</strong>, which is what Prolog executes. Point (iii) is the reason for the restriction. Point (a) of this question shows the cost of (i): a definite program can't even <em>state</em> clause 1.</p>
+      <p><span class="step">Checks</span>Entailments in (a) were confirmed by exhaustive model search ✓</p>
+    </div>
+  </div>
+</section>
+
+<section class="part" id="partG">
+  <div class="parthead">
+    <h2>Part G · Exam conditions</h2>
+    <div class="meta"><span class="partcount">3</span> questions · ~20 min</div>
+  </div>
+  <p class="lead">Mixed, with no slide references, as in the exam. Time yourself: 10 marks is roughly 12 minutes at exam pace. G3 is the closed-book drill, and doubles as a draft of this topic's share of your A4 notes sheet.</p>
+
+  <div class="q" data-id="G1" data-t="recall">
+    <div class="qtop"><span class="qid">G1</span><span class="tag recall">recall</span><span class="marks">[10 marks]</span></div>
+    <p>Explain the significance of formal deduction in modern AI systems, particularly referencing <em>completeness</em>, <em>decidability</em> and <em>soundness</em> of deductive systems. <span class="marks">(2025 Q1(a), verbatim)</span></p>
+    <div class="btns"><button class="btn hintbtn">Hint</button><button class="btn ansbtn">Show answer</button></div>
+    <div class="hint" hidden><p>Ten marks means roughly: define each of the three terms precisely (2 each), say why each one matters <em>for an AI system</em>, and give concrete examples from the unit. A plan of 4–5 short paragraphs beats an essay.</p></div>
+    <div class="ans" hidden>
+      <span class="step">Model answer</span>
+      <p><strong>Why formal deduction.</strong> A knowledge-based system stores facts and rules in a formal language and derives new knowledge mechanically. Natural language is ambiguous; a logical language with fixed syntax and semantics means every conclusion can be traced back to premises and rules. That traceability is what statistical methods alone lack. It gives explanations ("why did the system conclude this?") and checkable guarantees, which matter in safety-critical and verified systems. Examples are proof assistants checking each step, the verified seL4 kernel, and Prolog answering queries from a knowledge base.</p>
+      <p><strong>Soundness:</strong> every formula the system derives is semantically entailed: if $\Gamma\vdash\alpha$ then $\Gamma\models\alpha$. For an AI system, soundness means it never "proves" something false in every model of its knowledge base. Without it, derived conclusions can't be trusted. Natural deduction is sound. As a consequence, a countermodel shows a claimed proof must contain an error.</p>
+      <p><strong>Completeness:</strong> every entailed formula can be derived: if $\Gamma\models\alpha$ then $\Gamma\vdash\alpha$. For a system, it means no valid conclusion is out of reach in principle. Natural deduction is complete for propositional and first-order logic. Completeness doesn't promise that a proof is easy to <em>find</em>, only that one exists.</p>
+      <p><strong>Decidability:</strong> there is an algorithm that always terminates with a correct yes/no answer. Propositional validity is decidable (truth tables), though intractable in general. First-order validity is <em>undecidable</em> but <em>semi-decidable</em>: a procedure can enumerate every validity, so it eventually confirms a valid formula, but it may run forever on an invalid one. In practice, an AI reasoner over full FOL may never return. That's why practical systems restrict the language: Prolog uses definite clauses with a systematic resolution strategy, and later in the unit description logics trade expressivity for decidable reasoning.</p>
+      <p><strong>Trade-off.</strong> The design question is choosing a logic expressive enough to represent the domain while keeping reasoning sound, complete and (ideally) decidable. These properties pull against expressivity.</p>
+      <span class="step">Where the marks are</span>
+      <p>Three precise definitions, each stated in the form "if derivable then entailed" or its converse. FOL undecidable but semi-decidable. At least one concrete system example. The expressivity versus decidability trade-off as the closing point. A common mark loss is defining completeness as "can prove everything", which leaves out "everything <em>valid</em>".</p>
+    </div>
+  </div>
+
+  <div class="q" data-id="G2" data-t="prove">
+    <div class="qtop"><span class="qid">G2</span><span class="tag prove">prove</span><span class="marks">[10 marks]</span></div>
+    <p>A student who passes a unit can enrol in any unit that has it as a prerequisite. Jane passes CITS2211. CITS2211 is a prerequisite of CITS3005.</p>
+    <ol class="parts">
+      <li>Express this in FOL using $\mathit{passes}(S,U)$, $\mathit{prereq}(V,U)$ ("$U$ is a prerequisite of $V$") and $\mathit{canEnrol}(S,V)$.</li>
+      <li>Use natural deduction to show $\mathit{canEnrol}(\mathit{jane},\mathit{cits3005})$, and then $\exists U.\,\mathit{canEnrol}(\mathit{jane},U)$.</li>
+      <li>Write the same knowledge as a Prolog program. What is every answer to <code>?- canEnrol(jane, U).</code>?</li>
+    </ol>
+    <div class="btns"><button class="btn ansbtn">Show answer</button></div>
+    <div class="ans" hidden>
+      <span class="step">(a)</span>
+      <p>$\forall S.\,\forall U.\,\forall V.\,(\mathit{passes}(S,U)\land\mathit{prereq}(V,U)\to\mathit{canEnrol}(S,V))$, $\ \mathit{passes}(\mathit{jane},\mathit{cits2211})$, $\ \mathit{prereq}(\mathit{cits3005},\mathit{cits2211})$</p>
+      <span class="step">(b)</span>
+      <div class="tablewrap"><table class="nd"><tr><td class="ln">1</td><td class="fm">$\forall S.\,\forall U.\,\forall V.\,(\mathit{passes}(S, U) \land \mathit{prereq}(V, U) \to \mathit{canEnrol}(S, V))$</td><td class="rl">hyp</td></tr><tr><td class="ln">2</td><td class="fm">$\mathit{passes}(\mathit{jane}, \mathit{cits2211})$</td><td class="rl">hyp</td></tr><tr><td class="ln">3</td><td class="fm">$\mathit{prereq}(\mathit{cits3005}, \mathit{cits2211})$</td><td class="rl">hyp</td></tr><tr><td class="ln">4</td><td class="fm">$\forall U.\,\forall V.\,(\mathit{passes}(\mathit{jane}, U) \land \mathit{prereq}(V, U) \to \mathit{canEnrol}(\mathit{jane}, V))$</td><td class="rl">${\forall}E$ 1</td></tr><tr><td class="ln">5</td><td class="fm">$\forall V.\,(\mathit{passes}(\mathit{jane}, \mathit{cits2211}) \land \mathit{prereq}(V, \mathit{cits2211}) \to \mathit{canEnrol}(\mathit{jane}, V))$</td><td class="rl">${\forall}E$ 4</td></tr><tr><td class="ln">6</td><td class="fm">$\mathit{passes}(\mathit{jane}, \mathit{cits2211}) \land \mathit{prereq}(\mathit{cits3005}, \mathit{cits2211}) \to \mathit{canEnrol}(\mathit{jane}, \mathit{cits3005})$</td><td class="rl">${\forall}E$ 5</td></tr><tr><td class="ln">7</td><td class="fm">$\mathit{passes}(\mathit{jane}, \mathit{cits2211}) \land \mathit{prereq}(\mathit{cits3005}, \mathit{cits2211})$</td><td class="rl">${\land}I$ 2, 3</td></tr><tr><td class="ln">8</td><td class="fm">$\mathit{canEnrol}(\mathit{jane}, \mathit{cits3005})$</td><td class="rl">${\to}E$ 7, 6</td></tr><tr><td class="ln">9</td><td class="fm">$\exists U.\,\mathit{canEnrol}(\mathit{jane}, U)$</td><td class="rl">${\exists}I$ 8</td></tr></table></div>
+      <span class="step">(c)</span>
+<pre class="pl">canEnrol(S,V) :- passes(S,U), prereq(V,U).
+passes(jane,cits2211).
+prereq(cits3005,cits2211).</pre>
+      <p>Only <code>U = cits3005</code>. Note the variable renaming: in the rule, <code>V</code> is the unit enrolled in and <code>U</code> is the prerequisite, while the query's <code>U</code> is a different variable. Prolog variables are local to each clause.</p>
+      <p><strong>How to use this:</strong> one $\forall E$ per quantifier, in order, then $\land I$ to assemble the antecedent, then $\to E$. The universal rule is a definite clause, which is why it drops straight into Prolog with its quantifiers left implicit.</p>
+    </div>
+  </div>
+
+  <div class="q" data-id="G3" data-t="recall">
+    <div class="qtop"><span class="qid">G3</span><span class="tag recall">recall</span><span class="marks">closed book</span></div>
+    <p>Without notes, write down:</p>
+    <ol class="parts">
+      <li>The definitions of: interpretation (propositional and FOL), environment, sentence, valid, satisfiable, entailment $S\models\alpha$, logical equivalence.</li>
+      <li>The definitions of: consistent, sound, complete, decidable, semi-decidable.</li>
+      <li>The side condition on each of $\forall I$, $\forall E$, $\exists I$, $\exists E$.</li>
+      <li>The definitions of: literal, clause, definite clause. What each of <code>:-</code>, <code>,</code> and <code>;</code> means in Prolog.</li>
+      <li>Which of all this you'd put on your A4 sheet, given what the exam provides.</li>
+    </ol>
+    <div class="btns"><button class="btn ansbtn">Show answer</button></div>
+    <div class="ans" hidden>
+      <span class="step">(a)</span>
+      <p><strong>Propositional interpretation:</strong> $I:\mathcal{P}\to\{T,F\}$, equivalently the set of atoms that are true. <strong>FOL interpretation:</strong> a domain $D^I$, an element $c^I$ for each constant, a total function $f^I:(D^I)^{\#f}\to D^I$ for each function symbol, and $p^I:(D^I)^{\#p}\to\{\top,\bot\}$ for each predicate. <strong>Environment:</strong> $\theta:\mathit{var}\to D^I$, extended to terms. <strong>Sentence:</strong> a formula with no free variables. <strong>Valid:</strong> true in every interpretation. <strong>Satisfiable:</strong> true in some interpretation. <strong>$S\models\alpha$:</strong> every interpretation satisfying all of $S$ satisfies $\alpha$. <strong>$\alpha\equiv\beta$:</strong> $\alpha\models\beta$ and $\beta\models\alpha$.</p>
+      <span class="step">(b)</span>
+      <p><strong>Consistent</strong> (as on L2 slide 27): the axioms are true in every interpretation. <strong>Sound:</strong> the rules only produce conclusions true in every interpretation ($\vdash$ implies $\models$). <strong>Complete:</strong> every valid formula is provable ($\models$ implies $\vdash$). <strong>Decidable:</strong> an algorithm always halts with the correct yes/no answer. <strong>Semi-decidable:</strong> a procedure halts with "yes" on every yes-instance but may run forever on no-instances. FOL validity is semi-decidable.</p>
+      <span class="step">(c)</span>
+      <p>$\forall I$: from $\alpha(Y)$, with $Y$ fresh (not free in any open hypothesis). $\forall E$: to $\alpha(t)$ for any term $t$ that doesn't clash with bound variables. $\exists I$: from $\alpha(t)$, same no-clash condition. $\exists E$: the box assumes $\alpha(Y)$ with $Y$ fresh, meaning not free in the conclusion $\beta$ or in any open hypothesis.</p>
+      <span class="step">(d)</span>
+      <p><strong>Literal:</strong> an atom or its negation. <strong>Clause:</strong> a disjunction of literals. <strong>Definite clause:</strong> exactly one positive literal, equivalent to $A_1\land\dots\land A_m\to B$. In Prolog, <code>:-</code> is "if" ($\leftarrow$), <code>,</code> is $\land$, and <code>;</code> is $\lor$.</p>
+      <span class="step">(e)</span>
+      <p>The natural deduction rules sheet is <em>provided</em> in the exam (L12 revision slides), so don't spend notes space copying the rules. Spend it on what the sheet won't give you: the quantifier side conditions in your own words, the "$\forall\to$, $\exists\land$" translation rule, two or three standard countermodels (C5), the soundness/completeness/decidability definitions for a G1-style question, and Prolog gotchas (closed-world failure, <code>is/2</code> instantiation, overlapping clause heads).</p>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="end">
+  <p>Built from CITS3005 Lecture 2 (Propositional Logic and Formal Reasoning) and Lecture 3 (First Order Logic and Logic Programming), Chelsea Edmonds, UWA, Semester 2 2026, with exam framing from the Lecture 12 revision slides and the Semester 2 2025 paper. Slide numbers in part leads and questions refer to those decks.</p>
+  <p>Every natural deduction proof here was machine-checked rule by rule, including scope and quantifier side conditions, and every countermodel and Prolog answer was produced by running it.</p>
+</footer>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<script>
+(function(){
+  "use strict";
+
+  function all(sel, root){ return Array.prototype.slice.call((root || document).querySelectorAll(sel)); }
+
+  function renderMath(){
+    if (typeof window.renderMathInElement !== "function") return;
+    try {
+      window.renderMathInElement(document.body, {
+        delimiters: [
+          {left: "$$", right: "$$", display: true},
+          {left: "\\[", right: "\\]", display: true},
+          {left: "$", right: "$", display: false}
+        ],
+        ignoredTags: ["script", "noscript", "style", "textarea", "option", "pre", "code"],
+        throwOnError: false
+      });
+    } catch (e) { /* raw LaTeX stays readable if this fails */ }
+  }
+
+  document.addEventListener("click", function(ev){
+    var t = ev.target;
+    if (!t.classList) return;
+    if (t.classList.contains("ansbtn") || t.classList.contains("hintbtn")) {
+      var card = t.closest(".q");
+      if (!card) return;
+      var isHint = t.classList.contains("hintbtn");
+      var box = card.querySelector(isHint ? ".hint" : ".ans");
+      if (!box) return;
+      if (box.hasAttribute("hidden")) {
+        box.removeAttribute("hidden");
+        t.textContent = isHint ? "Hide hint" : "Hide answer";
+      } else {
+        box.setAttribute("hidden", "");
+        t.textContent = isHint ? "Hint" : "Show answer";
+      }
+    }
+  });
+
+  document.getElementById("hideall").addEventListener("click", function(){
+    all(".ans, .hint").forEach(function(b){ b.setAttribute("hidden", ""); });
+    all(".ansbtn").forEach(function(b){ b.textContent = "Show answer"; });
+    all(".hintbtn").forEach(function(b){ b.textContent = "Hint"; });
+  });
+
+  renderMath();
+})();
+</script>
+</body>
+</html>

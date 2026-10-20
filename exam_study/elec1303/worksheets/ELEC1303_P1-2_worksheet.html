@@ -1,0 +1,1172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>ELEC1303 Practicals 1–2 worksheet — Static discipline and Boolean logic</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<style>
+  :root{
+    color-scheme:light;
+    --bg:#faf2e4; --bg-fade:rgba(250,242,228,.95); --card:#fffbf2; --ans-bg:#f4e9d5;
+    --ink:#2f221c; --muted:#7b6156; --line:#e6d6be; --line-2:#cdb99c; --rule:#8f2e21;
+    --design:#b03a24; --design-bg:#f0bcac; --design-fg:#7d1d12;
+    --compute:#b8641c; --compute-bg:#f7dab9; --compute-fg:#8a3f0d;
+    --recall:#94722c; --recall-bg:#faeee1; --recall-fg:#7a5540;
+    --accent:#a63125;
+    --btn-bg:#fffbf2; --btn-hover:#f4e9d5;
+    --ansbtn-bd:#d9a28f; --ansbtn-fg:#8f2e21; --ansbtn-hover:#fbe6dc;
+    --hint-bg:#fdf0e3; --th-bg:#efe2c9; --code-bg:#f0e4cd;
+    --warn-bd:#c7952f; --warn-bg:#fbf2dd;
+    --curve:#2b6a9b; --zone:#eab3a1;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth; background:var(--bg); min-height:100%;}
+  body{margin:0; background:var(--bg); min-height:100vh; color:var(--ink); font-family:var(--serif); font-size:16.5px; line-height:1.55;}
+  .wrap{max-width:900px; margin:0 auto; padding:0 22px 100px;}
+  main{display:block;}
+
+  .bar{position:sticky; top:0; z-index:30; background:var(--bg-fade); border-bottom:1px solid var(--line); backdrop-filter:blur(8px);}
+  .bar-in{max-width:900px; margin:0 auto; padding:9px 22px; display:flex; flex-wrap:wrap; align-items:center; gap:10px 14px; font-family:var(--sans); font-size:12.5px; color:var(--muted);}
+  .bar a{color:var(--muted); text-decoration:none;} .bar a:hover{color:var(--accent);}
+  .bar .btn{padding:4px 9px; font-size:11.5px; margin-left:auto;}
+
+  header.top{padding:34px 0 6px;}
+  .eyebrow{font-family:var(--sans); font-size:11.5px; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:var(--accent); margin:0 0 8px;}
+  h1{font-size:31px; line-height:1.18; font-weight:600; margin:0 0 6px; letter-spacing:-.01em;}
+  .sub{color:var(--muted); font-size:15px; margin:0 0 22px;}
+
+  .howto{background:var(--card); border:1px solid var(--line); border-radius:12px; padding:16px 18px; margin:0 0 10px;}
+  .howto h3{font-family:var(--sans); font-size:12px; letter-spacing:.09em; text-transform:uppercase; color:var(--muted); margin:0 0 10px; font-weight:700;}
+  .howto p{margin:0 0 9px; font-size:15.5px;}
+  .howto p:last-child{margin-bottom:0;}
+  .key{display:flex; flex-wrap:wrap; gap:16px; margin:12px 0 4px; font-size:14.5px;}
+  .key div{display:flex; align-items:baseline; gap:7px;}
+
+  section.part{margin:44px 0 0; scroll-margin-top:56px;}
+  .parthead{display:flex; align-items:baseline; gap:12px; border-bottom:2px solid var(--rule); padding-bottom:7px; margin-bottom:4px;}
+  .parthead h2{font-size:22px; font-weight:600; margin:0; letter-spacing:-.005em;}
+  .parthead .meta{margin-left:auto; font-family:var(--sans); font-size:12px; color:var(--muted); white-space:nowrap;}
+  .partcount{font-weight:700; color:var(--ink);}
+  .lead{color:var(--muted); font-size:15px; margin:10px 0 4px;}
+
+  .q{background:var(--card); border:1px solid var(--line); border-left:4px solid var(--line); border-radius:10px; padding:15px 17px; margin:16px 0;}
+  .q[data-t="design"]{border-left-color:var(--design);}
+  .q[data-t="compute"]{border-left-color:var(--compute);}
+  .q[data-t="recall"]{border-left-color:var(--recall);}
+  .qtop{display:flex; align-items:center; gap:9px; margin-bottom:9px;}
+  .qid{font-family:var(--sans); font-size:13px; font-weight:700; letter-spacing:.05em;}
+  .src{margin-left:auto; font-family:var(--sans); font-size:11.5px; color:var(--muted);}
+  .tag{font-family:var(--sans); font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.09em; padding:2.5px 8px; border-radius:99px;}
+  .tag.design{background:var(--design-bg); color:var(--design-fg);}
+  .tag.compute{background:var(--compute-bg); color:var(--compute-fg);}
+  .tag.recall{background:var(--recall-bg); color:var(--recall-fg);}
+  .q p{margin:0 0 9px;}
+  .q ol,.q ul{margin:6px 0 9px; padding-left:22px;}
+  .q li{margin:4px 0;}
+  ol.parts{list-style:none; padding-left:0; counter-reset:pp;}
+  ol.parts > li{counter-increment:pp; position:relative; padding-left:28px; margin:6px 0;}
+  ol.parts > li::before{content:"(" counter(pp,lower-alpha) ")"; position:absolute; left:0; color:var(--muted); font-family:var(--sans); font-size:13px; top:1px;}
+
+  .btns{display:flex; gap:8px; margin-top:11px; flex-wrap:wrap;}
+  .btn{font-family:var(--sans); font-size:12.5px; font-weight:600; border:1px solid var(--line-2); background:var(--btn-bg); color:var(--ink); padding:6px 12px; border-radius:7px; cursor:pointer; transition:background .12s, border-color .12s;}
+  .btn:hover{background:var(--btn-hover); border-color:var(--rule);}
+  .btn:focus-visible{outline:2px solid var(--accent); outline-offset:2px;}
+  .btn.ansbtn{border-color:var(--ansbtn-bd); color:var(--ansbtn-fg);}
+  .btn.ansbtn:hover{background:var(--ansbtn-hover); border-color:var(--design);}
+
+  .hint{margin-top:11px; padding:10px 13px; border-left:3px solid var(--recall); background:var(--hint-bg); border-radius:0 7px 7px 0; font-size:15.5px;}
+  .hint p{margin:0;}
+  .ans{margin-top:11px; padding:13px 15px; background:var(--ans-bg); border:1px solid var(--line); border-radius:9px; font-size:15.5px;}
+  .ans p{margin:0 0 9px;}
+  .ans p:last-child{margin-bottom:0;}
+  .ans .step{font-family:var(--sans); font-size:11px; font-weight:700; letter-spacing:.07em; text-transform:uppercase; color:var(--muted); display:block; margin:12px 0 4px;}
+  .ans .step:first-child{margin-top:0;}
+  .ans table,.q table{border-collapse:collapse; margin:8px 0 10px; font-size:14.5px;}
+  .ans th,.ans td,.q th,.q td{border:1px solid var(--line-2); padding:4px 10px; text-align:center;}
+  .ans th,.q th{background:var(--th-bg); font-family:var(--sans); font-size:12px; font-weight:600;}
+  .q td.blank{min-width:56px;}
+  .q td.given{background:var(--th-bg); font-weight:700;}
+  .tablewrap{overflow-x:auto; margin:8px 0 10px;}
+  .tablewrap table{margin:0;}
+  .warn{border-left:3px solid var(--warn-bd); background:var(--warn-bg); padding:9px 12px; border-radius:0 7px 7px 0; margin:10px 0;}
+  .katex{font-size:1.02em;}
+
+  .fig{overflow-x:auto; margin:8px 0 10px;}
+  .figrow{display:flex; flex-wrap:wrap; gap:6px 22px; align-items:flex-start;}
+  .figcap{font-family:var(--sans); font-size:12px; color:var(--muted); margin:2px 0 0;}
+  svg.circ, svg.plot{display:block; max-width:100%; height:auto;}
+  svg .w{stroke:var(--ink); stroke-width:1.8; fill:none; stroke-linecap:square;}
+  svg .g{stroke:var(--ink); stroke-width:1.8; fill:var(--card);}
+  svg .dot{fill:var(--ink);}
+  svg .lb{fill:var(--ink); font-family:var(--sans); font-weight:700;}
+  svg .ovl{text-decoration:overline;}
+  svg .grid{stroke:var(--line); stroke-width:1;}
+  svg .ax{stroke:var(--ink); stroke-width:1.5;}
+  svg .tk{fill:var(--muted); font-family:var(--sans); font-size:11.5px;}
+  svg .axl{fill:var(--ink); font-family:var(--sans); font-size:13px; font-weight:700;}
+  svg .vtc{stroke:var(--curve); stroke-width:2.6; fill:none; stroke-linejoin:round;}
+  svg .pt{fill:var(--accent);}
+  svg .ptl{fill:var(--ink); font-family:var(--sans); font-size:12.5px;}
+  svg .ref{stroke:var(--muted); stroke-width:1.2; stroke-dasharray:5 4;}
+  svg .refl{fill:var(--muted); font-family:var(--sans); font-size:12.5px; font-weight:700;}
+  svg .ldr{stroke:var(--muted); stroke-width:1;}
+  svg .zbad{fill:var(--zone); fill-opacity:.55;}
+
+  footer.end{margin-top:52px; padding-top:16px; border-top:1px solid var(--line); font-size:13.5px; color:var(--muted);}
+
+  @media(max-width:640px){
+    body{font-size:16px;} .wrap{padding:0 15px 80px;} h1{font-size:25px;}
+    .bar-in{padding:8px 15px;} .qtop{flex-wrap:wrap;}
+  }
+  @media print{
+    body{-webkit-print-color-adjust:exact; print-color-adjust:exact;}
+    .bar,.btns{display:none !important;}
+    .ans,.hint{display:block !important;}
+    .q{break-inside:avoid;}
+  }
+  @media (prefers-reduced-motion:reduce){ *{transition:none !important; scroll-behavior:auto !important;} }
+</style>
+</head>
+<body>
+
+<div class="bar">
+  <div class="bar-in">
+    <a href="#partA">A · Static discipline</a>
+    <a href="#partB">B · Spec → circuit</a>
+    <a href="#partC">C · Boolean algebra</a>
+    <a href="#partD">D · Minterms &amp; equivalence</a>
+    <button class="btn" id="hideall">Hide all answers</button>
+  </div>
+</div>
+
+<div class="wrap">
+<header class="top">
+  <p class="eyebrow">ELEC1303 · Practicals 1–2 · exam revision</p>
+  <h1>Static discipline, noise margins and Boolean logic</h1>
+  <p class="sub">19 problems mirroring the question types of Practicals 1 and 2, with new numbers and circuits. Every answer is a full worked solution.</p>
+
+  <div class="howto">
+    <h3>How to use this</h3>
+    <p>About 2 hours in total: four parts of roughly 30 minutes. Do a part, then break. Practicals 1 and 2 themselves are left untouched as fresh practice.</p>
+    <p>Draw the artefact on paper first (the VTC, the table, the circuit), then open the answer. Tests mark all-or-nothing, so check every row or threshold before you look.</p>
+    <div class="key">
+      <div><span class="tag recall">recall</span> <span>read off a definition</span></div>
+      <div><span class="tag compute">compute</span> <span>numbers or an expression out</span></div>
+      <div><span class="tag design">design</span> <span>produce a diagram, table or circuit</span></div>
+    </div>
+  </div>
+</header>
+
+<main>
+
+<section class="part" id="partA">
+  <div class="parthead">
+    <h2>Part A · Static discipline and noise margins</h2>
+    <div class="meta"><span class="partcount">6</span> questions · ~35 min</div>
+  </div>
+  <p class="lead">Practical 1 types. Outputs must land at or beyond $V_{OL}$/$V_{OH}$; receivers must read anything at or beyond $V_{IL}$/$V_{IH}$. A4 is the one to get right: the curve has a dip.</p>
+
+<div class="q" data-id="A1" data-t="recall">
+  <div class="qtop"><span class="qid">A1</span><span class="tag recall">recall</span><span class="src">cf. Prac 1 Q1(c)–(g)</span></div>
+  <p>Family TX satisfies the static discipline with $V_{OL}=0.6$ V, $V_{IL}=1.4$ V, $V_{IH}=3.0$ V, $V_{OH}=4.2$ V. All signals lie between 0 and 5 V.</p>
+  <ol class="parts">
+    <li>Highest voltage a TX gate may output for a "0".</li>
+    <li>Lowest voltage a TX gate may output for a "1".</li>
+    <li>Highest input voltage a TX receiver must read as "0".</li>
+    <li>Lowest input voltage a TX receiver must read as "1".</li>
+    <li>A TX gate's output measures 2.2 V. Is the gate obeying the static discipline?</li>
+    <li>Does TX offer noise immunity? Give $NM_L$ and $NM_H$.</li>
+  </ol>
+  <div class="btns"><button class="btn ansbtn">Show answer</button></div>
+  <div class="ans" hidden>
+    <p>(a) $V_{OL}=0.6$ V. (b) $V_{OH}=4.2$ V. (c) $V_{IL}=1.4$ V. (d) $V_{IH}=3.0$ V.</p>
+    <p>(e) No. A valid output is either $\le V_{OL}=0.6$ V or $\ge V_{OH}=4.2$ V; 2.2 V is in neither band.</p>
+    <p>(f) Yes, both margins are positive:</p>
+    <p>$$NM_L = V_{IL}-V_{OL} = 1.4-0.6 = 0.8\text{ V},\qquad NM_H = V_{OH}-V_{IH} = 4.2-3.0 = 1.2\text{ V}.$$</p>
+  </div>
+</div>
+
+<div class="q" data-id="A2" data-t="design">
+  <div class="qtop"><span class="qid">A2</span><span class="tag design">design</span><span class="src">cf. Prac 1 Q1(a)–(b)</span></div>
+  <p>For family TX from A1, sketch a possible VTC ($V_{OUT}$ against $V_{IN}$, both 0–5 V) for:</p>
+  <ol class="parts">
+    <li>a buffer;</li>
+    <li>an inverter.</li>
+  </ol>
+  <p>Mark $V_{IL}$, $V_{IH}$, $V_{OL}$, $V_{OH}$ and shade the regions the curve must not enter.</p>
+  <div class="btns"><button class="btn ansbtn">Show answer</button></div>
+  <div class="ans" hidden>
+    <span class="step">Rules</span>
+    <p>Buffer: $V_{IN}\le 1.4 \Rightarrow V_{OUT}\le 0.6$, and $V_{IN}\ge 3.0 \Rightarrow V_{OUT}\ge 4.2$. Inverter: $V_{IN}\le 1.4 \Rightarrow V_{OUT}\ge 4.2$, and $V_{IN}\ge 3.0 \Rightarrow V_{OUT}\le 0.6$. Between 1.4 and 3.0 V the curve is unconstrained. Any curve that avoids the shaded boxes is correct.</p>
+    <div class="figrow">
+      <div class="fig"><svg class="plot" viewBox="0 0 430 346" width="430" role="img" aria-label="Example buffer VTC with forbidden regions shaded" xmlns="http://www.w3.org/2000/svg">
+<rect class="zbad" x="50.0" y="32.0" width="100.8" height="241.1"/>
+<rect class="zbad" x="266.0" y="75.8" width="144.0" height="230.2"/>
+<line class="grid" x1="50.0" y1="306.0" x2="50.0" y2="32.0"/>
+<line class="grid" x1="86.0" y1="306.0" x2="86.0" y2="32.0"/>
+<line class="grid" x1="122.0" y1="306.0" x2="122.0" y2="32.0"/>
+<line class="grid" x1="158.0" y1="306.0" x2="158.0" y2="32.0"/>
+<line class="grid" x1="194.0" y1="306.0" x2="194.0" y2="32.0"/>
+<line class="grid" x1="230.0" y1="306.0" x2="230.0" y2="32.0"/>
+<line class="grid" x1="266.0" y1="306.0" x2="266.0" y2="32.0"/>
+<line class="grid" x1="302.0" y1="306.0" x2="302.0" y2="32.0"/>
+<line class="grid" x1="338.0" y1="306.0" x2="338.0" y2="32.0"/>
+<line class="grid" x1="374.0" y1="306.0" x2="374.0" y2="32.0"/>
+<line class="grid" x1="410.0" y1="306.0" x2="410.0" y2="32.0"/>
+<line class="grid" x1="50.0" y1="306.0" x2="410.0" y2="306.0"/>
+<line class="grid" x1="50.0" y1="278.6" x2="410.0" y2="278.6"/>
+<line class="grid" x1="50.0" y1="251.2" x2="410.0" y2="251.2"/>
+<line class="grid" x1="50.0" y1="223.8" x2="410.0" y2="223.8"/>
+<line class="grid" x1="50.0" y1="196.4" x2="410.0" y2="196.4"/>
+<line class="grid" x1="50.0" y1="169.0" x2="410.0" y2="169.0"/>
+<line class="grid" x1="50.0" y1="141.6" x2="410.0" y2="141.6"/>
+<line class="grid" x1="50.0" y1="114.2" x2="410.0" y2="114.2"/>
+<line class="grid" x1="50.0" y1="86.8" x2="410.0" y2="86.8"/>
+<line class="grid" x1="50.0" y1="59.4" x2="410.0" y2="59.4"/>
+<line class="grid" x1="50.0" y1="32.0" x2="410.0" y2="32.0"/>
+<line class="ax" x1="50.0" y1="306.0" x2="410.0" y2="306.0"/>
+<line class="ax" x1="50.0" y1="306.0" x2="50.0" y2="32.0"/>
+<text class="tk" x="50.0" y="322.0" text-anchor="middle">0</text>
+<text class="tk" x="122.0" y="322.0" text-anchor="middle">1</text>
+<text class="tk" x="194.0" y="322.0" text-anchor="middle">2</text>
+<text class="tk" x="266.0" y="322.0" text-anchor="middle">3</text>
+<text class="tk" x="338.0" y="322.0" text-anchor="middle">4</text>
+<text class="tk" x="410.0" y="322.0" text-anchor="middle">5</text>
+<text class="tk" x="43.0" y="310.0" text-anchor="end">0</text>
+<text class="tk" x="43.0" y="255.2" text-anchor="end">1</text>
+<text class="tk" x="43.0" y="200.4" text-anchor="end">2</text>
+<text class="tk" x="43.0" y="145.6" text-anchor="end">3</text>
+<text class="tk" x="43.0" y="90.8" text-anchor="end">4</text>
+<text class="tk" x="43.0" y="36.0" text-anchor="end">5</text>
+<text class="axl" x="410.0" y="337" text-anchor="end">V<tspan class="sb" dy="3" font-size="0.75em">IN</tspan><tspan dy="-3"></tspan> (V)</text>
+<text class="axl" x="44.0" y="18" text-anchor="start">V<tspan class="sb" dy="3" font-size="0.75em">OUT</tspan><tspan dy="-3"></tspan> (V)</text>
+<line class="ref" x1="50.0" y1="273.12" x2="410.0" y2="273.12"/>
+<line class="ref" x1="50.0" y1="75.83999999999997" x2="410.0" y2="75.83999999999997"/>
+<line class="ref" x1="150.79999999999998" y1="306.0" x2="150.79999999999998" y2="32.0"/>
+<line class="ref" x1="266.0" y1="306.0" x2="266.0" y2="32.0"/>
+<path class="vtc" d="M50.0,289.6 L150.8,281.3 L266.0,64.9 L410.0,48.4"/>
+<text class="refl" x="272.0" y="267.1" text-anchor="start">V<tspan class="sb" dy="3" font-size="0.75em">OL</tspan><tspan dy="-3"></tspan> = 0.6</text>
+<text class="refl" x="56.0" y="69.8" text-anchor="start">V<tspan class="sb" dy="3" font-size="0.75em">OH</tspan><tspan dy="-3"></tspan> = 4.2</text>
+<text class="refl" x="146.8" y="163.5" text-anchor="end">V<tspan class="sb" dy="3" font-size="0.75em">IL</tspan><tspan dy="-3"></tspan> = 1.4</text>
+<text class="refl" x="270.0" y="163.5" text-anchor="start">V<tspan class="sb" dy="3" font-size="0.75em">IH</tspan><tspan dy="-3"></tspan> = 3.0</text>
+</svg><p class="figcap">(a) buffer</p></div>
+      <div class="fig"><svg class="plot" viewBox="0 0 430 346" width="430" role="img" aria-label="Example inverter VTC with forbidden regions shaded" xmlns="http://www.w3.org/2000/svg">
+<rect class="zbad" x="50.0" y="75.8" width="100.8" height="230.2"/>
+<rect class="zbad" x="266.0" y="32.0" width="144.0" height="241.1"/>
+<line class="grid" x1="50.0" y1="306.0" x2="50.0" y2="32.0"/>
+<line class="grid" x1="86.0" y1="306.0" x2="86.0" y2="32.0"/>
+<line class="grid" x1="122.0" y1="306.0" x2="122.0" y2="32.0"/>
+<line class="grid" x1="158.0" y1="306.0" x2="158.0" y2="32.0"/>
+<line class="grid" x1="194.0" y1="306.0" x2="194.0" y2="32.0"/>
+<line class="grid" x1="230.0" y1="306.0" x2="230.0" y2="32.0"/>
+<line class="grid" x1="266.0" y1="306.0" x2="266.0" y2="32.0"/>
+<line class="grid" x1="302.0" y1="306.0" x2="302.0" y2="32.0"/>
+<line class="grid" x1="338.0" y1="306.0" x2="338.0" y2="32.0"/>
+<line class="grid" x1="374.0" y1="306.0" x2="374.0" y2="32.0"/>
+<line class="grid" x1="410.0" y1="306.0" x2="410.0" y2="32.0"/>
+<line class="grid" x1="50.0" y1="306.0" x2="410.0" y2="306.0"/>
+<line class="grid" x1="50.0" y1="278.6" x2="410.0" y2="278.6"/>
+<line class="grid" x1="50.0" y1="251.2" x2="410.0" y2="251.2"/>
+<line class="grid" x1="50.0" y1="223.8" x2="410.0" y2="223.8"/>
+<line class="grid" x1="50.0" y1="196.4" x2="410.0" y2="196.4"/>
+<line class="grid" x1="50.0" y1="169.0" x2="410.0" y2="169.0"/>
+<line class="grid" x1="50.0" y1="141.6" x2="410.0" y2="141.6"/>
+<line class="grid" x1="50.0" y1="114.2" x2="410.0" y2="114.2"/>
+<line class="grid" x1="50.0" y1="86.8" x2="410.0" y2="86.8"/>
+<line class="grid" x1="50.0" y1="59.4" x2="410.0" y2="59.4"/>
+<line class="grid" x1="50.0" y1="32.0" x2="410.0" y2="32.0"/>
+<line class="ax" x1="50.0" y1="306.0" x2="410.0" y2="306.0"/>
+<line class="ax" x1="50.0" y1="306.0" x2="50.0" y2="32.0"/>
+<text class="tk" x="50.0" y="322.0" text-anchor="middle">0</text>
+<text class="tk" x="122.0" y="322.0" text-anchor="middle">1</text>
+<text class="tk" x="194.0" y="322.0" text-anchor="middle">2</text>
+<text class="tk" x="266.0" y="322.0" text-anchor="middle">3</text>
+<text class="tk" x="338.0" y="322.0" text-anchor="middle">4</text>
+<text class="tk" x="410.0" y="322.0" text-anchor="middle">5</text>
+<text class="tk" x="43.0" y="310.0" text-anchor="end">0</text>
+<text class="tk" x="43.0" y="255.2" text-anchor="end">1</text>
+<text class="tk" x="43.0" y="200.4" text-anchor="end">2</text>
+<text class="tk" x="43.0" y="145.6" text-anchor="end">3</text>
+<text class="tk" x="43.0" y="90.8" text-anchor="end">4</text>
+<text class="tk" x="43.0" y="36.0" text-anchor="end">5</text>
+<text class="axl" x="410.0" y="337" text-anchor="end">V<tspan class="sb" dy="3" font-size="0.75em">IN</tspan><tspan dy="-3"></tspan> (V)</text>
+<text class="axl" x="44.0" y="18" text-anchor="start">V<tspan class="sb" dy="3" font-size="0.75em">OUT</tspan><tspan dy="-3"></tspan> (V)</text>
+<line class="ref" x1="50.0" y1="273.12" x2="410.0" y2="273.12"/>
+<line class="ref" x1="50.0" y1="75.83999999999997" x2="410.0" y2="75.83999999999997"/>
+<line class="ref" x1="150.79999999999998" y1="306.0" x2="150.79999999999998" y2="32.0"/>
+<line class="ref" x1="266.0" y1="306.0" x2="266.0" y2="32.0"/>
+<path class="vtc" d="M50.0,48.4 L150.8,64.9 L266.0,281.3 L410.0,289.6"/>
+<text class="refl" x="404.0" y="267.1" text-anchor="end">V<tspan class="sb" dy="3" font-size="0.75em">OL</tspan><tspan dy="-3"></tspan> = 0.6</text>
+<text class="refl" x="404.0" y="91.8" text-anchor="end">V<tspan class="sb" dy="3" font-size="0.75em">OH</tspan><tspan dy="-3"></tspan> = 4.2</text>
+<text class="refl" x="146.8" y="163.5" text-anchor="end">V<tspan class="sb" dy="3" font-size="0.75em">IL</tspan><tspan dy="-3"></tspan> = 1.4</text>
+<text class="refl" x="270.0" y="163.5" text-anchor="start">V<tspan class="sb" dy="3" font-size="0.75em">IH</tspan><tspan dy="-3"></tspan> = 3.0</text>
+</svg><p class="figcap">(b) inverter</p></div>
+    </div>
+    <span class="step">Check</span>
+    <p>The output must swing $V_{OH}-V_{OL}=3.6$ V while the input moves at most $V_{IH}-V_{IL}=1.6$ V, so the transition needs $|\text{slope}|\gt 1$ (here at least $3.6/1.6=2.25$). A gentle line from corner to corner cannot work.</p>
+  </div>
+</div>
+
+<div class="q" data-id="A3" data-t="compute">
+  <div class="qtop"><span class="qid">A3</span><span class="tag compute">compute</span><span class="src">cf. Prac 1 Q2</span></div>
+  <p>The VTC of an inverter is straight between the marked points. Which specification is valid under the static discipline? For each of the other three, state the condition it breaks.</p>
+  <div class="fig"><svg class="plot" viewBox="0 0 430 346" width="430" role="img" aria-label="Inverter VTC, piecewise linear" xmlns="http://www.w3.org/2000/svg">
+<line class="grid" x1="50.0" y1="306.0" x2="50.0" y2="32.0"/>
+<line class="grid" x1="74.0" y1="306.0" x2="74.0" y2="32.0"/>
+<line class="grid" x1="98.0" y1="306.0" x2="98.0" y2="32.0"/>
+<line class="grid" x1="122.0" y1="306.0" x2="122.0" y2="32.0"/>
+<line class="grid" x1="146.0" y1="306.0" x2="146.0" y2="32.0"/>
+<line class="grid" x1="170.0" y1="306.0" x2="170.0" y2="32.0"/>
+<line class="grid" x1="194.0" y1="306.0" x2="194.0" y2="32.0"/>
+<line class="grid" x1="218.0" y1="306.0" x2="218.0" y2="32.0"/>
+<line class="grid" x1="242.0" y1="306.0" x2="242.0" y2="32.0"/>
+<line class="grid" x1="266.0" y1="306.0" x2="266.0" y2="32.0"/>
+<line class="grid" x1="290.0" y1="306.0" x2="290.0" y2="32.0"/>
+<line class="grid" x1="314.0" y1="306.0" x2="314.0" y2="32.0"/>
+<line class="grid" x1="338.0" y1="306.0" x2="338.0" y2="32.0"/>
+<line class="grid" x1="362.0" y1="306.0" x2="362.0" y2="32.0"/>
+<line class="grid" x1="386.0" y1="306.0" x2="386.0" y2="32.0"/>
+<line class="grid" x1="410.0" y1="306.0" x2="410.0" y2="32.0"/>
+<line class="grid" x1="50.0" y1="306.0" x2="410.0" y2="306.0"/>
+<line class="grid" x1="50.0" y1="287.7" x2="410.0" y2="287.7"/>
+<line class="grid" x1="50.0" y1="269.5" x2="410.0" y2="269.5"/>
+<line class="grid" x1="50.0" y1="251.2" x2="410.0" y2="251.2"/>
+<line class="grid" x1="50.0" y1="232.9" x2="410.0" y2="232.9"/>
+<line class="grid" x1="50.0" y1="214.7" x2="410.0" y2="214.7"/>
+<line class="grid" x1="50.0" y1="196.4" x2="410.0" y2="196.4"/>
+<line class="grid" x1="50.0" y1="178.1" x2="410.0" y2="178.1"/>
+<line class="grid" x1="50.0" y1="159.9" x2="410.0" y2="159.9"/>
+<line class="grid" x1="50.0" y1="141.6" x2="410.0" y2="141.6"/>
+<line class="grid" x1="50.0" y1="123.3" x2="410.0" y2="123.3"/>
+<line class="grid" x1="50.0" y1="105.1" x2="410.0" y2="105.1"/>
+<line class="grid" x1="50.0" y1="86.8" x2="410.0" y2="86.8"/>
+<line class="grid" x1="50.0" y1="68.5" x2="410.0" y2="68.5"/>
+<line class="grid" x1="50.0" y1="50.3" x2="410.0" y2="50.3"/>
+<line class="grid" x1="50.0" y1="32.0" x2="410.0" y2="32.0"/>
+<line class="ax" x1="50.0" y1="306.0" x2="410.0" y2="306.0"/>
+<line class="ax" x1="50.0" y1="306.0" x2="50.0" y2="32.0"/>
+<text class="tk" x="50.0" y="322.0" text-anchor="middle">0</text>
+<text class="tk" x="110.0" y="322.0" text-anchor="middle">0.5</text>
+<text class="tk" x="170.0" y="322.0" text-anchor="middle">1</text>
+<text class="tk" x="230.0" y="322.0" text-anchor="middle">1.5</text>
+<text class="tk" x="290.0" y="322.0" text-anchor="middle">2</text>
+<text class="tk" x="350.0" y="322.0" text-anchor="middle">2.5</text>
+<text class="tk" x="410.0" y="322.0" text-anchor="middle">3</text>
+<text class="tk" x="43.0" y="310.0" text-anchor="end">0</text>
+<text class="tk" x="43.0" y="264.3" text-anchor="end">0.5</text>
+<text class="tk" x="43.0" y="218.7" text-anchor="end">1</text>
+<text class="tk" x="43.0" y="173.0" text-anchor="end">1.5</text>
+<text class="tk" x="43.0" y="127.3" text-anchor="end">2</text>
+<text class="tk" x="43.0" y="81.7" text-anchor="end">2.5</text>
+<text class="tk" x="43.0" y="36.0" text-anchor="end">3</text>
+<text class="axl" x="410.0" y="337" text-anchor="end">V<tspan class="sb" dy="3" font-size="0.75em">IN</tspan><tspan dy="-3"></tspan> (V)</text>
+<text class="axl" x="44.0" y="18" text-anchor="start">V<tspan class="sb" dy="3" font-size="0.75em">OUT</tspan><tspan dy="-3"></tspan> (V)</text>
+<path class="vtc" d="M50.0,32.0 L146.0,41.1 L194.0,86.8 L242.0,251.2 L290.0,287.7 L410.0,296.9"/>
+<circle class="pt" cx="146.0" cy="41.1" r="3.6"/>
+<text class="ptl" x="142.0" y="61.1" text-anchor="end">(0.8, 2.9)</text>
+<circle class="pt" cx="194.0" cy="86.8" r="3.6"/>
+<text class="ptl" x="203.0" y="88.8" text-anchor="start">(1.2, 2.4)</text>
+<circle class="pt" cx="242.0" cy="251.2" r="3.6"/>
+<text class="ptl" x="251.0" y="245.2" text-anchor="start">(1.6, 0.6)</text>
+<circle class="pt" cx="290.0" cy="287.7" r="3.6"/>
+<text class="ptl" x="296.0" y="275.7" text-anchor="start">(2.0, 0.2)</text>
+</svg></div>
+  <div class="tablewrap"><table>
+    <tr><th>Spec</th><th>$V_{OL}$</th><th>$V_{IL}$</th><th>$V_{IH}$</th><th>$V_{OH}$</th></tr>
+    <tr><td>#1</td><td>0.1</td><td>0.8</td><td>1.6</td><td>2.9</td></tr>
+    <tr><td>#2</td><td>0.6</td><td>1.2</td><td>1.6</td><td>2.4</td></tr>
+    <tr><td>#3</td><td>0.2</td><td>1.2</td><td>2.0</td><td>2.9</td></tr>
+    <tr><td>#4</td><td>0.9</td><td>0.8</td><td>2.0</td><td>2.4</td></tr>
+  </table></div>
+  <div class="btns"><button class="btn ansbtn">Show answer</button></div>
+  <div class="ans" hidden>
+    <span class="step">Conditions</span>
+    <p>The curve falls monotonically, so (i) $V_{OUT}(V_{IL})\ge V_{OH}$, (ii) $V_{OUT}(V_{IH})\le V_{OL}$, (iii) $NM_L=V_{IL}-V_{OL}\gt 0$ and $NM_H=V_{OH}-V_{IH}\gt 0$.</p>
+    <div class="tablewrap"><table>
+      <tr><th>Spec</th><th>$V_{OUT}(V_{IL})$ vs $V_{OH}$</th><th>$V_{OUT}(V_{IH})$ vs $V_{OL}$</th><th>$NM_L$</th><th>$NM_H$</th><th>Verdict</th></tr>
+      <tr><td>#1</td><td>$2.9\ge 2.9$ ✓</td><td>$0.6\gt 0.1$ ✗</td><td>0.7</td><td>1.3</td><td>invalid (ii)</td></tr>
+      <tr><td>#2</td><td>$2.4\ge 2.4$ ✓</td><td>$0.6\le 0.6$ ✓</td><td>0.6</td><td>0.8</td><td><strong>valid</strong></td></tr>
+      <tr><td>#3</td><td>$2.4\lt 2.9$ ✗</td><td>$0.2\le 0.2$ ✓</td><td>1.0</td><td>0.9</td><td>invalid (i)</td></tr>
+      <tr><td>#4</td><td>$2.9\ge 2.4$ ✓</td><td>$0.2\le 0.9$ ✓</td><td>$-0.1$</td><td>0.4</td><td>invalid (iii)</td></tr>
+    </table></div>
+    <p>#1: a valid "1" input of 1.6 V gives 0.6 V out, above the claimed $V_{OL}=0.1$ V. #3: a valid "0" input of 1.2 V gives only 2.4 V out, below the claimed $V_{OH}=2.9$ V. #4: the curve is fine but $V_{OL}\gt V_{IL}$, so a valid "0" output can be read as invalid by the next gate.</p>
+    <p><strong>Answer: specification #2</strong>, with $NM_L=0.6$ V and $NM_H=0.8$ V.</p>
+  </div>
+</div>
+
+<div class="q" data-id="A4" data-t="design">
+  <div class="qtop"><span class="qid">A4</span><span class="tag design">design</span><span class="src">cf. Prac 1 Q3</span></div>
+  <p>The measured VTC of a new inverter is shown. Grid lines are every 0.2 V; every corner of the curve sits on a grid intersection, and the curve is straight between corners. Complete the table so each scheme has the largest possible noise margins. If a scheme cannot give positive margins, put X in its blank cells. Which scheme would you choose?</p>
+  <div class="fig"><svg class="plot" viewBox="0 0 600 400" width="600" role="img" aria-label="Inverter VTC with a dip" xmlns="http://www.w3.org/2000/svg">
+<line class="grid" x1="50.0" y1="360.0" x2="50.0" y2="32.0"/>
+<line class="grid" x1="71.2" y1="360.0" x2="71.2" y2="32.0"/>
+<line class="grid" x1="92.4" y1="360.0" x2="92.4" y2="32.0"/>
+<line class="grid" x1="113.6" y1="360.0" x2="113.6" y2="32.0"/>
+<line class="grid" x1="134.8" y1="360.0" x2="134.8" y2="32.0"/>
+<line class="grid" x1="156.0" y1="360.0" x2="156.0" y2="32.0"/>
+<line class="grid" x1="177.2" y1="360.0" x2="177.2" y2="32.0"/>
+<line class="grid" x1="198.4" y1="360.0" x2="198.4" y2="32.0"/>
+<line class="grid" x1="219.6" y1="360.0" x2="219.6" y2="32.0"/>
+<line class="grid" x1="240.8" y1="360.0" x2="240.8" y2="32.0"/>
+<line class="grid" x1="262.0" y1="360.0" x2="262.0" y2="32.0"/>
+<line class="grid" x1="283.2" y1="360.0" x2="283.2" y2="32.0"/>
+<line class="grid" x1="304.4" y1="360.0" x2="304.4" y2="32.0"/>
+<line class="grid" x1="325.6" y1="360.0" x2="325.6" y2="32.0"/>
+<line class="grid" x1="346.8" y1="360.0" x2="346.8" y2="32.0"/>
+<line class="grid" x1="368.0" y1="360.0" x2="368.0" y2="32.0"/>
+<line class="grid" x1="389.2" y1="360.0" x2="389.2" y2="32.0"/>
+<line class="grid" x1="410.4" y1="360.0" x2="410.4" y2="32.0"/>
+<line class="grid" x1="431.6" y1="360.0" x2="431.6" y2="32.0"/>
+<line class="grid" x1="452.8" y1="360.0" x2="452.8" y2="32.0"/>
+<line class="grid" x1="474.0" y1="360.0" x2="474.0" y2="32.0"/>
+<line class="grid" x1="495.2" y1="360.0" x2="495.2" y2="32.0"/>
+<line class="grid" x1="516.4" y1="360.0" x2="516.4" y2="32.0"/>
+<line class="grid" x1="537.6" y1="360.0" x2="537.6" y2="32.0"/>
+<line class="grid" x1="558.8" y1="360.0" x2="558.8" y2="32.0"/>
+<line class="grid" x1="580.0" y1="360.0" x2="580.0" y2="32.0"/>
+<line class="grid" x1="50.0" y1="360.0" x2="580.0" y2="360.0"/>
+<line class="grid" x1="50.0" y1="346.9" x2="580.0" y2="346.9"/>
+<line class="grid" x1="50.0" y1="333.8" x2="580.0" y2="333.8"/>
+<line class="grid" x1="50.0" y1="320.6" x2="580.0" y2="320.6"/>
+<line class="grid" x1="50.0" y1="307.5" x2="580.0" y2="307.5"/>
+<line class="grid" x1="50.0" y1="294.4" x2="580.0" y2="294.4"/>
+<line class="grid" x1="50.0" y1="281.3" x2="580.0" y2="281.3"/>
+<line class="grid" x1="50.0" y1="268.2" x2="580.0" y2="268.2"/>
+<line class="grid" x1="50.0" y1="255.0" x2="580.0" y2="255.0"/>
+<line class="grid" x1="50.0" y1="241.9" x2="580.0" y2="241.9"/>
+<line class="grid" x1="50.0" y1="228.8" x2="580.0" y2="228.8"/>
+<line class="grid" x1="50.0" y1="215.7" x2="580.0" y2="215.7"/>
+<line class="grid" x1="50.0" y1="202.6" x2="580.0" y2="202.6"/>
+<line class="grid" x1="50.0" y1="189.4" x2="580.0" y2="189.4"/>
+<line class="grid" x1="50.0" y1="176.3" x2="580.0" y2="176.3"/>
+<line class="grid" x1="50.0" y1="163.2" x2="580.0" y2="163.2"/>
+<line class="grid" x1="50.0" y1="150.1" x2="580.0" y2="150.1"/>
+<line class="grid" x1="50.0" y1="137.0" x2="580.0" y2="137.0"/>
+<line class="grid" x1="50.0" y1="123.8" x2="580.0" y2="123.8"/>
+<line class="grid" x1="50.0" y1="110.7" x2="580.0" y2="110.7"/>
+<line class="grid" x1="50.0" y1="97.6" x2="580.0" y2="97.6"/>
+<line class="grid" x1="50.0" y1="84.5" x2="580.0" y2="84.5"/>
+<line class="grid" x1="50.0" y1="71.4" x2="580.0" y2="71.4"/>
+<line class="grid" x1="50.0" y1="58.2" x2="580.0" y2="58.2"/>
+<line class="grid" x1="50.0" y1="45.1" x2="580.0" y2="45.1"/>
+<line class="grid" x1="50.0" y1="32.0" x2="580.0" y2="32.0"/>
+<line class="ax" x1="50.0" y1="360.0" x2="580.0" y2="360.0"/>
+<line class="ax" x1="50.0" y1="360.0" x2="50.0" y2="32.0"/>
+<text class="tk" x="50.0" y="376.0" text-anchor="middle">0</text>
+<text class="tk" x="156.0" y="376.0" text-anchor="middle">1</text>
+<text class="tk" x="262.0" y="376.0" text-anchor="middle">2</text>
+<text class="tk" x="368.0" y="376.0" text-anchor="middle">3</text>
+<text class="tk" x="474.0" y="376.0" text-anchor="middle">4</text>
+<text class="tk" x="580.0" y="376.0" text-anchor="middle">5</text>
+<text class="tk" x="43.0" y="364.0" text-anchor="end">0</text>
+<text class="tk" x="43.0" y="298.4" text-anchor="end">1</text>
+<text class="tk" x="43.0" y="232.8" text-anchor="end">2</text>
+<text class="tk" x="43.0" y="167.2" text-anchor="end">3</text>
+<text class="tk" x="43.0" y="101.6" text-anchor="end">4</text>
+<text class="tk" x="43.0" y="36.0" text-anchor="end">5</text>
+<text class="axl" x="580.0" y="391" text-anchor="end">V<tspan class="sb" dy="3" font-size="0.75em">IN</tspan><tspan dy="-3"></tspan> (V)</text>
+<text class="axl" x="44.0" y="18" text-anchor="start">V<tspan class="sb" dy="3" font-size="0.75em">OUT</tspan><tspan dy="-3"></tspan> (V)</text>
+<path class="vtc" d="M50.0,45.1 L134.8,45.1 L177.2,123.8 L219.6,71.4 L304.4,281.3 L346.8,333.8 L580.0,333.8"/>
+<circle class="pt" cx="156.0" cy="84.5" r="3.6"/>
+<text class="ptl" x="147.0" y="89.5" text-anchor="end">(1.0, 4.2)</text>
+<line class="ldr" x1="198.4" y1="92.6" x2="198.4" y2="46.4"/>
+<circle class="pt" cx="198.4" cy="97.6" r="3.6"/>
+<text class="ptl" x="198.4" y="41.2" text-anchor="middle">(1.4, 4.0)</text>
+<circle class="pt" cx="262.0" cy="176.3" r="3.6"/>
+<text class="ptl" x="271.0" y="181.3" text-anchor="start">(2.0, 2.8)</text>
+<circle class="pt" cx="325.6" cy="307.5" r="3.6"/>
+<text class="ptl" x="334.6" y="309.5" text-anchor="start">(2.6, 0.8)</text>
+</svg></div>
+  <div class="tablewrap"><table>
+    <tr><th>Threshold</th><th>Scheme A</th><th>Scheme B</th><th>Scheme C</th></tr>
+    <tr><td>$V_{OL}$</td><td class="blank"></td><td class="given">0.4</td><td class="blank"></td></tr>
+    <tr><td>$V_{IL}$</td><td class="given">1.0</td><td class="given">1.4</td><td class="blank"></td></tr>
+    <tr><td>$V_{IH}$</td><td class="given">2.6</td><td class="blank"></td><td class="given">2.0</td></tr>
+    <tr><td>$V_{OH}$</td><td class="blank"></td><td class="blank"></td><td class="given">4.2</td></tr>
+  </table></div>
+  <p>Shaded cells are given. All values in volts.</p>
+  <div class="btns"><button class="btn hintbtn">Hint</button><button class="btn ansbtn">Show answer</button></div>
+  <div class="hint" hidden><p>$V_{OH}$ is the <em>lowest</em> output anywhere on $[0, V_{IL}]$, not the output at $V_{IL}$. The dip matters.</p></div>
+  <div class="ans" hidden>
+    <span class="step">Rules</span>
+    <p>Given $V_{IL}$: $V_{OH}=\min V_{OUT}$ on $[0,V_{IL}]$. Given $V_{IH}$: $V_{OL}=\max V_{OUT}$ on $[V_{IH},5]$. Given $V_{OH}$: $V_{IL}$ is the largest input with $V_{OUT}\ge V_{OH}$ all the way from 0. Given $V_{OL}$: $V_{IH}$ is the smallest input with $V_{OUT}\le V_{OL}$ from there to 5 V.</p>
+    <span class="step">Scheme A</span>
+    <p>On $[0,1.0]$ the curve falls from 4.8 to $V_{OUT}(1.0)=4.8-3(0.2)=4.2$, so $V_{OH}=4.2$. On $[2.6,5]$ the maximum is $V_{OUT}(2.6)=1.2-2(0.2)=0.8$, so $V_{OL}=0.8$. $NM_L=1.0-0.8=0.2$, $NM_H=4.2-2.6=1.6$.</p>
+    <span class="step">Scheme B</span>
+    <p>On $[0,1.4]$ the minimum is the dip, $V_{OUT}(1.2)=3.6$, so $V_{OH}=3.6$ (not $V_{OUT}(1.4)=4.0$). The output first reaches 0.4 V at 2.8 V and stays there, so $V_{IH}=2.8$. $NM_L=1.4-0.4=1.0$, $NM_H=3.6-2.8=0.8$.</p>
+    <span class="step">Scheme C</span>
+    <p>$V_{IH}=2.0$ forces $V_{OL}\ge V_{OUT}(2.0)=4.4-4(0.4)=2.8$. $V_{OH}=4.2$ forces $V_{IL}\le 1.0$. Then $NM_L\le 1.0-2.8=-1.8\lt 0$: X.</p>
+    <div class="tablewrap"><table>
+      <tr><th>Threshold</th><th>Scheme A</th><th>Scheme B</th><th>Scheme C</th></tr>
+      <tr><td>$V_{OL}$</td><td>0.8</td><td>0.4</td><td>X</td></tr>
+      <tr><td>$V_{IL}$</td><td>1.0</td><td>1.4</td><td>X</td></tr>
+      <tr><td>$V_{IH}$</td><td>2.6</td><td>2.8</td><td>2.0</td></tr>
+      <tr><td>$V_{OH}$</td><td>4.2</td><td>3.6</td><td>4.2</td></tr>
+      <tr><td>$NM_L$ / $NM_H$</td><td>0.2 / 1.6</td><td>1.0 / 0.8</td><td>—</td></tr>
+    </table></div>
+    <p><strong>Choose Scheme B.</strong> Its worst-case margin is 0.8 V against 0.2 V for Scheme A; the smaller margin is what limits noise immunity.</p>
+  </div>
+</div>
+
+<div class="q" data-id="A5" data-t="compute">
+  <div class="qtop"><span class="qid">A5</span><span class="tag compute">compute</span><span class="src">cf. Prac 1 Q4</span></div>
+  <p>Families PQ and RS both satisfy the static discipline (signals 0–5 V). A circuit from one family may be used in another only if the host family's original low and high noise margins are at least maintained.</p>
+  <div class="tablewrap"><table>
+    <tr><th>Family</th><th>$V_{OL}$</th><th>$V_{IL}$</th><th>$V_{IH}$</th><th>$V_{OH}$</th></tr>
+    <tr><td>PQ</td><td>0.5</td><td>1.5</td><td>3.0</td><td>4.0</td></tr>
+    <tr><td>RS</td><td>0.4</td><td>1.2</td><td>3.4</td><td>4.0</td></tr>
+  </table></div>
+  <ol class="parts">
+    <li>Can a PQ inverter be used as a driver in the RS family?</li>
+    <li>Can an RS inverter be used as a driver in the PQ family?</li>
+  </ol>
+  <div class="btns"><button class="btn ansbtn">Show answer</button></div>
+  <div class="ans" hidden>
+    <span class="step">Condition</span>
+    <p>A driver only sets output levels. The host's margins are kept iff $V_{OL}^{\text{drv}}\le V_{OL}^{\text{host}}$ and $V_{OH}^{\text{drv}}\ge V_{OH}^{\text{host}}$.</p>
+    <p>(a) RS margins: $NM_L=1.2-0.4=0.8$, $NM_H=4.0-3.4=0.6$. With a PQ driver: $NM_L=1.2-0.5=0.7\lt 0.8$ ✗, $NM_H=4.0-3.4=0.6$ ✓. <strong>No</strong>: PQ's "0" ($0.5\gt 0.4$) is too high.</p>
+    <p>(b) PQ margins: $NM_L=1.5-0.5=1.0$, $NM_H=4.0-3.0=1.0$. With an RS driver: $NM_L=1.5-0.4=1.1\ge 1.0$ ✓, $NM_H=4.0-3.0=1.0\ge 1.0$ ✓. <strong>Yes.</strong></p>
+  </div>
+</div>
+
+<div class="q" data-id="A6" data-t="compute">
+  <div class="qtop"><span class="qid">A6</span><span class="tag compute">compute</span><span class="src">cf. Prac 1 Q5–Q6</span></div>
+  <p>Same compatibility rule as A5. Three families (signals 0–5 V):</p>
+  <div class="tablewrap"><table>
+    <tr><th>Family</th><th>$V_{OL}$</th><th>$V_{IL}$</th><th>$V_{IH}$</th><th>$V_{OH}$</th></tr>
+    <tr><td>JX</td><td>0.7</td><td>1.8</td><td>3.1</td><td>4.3</td></tr>
+    <tr><td>KX</td><td>0.5</td><td>2.0</td><td>3.0</td><td>4.5</td></tr>
+    <tr><td>LX</td><td>0.6</td><td>1.6</td><td>2.9</td><td>4.4</td></tr>
+  </table></div>
+  <ol class="parts">
+    <li>Noise margins of JX.</li>
+    <li>Can a KX device satisfy the static discipline of JX? Explain.</li>
+    <li>Can an LX device satisfy the static discipline of JX? Explain.</li>
+  </ol>
+  <div class="btns"><button class="btn ansbtn">Show answer</button></div>
+  <div class="ans" hidden>
+    <p>(a) $NM_L=1.8-0.7=1.1$ V, $NM_H=4.3-3.1=1.2$ V.</p>
+    <span class="step">Condition</span>
+    <p>A device both drives and receives. Outputs: $V_{OL}^{\text{dev}}\le 0.7$, $V_{OH}^{\text{dev}}\ge 4.3$. Inputs: $V_{IL}^{\text{dev}}\ge 1.8$ (it must read every JX "0" as 0) and $V_{IH}^{\text{dev}}\le 3.1$ (it must read every JX "1" as 1).</p>
+    <p>(b) KX: $0.5\le 0.7$ ✓, $4.5\ge 4.3$ ✓, $2.0\ge 1.8$ ✓, $3.0\le 3.1$ ✓. <strong>Yes.</strong></p>
+    <p>(c) LX outputs pass ($0.6\le 0.7$, $4.4\ge 4.3$) and $2.9\le 3.1$ ✓, but $V_{IL}=1.6\lt 1.8$ ✗. An input of 1.7 V is a valid JX "0" yet sits in LX's forbidden zone. <strong>No</strong>, on the receiver side only.</p>
+  </div>
+</div>
+
+</section>
+
+<section class="part" id="partB">
+  <div class="parthead">
+    <h2>Part B · Word spec to SOP to circuit</h2>
+    <div class="meta"><span class="partcount">5</span> questions · ~35 min</div>
+  </div>
+  <p class="lead">Practical 2 Q1–Q2 types. B1–B3 are one scenario; B3, the shared circuit under a fixed gate budget, is the highest-value question in the part.</p>
+
+<div class="q" data-id="B1" data-t="design">
+  <div class="qtop"><span class="qid">B1</span><span class="tag design">design</span><span class="src">cf. Prac 2 Q1(a)</span></div>
+  <p>A 3D-printer safety controller has inputs $H$, $L$, $F$, $M$ and outputs $S$ (stop) and $W$ (warning lamp). $H=1$: heater on. $L=1$: lid closed. $F=1$: filament present. $M=1$: motor running.</p>
+  <ul>
+    <li>$S=1$ if and only if the heater is on and the lid is open, or the motor is running and at least one of these holds: the filament is absent, the lid is open, or the heater is off.</li>
+    <li>$W=1$ if and only if the heater is on, the lid is open, and either the filament is absent or the motor is not running.</li>
+  </ul>
+  <p>Write $S$ and $W$ in sum-of-products form.</p>
+  <div class="btns"><button class="btn ansbtn">Show answer</button></div>
+  <div class="ans" hidden>
+    <p>$$S = H\overline{L} + M(\overline{F}+\overline{L}+\overline{H}) = H\overline{L} + M\overline{F} + M\overline{L} + M\overline{H}$$</p>
+    <p>$$W = H\overline{L}(\overline{F}+\overline{M}) = H\overline{L}\,\overline{F} + H\overline{L}\,\overline{M}$$</p>
+    <p>Both are distributive-law expansions. $M\overline{L}$ is the consensus of $H\overline{L}$ and $M\overline{H}$, so $S = H\overline{L} + M\overline{F} + M\overline{H}$ is also correct and minimal. Checked against the spec on all 16 rows: $S=1$ on 9 rows, $W=1$ on 3.</p>
+  </div>
+</div>
+
+<div class="q" data-id="B2" data-t="design">
+  <div class="qtop"><span class="qid">B2</span><span class="tag design">design</span><span class="src">cf. Prac 2 Q1(b)</span></div>
+  <p>Implement the four-term $S$ and the two-term $W$ from B1 as two separate circuits with inputs $H, L, F, M$, using only inverters, 2-input AND gates and 2-input OR gates. Build each product term with its own gates (no sharing between terms). How many of each gate type does each circuit use?</p>
+  <div class="btns"><button class="btn ansbtn">Show answer</button></div>
+  <div class="ans" hidden>
+    <span class="step">S</span>
+    <div class="fig"><svg class="circ" viewBox="0 0 580 320" width="580" role="img" aria-label="Circuit for S using inverters, 2-input AND and 2-input OR gates" xmlns="http://www.w3.org/2000/svg">
+<line class="w" x1="40" y1="102" x2="260" y2="102"/>
+<line class="w" x1="130" y1="118" x2="260" y2="118"/>
+<line class="w" x1="220" y1="162" x2="260" y2="162"/>
+<line class="w" x1="190" y1="178" x2="260" y2="178"/>
+<line class="w" x1="220" y1="222" x2="260" y2="222"/>
+<line class="w" x1="130" y1="238" x2="260" y2="238"/>
+<line class="w" x1="220" y1="282" x2="260" y2="282"/>
+<line class="w" x1="70" y1="298" x2="260" y2="298"/>
+<line class="w" x1="296.0" y1="110" x2="316" y2="110"/>
+<line class="w" x1="316" y1="110" x2="316" y2="132"/>
+<line class="w" x1="316" y1="132" x2="365.88" y2="132"/>
+<line class="w" x1="296.0" y1="170" x2="332" y2="170"/>
+<line class="w" x1="332" y1="170" x2="332" y2="148"/>
+<line class="w" x1="332" y1="148" x2="365.88" y2="148"/>
+<line class="w" x1="296.0" y1="230" x2="316" y2="230"/>
+<line class="w" x1="316" y1="230" x2="316" y2="252"/>
+<line class="w" x1="316" y1="252" x2="365.88" y2="252"/>
+<line class="w" x1="296.0" y1="290" x2="332" y2="290"/>
+<line class="w" x1="332" y1="290" x2="332" y2="268"/>
+<line class="w" x1="332" y1="268" x2="365.88" y2="268"/>
+<line class="w" x1="410" y1="140" x2="426" y2="140"/>
+<line class="w" x1="426" y1="140" x2="426" y2="192"/>
+<line class="w" x1="426" y1="192" x2="455.88" y2="192"/>
+<line class="w" x1="410" y1="260" x2="438" y2="260"/>
+<line class="w" x1="438" y1="260" x2="438" y2="208"/>
+<line class="w" x1="438" y1="208" x2="455.88" y2="208"/>
+<line class="w" x1="500" y1="200" x2="540" y2="200"/>
+<line class="w" x1="40" y1="44" x2="70" y2="44"/>
+<line class="w" x1="70" y1="72" x2="70" y2="298"/>
+<line class="w" x1="100" y1="44" x2="130" y2="44"/>
+<line class="w" x1="130" y1="72" x2="130" y2="238"/>
+<line class="w" x1="160" y1="44" x2="190" y2="44"/>
+<line class="w" x1="190" y1="72" x2="190" y2="178"/>
+<line class="w" x1="40" y1="28" x2="40" y2="102"/>
+<line class="w" x1="100" y1="28" x2="100" y2="44"/>
+<line class="w" x1="160" y1="28" x2="160" y2="44"/>
+<line class="w" x1="220" y1="28" x2="220" y2="282"/>
+<path class="g" d="M260,90.0 H276 A20.0,20.0 0 0 1 276,130.0 H260 Z"/>
+<path class="g" d="M260,150.0 H276 A20.0,20.0 0 0 1 276,190.0 H260 Z"/>
+<path class="g" d="M260,210.0 H276 A20.0,20.0 0 0 1 276,250.0 H260 Z"/>
+<path class="g" d="M260,270.0 H276 A20.0,20.0 0 0 1 276,310.0 H260 Z"/>
+<path class="g" d="M360,120.0 Q390.0,120.0 410,140 Q390.0,160.0 360,160.0 Q374,140 360,120.0 Z"/>
+<path class="g" d="M360,240.0 Q390.0,240.0 410,260 Q390.0,280.0 360,280.0 Q374,260 360,240.0 Z"/>
+<path class="g" d="M450,180.0 Q480.0,180.0 500,200 Q480.0,220.0 450,220.0 Q464,200 450,180.0 Z"/>
+<path class="g" d="M61,44 L70,64 L79,44 Z"/><circle class="g" cx="70" cy="68" r="4"/>
+<path class="g" d="M121,44 L130,64 L139,44 Z"/><circle class="g" cx="130" cy="68" r="4"/>
+<path class="g" d="M181,44 L190,64 L199,44 Z"/><circle class="g" cx="190" cy="68" r="4"/>
+<circle class="dot" cx="40" cy="44" r="3.2"/>
+<circle class="dot" cx="130" cy="118" r="3.2"/>
+<circle class="dot" cx="220" cy="162" r="3.2"/>
+<circle class="dot" cx="220" cy="222" r="3.2"/>
+<text class="lb" x="40" y="20" text-anchor="middle" font-size="15">H</text>
+<text class="lb" x="100" y="20" text-anchor="middle" font-size="15">L</text>
+<text class="lb" x="160" y="20" text-anchor="middle" font-size="15">F</text>
+<text class="lb" x="220" y="20" text-anchor="middle" font-size="15">M</text>
+<text class="lb" x="546" y="205" text-anchor="start" font-size="15">S</text>
+</svg></div>
+    <p>Inverters for $\overline{H},\overline{L},\overline{F}$: <strong>3 NOT</strong>. One AND per two-literal term: <strong>4 AND</strong>. Four terms need $4-1$ two-input ORs: <strong>3 OR</strong>.</p>
+    <span class="step">W</span>
+    <div class="fig"><svg class="circ" viewBox="0 0 560 270" width="560" role="img" aria-label="Circuit for W using inverters, 2-input AND and 2-input OR gates" xmlns="http://www.w3.org/2000/svg">
+<line class="w" x1="40" y1="92" x2="260" y2="92"/>
+<line class="w" x1="100" y1="108" x2="260" y2="108"/>
+<line class="w" x1="296.0" y1="100" x2="316" y2="100"/>
+<line class="w" x1="316" y1="100" x2="316" y2="124"/>
+<line class="w" x1="316" y1="124" x2="340" y2="124"/>
+<line class="w" x1="160" y1="140" x2="340" y2="140"/>
+<line class="w" x1="40" y1="192" x2="260" y2="192"/>
+<line class="w" x1="100" y1="208" x2="260" y2="208"/>
+<line class="w" x1="296.0" y1="200" x2="316" y2="200"/>
+<line class="w" x1="316" y1="200" x2="316" y2="224"/>
+<line class="w" x1="316" y1="224" x2="340" y2="224"/>
+<line class="w" x1="220" y1="240" x2="340" y2="240"/>
+<line class="w" x1="376.0" y1="132" x2="400" y2="132"/>
+<line class="w" x1="400" y1="132" x2="400" y2="178"/>
+<line class="w" x1="400" y1="178" x2="435.88" y2="178"/>
+<line class="w" x1="376.0" y1="232" x2="412" y2="232"/>
+<line class="w" x1="412" y1="232" x2="412" y2="194"/>
+<line class="w" x1="412" y1="194" x2="435.88" y2="194"/>
+<line class="w" x1="480" y1="186" x2="520" y2="186"/>
+<line class="w" x1="70" y1="44" x2="100" y2="44"/>
+<line class="w" x1="100" y1="72" x2="100" y2="208"/>
+<line class="w" x1="130" y1="44" x2="160" y2="44"/>
+<line class="w" x1="160" y1="72" x2="160" y2="140"/>
+<line class="w" x1="190" y1="44" x2="220" y2="44"/>
+<line class="w" x1="220" y1="72" x2="220" y2="240"/>
+<line class="w" x1="40" y1="28" x2="40" y2="192"/>
+<line class="w" x1="70" y1="28" x2="70" y2="44"/>
+<line class="w" x1="130" y1="28" x2="130" y2="44"/>
+<line class="w" x1="190" y1="28" x2="190" y2="44"/>
+<path class="g" d="M260,80.0 H276 A20.0,20.0 0 0 1 276,120.0 H260 Z"/>
+<path class="g" d="M340,112.0 H356 A20.0,20.0 0 0 1 356,152.0 H340 Z"/>
+<path class="g" d="M260,180.0 H276 A20.0,20.0 0 0 1 276,220.0 H260 Z"/>
+<path class="g" d="M340,212.0 H356 A20.0,20.0 0 0 1 356,252.0 H340 Z"/>
+<path class="g" d="M430,166.0 Q460.0,166.0 480,186 Q460.0,206.0 430,206.0 Q444,186 430,166.0 Z"/>
+<path class="g" d="M91,44 L100,64 L109,44 Z"/><circle class="g" cx="100" cy="68" r="4"/>
+<path class="g" d="M151,44 L160,64 L169,44 Z"/><circle class="g" cx="160" cy="68" r="4"/>
+<path class="g" d="M211,44 L220,64 L229,44 Z"/><circle class="g" cx="220" cy="68" r="4"/>
+<circle class="dot" cx="40" cy="92" r="3.2"/>
+<circle class="dot" cx="100" cy="108" r="3.2"/>
+<text class="lb" x="40" y="20" text-anchor="middle" font-size="15">H</text>
+<text class="lb" x="70" y="20" text-anchor="middle" font-size="15">L</text>
+<text class="lb" x="130" y="20" text-anchor="middle" font-size="15">F</text>
+<text class="lb" x="190" y="20" text-anchor="middle" font-size="15">M</text>
+<text class="lb" x="526" y="191" text-anchor="start" font-size="15">W</text>
+</svg></div>
+    <p>Inverters for $\overline{L},\overline{F},\overline{M}$: <strong>3 NOT</strong>. Each three-literal term needs two cascaded 2-input ANDs: <strong>4 AND</strong>. Two terms: <strong>1 OR</strong>.</p>
+    <p>General count: a $k$-literal product costs $k-1$ two-input ANDs; an $n$-term sum costs $n-1$ two-input ORs.</p>
+  </div>
+</div>
+
+<div class="q" data-id="B3" data-t="design">
+  <div class="qtop"><span class="qid">B3</span><span class="tag design">design</span><span class="src">cf. Prac 2 Q1(c)</span></div>
+  <p>Draw a single circuit that outputs both $S$ and $W$ using exactly four inverters, three 2-input AND gates, one 3-input OR gate and two 2-input OR gates.</p>
+  <div class="btns"><button class="btn hintbtn">Hint</button><button class="btn ansbtn">Show answer</button></div>
+  <div class="hint" hidden><p>Don't expand. Use the factored forms from the spec; one AND output is common to both $S$ and $W$.</p></div>
+  <div class="ans" hidden>
+    <span class="step">Factored forms</span>
+    <p>$$S = H\overline{L} + M\cdot(\overline{F}+\overline{L}+\overline{H}),\qquad W = H\overline{L}\cdot(\overline{F}+\overline{M})$$</p>
+    <p>NOT: $\overline{H},\overline{L},\overline{F},\overline{M}$ (4). AND: $H\overline{L}$ (shared), $M\cdot(\ldots)$, $H\overline{L}\cdot(\ldots)$ (3). 3-input OR: $\overline{F}+\overline{L}+\overline{H}$. 2-input OR: $\overline{F}+\overline{M}$ and the final OR for $S$ (2). Budget met exactly.</p>
+    <div class="fig"><svg class="circ" viewBox="0 0 690 345" width="690" role="img" aria-label="Shared circuit producing S and W" xmlns="http://www.w3.org/2000/svg">
+<line class="w" x1="190" y1="134" x2="304.71" y2="134"/>
+<line class="w" x1="130" y1="150" x2="307.0" y2="150"/>
+<line class="w" x1="70" y1="166" x2="304.71" y2="166"/>
+<line class="w" x1="40" y1="222" x2="300" y2="222"/>
+<line class="w" x1="130" y1="238" x2="300" y2="238"/>
+<line class="w" x1="190" y1="302" x2="305.88" y2="302"/>
+<line class="w" x1="250" y1="318" x2="305.88" y2="318"/>
+<line class="w" x1="220" y1="102" x2="440" y2="102"/>
+<line class="w" x1="350" y1="150" x2="380" y2="150"/>
+<line class="w" x1="380" y1="150" x2="380" y2="118"/>
+<line class="w" x1="380" y1="118" x2="440" y2="118"/>
+<line class="w" x1="336.0" y1="230" x2="530" y2="230"/>
+<line class="w" x1="390" y1="230" x2="390" y2="262"/>
+<line class="w" x1="390" y1="262" x2="440" y2="262"/>
+<line class="w" x1="350" y1="310" x2="405" y2="310"/>
+<line class="w" x1="405" y1="310" x2="405" y2="278"/>
+<line class="w" x1="405" y1="278" x2="440" y2="278"/>
+<line class="w" x1="476.0" y1="110" x2="515" y2="110"/>
+<line class="w" x1="515" y1="110" x2="515" y2="162"/>
+<line class="w" x1="515" y1="162" x2="565.88" y2="162"/>
+<line class="w" x1="530" y1="230" x2="530" y2="178"/>
+<line class="w" x1="530" y1="178" x2="565.88" y2="178"/>
+<line class="w" x1="610" y1="170" x2="650" y2="170"/>
+<line class="w" x1="476.0" y1="270" x2="650" y2="270"/>
+<line class="w" x1="40" y1="44" x2="70" y2="44"/>
+<line class="w" x1="70" y1="72" x2="70" y2="166"/>
+<line class="w" x1="100" y1="44" x2="130" y2="44"/>
+<line class="w" x1="130" y1="72" x2="130" y2="238"/>
+<line class="w" x1="160" y1="44" x2="190" y2="44"/>
+<line class="w" x1="190" y1="72" x2="190" y2="302"/>
+<line class="w" x1="220" y1="44" x2="250" y2="44"/>
+<line class="w" x1="250" y1="72" x2="250" y2="318"/>
+<line class="w" x1="40" y1="28" x2="40" y2="222"/>
+<line class="w" x1="100" y1="28" x2="100" y2="44"/>
+<line class="w" x1="160" y1="28" x2="160" y2="44"/>
+<line class="w" x1="220" y1="28" x2="220" y2="102"/>
+<path class="g" d="M300,122.0 Q330.0,122.0 350,150 Q330.0,178.0 300,178.0 Q314,150 300,122.0 Z"/>
+<path class="g" d="M300,210.0 H316 A20.0,20.0 0 0 1 316,250.0 H300 Z"/>
+<path class="g" d="M300,290.0 Q330.0,290.0 350,310 Q330.0,330.0 300,330.0 Q314,310 300,290.0 Z"/>
+<path class="g" d="M440,90.0 H456 A20.0,20.0 0 0 1 456,130.0 H440 Z"/>
+<path class="g" d="M440,250.0 H456 A20.0,20.0 0 0 1 456,290.0 H440 Z"/>
+<path class="g" d="M560,150.0 Q590.0,150.0 610,170 Q590.0,190.0 560,190.0 Q574,170 560,150.0 Z"/>
+<path class="g" d="M61,44 L70,64 L79,44 Z"/><circle class="g" cx="70" cy="68" r="4"/>
+<path class="g" d="M121,44 L130,64 L139,44 Z"/><circle class="g" cx="130" cy="68" r="4"/>
+<path class="g" d="M181,44 L190,64 L199,44 Z"/><circle class="g" cx="190" cy="68" r="4"/>
+<path class="g" d="M241,44 L250,64 L259,44 Z"/><circle class="g" cx="250" cy="68" r="4"/>
+<circle class="dot" cx="40" cy="44" r="3.2"/>
+<circle class="dot" cx="130" cy="150" r="3.2"/>
+<circle class="dot" cx="190" cy="134" r="3.2"/>
+<circle class="dot" cx="220" cy="44" r="3.2"/>
+<circle class="dot" cx="390" cy="230" r="3.2"/>
+<text class="lb" x="40" y="20" text-anchor="middle" font-size="15">H</text>
+<text class="lb" x="100" y="20" text-anchor="middle" font-size="15">L</text>
+<text class="lb" x="160" y="20" text-anchor="middle" font-size="15">F</text>
+<text class="lb" x="220" y="20" text-anchor="middle" font-size="15">M</text>
+<text class="lb" x="656" y="175" text-anchor="start" font-size="15">S</text>
+<text class="lb" x="656" y="275" text-anchor="start" font-size="15">W</text>
+</svg></div>
+    <p>Simulated against the B1 spec on all 16 input rows: both outputs match ✓.</p>
+  </div>
+</div>
+
+<div class="q" data-id="B4" data-t="compute">
+  <div class="qtop"><span class="qid">B4</span><span class="tag compute">compute</span><span class="src">cf. Prac 2 Q2(a)–(b)</span></div>
+  <p>A 3-bit number detector has input $P=P_2P_1P_0$ and output $Z$. $Z=1$ when $P = 0, 2, 3, 6$ or $7$, and $Z=0$ when $P = 1, 4$ or $5$.</p>
+  <ol class="parts">
+    <li>Draw the truth table for $Z$.</li>
+    <li>Write a sum-of-products expression for $Z$ from the table.</li>
+  </ol>
+  <div class="btns"><button class="btn ansbtn">Show answer</button></div>
+  <div class="ans" hidden>
+    <div class="tablewrap"><table>
+      <tr><th>$P$</th><th>$P_2$</th><th>$P_1$</th><th>$P_0$</th><th>$Z$</th></tr>
+      <tr><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td></tr>
+      <tr><td>1</td><td>0</td><td>0</td><td>1</td><td>0</td></tr>
+      <tr><td>2</td><td>0</td><td>1</td><td>0</td><td>1</td></tr>
+      <tr><td>3</td><td>0</td><td>1</td><td>1</td><td>1</td></tr>
+      <tr><td>4</td><td>1</td><td>0</td><td>0</td><td>0</td></tr>
+      <tr><td>5</td><td>1</td><td>0</td><td>1</td><td>0</td></tr>
+      <tr><td>6</td><td>1</td><td>1</td><td>0</td><td>1</td></tr>
+      <tr><td>7</td><td>1</td><td>1</td><td>1</td><td>1</td></tr>
+    </table></div>
+    <p>One minterm per 1-row:</p>
+    <p>$$Z = \overline{P_2}\,\overline{P_1}\,\overline{P_0} + \overline{P_2}P_1\overline{P_0} + \overline{P_2}P_1P_0 + P_2P_1\overline{P_0} + P_2P_1P_0$$</p>
+  </div>
+</div>
+
+<div class="q" data-id="B5" data-t="design">
+  <div class="qtop"><span class="qid">B5</span><span class="tag design">design</span><span class="src">cf. Prac 2 Q2(c)–(d)</span></div>
+  <p>Simplify $Z$ from B4 using the theorems of Boolean algebra (name each one), then implement the result with AND, OR and NOT gates.</p>
+  <div class="btns"><button class="btn ansbtn">Show answer</button></div>
+  <div class="ans" hidden>
+    <span class="step">Simplify</span>
+    <p>Duplicate $\overline{P_2}P_1\overline{P_0}$ (idempotence, $X = X+X$) and group:</p>
+    <p>$$\overline{P_2}\,\overline{P_0}(\overline{P_1}+P_1) + \overline{P_2}P_1(\overline{P_0}+P_0) + P_2P_1(\overline{P_0}+P_0)$$</p>
+    <p>Complement then identity on each bracket:</p>
+    <p>$$= \overline{P_2}\,\overline{P_0} + \overline{P_2}P_1 + P_2P_1$$</p>
+    <p>Factor $P_1$ (distributive), complement, identity: $\overline{P_2}P_1 + P_2P_1 = P_1$.</p>
+    <p>$$Z = P_1 + \overline{P_2}\,\overline{P_0}$$</p>
+    <p>Check on the 0-rows: $P=1$ ($P_1=0$, $P_0=1$) → 0 ✓; $P=4,5$ ($P_1=0$, $P_2=1$) → 0 ✓.</p>
+    <span class="step">Circuit</span>
+    <div class="fig"><svg class="circ" viewBox="0 0 420 190" width="420" role="img" aria-label="Circuit for Z" xmlns="http://www.w3.org/2000/svg">
+<line class="w" x1="74" y1="102" x2="220" y2="102"/>
+<line class="w" x1="176" y1="118" x2="220" y2="118"/>
+<line class="w" x1="256.0" y1="110" x2="275" y2="110"/>
+<line class="w" x1="275" y1="110" x2="275" y2="142"/>
+<line class="w" x1="275" y1="142" x2="305.88" y2="142"/>
+<line class="w" x1="108" y1="158" x2="305.88" y2="158"/>
+<line class="w" x1="350" y1="150" x2="385" y2="150"/>
+<line class="w" x1="40" y1="44" x2="74" y2="44"/>
+<line class="w" x1="74" y1="72" x2="74" y2="102"/>
+<line class="w" x1="142" y1="44" x2="176" y2="44"/>
+<line class="w" x1="176" y1="72" x2="176" y2="118"/>
+<line class="w" x1="40" y1="28" x2="40" y2="44"/>
+<line class="w" x1="108" y1="28" x2="108" y2="158"/>
+<line class="w" x1="142" y1="28" x2="142" y2="44"/>
+<path class="g" d="M220,90.0 H236 A20.0,20.0 0 0 1 236,130.0 H220 Z"/>
+<path class="g" d="M300,130.0 Q330.0,130.0 350,150 Q330.0,170.0 300,170.0 Q314,150 300,130.0 Z"/>
+<path class="g" d="M65,44 L74,64 L83,44 Z"/><circle class="g" cx="74" cy="68" r="4"/>
+<path class="g" d="M167,44 L176,64 L185,44 Z"/><circle class="g" cx="176" cy="68" r="4"/>
+<text class="lb" x="40" y="20" text-anchor="middle" font-size="15">P<tspan class="sb" dy="3" font-size="0.75em">2</tspan><tspan dy="-3"></tspan></text>
+<text class="lb" x="108" y="20" text-anchor="middle" font-size="15">P<tspan class="sb" dy="3" font-size="0.75em">1</tspan><tspan dy="-3"></tspan></text>
+<text class="lb" x="142" y="20" text-anchor="middle" font-size="15">P<tspan class="sb" dy="3" font-size="0.75em">0</tspan><tspan dy="-3"></tspan></text>
+<text class="lb" x="391" y="155" text-anchor="start" font-size="15">Z</text>
+</svg></div>
+    <p>2 NOT, 1 AND, 1 OR.</p>
+  </div>
+</div>
+
+</section>
+
+<section class="part" id="partC">
+  <div class="parthead">
+    <h2>Part C · Boolean algebra simplification</h2>
+    <div class="meta"><span class="partcount">3</span> questions · ~25 min</div>
+  </div>
+  <p class="lead">Practical 2 Q3–Q4 types. Apply De Morgan first, then distribute, then absorb. C3 relies on spotting a consensus term.</p>
+
+<div class="q" data-id="C1" data-t="compute">
+  <div class="qtop"><span class="qid">C1</span><span class="tag compute">compute</span><span class="src">cf. Prac 2 Q3(a)–(b)</span></div>
+  <p>Find a minimal sum-of-products expression for each.</p>
+  <ol class="parts">
+    <li>$\overline{a\overline{b} + c + \overline{a}}$</li>
+    <li>$(a+b)c + \overline{b}a + c(\overline{a}+b)$</li>
+  </ol>
+  <div class="btns"><button class="btn ansbtn">Show answer</button></div>
+  <div class="ans" hidden>
+    <span class="step">(a)</span>
+    <p>De Morgan on the sum, then on $a\overline{b}$, then distribute:</p>
+    <p>$$\overline{a\overline{b}}\cdot\overline{c}\cdot a = (\overline{a}+b)\,\overline{c}\,a = a\overline{a}\,\overline{c} + ab\overline{c} = ab\overline{c}$$</p>
+    <p>($a\overline{a}=0$, complement.) Check: true only for $abc=110$ ✓.</p>
+    <span class="step">(b)</span>
+    <p>$$ac + bc + a\overline{b} + \overline{a}c + bc = (a+\overline{a})c + bc + a\overline{b} = c + bc + a\overline{b} = c + a\overline{b}$$</p>
+    <p>Distributive, idempotence ($bc+bc=bc$), complement, identity, absorption ($c+bc=c$). Check: 1-rows are $abc \in \{001,011,100,101,111\}$ ✓.</p>
+  </div>
+</div>
+
+<div class="q" data-id="C2" data-t="compute">
+  <div class="qtop"><span class="qid">C2</span><span class="tag compute">compute</span><span class="src">cf. Prac 2 Q3(c)–(d)</span></div>
+  <p>Find a minimal sum-of-products expression for each.</p>
+  <ol class="parts">
+    <li>$\overline{a}\;\overline{bc}\,\big(c + \overline{a}(b+c)\big)$</li>
+    <li>$b\big(a + c(\overline{d} + ef)\big)$</li>
+  </ol>
+  <div class="btns"><button class="btn hintbtn">Hint</button><button class="btn ansbtn">Show answer</button></div>
+  <div class="hint" hidden><p>In (a), shrink the bracket first: $c + \overline{a}c$ absorbs.</p></div>
+  <div class="ans" hidden>
+    <span class="step">(a)</span>
+    <p>Bracket: $c + \overline{a}b + \overline{a}c = c + \overline{a}b$ (absorption). De Morgan: $\overline{bc}=\overline{b}+\overline{c}$.</p>
+    <p>$$\overline{a}(\overline{b}+\overline{c})(c+\overline{a}b) = \overline{a}\big(\overline{b}c + \overline{a}\,\overline{b}b + \overline{c}c + \overline{a}b\overline{c}\big) = \overline{a}\,\overline{b}c + \overline{a}b\overline{c}$$</p>
+    <p>$\overline{b}b = \overline{c}c = 0$ (complement); $\overline{a}\,\overline{a}=\overline{a}$ (idempotence). The two terms differ in two variables, so nothing combines. Check: 1-rows $abc \in \{001, 010\}$ ✓.</p>
+    <span class="step">(b)</span>
+    <p>Distribute twice:</p>
+    <p>$$ab + bc(\overline{d}+ef) = ab + bc\overline{d} + bcef$$</p>
+    <p>No term contains another, so this is minimal (8 literals). Verified on all 64 rows ✓.</p>
+  </div>
+</div>
+
+<div class="q" data-id="C3" data-t="compute">
+  <div class="qtop"><span class="qid">C3</span><span class="tag compute">compute</span><span class="src">cf. Prac 2 Q4</span></div>
+  <p>Simplify to the stated number of literals, in sum-of-products form.</p>
+  <ol class="parts">
+    <li>$X = \overline{\overline{A+B} + C\,\overline{\overline{A}B}}$ &nbsp; to 4 literals</li>
+    <li>$Y = \overline{\overline{A\overline{B}}\,(A+C)} + B$ &nbsp; to 3 literals</li>
+  </ol>
+  <div class="btns"><button class="btn hintbtn">Hint</button><button class="btn ansbtn">Show answer</button></div>
+  <div class="hint" hidden><p>Both expand to three terms where one is redundant: $XY + \overline{X}Z + YZ = XY + \overline{X}Z$ (consensus).</p></div>
+  <div class="ans" hidden>
+    <span class="step">(a)</span>
+    <p>De Morgan on the outer bar, then on $\overline{C\,\overline{\overline{A}B}}$:</p>
+    <p>$$X = (A+B)\cdot\overline{C\,\overline{\overline{A}B}} = (A+B)(\overline{C} + \overline{A}B)$$</p>
+    <p>$$= A\overline{C} + A\overline{A}B + B\overline{C} + \overline{A}B = A\overline{C} + B\overline{C} + \overline{A}B$$</p>
+    <p>$B\overline{C}$ is the consensus of $A\overline{C}$ and $\overline{A}B$:</p>
+    <p>$$X = A\overline{C} + \overline{A}B \quad (4\text{ literals})$$</p>
+    <p>Check: 1-rows $ABC \in \{010,011,100,110\}$ ✓.</p>
+    <span class="step">(b)</span>
+    <p>Inside: $\overline{A\overline{B}} = \overline{A}+B$, so $(\overline{A}+B)(A+C) = \overline{A}C + AB + BC = \overline{A}C + AB$ (consensus drops $BC$).</p>
+    <p>Complement it with De Morgan:</p>
+    <p>$$\overline{\overline{A}C + AB} = (A+\overline{C})(\overline{A}+\overline{B}) = A\overline{B} + \overline{A}\,\overline{C} + \overline{B}\,\overline{C} = A\overline{B} + \overline{A}\,\overline{C}$$</p>
+    <p>Add $B$: $B + A\overline{B} = B + A$, then $A + \overline{A}\,\overline{C} = A + \overline{C}$.</p>
+    <p>$$Y = A + B + \overline{C} \quad (3\text{ literals})$$</p>
+    <p>Check: $Y=0$ only at $ABC=001$ ✓.</p>
+  </div>
+</div>
+
+</section>
+
+<section class="part" id="partD">
+  <div class="parthead">
+    <h2>Part D · Minterms, maxterms and equivalence</h2>
+    <div class="meta"><span class="partcount">5</span> questions · ~25 min</div>
+  </div>
+  <p class="lead">Practical 2 Q5–Q9 types. Minterm $m_i$ is 1 only on row $i$; maxterm $M_i$ is 0 only on row $i$. D5 has three circuits, not two.</p>
+
+<div class="q" data-id="D1" data-t="compute">
+  <div class="qtop"><span class="qid">D1</span><span class="tag compute">compute</span><span class="src">cf. Prac 2 Q5</span></div>
+  <p>$G(A,B,C) = \overline{A}B + A\overline{C} + \overline{B}\,\overline{C}$</p>
+  <ol class="parts">
+    <li>How many 1s are in the output column of $G$'s 8-row truth table?</li>
+    <li>Give a standard sum-of-products expression for $G$.</li>
+    <li>Give a minimal sum-of-products expression for $G$.</li>
+  </ol>
+  <div class="btns"><button class="btn ansbtn">Show answer</button></div>
+  <div class="ans" hidden>
+    <p>$\overline{A}B$ → rows 2, 3. $A\overline{C}$ → rows 4, 6. $\overline{B}\,\overline{C}$ → rows 0, 4. Union $\{0,2,3,4,6\}$.</p>
+    <p>(a) <strong>5</strong>.</p>
+    <p>(b) $G = \sum m(0,2,3,4,6) = \overline{A}\,\overline{B}\,\overline{C} + \overline{A}B\overline{C} + \overline{A}BC + A\overline{B}\,\overline{C} + AB\overline{C}$</p>
+    <p>(c) Rows 0, 2, 4, 6 are every row with $C=0$, so they combine to $\overline{C}$. Row 3 remains; pair it with row 2 to get $\overline{A}B$.</p>
+    <p>$$G = \overline{C} + \overline{A}B$$</p>
+  </div>
+</div>
+
+<div class="q" data-id="D2" data-t="compute">
+  <div class="qtop"><span class="qid">D2</span><span class="tag compute">compute</span><span class="src">cf. Prac 2 Q6</span></div>
+  <p>$F(X,Y,Z) = (X+Z)(Y+\overline{Z})(\overline{X}+\overline{Y})$</p>
+  <ol class="parts">
+    <li>Express $F$ as a product of maxterms, $F=\prod M(\ldots)$.</li>
+    <li>Give a standard sum-of-products expression for $F$.</li>
+  </ol>
+  <div class="btns"><button class="btn ansbtn">Show answer</button></div>
+  <div class="ans" hidden>
+    <p>Each factor is 0 on the rows where all its literals are 0:</p>
+    <div class="tablewrap"><table>
+      <tr><th>Factor</th><th>0 when</th><th>Rows $XYZ$</th><th>Maxterms</th></tr>
+      <tr><td>$X+Z$</td><td>$X=0, Z=0$</td><td>000, 010</td><td>$M_0, M_2$</td></tr>
+      <tr><td>$Y+\overline{Z}$</td><td>$Y=0, Z=1$</td><td>001, 101</td><td>$M_1, M_5$</td></tr>
+      <tr><td>$\overline{X}+\overline{Y}$</td><td>$X=1, Y=1$</td><td>110, 111</td><td>$M_6, M_7$</td></tr>
+    </table></div>
+    <p>(a) $F = \prod M(0,1,2,5,6,7)$</p>
+    <p>(b) Remaining rows are 3 and 4: $F = \sum m(3,4) = \overline{X}YZ + X\overline{Y}\,\overline{Z}$</p>
+  </div>
+</div>
+
+<div class="q" data-id="D3" data-t="compute">
+  <div class="qtop"><span class="qid">D3</span><span class="tag compute">compute</span><span class="src">cf. Prac 2 Q7</span></div>
+  <p>$f(x,y,z) = \sum m(0,5,6)$ and $g(x,y,z) = \sum m(1,3,4,5,7)$.</p>
+  <ol class="parts">
+    <li>Write a standard sum-of-products expression for $f$ and for $g$.</li>
+    <li>Write a standard product-of-sums expression for $f$ and for $g$.</li>
+    <li>Write a standard product-of-sums expression for $f'\cdot g$.</li>
+  </ol>
+  <div class="btns"><button class="btn ansbtn">Show answer</button></div>
+  <div class="ans" hidden>
+    <span class="step">(a)</span>
+    <p>$$f = x'y'z' + xy'z + xyz'$$</p>
+    <p>$$g = x'y'z + x'yz + xy'z' + xy'z + xyz$$</p>
+    <span class="step">(b)</span>
+    <p>Maxterms are the missing rows; in $M_i$ a variable is complemented where row $i$ has a 1.</p>
+    <p>$$f = \prod M(1,2,3,4,7) = (x+y+z')(x+y'+z)(x+y'+z')(x'+y+z)(x'+y'+z')$$</p>
+    <p>$$g = \prod M(0,2,6) = (x+y+z)(x+y'+z)(x'+y'+z)$$</p>
+    <span class="step">(c)</span>
+    <p>$f' = \sum m(1,2,3,4,7)$. ANDing keeps rows that are 1 in both: $f'g = \sum m(1,3,4,7)$. Its maxterms are the other four rows:</p>
+    <p>$$f'g = \prod M(0,2,5,6) = (x+y+z)(x+y'+z)(x'+y+z')(x'+y'+z)$$</p>
+  </div>
+</div>
+
+<div class="q" data-id="D4" data-t="compute">
+  <div class="qtop"><span class="qid">D4</span><span class="tag compute">compute</span><span class="src">cf. Prac 2 Q8</span></div>
+  <p>List all minterms and maxterms of the function below using $\Sigma$ and $\Pi$ notation.</p>
+  <p>$$f(x,y,z) = x'z + (x+y')(y'+z)$$</p>
+  <div class="btns"><button class="btn ansbtn">Show answer</button></div>
+  <div class="ans" hidden>
+    <p>Distributive law (factor out $y'$): $(x+y')(y'+z) = y' + xz$.</p>
+    <p>$$f = x'z + xz + y' = z + y'$$</p>
+    <p>$z=1$: rows 1, 3, 5, 7. $y=0$: rows 0, 1, 4, 5.</p>
+    <p>$$f = \sum m(0,1,3,4,5,7) = \prod M(2,6)$$</p>
+    <p>Check: rows 2 and 6 are $y=1, z=0$, the only place $z + y'$ is 0 ✓.</p>
+  </div>
+</div>
+
+<div class="q" data-id="D5" data-t="compute">
+  <div class="qtop"><span class="qid">D5</span><span class="tag compute">compute</span><span class="src">cf. Prac 2 Q9</span></div>
+  <p>The circuits below implement $F$, $G$ and $H$. Which pairs are equivalent? Justify your answer.</p>
+  <div class="figrow">
+    <div class="fig"><svg class="circ" viewBox="0 0 370 195" width="370" role="img" aria-label="Circuit F" xmlns="http://www.w3.org/2000/svg">
+<line class="w" x1="40" y1="92" x2="170" y2="92"/>
+<line class="w" x1="100" y1="108" x2="170" y2="108"/>
+<line class="w" x1="70" y1="152" x2="170" y2="152"/>
+<line class="w" x1="130" y1="168" x2="170" y2="168"/>
+<line class="w" x1="206.0" y1="100" x2="224" y2="100"/>
+<line class="w" x1="224" y1="100" x2="224" y2="122"/>
+<line class="w" x1="224" y1="122" x2="255.88" y2="122"/>
+<line class="w" x1="206.0" y1="160" x2="236" y2="160"/>
+<line class="w" x1="236" y1="160" x2="236" y2="138"/>
+<line class="w" x1="236" y1="138" x2="255.88" y2="138"/>
+<line class="w" x1="300" y1="130" x2="330" y2="130"/>
+<line class="w" x1="40" y1="44" x2="70" y2="44"/>
+<line class="w" x1="70" y1="72" x2="70" y2="152"/>
+<line class="w" x1="40" y1="28" x2="40" y2="92"/>
+<line class="w" x1="100" y1="28" x2="100" y2="108"/>
+<line class="w" x1="130" y1="28" x2="130" y2="168"/>
+<path class="g" d="M170,80.0 H186 A20.0,20.0 0 0 1 186,120.0 H170 Z"/>
+<path class="g" d="M170,140.0 H186 A20.0,20.0 0 0 1 186,180.0 H170 Z"/>
+<path class="g" d="M250,110.0 Q280.0,110.0 300,130 Q280.0,150.0 250,150.0 Q264,130 250,110.0 Z"/>
+<path class="g" d="M61,44 L70,64 L79,44 Z"/><circle class="g" cx="70" cy="68" r="4"/>
+<circle class="dot" cx="40" cy="44" r="3.2"/>
+<text class="lb" x="40" y="20" text-anchor="middle" font-size="15">A</text>
+<text class="lb" x="100" y="20" text-anchor="middle" font-size="15">B</text>
+<text class="lb" x="130" y="20" text-anchor="middle" font-size="15">C</text>
+<text class="lb" x="336" y="135" text-anchor="start" font-size="15">F</text>
+</svg></div>
+    <div class="fig"><svg class="circ" viewBox="0 0 370 195" width="370" role="img" aria-label="Circuit G" xmlns="http://www.w3.org/2000/svg">
+<line class="w" x1="40" y1="92" x2="165.88" y2="92"/>
+<line class="w" x1="130" y1="108" x2="165.88" y2="108"/>
+<line class="w" x1="70" y1="152" x2="165.88" y2="152"/>
+<line class="w" x1="100" y1="168" x2="165.88" y2="168"/>
+<line class="w" x1="210" y1="100" x2="228" y2="100"/>
+<line class="w" x1="228" y1="100" x2="228" y2="122"/>
+<line class="w" x1="228" y1="122" x2="260" y2="122"/>
+<line class="w" x1="210" y1="160" x2="242" y2="160"/>
+<line class="w" x1="242" y1="160" x2="242" y2="138"/>
+<line class="w" x1="242" y1="138" x2="260" y2="138"/>
+<line class="w" x1="296.0" y1="130" x2="330" y2="130"/>
+<line class="w" x1="40" y1="44" x2="70" y2="44"/>
+<line class="w" x1="70" y1="72" x2="70" y2="152"/>
+<line class="w" x1="40" y1="28" x2="40" y2="92"/>
+<line class="w" x1="100" y1="28" x2="100" y2="168"/>
+<line class="w" x1="130" y1="28" x2="130" y2="108"/>
+<path class="g" d="M160,80.0 Q190.0,80.0 210,100 Q190.0,120.0 160,120.0 Q174,100 160,80.0 Z"/>
+<path class="g" d="M160,140.0 Q190.0,140.0 210,160 Q190.0,180.0 160,180.0 Q174,160 160,140.0 Z"/>
+<path class="g" d="M260,110.0 H276 A20.0,20.0 0 0 1 276,150.0 H260 Z"/>
+<path class="g" d="M61,44 L70,64 L79,44 Z"/><circle class="g" cx="70" cy="68" r="4"/>
+<circle class="dot" cx="40" cy="44" r="3.2"/>
+<text class="lb" x="40" y="20" text-anchor="middle" font-size="15">A</text>
+<text class="lb" x="100" y="20" text-anchor="middle" font-size="15">B</text>
+<text class="lb" x="130" y="20" text-anchor="middle" font-size="15">C</text>
+<text class="lb" x="336" y="135" text-anchor="start" font-size="15">G</text>
+</svg></div>
+  </div>
+  <div class="fig"><svg class="circ" viewBox="0 0 490 205" width="490" role="img" aria-label="Circuit H" xmlns="http://www.w3.org/2000/svg">
+<line class="w" x1="40" y1="87" x2="200" y2="87"/>
+<line class="w" x1="100" y1="103" x2="200" y2="103"/>
+<line class="w" x1="70" y1="157" x2="205.88" y2="157"/>
+<line class="w" x1="130" y1="173" x2="205.88" y2="173"/>
+<line class="w" x1="160" y1="130" x2="290" y2="130"/>
+<line class="w" x1="250" y1="165" x2="268" y2="165"/>
+<line class="w" x1="268" y1="165" x2="268" y2="146"/>
+<line class="w" x1="268" y1="146" x2="290" y2="146"/>
+<line class="w" x1="236.0" y1="95" x2="345" y2="95"/>
+<line class="w" x1="345" y1="95" x2="345" y2="104"/>
+<line class="w" x1="345" y1="104" x2="375.88" y2="104"/>
+<line class="w" x1="326.0" y1="138" x2="355" y2="138"/>
+<line class="w" x1="355" y1="138" x2="355" y2="120"/>
+<line class="w" x1="355" y1="120" x2="375.88" y2="120"/>
+<line class="w" x1="420" y1="112" x2="450" y2="112"/>
+<line class="w" x1="40" y1="44" x2="70" y2="44"/>
+<line class="w" x1="70" y1="72" x2="70" y2="157"/>
+<line class="w" x1="100" y1="44" x2="130" y2="44"/>
+<line class="w" x1="130" y1="72" x2="130" y2="173"/>
+<line class="w" x1="40" y1="28" x2="40" y2="87"/>
+<line class="w" x1="100" y1="28" x2="100" y2="103"/>
+<line class="w" x1="160" y1="28" x2="160" y2="130"/>
+<path class="g" d="M200,75.0 H216 A20.0,20.0 0 0 1 216,115.0 H200 Z"/>
+<path class="g" d="M200,145.0 Q230.0,145.0 250,165 Q230.0,185.0 200,185.0 Q214,165 200,145.0 Z"/>
+<path class="g" d="M290,118.0 H306 A20.0,20.0 0 0 1 306,158.0 H290 Z"/>
+<path class="g" d="M370,92.0 Q400.0,92.0 420,112 Q400.0,132.0 370,132.0 Q384,112 370,92.0 Z"/>
+<path class="g" d="M61,44 L70,64 L79,44 Z"/><circle class="g" cx="70" cy="68" r="4"/>
+<path class="g" d="M121,44 L130,64 L139,44 Z"/><circle class="g" cx="130" cy="68" r="4"/>
+<circle class="dot" cx="40" cy="44" r="3.2"/>
+<circle class="dot" cx="100" cy="44" r="3.2"/>
+<text class="lb" x="40" y="20" text-anchor="middle" font-size="15">A</text>
+<text class="lb" x="100" y="20" text-anchor="middle" font-size="15">B</text>
+<text class="lb" x="160" y="20" text-anchor="middle" font-size="15">C</text>
+<text class="lb" x="456" y="117" text-anchor="start" font-size="15">H</text>
+</svg></div>
+  <div class="btns"><button class="btn ansbtn">Show answer</button></div>
+  <div class="ans" hidden>
+    <span class="step">Read the circuits</span>
+    <p>$$F = AB + \overline{A}C,\qquad G = (A+C)(\overline{A}+B),\qquad H = AB + C(\overline{A}+\overline{B})$$</p>
+    <span class="step">Algebra</span>
+    <p>$G = A\overline{A} + AB + \overline{A}C + BC = AB + \overline{A}C + BC = AB + \overline{A}C$ (complement, then consensus). So $G = F$.</p>
+    <p>$H = AB + \overline{A}C + \overline{B}C$. The extra term $\overline{B}C$ is not covered by $AB + \overline{A}C$: at $A=1, B=0, C=1$, $H=1$ while $F=0$, so the two disagree on that row.</p>
+    <div class="tablewrap"><table>
+      <tr><th>$ABC$</th><th>000</th><th>001</th><th>010</th><th>011</th><th>100</th><th>101</th><th>110</th><th>111</th></tr>
+      <tr><td>$F$</td><td>0</td><td>1</td><td>0</td><td>1</td><td>0</td><td>0</td><td>1</td><td>1</td></tr>
+      <tr><td>$G$</td><td>0</td><td>1</td><td>0</td><td>1</td><td>0</td><td>0</td><td>1</td><td>1</td></tr>
+      <tr><td>$H$</td><td>0</td><td>1</td><td>0</td><td>1</td><td>0</td><td><strong>1</strong></td><td>1</td><td>1</td></tr>
+    </table></div>
+    <p><strong>$F \equiv G$.</strong> $H$ is equivalent to neither; it differs on row 101 only.</p>
+  </div>
+</div>
+
+</section>
+
+</main>
+
+<footer class="end">
+  <p>Built from ELEC1303 Practical #1 (static discipline, VTCs, noise margins) and Practical #2 (combinational design, Boolean algebra, canonical forms), UWA, Semester 2 2026. Each question mirrors a practical question type, cited on its card, with new values and circuits; the practicals' own questions are not reused.</p>
+  <p>Printing reveals every answer.</p>
+</footer>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<script>
+(function(){
+  "use strict";
+  function all(sel, root){ return Array.prototype.slice.call((root || document).querySelectorAll(sel)); }
+  function renderMath(){
+    if (typeof window.renderMathInElement !== "function") return;
+    try {
+      window.renderMathInElement(document.body, {
+        delimiters: [
+          {left: "$$", right: "$$", display: true},
+          {left: "\\[", right: "\\]", display: true},
+          {left: "$", right: "$", display: false}
+        ],
+        ignoredTags: ["script", "noscript", "style", "textarea", "option", "svg"],
+        throwOnError: false
+      });
+    } catch (e) { /* raw LaTeX stays readable if this fails */ }
+  }
+  document.addEventListener("click", function(ev){
+    var t = ev.target;
+    if (!t.classList) return;
+    if (t.classList.contains("ansbtn") || t.classList.contains("hintbtn")) {
+      var card = t.closest(".q");
+      if (!card) return;
+      var isHint = t.classList.contains("hintbtn");
+      var box = card.querySelector(isHint ? ".hint" : ".ans");
+      if (!box) return;
+      if (box.hasAttribute("hidden")) {
+        box.removeAttribute("hidden");
+        t.textContent = isHint ? "Hide hint" : "Hide answer";
+      } else {
+        box.setAttribute("hidden", "");
+        t.textContent = isHint ? "Hint" : "Show answer";
+      }
+    }
+  });
+  document.getElementById("hideall").addEventListener("click", function(){
+    all(".ans, .hint").forEach(function(b){ b.setAttribute("hidden", ""); });
+    all(".ansbtn").forEach(function(b){ b.textContent = "Show answer"; });
+    all(".hintbtn").forEach(function(b){ b.textContent = "Hint"; });
+  });
+  renderMath();
+})();
+</script>
+</body>
+</html>
